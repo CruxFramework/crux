@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.ConverterScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.DataObjectScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.DataSourceScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.FormatterScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.MessageScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.ResourceScanner;
 
@@ -39,6 +40,7 @@ public class RebindContext
 	private ConverterScanner converterScanner;
 	private DataObjectScanner dataObjectScanner;
 	private DataSourceScanner dataSourceScanner;
+	private FormatterScanner formatterScanner;
 	private MessageScanner messageScanner;
 	private GeneratorContext generatorContext;
 	private JClassScanner jClassScanner;
@@ -98,6 +100,17 @@ public class RebindContext
 			dataSourceScanner = new DataSourceScanner(generatorContext);
 		}
 		return dataSourceScanner;
+	}
+
+	@Deprecated
+	@Legacy
+	public FormatterScanner getFormatters()
+	{
+		if (formatterScanner == null)
+		{
+			formatterScanner = new FormatterScanner(generatorContext);
+		}
+		return formatterScanner;
 	}
 
 	public DataObjectScanner getDataObjects()

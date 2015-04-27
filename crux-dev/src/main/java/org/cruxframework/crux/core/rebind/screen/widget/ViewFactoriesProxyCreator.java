@@ -39,9 +39,7 @@ import org.cruxframework.crux.core.rebind.screen.Screen;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.View;
-import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
-import org.cruxframework.crux.core.server.development.ViewTesterScreen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -155,6 +153,18 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		generateGetCurrentDeviceMethod(sourceWriter);
     }
 	
+	@Override
+	protected void generateProxyResources()
+	{
+		try
+        {
+	        screenFactory.generateHostPages(getDeviceFeatures());
+        }
+        catch (ScreenConfigException e)
+        {
+	        throw new CruxGeneratorException("Error generating host pages for crux screens.", e);
+        }
+	}
 	
 	/**
 	 * @param sourceWriter
@@ -240,32 +250,6 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		return imports;
 	}
 	
-	protected String getModule()
-	{
-		try
-		{
-			if (ViewTesterScreen.isTestViewScreen())
-			{
-				return ViewTesterScreen.getModuleForViewTesting();
-			}
-			else
-			{
-				String screenID = CruxBridge.getInstance().getLastPageRequested();
-				Screen requestedScreen = screenFactory.getScreen(screenID, getDeviceFeatures());
-				if(requestedScreen != null)
-				{
-					return requestedScreen.getModule();
-				}
-			}
-			return null;
-		}
-		catch (ScreenConfigException e)
-		{
-			context.getLogger().log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve current module.",e);
-			throw new CruxGeneratorException();
-        }
-	}
-	
 	/**
 	 * 
 	 * @param logger
@@ -278,23 +262,14 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
         {
 	        List<Screen> screens = new ArrayList<Screen>();
 
-	        String module = getModule();
-	        
-	        if(module != null)
+	        Set<String> screenIDs = screenFactory.getScreens();
+
+	        for (String screenID : screenIDs)
 	        {
-	        	Set<String> screenIDs = screenFactory.getScreens(module);
-	        	
-	        	if (screenIDs == null)
+	        	Screen screen = screenFactory.getScreen(screenID, getDeviceFeatures());
+	        	if(screen != null)
 	        	{
-	        		throw new ScreenConfigException("Can not find the module ["+module+"].");
-	        	}
-	        	for (String screenID : screenIDs)
-	        	{
-	        		Screen screen = screenFactory.getScreen(screenID, getDeviceFeatures());
-	        		if(screen != null)
-	        		{
-	        			screens.add(screen);
-	        		}
+	        		screens.add(screen);
 	        	}
 	        }
 	        
@@ -314,12 +289,11 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	protected List<View> getViews()
 	{
 		List<View> views = new ArrayList<View>();
-		if (ViewTesterScreen.isTestViewScreen())
+		if (!Environment.isProduction())
 		{
 			try
 			{
-				String moduleId = getModule();
-				List<String> viewList = screenFactory.getViewFactory().getViews("*", moduleId);
+				List<String> viewList = screenFactory.getViewFactory().getViews("*");
 				for (String viewName : viewList)
 				{
 					View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
@@ -361,7 +335,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		{
 			added.add(rootView.getId());
 			views.add(rootView);
-			findViews(rootView, views, added, screen.getModule());
+			findViews(rootView, views, added);
 		}
 	}
 
@@ -371,7 +345,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	 * @param views
 	 * @param added
 	 */
-	private void findViews(View view, List<View> views, Set<String> added, String moduleId) 
+	private void findViews(View view, List<View> views, Set<String> added) 
 	{
 		try
 		{
@@ -383,14 +357,14 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 				{
 					added.add(viewLocator);
 					
-					List<String> viewList = screenFactory.getViewFactory().getViews(viewLocator, moduleId);
+					List<String> viewList = screenFactory.getViewFactory().getViews(viewLocator);
 					for (String viewName : viewList)
                     {
 						View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
 						if (innerView != null)
 						{
 							views.add(innerView);
-							findViews(innerView, views, added, moduleId);
+							findViews(innerView, views, added);
 						}
                     }
 				}

@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.context.loader;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ import org.cruxframework.crux.core.declarativeui.screen.ScreenException;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 
+import com.google.gwt.core.ext.BadPropertyValueException;
+import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 
 /**
@@ -37,6 +40,7 @@ public class ScreenRebindLoader implements ScreenLoader
 	private Map<String, String> screens = new HashMap<String, String>();
 	private ViewRebindLoader viewContextLoader;
 	private boolean initialized = false;
+	private List<String> screenFolders;
 
 	public ScreenRebindLoader(GeneratorContext context)
     {
@@ -56,17 +60,11 @@ public class ScreenRebindLoader implements ScreenLoader
     }
 	
 	@Override
-    public Set<String> getScreens(String module)
+    public Set<String> getScreens()
     {
 		initialize();
 		Set<String> result = new HashSet<String>();
-	    for (String viewPath : screens.values())
-        {
-	        if (viewPath.startsWith(module+"/"))
-	        {
-	        	result.add(viewPath);
-	        }
-        }
+       	result.addAll(screens.keySet());
 	    return result;
     }
 
@@ -80,6 +78,7 @@ public class ScreenRebindLoader implements ScreenLoader
 	{
 		if (!initialized)
 		{
+			initializeScreenFolders();
 			Set<String> pathNames = context.getResourcesOracle().getPathNames();
 
 			for (String pathName : pathNames)
@@ -97,10 +96,36 @@ public class ScreenRebindLoader implements ScreenLoader
 
 				if (fileName.endsWith(".crux.xml"))
 				{
-					screens.put(fileName.substring(0, fileName.length()-9), pathName);
+					for (String baseFolder : screenFolders)
+                    {
+						if (pathName.startsWith(baseFolder))
+						{
+							String relativePathName = pathName.substring(baseFolder.length());
+							if (relativePathName.startsWith("/"))
+							{
+								relativePathName = relativePathName.substring(1);
+							}
+							screens.put(relativePathName.substring(0, relativePathName.length()-9), pathName);
+							break;
+						}
+                    }
 				}
 			}
 			initialized = true;
 		}
 	}
+
+	private void initializeScreenFolders()
+    {
+	    try
+	    {
+	        ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("screen.base.folder");
+	        screenFolders = property.getValues();
+	    }
+	    catch (BadPropertyValueException e)
+	    {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+    }
 }

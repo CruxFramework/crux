@@ -235,7 +235,7 @@ public class ViewBindHandler
 	    	expressionParts.add(expressionPart);
         }
 	    
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    boolean negate = operator.startsWith("NOT ");
 	    if (negate)
 	    {
@@ -251,7 +251,7 @@ public class ViewBindHandler
     {
 	    ExpressionDataBinding result;
 	    Matcher matcher = RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(trimPropertyValue);
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    int pos = 0;
 	    boolean hasExpression = false;
 	    while (matcher.find())
@@ -320,7 +320,7 @@ public class ViewBindHandler
 	    trimPropertyValue = trimPropertyValue.substring(3, trimPropertyValue.length()-1);
 	    ExpressionPart expressionPart = getExpressionPart(trimPropertyValue);
 	    
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    result.addReadBinding(expressionPart);
 	    if (!JClassUtils.isCompatibleTypes(widgetPropertyType, expressionPart.getType()))
 	    {

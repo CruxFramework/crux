@@ -13,31 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.context.scanner;
+package org.cruxframework.crux.core.rebind.cell;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.cruxframework.crux.core.client.converter.TypeConverter.Converter;
+import org.cruxframework.crux.core.client.Legacy;
+import org.cruxframework.crux.core.client.cell.CustomCell;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.JClassScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
+
 /**
- * Maps all converters.
+ * Maps all custom cells.
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ConverterScanner 
+@Deprecated
+@Legacy
+public class CustomCellScanner 
 {
-	private Map<String, String> converters;
+	private Map<String, String> customCells;
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
-	public ConverterScanner(GeneratorContext context)
+	public CustomCellScanner(GeneratorContext context)
 	{
 		jClassScanner = new JClassScanner(context);
 	}
@@ -46,49 +50,50 @@ public class ConverterScanner
 	 * @param name
 	 * @return
 	 */
-	public String getConverter(String name)
+	public String getCustomCell(String name)
 	{
-		initializeConverters();
-		return converters.get(name);
+		initializeCustomCells();
+		return customCells.get(name);
 	}
+
 
 	/**
 	 * @return
 	 */
-	public Iterator<String> iterateConverters()
+	public Iterator<String> iterateCustomCells()
 	{
-		initializeConverters();
-		return converters.keySet().iterator();
+		initializeCustomCells();
+		return customCells.keySet().iterator();
 	}
 
 	/**
 	 * 
 	 */
-	protected void initializeConverters()
+	protected void initializeCustomCells()
 	{
 		if (!initialized)
 		{
-			converters = new HashMap<String, String>();
-			JClassType[] converterTypes;
+			customCells = new HashMap<String, String>();
+			JClassType[] cellTypes;
 			try 
 			{
-				converterTypes =  jClassScanner.searchClassesByAnnotation(Converter.class);
+				cellTypes =  jClassScanner.searchClassesByAnnotation(CustomCell.class);
 			} 
 			catch (Exception e) 
 			{
-				throw new CruxGeneratorException("Error initializing Converters scanner.",e);
+				throw new CruxGeneratorException("Error initializing CustomCells.",e);
 			}
-			if (converterTypes != null)
+			if (cellTypes != null)
 			{
-				for (JClassType converterClass : converterTypes) 
+				for (JClassType cellClass : cellTypes) 
 				{
-					Converter annot = converterClass.getAnnotation(Converter.class);
-					if (converters.containsKey(annot.value()))
+					CustomCell annot = cellClass.getAnnotation(CustomCell.class);
+					if (customCells.containsKey(annot.value()))
 					{
-						throw new CruxGeneratorException("Duplicated alias for Converter found: ["+annot.value()+"].");
+						throw new CruxGeneratorException("Duplicated CustomCell found: ["+annot.value()+"].");
 					}
-
-					converters.put(annot.value(), converterClass.getQualifiedSourceName());
+					
+					customCells.put(annot.value(), cellClass.getQualifiedSourceName());
 				}
 			}
 			initialized = true;

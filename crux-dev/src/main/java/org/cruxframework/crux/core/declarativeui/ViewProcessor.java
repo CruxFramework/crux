@@ -32,7 +32,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
-import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONObject;
@@ -125,10 +124,6 @@ public class ViewProcessor
 	 */
 	public String getOutputCharset()
 	{
-		if (outputCharset == null)
-		{
-			outputCharset = CruxBridge.getInstance().getOutputCharset();
-		}
 		return outputCharset;
 	}	
 	
@@ -163,7 +158,6 @@ public class ViewProcessor
 	public void setOutputCharset(String charset)
 	{
 		outputCharset = charset;
-		CruxBridge.getInstance().registerPageOutputCharset(charset);
 	}
 	
 	/**

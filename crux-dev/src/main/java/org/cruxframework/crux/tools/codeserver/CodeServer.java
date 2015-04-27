@@ -15,27 +15,14 @@
  */
 package org.cruxframework.crux.tools.codeserver;
 
-import java.io.File;
 import java.net.InetAddress;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.rebind.module.Modules;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
-import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.tools.compile.AbstractCruxCompiler;
-import org.cruxframework.crux.tools.compile.CruxCompilerFactory;
-import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -60,9 +47,7 @@ public class CodeServer
 	private String launcherDir;
 	private int port = getDefaultPort();
 	private String webDir;
-	@SuppressWarnings("unused")
-	private boolean startJetty = false;
-	private CodeServerRecompileListener recompileListener;
+
 
 	public String getModuleName()
     {
@@ -99,62 +84,6 @@ public class CodeServer
 		return 9876;
 	}
 	
-	protected int getDefaultNotificationPort()
-	{
-		return Integer.valueOf(ConfigurationFactory.getConfigurations().notifierCompilerPort());
-	}
-
-	protected void execute() throws Exception
-    {
-		AbstractCruxCompiler compiler = CruxCompilerFactory.createCompiler();
-		compiler.setOutputCharset("UTF-8");
-		
-		CruxBridge.getInstance().setSingleVM(true);
-		CruxRegisterUtil.registerFilesCruxBridge(null);
-		ServiceFactoryInitializer.initialize(null);
-		RestServiceFactoryInitializer.initialize(null);
-		
-		compiler.initializeCompiler();
-		
-		Set<String> screenIDs = null;
-		try
-        {
-	        screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(moduleName);
-        }
-    	catch (Exception e)
-    	{
-    		logger.info("Error retrieving crux pages list for module ["+moduleName+"]. "
-    				+ "Please, verify if the module name parameter matches the module short name on your .gwt file", e);
-    	}
-		if (screenIDs != null && !screenIDs.isEmpty())
-		{
-			logger.info("Starting code server for module ["+moduleName+"]");
-			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
-			String[] args = getServerParameters();
-			initializeRecompileListener();
-			runGWTCodeServer(args);
-			
-			for (String screenID : screenIDs)
-			{
-				URL preProcessCruxPage = compiler.preProcessCruxPage(new URL(screenID), Modules.getInstance().getModule(moduleName));
-				File index = new File(webDir + File.separator + moduleName + File.separator + screenID.substring(
-					screenID.lastIndexOf("/") + 1, screenID.lastIndexOf(".crux.xml")) + ".html");
-				index.delete();	
-				FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
-			}	
-			
-		} 
-		else
-		{
-			logger.error("Unable to find any screens in module ["+moduleName+"]");
-		}
-    }
-
-	protected void initializeRecompileListener() 
-	{
-		recompileListener = new CodeServerRecompileListener(webDir);
-	}
-
 	protected void runGWTCodeServer(String[] args) throws Exception 
 	{
 		Options options = new Options();
@@ -162,7 +91,6 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
-		options.setJobChangeListener(recompileListener);
 //		options.addTags("-XnoenforceStrictResources");
 		try 
 		{
@@ -181,6 +109,11 @@ public class CodeServer
 		if (noPrecompile)
 		{
 			args.add("-noprecompile");
+		}
+		else
+		{
+			args.add("-precompile");
+			args.add("-noincremental");
 		}
 		if (launcherDir != null && launcherDir.length() > 0)
 		{
@@ -209,8 +142,8 @@ public class CodeServer
 		}
 		if (moduleName != null && moduleName.length() > 0)
 		{
-			String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
-			args.add(moduleFullName);
+//			String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
+			args.add(moduleName);
 		}
 		
 	    return args.toArray(new String[args.size()]);
@@ -227,10 +160,6 @@ public class CodeServer
 	        else if (parameter.getName().equals("-noprecompile"))
 	        {
 	        	this.noPrecompile = true;
-	        }
-	        else if (parameter.getName().equals("-startJetty"))
-	        {
-	        	this.startJetty = true;
 	        }
 	        else if (parameter.getName().equals("-sourceDir"))
 	        {
@@ -328,7 +257,7 @@ public class CodeServer
 			else
 			{
 				codeServer.processParameters(parameters.values());
-				codeServer.execute();
+				codeServer.runGWTCodeServer(codeServer.getServerParameters());
 				
 				if(parameters.containsKey("-startJetty"))
 				{

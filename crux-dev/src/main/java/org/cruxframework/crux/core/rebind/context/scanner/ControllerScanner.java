@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.JClassScanner;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -45,7 +45,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 public class ControllerScanner 
 {
 	private Map<String, Map<String, String>> controllersCanonicalNames;
-	private Map<String, Map<String, String>> controllersNames;
 	private List<String> globalControllers;
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
@@ -79,20 +78,14 @@ public class ControllerScanner
 	 */
 	public Class<?> getControllerClass(String controller, Device device)
 	{
-		initializeControllers();
+		String result = getController(controller, device);
 		try
         {
-			Map<String, String> map = controllersNames.get(controller);
-			String result = map.get(device.toString());
-			if (result == null && !device.equals(Device.all))
-			{
-				result = map.get(Device.all.toString());
-			}
 	        return Class.forName(result);
         }
-        catch (Exception e)
+        catch (ClassNotFoundException e)
         {
-        	return null;
+	     return null;
         }
 	}
 	
@@ -150,7 +143,6 @@ public class ControllerScanner
 			try 
 			{
 				controllersCanonicalNames = new HashMap<String, Map<String, String>>();
-				controllersNames = new HashMap<String, Map<String, String>>();
 				globalControllers = new ArrayList<String>();
 				widgetControllers = new HashMap<String, Set<String>>();
 
@@ -200,10 +192,8 @@ public class ControllerScanner
 	    if (!controllersCanonicalNames.containsKey(controllerKey))
 	    {
 	    	controllersCanonicalNames.put(controllerKey, new HashMap<String, String>());
-	    	controllersNames.put(controllerKey, new HashMap<String, String>());
 	    }
 	    Map<String, String> canonicallClassNamesByDevice = controllersCanonicalNames.get(controllerKey);
-	    Map<String, String> classNamesByDevice = controllersNames.get(controllerKey);
 	    
 	    String deviceKey = device.toString();
 		if (controllersCanonicalNames.containsKey(deviceKey))
@@ -211,7 +201,6 @@ public class ControllerScanner
 	    	throw new CruxGeneratorException("Duplicated Client Controller: ["+controllerKey+"].");
 	    }
 		canonicallClassNamesByDevice.put(deviceKey, controllerClass.getQualifiedSourceName());
-		classNamesByDevice.put(deviceKey, controllerClass.getName());
     }
 	
 	/**
@@ -227,7 +216,7 @@ public class ControllerScanner
 	    	Class<? extends IsWidget>[] widgets = widgetControllerAnnot.value();
 	    	for (Class<? extends IsWidget> widgetClass : widgets)
 	        {
-	    		String widgetType = WidgetConfig.getWidgetType(widgetClass);
+	    		String widgetType = WidgetScanner.getWidgetType(widgetClass);
 	    		if (!StringUtils.isEmpty(widgetType))
 	    		{
 	    			Set<String> controllers = widgetControllers.get(widgetType);

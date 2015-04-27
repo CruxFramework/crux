@@ -30,5 +30,5 @@ public interface ScreenLoader
 	
 	InputStream getScreen(String id) throws ScreenException;
 
-	Set<String> getScreens(String module);
+	Set<String> getScreens();
 }

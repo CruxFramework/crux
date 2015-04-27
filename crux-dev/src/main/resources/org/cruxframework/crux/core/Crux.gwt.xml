@@ -9,6 +9,12 @@
 
     <inherits name="org.cruxframework.crux.core.CruxShared"/>
     <set-property name="gwt.logging.enabled" value="FALSE"/>    
+	
+	<define-linker name="screenLinker" class="org.cruxframework.crux.core.rebind.screen.linker.ScreenLinker"/>
+	<add-linker name="screenLinker"/>
+		
+	<define-configuration-property name="screen.base.folder" is-multi-valued="true" />
+	<define-configuration-property name="screen.output.folder" is-multi-valued="false" />
 		
 	<!-- Cross-dDevice support -->
 	<!-- Property to identify the device screen features -->

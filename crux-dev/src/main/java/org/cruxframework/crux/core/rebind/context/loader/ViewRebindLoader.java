@@ -63,7 +63,7 @@ public class ViewRebindLoader implements ViewLoader
     }
 
 	@Override
-    public List<String> getViews(String viewsLocator, String moduleId)
+    public List<String> getViews(String viewsLocator)
     {
 		initialize();
 		List<String> result = new ArrayList<String>();

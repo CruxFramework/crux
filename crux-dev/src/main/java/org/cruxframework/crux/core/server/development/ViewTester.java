@@ -65,7 +65,6 @@ public class ViewTester extends HttpServlet
 
 	protected void processRequest(HttpServletResponse resp, String moduleName) throws IOException, UnsupportedEncodingException
     {
-		ViewTesterScreen.registerTestViewPageRequested(moduleName);
 	    InputStream screenResource = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/cruxViewTester.crux.xml");
 	    String screenContent = StreamUtils.readAsUTF8(screenResource);
 	    screenContent = screenContent.replace("{moduleName}", moduleName);

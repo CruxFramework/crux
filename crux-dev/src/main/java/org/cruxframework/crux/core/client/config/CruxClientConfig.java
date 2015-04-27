@@ -32,6 +32,4 @@ public interface CruxClientConfig
 	boolean enableDebugForURL(String url);
 	boolean enableCrux2OldInterfacesCompatibility();
 	boolean preferWebSQLForNativeDB();
-	String notifierCompilerAddress();
-	String notifierCompilerPort();
 }

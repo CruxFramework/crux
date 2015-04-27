@@ -14,7 +14,7 @@
  * the License.
  */
 package org.cruxframework.crux.core.rebind.context.scanner;
- 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,12 +44,12 @@ public class DataObjectScanner
 	private Map<String, String> dataObjects;
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
-	
+
 	public DataObjectScanner(GeneratorContext context)
-    {
+	{
 		jClassScanner = new JClassScanner(context);
-    }
-	
+	}
+
 	/**
 	 * @param name
 	 * @return
@@ -59,7 +59,7 @@ public class DataObjectScanner
 		initializeDataObjects();
 		return dataObjects.get(name);
 	}
-	
+
 	public String[] getDataObjectIdentifiers(String name)
 	{
 		initializeDataObjects();
@@ -82,43 +82,42 @@ public class DataObjectScanner
 	{
 		if (!initialized)
 		{
+			dataObjects = new HashMap<String, String>();
+			dataObjectIdentifiers = new HashMap<String, String[]>();
+			JClassType[] dataObjectTypes;
 			try 
 			{
-				dataObjects = new HashMap<String, String>();
-				dataObjectIdentifiers = new HashMap<String, String[]>();
-
 				initializeDefaultDataObjects();
-
-				JClassType[] dataObjectTypes =  jClassScanner.searchClassesByAnnotation(DataObject.class);
-				if (dataObjectTypes != null)
-				{
-					for (JClassType dataClass : dataObjectTypes) 
-					{
-						DataObject annot = dataClass.getAnnotation(DataObject.class);
-						if (dataObjects.containsKey(annot.value()))
-						{
-							throw new CruxGeneratorException("Duplicated alias for DataObject found: ["+annot.value()+"].");
-						}
-
-						dataObjects.put(annot.value(), dataClass.getQualifiedSourceName());
-						dataObjectIdentifiers.put(annot.value(), extractIdentifiers(dataClass));
-					}
-				}
-				initialized = true;
+				dataObjectTypes =  jClassScanner.searchClassesByAnnotation(DataObject.class);
 			} 
 			catch (Exception e) 
 			{
 				throw new CruxGeneratorException("Error initializing DataObjects scanner.",e);
 			}
+			if (dataObjectTypes != null)
+			{
+				for (JClassType dataClass : dataObjectTypes) 
+				{
+					DataObject annot = dataClass.getAnnotation(DataObject.class);
+					if (dataObjects.containsKey(annot.value()))
+					{
+						throw new CruxGeneratorException("Duplicated alias for DataObject found: ["+annot.value()+"].");
+					}
+
+					dataObjects.put(annot.value(), dataClass.getQualifiedSourceName());
+					dataObjectIdentifiers.put(annot.value(), extractIdentifiers(dataClass));
+				}
+			}
+			initialized = true;
 		}
 	}
-	
+
 	/**
 	 * @param dataClass
 	 * @return
 	 */
 	private String[] extractIdentifiers(JClassType dataClass)
-    {
+	{
 		List<String> ids = new ArrayList<String>();
 		JField[] fields = JClassUtils.getDeclaredFields(dataClass);
 		for (JField field : fields)
@@ -136,13 +135,13 @@ public class DataObjectScanner
 			}
 		}
 		return ids.toArray(new String[ids.size()]);
-    }
-	
+	}
+
 	/**
 	 * 
 	 */
 	private void initializeDefaultDataObjects()
-    {
+	{
 		dataObjects.put(String.class.getSimpleName(), String.class.getCanonicalName());
 		dataObjects.put(Integer.class.getSimpleName(), Integer.class.getCanonicalName());
 		dataObjects.put(Short.class.getSimpleName(), Short.class.getCanonicalName());
@@ -161,5 +160,5 @@ public class DataObjectScanner
 		dataObjects.put("double","double");
 		dataObjects.put("boolean","boolean");
 		dataObjects.put("char","char");
-    }
+	}
 }

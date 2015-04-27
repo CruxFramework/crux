@@ -35,12 +35,12 @@ public class MessageScanner
 	private boolean initialized = false;	
 	private JClassScanner jClassScanner;
 	private Map<String, String> messagesClasses = null;
-	
+
 	public MessageScanner(GeneratorContext context)
-    {
+	{
 		jClassScanner = new JClassScanner(context);
-    }
-	
+	}
+
 	/**
 	 * Return the className associated with the name informed
 	 * @param interfaceName
@@ -51,7 +51,7 @@ public class MessageScanner
 		initializeMessages();
 		return messagesClasses.get(message);
 	}
-	
+
 	/**
 	 * @param urls
 	 */
@@ -59,33 +59,34 @@ public class MessageScanner
 	{
 		if (!initialized)
 		{
-			try 
+			if (messagesClasses == null)
 			{
-				if (messagesClasses == null)
+				messagesClasses = new HashMap<String, String>();
+				JClassType[] messagesTypes;
+				try 
 				{
-					messagesClasses = new HashMap<String, String>();
-					JClassType[] messagesTypes =  jClassScanner.searchClassesByInterface(LocalizableResource.class.getCanonicalName());
-					if (messagesTypes != null)
+					messagesTypes =  jClassScanner.searchClassesByInterface(LocalizableResource.class.getCanonicalName());
+				} 
+				catch (Exception e) 
+				{
+					throw new CruxGeneratorException("Error initializing messages scanner.",e);
+				}
+				if (messagesTypes != null)
+				{
+					for (JClassType messageClass : messagesTypes) 
 					{
-						for (JClassType messageClass : messagesTypes) 
+						MessageName messageNameAnnot = messageClass.getAnnotation(MessageName.class);
+						if (messageNameAnnot != null)
 						{
-							MessageName messageNameAnnot = messageClass.getAnnotation(MessageName.class);
-							if (messageNameAnnot != null)
+							String messageKey = messageNameAnnot.value();
+							if (messagesClasses.containsKey(messageKey))
 							{
-								String messageKey = messageNameAnnot.value();
-								if (messagesClasses.containsKey(messageKey))
-								{
-									throw new CruxGeneratorException("Duplicated Message Key: ["+messageKey+"].");
-								}
-								messagesClasses.put(messageKey, messageClass.getQualifiedSourceName());
+								throw new CruxGeneratorException("Duplicated Message Key: ["+messageKey+"].");
 							}
+							messagesClasses.put(messageKey, messageClass.getQualifiedSourceName());
 						}
 					}
 				}
-			} 
-			catch (Exception e) 
-			{
-				throw new CruxGeneratorException("Error initializing messages scanner.",e);
 			}
 			initialized = true;
 		}

@@ -104,7 +104,8 @@ public class IocContainerManager
 		Iterator<String> controllers = view.iterateControllers();
 		while (controllers.hasNext())
 		{
-			Class<?> controllerClass = context.getControllers().getControllerClass(controllers.next(), device);
+			String controller = controllers.next();
+			Class<?> controllerClass = context.getControllers().getControllerClass(controller, device);
 			bindImplicityInjectcions(controllerClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
 		}
 	}
@@ -252,28 +253,29 @@ public class IocContainerManager
 	{
 		try
 		{
-			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
-			if (configurations != null)
-			{
-				for (JClassType configurationClassType : configurations)
-				{
-					String configurationClassName = configurationClassType.getQualifiedSourceName();
-					Class<?> configurationClass = Class.forName(configurationClassName);
-					if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
-					{
-						IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
-						if (configuration.isEnabled())
-						{
-							if (logger.isInfoEnabled())
-							{
-								logger.info("Configuring new ioc module ["+configurationClassName+"]...");
-							}
-							configuration.configure();
-						}
-					}
-				}
-			}
-
+//			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
+//			if (configurations != null)
+//			{
+//				for (JClassType configurationClassType : configurations)
+//				{
+//					String configurationClassName = configurationClassType.getQualifiedSourceName();
+//					Class<?> configurationClass = Class.forName(configurationClassName);
+//					if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
+//					{
+//						IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
+//						if (configuration.isEnabled())
+//						{
+//							if (logger.isInfoEnabled())
+//							{
+//								logger.info("Configuring new ioc module ["+configurationClassName+"]...");
+//							}
+//							configuration.configure();
+//						}
+//					}
+//				}
+//			}
+//TODO resolver como fazer esta busca por classes.
+			
 			configureAnnotatedClasses();
 		}
 		catch (Exception e)

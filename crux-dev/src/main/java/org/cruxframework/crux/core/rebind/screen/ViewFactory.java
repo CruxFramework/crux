@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.screen;
  
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.formatter.Formatters;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONArray;
@@ -47,8 +47,8 @@ public class ViewFactory
 {
 	private static final Log logger = LogFactory.getLog(ViewFactory.class);
 	private Map<String, View> cache = new HashMap<String, View>();
-	private ViewProcessor viewProcessor;
 	private RebindContext context;
+	private ViewProcessor viewProcessor;
 	
 	/**
 	 * Default Constructor
@@ -108,10 +108,28 @@ public class ViewFactory
 		}
 	}
 	
-	public List<String> getViews(String viewLocator, String moduleId)
+	/**
+	 * 
+	 * @param id
+	 * @param device
+	 * @param stream
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	public Document getViewDocument(String id, String device, InputStream stream) throws ScreenConfigException
+	{
+		return viewProcessor.getView(stream, id, device);
+	}
+	
+	public List<String> getViews(String viewLocator)
     {
-	    return context.getScreenLoader().getViewLoader().getViews(viewLocator, moduleId);
+	    return context.getScreenLoader().getViewLoader().getViews(viewLocator);
     }
+	
+	protected void generateHTML(String viewId, Document view, OutputStream out)
+	{
+		viewProcessor.generateHTML(viewId, view, out);
+	}
 	
 	/**
 	 * Creates a widget based in its metadata information.
@@ -463,6 +481,8 @@ public class ViewFactory
 	 * @param elem
 	 * @throws ScreenConfigException 
 	 */
+	@Deprecated
+	@Legacy
 	private void parseViewUseFormatterAttribute(View view, JSONObject elem) throws ScreenConfigException
     {
 	    String formatterStr;
@@ -482,7 +502,7 @@ public class ViewFactory
 	    		formatter = formatter.trim();
 	    		if (!StringUtils.isEmpty(formatter))
 	    		{
-	    			if (Formatters.getFormatter(formatter) == null)
+	    			if (context.getFormatters().getFormatter(formatter) == null)
 	    			{
 	    				throw new ScreenConfigException("Formatter ["+formatter+"], declared on view ["+view.getId()+"], not found!");
 	    			}

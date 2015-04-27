@@ -23,9 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.scanner.ClassScanner;
-import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.scanner.Scanners.ScannerRegistrations;
 
 
 /**

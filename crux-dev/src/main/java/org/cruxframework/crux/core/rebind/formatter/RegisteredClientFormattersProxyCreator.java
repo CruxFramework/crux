@@ -112,7 +112,7 @@ public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWra
 	{
 		if (!formattersAdded.containsKey(formatter))
 		{
-			sourceWriter.println("clientFormatters.put(\""+formatter+"\", "+ Formatters.getFormatterInstantionCommand(formatter) +");");
+			sourceWriter.println("clientFormatters.put(\""+formatter+"\", "+ context.getFormatters().getFormatterInstantionCommand(formatter) +");");
 			formattersAdded.put(formatter, true);
 		}
 	}

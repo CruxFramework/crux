@@ -39,10 +39,9 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplateParser;
 import org.cruxframework.crux.core.i18n.MessagesFactory;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AllChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
@@ -64,8 +63,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
-import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.cruxframework.crux.core.utils.ViewUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
@@ -173,7 +170,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
-			Set<String> libraries = WidgetConfig.getRegisteredLibraries();
+			Set<String> libraries = WidgetScanner.getRegisteredLibraries();
 			Set<String> templateLibraries = Templates.getRegisteredLibraries();
 			for (String library : libraries)
 			{
@@ -258,19 +255,14 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
-			CruxBridge.getInstance().setSingleVM(true);
 			ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
 			URL[] urls = ClasspathUrlFinder.findClassPaths();
 			Scanners.setSearchURLs(urls);
-			DevelopmentScanners.initializeScanners();
 			
 			if (webDir == null)
 			{
 				webDir = new File(projectBaseDir, "war/");
 			}
-
-			ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
-			ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
 		}
 		catch (Exception e)
 		{
@@ -982,7 +974,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 		for (String lib : libraries)
 		{
-			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(lib);
+			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(lib);
 			if (factories != null)
 			{
 				for (String factoryID : factories)
@@ -1267,11 +1259,11 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 			generateSchemaImportsForLibrary(library, allLibraries, templateLibraries, out);
 
-			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
+			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
 			for (String id : factories)
 			{
 				Class<? extends WidgetCreator<?>> widgetFactory = (Class<? extends WidgetCreator<?>>) 
-						Class.forName(WidgetConfig.getClientClass(library, id));
+						Class.forName(WidgetScanner.getClientClass(library, id));
 				generateTypeForFactory(out, widgetFactory, library);
 			}
 

@@ -90,11 +90,13 @@ public class TemplatesScanner extends AbstractScanner
 	@Override
 	public ScannerCallback getScannerCallback()
 	{
-	    return new ScannerCallback(){
+	    return new ScannerCallback()
+		{
+			
 			@Override
-            public void onFound(List<ScannerMatch> scanResult)
-            {
-				for (ScannerMatch match : scanResult)
+			public void onFound(List<ScannerMatch> matches)
+			{
+				for (ScannerMatch match : matches)
 				{
 					URL found = match.getMatch();
 					
@@ -117,7 +119,7 @@ public class TemplatesScanner extends AbstractScanner
 					}
 				}
 				Templates.setInitialized();
-            }
+			}
 		};
 	}
 	

@@ -32,10 +32,9 @@ public interface ViewLoader
 	/**
 	 * Return a list with resource paths of all views that matches the given locator
 	 * @param viewsLocator
-	 * @param moduleId
 	 * @return
 	 */
-	List<String> getViews(String viewsLocator, String moduleId);
+	List<String> getViews(String viewsLocator);
 	
 	boolean isValidViewLocator(String useView);
 
@@ -54,7 +53,7 @@ public interface ViewLoader
         }
 
 		@Override
-        public List<String> getViews(String viewsLocator, String moduleId)
+        public List<String> getViews(String viewsLocator)
         {
 	        return null;
         }

@@ -372,7 +372,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
         {
 	        if (!creators.containsKey(widgetType))
 	        {
-	        	String creatorClassName = WidgetConfig.getClientClass(widgetType);
+	        	String creatorClassName = WidgetScanner.getClientClass(widgetType);
 	        	Class<?> widgetCreator = Class.forName(creatorClassName);
 	        	WidgetCreator<?> factory = (WidgetCreator<?>) widgetCreator.newInstance();
 	        	factory.setViewFactory(this);
@@ -1390,7 +1390,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	@Deprecated
 	private void generateGetRegisteredFormattersMethod(SourcePrinter printer)
     {
-    	printer.println("public "+RegisteredClientFormatters.class.getCanonicalName()+"<?> getRegisteredFormatters(){");
+    	printer.println("public "+RegisteredClientFormatters.class.getCanonicalName()+" getRegisteredFormatters(){");
     	printer.println("return this.registeredFormatters;");
     	printer.println("}");
     }

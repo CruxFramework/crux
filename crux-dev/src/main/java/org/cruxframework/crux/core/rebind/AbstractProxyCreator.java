@@ -91,10 +91,19 @@ public abstract class AbstractProxyCreator
 		generateProxyContructor(printer);
 		generateProxyMethods(printer);
 		generateProxyFields(printer);
+		generateProxyResources();
 
 		printer.commit();
 		return className;
 	}
+
+	/**
+	 * 
+	 */
+	protected void generateProxyResources()
+    {
+	    
+    }
 
 	/**
 	 * @param srcWriter

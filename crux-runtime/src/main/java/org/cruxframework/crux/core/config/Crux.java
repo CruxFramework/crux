@@ -24,13 +24,7 @@ public interface Crux
 	
 	@DefaultServerMessage("crux_comp")
 	String cruxCompilationTempFolder();
-	
-	@DefaultServerMessage("")
-	String notifierCompilerAddress();
-	
-	@DefaultServerMessage("9877")
-	String notifierCompilerPort();
-	
+		
 	@DefaultServerMessage("true")
 	String isRelativeCruxCompilationTempFolder();
 	
@@ -43,12 +37,6 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
-	@DefaultServerMessage("org.cruxframework.crux.core.declarativeui.DeclarativeUIScreenResolver")
-	String screenResourceResolver();
-
-	@DefaultServerMessage("org.cruxframework.crux.core.server.classpath.ClassPathResolverImpl")
-	String classPathResolver();
-	
 	@DefaultServerMessage("false")
 	String sendCruxViewNameOnClientRequests();
 
@@ -94,8 +82,6 @@ public interface Crux
 	void setEnableCrux2OldInterfacesCompatibility(Boolean value);
 	void setPreferWebSQLForNativDB(Boolean value);
 	void setEnableCrossDocumentSupport(Boolean value);
-	void setClassPathResolver(String value);
-	void setScreenResourceResolver(String value);
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
 	void setParameterBindGenerator(String value);

@@ -15,20 +15,12 @@
  */
 package org.cruxframework.crux.core.server.development;
 
-import org.cruxframework.crux.core.server.CruxBridge;
 
 public class ViewTesterScreen
 {
 	private static final String CRUX_VIEW_TEST_PAGE = "__CRUX_VIEW_TEST_PAGE__";
 
 
-	/**
-	 * Inform that the view test page was requested on dev mode
-	 */
-	public static void registerTestViewPageRequested(String moduleName)
-    {
-		CruxBridge.getInstance().registerLastPageRequested(getTestViewScreenId(moduleName));
-    }
 	
 	/**
 	 * Retrieve the screen id used to test views on development mode
@@ -43,9 +35,8 @@ public class ViewTesterScreen
 	 * 
 	 * @return
 	 */
-	public static boolean isTestViewScreen()
+	public static boolean isTestViewScreen(String screenID)
 	{
-		String screenID = CruxBridge.getInstance().getLastPageRequested();
 		return (screenID != null && screenID.endsWith(getTestViewScreenSuffix()));
 	}
 	
@@ -59,9 +50,8 @@ public class ViewTesterScreen
 		return moduleName+"/"+CRUX_VIEW_TEST_PAGE;
 	}
 	
-	public static String getModuleForViewTesting()
+	public static String getModuleForViewTesting(String screenID)
 	{
-		String screenID = CruxBridge.getInstance().getLastPageRequested();
 		if (screenID != null && screenID.endsWith(getTestViewScreenSuffix()))
 		{
 			String[] strings = screenID.split("/");
@@ -72,5 +62,4 @@ public class ViewTesterScreen
 		}
 		return null;
 	}
-
 }

@@ -49,8 +49,6 @@ public class JClassScanner
 	
 	public JClassType[] searchClassesByAnnotation(Class<? extends Annotation> annotationClass)
 	{
-		System.out.println("+++++++++++++++++++++++++++++PROFILING+++++++++++++++++++++++++++++");
-		long start = System.currentTimeMillis();
 		List<JClassType> result = new ArrayList<JClassType>(); 
 		for (JClassType type : context.getTypeOracle().getTypes()) 
 		{
@@ -60,8 +58,6 @@ public class JClassScanner
 				result.add(type);
 			}
 		}
-		long end = System.currentTimeMillis();
-		System.out.println("Tempo gasto: "+(end-start)+"ms");
 		return result.toArray(new JClassType[result.size()]);
 	}
 	

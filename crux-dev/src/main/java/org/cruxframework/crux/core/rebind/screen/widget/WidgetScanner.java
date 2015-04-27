@@ -34,14 +34,14 @@ import org.cruxframework.crux.scanner.ClassScanner;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class WidgetConfig 
+public class WidgetScanner 
 {
 	private static Map<String, String> config = null;
 	private static Map<String, String> widgets = null;
 	private static Set<String> widgetContainers = null;
 	private static Set<String> requiresResizeWidgets = null;
 	private static Map<String, Set<String>> registeredLibraries = null;
-	private static final Log logger = LogFactory.getLog(WidgetConfig.class);
+	private static final Log logger = LogFactory.getLog(WidgetScanner.class);
 	private static final Lock lock = new ReentrantLock();
 
 	/**

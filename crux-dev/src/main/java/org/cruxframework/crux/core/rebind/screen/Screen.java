@@ -25,14 +25,12 @@ package org.cruxframework.crux.core.rebind.screen;
 public class Screen 
 {
 	protected String id;
-	protected String relativeId;
 	protected String module;
 	protected View rootView;
 	
-	public Screen(String id, String relativeId, String module, View rootView) 
+	public Screen(String id, String module, View rootView) 
 	{
 		this.id = id;
-		this.relativeId = relativeId;
 		this.module = module;
 		this.rootView = rootView;
 	}
@@ -44,14 +42,6 @@ public class Screen
 	public String getId() 
 	{
 		return id;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getRelativeId()
-	{
-		return relativeId;
 	}
 	
 	/**
