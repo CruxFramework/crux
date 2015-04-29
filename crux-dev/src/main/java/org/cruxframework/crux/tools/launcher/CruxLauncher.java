@@ -17,7 +17,11 @@ package org.cruxframework.crux.tools.launcher;
 
 import java.net.MalformedURLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.Legacy;
+
+import com.google.gwt.dev.DevMode;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -27,6 +31,7 @@ import org.cruxframework.crux.core.client.Legacy;
 @Legacy
 public class CruxLauncher
 {
+	private static final Log log = LogFactory.getLog(CruxLauncher.class);
 	/**
 	 * 
 	 * @param args
@@ -34,6 +39,7 @@ public class CruxLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		com.google.gwt.dev.DevMode.main(args);
+		log.warn("CruxLauncher is deprecated. Use "+DevMode.class.getCanonicalName());
+		DevMode.main(args);
 	}
 }

@@ -20,7 +20,8 @@ import java.net.MalformedURLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.Legacy;
-import org.cruxframework.crux.tools.launcher.CruxLauncher;
+
+import com.google.gwt.dev.DevMode;
 
 
 /**
@@ -39,7 +40,7 @@ public class ModulesLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		log.warn("ModulesLauncher is deprecated. Use "+CruxLauncher.class.getCanonicalName());
-		CruxLauncher.main(args);
+		log.warn("ModulesLauncher is deprecated. Use "+DevMode.class.getCanonicalName());
+		DevMode.main(args);
 	}
 }
