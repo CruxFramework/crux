@@ -121,6 +121,7 @@ public class ScreenFactory
 				Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
 				StreamUtils.safeCloseStream(inputStream);
 				viewFactory.generateHTML(screenId, screenView, stream);
+				StreamUtils.safeCloseStream(stream);
 				context.getGeneratorContext().commitResource(context.getLogger(), stream).setVisibility(Visibility.Private);
 			}
 			catch (Exception e)

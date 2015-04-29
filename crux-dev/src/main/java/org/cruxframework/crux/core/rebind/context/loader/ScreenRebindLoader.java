@@ -26,8 +26,6 @@ import org.cruxframework.crux.core.declarativeui.screen.ScreenException;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 
-import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 
 /**
@@ -40,7 +38,6 @@ public class ScreenRebindLoader implements ScreenLoader
 	private Map<String, String> screens = new HashMap<String, String>();
 	private ViewRebindLoader viewContextLoader;
 	private boolean initialized = false;
-	private List<String> screenFolders;
 
 	public ScreenRebindLoader(GeneratorContext context)
     {
@@ -78,7 +75,7 @@ public class ScreenRebindLoader implements ScreenLoader
 	{
 		if (!initialized)
 		{
-			initializeScreenFolders();
+			List<String> screenFolders = ViewProperties.readPropertyValues(context, ViewProperties.VIEW_BASE_FOLDER);
 			Set<String> pathNames = context.getResourcesOracle().getPathNames();
 
 			for (String pathName : pathNames)
@@ -114,18 +111,4 @@ public class ScreenRebindLoader implements ScreenLoader
 			initialized = true;
 		}
 	}
-
-	private void initializeScreenFolders()
-    {
-	    try
-	    {
-	        ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("screen.base.folder");
-	        screenFolders = property.getValues();
-	    }
-	    catch (BadPropertyValueException e)
-	    {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    }
-    }
 }

@@ -13,8 +13,7 @@
 	<define-linker name="screenLinker" class="org.cruxframework.crux.core.rebind.screen.linker.ScreenLinker"/>
 	<add-linker name="screenLinker"/>
 		
-	<define-configuration-property name="screen.base.folder" is-multi-valued="true" />
-	<define-configuration-property name="screen.output.folder" is-multi-valued="false" />
+	<define-configuration-property name="view.base.folder" is-multi-valued="true" />
 		
 	<!-- Cross-dDevice support -->
 	<!-- Property to identify the device screen features -->

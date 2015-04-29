@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewException;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
+import org.cruxframework.crux.core.utils.FilePatternHandler;
 
 import com.google.gwt.core.ext.GeneratorContext;
 
@@ -37,19 +39,19 @@ public class ViewRebindLoader implements ViewLoader
 	private GeneratorContext context;
 	private boolean initialized = false;
 	private TemplateRebindLoader templateContextLoader;
-	private Map<String, String> views = new HashMap<String, String>();
+	private Map<String, ViewRef> views = new HashMap<String, ViewRef>();
 	
 	public ViewRebindLoader(GeneratorContext context)
     {
 		this.context = context;
 		templateContextLoader = new TemplateRebindLoader(context);
-    }	
+    }
 	
 	@Override
     public TemplateLoader getTemplateLoader()
     {
 		return templateContextLoader;
-    }
+    }	
 	
 	@Override
     public InputStream getView(String id) throws ViewException
@@ -57,11 +59,11 @@ public class ViewRebindLoader implements ViewLoader
 		initialize();
 		if (views.containsKey(id))
 		{
-			return context.getResourcesOracle().getResourceAsStream(views.get(id));
+			return context.getResourcesOracle().getResourceAsStream(views.get(id).fullPath);
 		}
 		return null;
     }
-
+	
 	@Override
     public List<String> getViews(String viewsLocator)
     {
@@ -75,9 +77,9 @@ public class ViewRebindLoader implements ViewLoader
 		{
 			result.add(viewsLocator);
 		}
-		else if (isModuleLocator(viewsLocator))
+		else 
 		{
-			extractModuleViews(viewsLocator, result);
+			finsViews(viewsLocator, result);
 		}
 			
 		return result;
@@ -90,17 +92,15 @@ public class ViewRebindLoader implements ViewLoader
 	    return !isViewName(viewsLocator) || !views.containsKey(viewsLocator);
     }
 
-	private void extractModuleViews(String viewsLocator, List<String> result)
+	private void finsViews(String viewsLocator, List<String> result)
     {
-	    viewsLocator = viewsLocator.substring(1);
-	    int index = viewsLocator.indexOf("/");
-	    String moduleId = viewsLocator.substring(0, index);
-	   
-	    for (String viewPath : views.values())
+		FilePatternHandler filePatternHandler = new FilePatternHandler(viewsLocator, null);
+		
+		for (Entry<String, ViewRef> entry : views.entrySet())
         {
-	        if (viewPath.startsWith(moduleId+"/"))
+	        if (filePatternHandler.isValidEntry(entry.getValue().relativePath))
 	        {
-	        	result.add(viewPath);
+	        	result.add(entry.getKey());
 	        }
         }
     }
@@ -109,6 +109,7 @@ public class ViewRebindLoader implements ViewLoader
 	{
 		if (!initialized)
 		{
+			List<String> screenFolders = ViewProperties.readPropertyValues(context, ViewProperties.VIEW_BASE_FOLDER);
 			Set<String> pathNames = context.getResourcesOracle().getPathNames();
 			
 			for (String pathName : pathNames)
@@ -126,20 +127,38 @@ public class ViewRebindLoader implements ViewLoader
 				
 				if (fileName.endsWith(".view.xml"))
 				{
-					views.put(fileName.substring(0, fileName.length()-9), pathName);
+					for (String baseFolder : screenFolders)
+                    {
+						if (pathName.startsWith(baseFolder))
+						{
+							String relativePathName = pathName.substring(baseFolder.length());
+							if (relativePathName.startsWith("/"))
+							{
+								relativePathName = relativePathName.substring(1);
+							}
+							relativePathName = relativePathName.substring(0,relativePathName.length()-9);
+							views.put(fileName.substring(0, fileName.length()-9), new ViewRef(relativePathName, pathName));
+						}
+                    }
 				}
 			}
 			initialized = true;
 		}
 	}
-	
-	private boolean isModuleLocator(String viewsLocator)
-	{
-		return (viewsLocator != null && viewsLocator.startsWith("/") && viewsLocator.lastIndexOf("/") > 1);
-	}
 
 	private boolean isViewName(String viewsLocator)
 	{
 		return (viewsLocator != null && viewsLocator.matches("[\\w\\.]*"));
+	}
+
+	private static class ViewRef
+	{
+		private String fullPath;
+		private String relativePath;
+		private ViewRef(String relativePath, String fullPath)
+        {
+			this.relativePath = relativePath;
+			this.fullPath = fullPath;
+        }
 	}
 }

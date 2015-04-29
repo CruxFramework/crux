@@ -27,7 +27,6 @@ import com.google.gwt.core.ext.linker.AbstractLinker;
 import com.google.gwt.core.ext.linker.ArtifactSet;
 import com.google.gwt.core.ext.linker.EmittedArtifact;
 import com.google.gwt.core.ext.linker.EmittedArtifact.Visibility;
-import com.google.gwt.core.ext.linker.GeneratedResource;
 import com.google.gwt.core.ext.linker.LinkerOrder;
 import com.google.gwt.core.ext.linker.LinkerOrder.Order;
 import com.google.gwt.core.ext.linker.Shardable;
@@ -36,7 +35,7 @@ import com.google.gwt.core.ext.linker.Shardable;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@LinkerOrder(Order.POST)
+@LinkerOrder(Order.PRE)
 @Shardable
 public class ScreenLinker extends AbstractLinker 
 {
@@ -46,9 +45,9 @@ public class ScreenLinker extends AbstractLinker
 	{
 		if (!onePermutation)
 		{
-			SortedSet<GeneratedResource> resources = artifacts.find(GeneratedResource.class);
+			SortedSet<EmittedArtifact> resources = artifacts.find(EmittedArtifact.class);
 
-			for (GeneratedResource resource : resources)
+			for (EmittedArtifact resource: resources)
 			{
 				if (resource.getVisibility().equals(Visibility.Private) && 
 						resource.getPartialPath().endsWith(".crux.xml"))
@@ -57,7 +56,7 @@ public class ScreenLinker extends AbstractLinker
 					{
 						String resourcePath = resource.getPartialPath().replace(".crux.xml", ".html");
 						String content = StreamUtils.readAsUTF8(resource.getContents(logger));
-						EmittedArtifact manifest = emitString(logger, content, resourcePath);
+						EmittedArtifact manifest = emitString(logger, content, "../"+resourcePath);
 						artifacts.add(manifest);
 					}
 					catch(Exception e)
