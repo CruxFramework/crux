@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
@@ -125,7 +126,15 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 	    out.println(context.dataProvider+".addDataDisplay("+context.getWidget()+");");
 
     	Event event = EventFactory.getEvent("loadDataProvider", dataProviderFactoryMethod);
-    	String controller = getContext().getControllers().getController(event.getController(), getDevice());
+    	String controller;
+        try
+        {
+	        controller = getContext().getControllers().getController(event.getController(), getDevice());
+        }
+        catch (ResourceNotFoundException e)
+        {
+			throw new CruxGeneratorException("Can not found the controller ["+event.getController()+"]. Check your classpath and the inherit modules");
+        }
     	JClassType controllerClass = getContext().getGeneratorContext().getTypeOracle().findType(controller);
 	    JMethod loadDataProviderMethod = JClassUtils.getMethod(controllerClass, event.getMethod(), new JType[]{});
 	    if (loadDataProviderMethod == null)

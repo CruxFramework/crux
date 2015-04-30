@@ -59,7 +59,7 @@ public class ControllerScanner
 	 * @param name
 	 * @return
 	 */
-	public String getController(String name, Device device)
+	public String getController(String name, Device device) throws ResourceNotFoundException
 	{
 		initializeControllers();
 		Map<String, String> map = controllersCanonicalNames.get(name);
@@ -67,6 +67,10 @@ public class ControllerScanner
 		if (result == null && !device.equals(Device.all))
 		{
 			result = map.get(Device.all.toString());
+		}
+		if (result == null)
+		{
+        	throw new ResourceNotFoundException("Can not found requested controller ["+name+"], for device ["+device+"].");
 		}
 		return result;
 	}
@@ -76,16 +80,16 @@ public class ControllerScanner
 	 * @param controller
 	 * @return
 	 */
-	public Class<?> getControllerClass(String controller, Device device)
+	public Class<?> getControllerClass(String controller, Device device) throws ResourceNotFoundException
 	{
 		String result = getController(controller, device);
 		try
         {
 	        return Class.forName(result);
         }
-        catch (ClassNotFoundException e)
+        catch (Exception e)
         {
-	     return null;
+        	throw new ResourceNotFoundException("Can not found requested controller ["+controller+"], for device ["+device+"].");
         }
 	}
 	
@@ -189,7 +193,7 @@ public class ControllerScanner
 	 */
 	private void addResource(JClassType controllerClass, String controllerKey, Device device)
     {
-	    if (!controllersCanonicalNames.containsKey(controllerKey))
+		if (!controllersCanonicalNames.containsKey(controllerKey))
 	    {
 	    	controllersCanonicalNames.put(controllerKey, new HashMap<String, String>());
 	    }

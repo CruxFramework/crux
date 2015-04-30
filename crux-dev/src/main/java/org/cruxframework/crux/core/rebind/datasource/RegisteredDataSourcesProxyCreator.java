@@ -30,6 +30,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.View;
 
@@ -136,7 +137,15 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 		String datasourceClassName = dataSourcesClassNames.get(dataSource);
 		String dsVar = nameFactory.createName("__dat");
 		sourceWriter.println(datasourceClassName+" "+dsVar+"  = new "+datasourceClassName+"(this.view);");
-		JClassType datasourceClass = context.getGeneratorContext().getTypeOracle().findType(context.getDataSources().getDataSource(dataSource, device));
+		JClassType datasourceClass;
+        try
+        {
+	        datasourceClass = context.getGeneratorContext().getTypeOracle().findType(context.getDataSources().getDataSource(dataSource, device));
+        }
+        catch (ResourceNotFoundException e)
+        {
+			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
+        }
 		if (datasourceClass == null)
 		{
 			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
@@ -163,9 +172,9 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 	            String genClass = new DataSourceProxyCreator(context, dataSourceClass).create(); 
 	            dataSourcesClassNames.put(dataSource, genClass);
             }
-            catch (NotFoundException e)
+            catch (NotFoundException | ResourceNotFoundException e)
             {
-            	throw new CruxGeneratorException(e.getMessage(), e);
+            	throw new CruxGeneratorException("Can not generate datasource class", e);
             }
 		}
 	}

@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
@@ -176,9 +177,13 @@ public abstract class EvtProcessor extends AbstractProcessor
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , used on view ["+view.getId()+"], was not declared on this view. Use the useController attribute to import the controller into this view.");
     	}
     	
-    	String controller = context.getControllers().getController(event.getController(), device);
-    	if (controller == null)
-    	{
+    	String controller;
+        try
+        {
+	        controller = context.getControllers().getController(event.getController(), device);
+        }
+        catch (ResourceNotFoundException e)
+        {
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , declared on view ["+view.getId()+"], not found.");
     	}
 
@@ -314,9 +319,13 @@ public abstract class EvtProcessor extends AbstractProcessor
     	{
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , used on view ["+creator.getView().getId()+"], was not declared on this view. Use the useController attribute to import the controller into this view.");
     	}
-    	String controller = creator.getContext().getControllers().getController(event.getController(), creator.getDevice());
-    	if (controller == null)
-    	{
+    	String controller;
+        try
+        {
+	        controller = creator.getContext().getControllers().getController(event.getController(), creator.getDevice());
+        }
+        catch (ResourceNotFoundException e)
+        {
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , declared on view ["+creator.getView().getId()+"], not found.");
     	}
 

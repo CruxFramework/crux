@@ -31,6 +31,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.View;
 
@@ -169,10 +170,6 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		String controllerVar = nameFactory.createName("__cont");
 		sourceWriter.println(controllerClassName+" "+controllerVar+"  = new "+controllerClassName+"(this.view);");
 		JClassType controllerClass = getControllerClass(controller);
-		if (controllerClass == null)
-		{
-			throw new CruxGeneratorException("Can not found the controller ["+controllerClassName+"]. Check your classpath and the inherit modules");
-		}
 		iocContainerRebind.injectFieldsAndMethods(sourceWriter, controllerClass, controllerVar, "iocContainer", view, device);
 		return controllerVar;
 	}
@@ -307,7 +304,14 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
 		assert (typeOracle != null);
 
-		return typeOracle.findType(context.getControllers().getController(controller, device));
+		try
+        {
+	        return typeOracle.findType(context.getControllers().getController(controller, device));
+        }
+        catch (ResourceNotFoundException e)
+        {
+        	throw new CruxGeneratorException("Can not found the controller ["+controller+"]. Check your classpath and the inherit modules", e);
+        }
 	}
 	
 	/**

@@ -62,7 +62,7 @@ public class CodeServerRecompileListener implements JobChangeListener
 			CompileDir dir = compileDir.get(moduleName);
 			try 
 			{
-				FileUtils.copyFilesFromDir(dir.getWarDir(), webDir);
+				FileUtils.copyFilesFromDir(dir.getWarDir(), webDir, "**/index.html", null);
 			} 
 			catch (IOException e) 
 			{

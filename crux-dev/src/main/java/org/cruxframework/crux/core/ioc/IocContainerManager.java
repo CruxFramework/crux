@@ -35,6 +35,7 @@ import org.cruxframework.crux.core.client.ioc.IoCResource.NoClass;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.ClassUtils;
 
@@ -48,13 +49,13 @@ public class IocContainerManager
 {
 	private static final Log logger = LogFactory.getLog(IocContainerManager.class);
 	private RebindContext context;
-	
+
 	public IocContainerManager(RebindContext context)
-    {
+	{
 		this.context = context;
 		initialize();
-    }
-	
+	}
+
 	/**
 	 * 
 	 * @param view
@@ -65,13 +66,13 @@ public class IocContainerManager
 		Map<String, IocConfig<?>> globalConfigurations = IocContainerConfigurations.getConfigurations();
 		Map<String, IocConfig<?>> viewConfigurations = new HashMap<String, IocConfig<?>>();
 		viewConfigurations.putAll(globalConfigurations);
-		
+
 		if (view != null)
 		{
 			bindImplicityInjectcionsForControllers(view, viewConfigurations, device);
 			bindImplicityInjectcionsForDatasources(view, viewConfigurations, device);
 		}
-		
+
 		return viewConfigurations;
 	}
 
@@ -82,17 +83,17 @@ public class IocContainerManager
 	 * @param path
 	 */
 	private void bindImplicityInjectcions(Class<?> type, Set<String> added, Set<String> path, boolean iocRootType, Map<String, IocConfig<?>> configurations)
-    {
-        if (isBindable(type, iocRootType))
-        {
-        	bindImplicityInjectionsForFields(type, added, path, configurations);
-        	bindImplicityInjectionsForMethods(type, added, path, configurations);
-        	if (type.getSuperclass() != null)
-        	{
-        		bindImplicityInjectcions(type.getSuperclass(), added, path, iocRootType, configurations);
-        	}
-        }
-    }
+	{
+		if (isBindable(type, iocRootType))
+		{
+			bindImplicityInjectionsForFields(type, added, path, configurations);
+			bindImplicityInjectionsForMethods(type, added, path, configurations);
+			if (type.getSuperclass() != null)
+			{
+				bindImplicityInjectcions(type.getSuperclass(), added, path, iocRootType, configurations);
+			}
+		}
+	}
 
 	/**
 	 * @param viewConfigurations 
@@ -105,11 +106,19 @@ public class IocContainerManager
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			Class<?> controllerClass = context.getControllers().getControllerClass(controller, device);
+			Class<?> controllerClass;
+            try
+            {
+	            controllerClass = context.getControllers().getControllerClass(controller, device);
+            }
+            catch (ResourceNotFoundException e)
+            {
+    			throw new IoCException("Can not bind controllers.", e);
+            }
 			bindImplicityInjectcions(controllerClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
 		}
 	}
-	
+
 	/**
 	 * @param viewConfigurations 
 	 * @param view 
@@ -120,13 +129,20 @@ public class IocContainerManager
 	private void bindImplicityInjectcionsForDatasources(View view, Map<String, IocConfig<?>> viewConfigurations, Device device)
 	{
 		Iterator<String> datasources = view.iterateDataSources();
-		while (datasources.hasNext())
+		try
 		{
-			Class<?> datasourceClass = context.getDataSources().getDataSourceClass(datasources.next(), device);
-			bindImplicityInjectcions(datasourceClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
+			while (datasources.hasNext())
+			{
+				Class<?> datasourceClass = context.getDataSources().getDataSourceClass(datasources.next(), device);
+				bindImplicityInjectcions(datasourceClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
+			}
+		}
+		catch (ResourceNotFoundException e)
+		{
+			throw new IoCException("Can not bind dataSources.", e);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param type
@@ -135,34 +151,34 @@ public class IocContainerManager
 	 * @param configurations
 	 */
 	private void bindImplicityInjectionsForFields(Class<?> type, Set<String> added, Set<String> path, Map<String, IocConfig<?>> configurations)
-    {
-	    for (Field field : type.getDeclaredFields()) 
-	    {
-	    	String fieldName = field.getName();
-	    	if (!added.contains(fieldName))
-	    	{
-	    		added.add(fieldName);
-	    		Class<?> fieldType = field.getType();
-	    		if (isBindable(fieldType, false))
-	    		{
-	    			Inject inject = field.getAnnotation(Inject.class);
-	    			if (inject != null)
-	    			{
-	    				if (path.contains(fieldType.getCanonicalName()))
-	    				{
-	    					throw new IoCException("IoC Create Looping Error between classes ["+type.getCanonicalName()+"] and ["+fieldType.getCanonicalName()+"].");
-	    				}
-	    				Set<String> fieldPath = new HashSet<String>();
-	    				fieldPath.addAll(path);
-	    				fieldPath.add(fieldType.getCanonicalName());
-	    				bindTypeImplicitly(fieldType, configurations);
-	    				bindImplicityInjectcions(fieldType, new HashSet<String>(), fieldPath, false, configurations);
-	    			}
-	    		}
-	    	}
-	    }
-    }
-	
+	{
+		for (Field field : type.getDeclaredFields()) 
+		{
+			String fieldName = field.getName();
+			if (!added.contains(fieldName))
+			{
+				added.add(fieldName);
+				Class<?> fieldType = field.getType();
+				if (isBindable(fieldType, false))
+				{
+					Inject inject = field.getAnnotation(Inject.class);
+					if (inject != null)
+					{
+						if (path.contains(fieldType.getCanonicalName()))
+						{
+							throw new IoCException("IoC Create Looping Error between classes ["+type.getCanonicalName()+"] and ["+fieldType.getCanonicalName()+"].");
+						}
+						Set<String> fieldPath = new HashSet<String>();
+						fieldPath.addAll(path);
+						fieldPath.add(fieldType.getCanonicalName());
+						bindTypeImplicitly(fieldType, configurations);
+						bindImplicityInjectcions(fieldType, new HashSet<String>(), fieldPath, false, configurations);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * @param type
@@ -171,36 +187,36 @@ public class IocContainerManager
 	 * @param configurations
 	 */
 	private void bindImplicityInjectionsForMethods(Class<?> type, Set<String> added, Set<String> path, Map<String, IocConfig<?>> configurations)
-    {
-	    for (Method method : type.getDeclaredMethods()) 
-	    {
-	    	Inject inject = method.getAnnotation(Inject.class);
-	    	Class<?>[] parameterTypes = method.getParameterTypes();
+	{
+		for (Method method : type.getDeclaredMethods()) 
+		{
+			Inject inject = method.getAnnotation(Inject.class);
+			Class<?>[] parameterTypes = method.getParameterTypes();
 			if (inject != null && !Modifier.isAbstract(method.getModifiers()) && parameterTypes != null && parameterTypes.length > 0)
-	    	{
-		    	if (!added.contains(method.toString()))
-		    	{
-		    		added.add(method.toString());
-		    		for (int i=0; i< parameterTypes.length; i++)
-		    		{
-		    			Class<?> parameterType = parameterTypes[i];
-		    			if (isBindable(parameterType, false))
-		    			{
-		    				if (path.contains(parameterType.getCanonicalName()))
-		    				{
-		    					throw new IoCException("IoC Create Looping Error between classes ["+type.getCanonicalName()+"] and ["+parameterType.getCanonicalName()+"].");
-		    				}
-		    				Set<String> methodPath = new HashSet<String>();
-		    				methodPath.addAll(path);
-		    				methodPath.add(parameterType.getCanonicalName());
-		    				bindTypeImplicitly(parameterType, configurations);
-		    				bindImplicityInjectcions(parameterType, new HashSet<String>(), methodPath, false, configurations);
-		    			}
-		    		}
-		    	}
-	    	}
-	    }
-    }
+			{
+				if (!added.contains(method.toString()))
+				{
+					added.add(method.toString());
+					for (int i=0; i< parameterTypes.length; i++)
+					{
+						Class<?> parameterType = parameterTypes[i];
+						if (isBindable(parameterType, false))
+						{
+							if (path.contains(parameterType.getCanonicalName()))
+							{
+								throw new IoCException("IoC Create Looping Error between classes ["+type.getCanonicalName()+"] and ["+parameterType.getCanonicalName()+"].");
+							}
+							Set<String> methodPath = new HashSet<String>();
+							methodPath.addAll(path);
+							methodPath.add(parameterType.getCanonicalName());
+							bindTypeImplicitly(parameterType, configurations);
+							bindImplicityInjectcions(parameterType, new HashSet<String>(), methodPath, false, configurations);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * 
@@ -219,8 +235,8 @@ public class IocContainerManager
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-    private void configureAnnotatedClasses() throws ClassNotFoundException
-    {
+	private void configureAnnotatedClasses() throws ClassNotFoundException
+	{
 		Map<String, IocConfig<?>> globalConfigurations = IocContainerConfigurations.getConfigurations();
 		JClassType[] configurations =  context.getClassScanner().searchClassesByAnnotation(IoCResource.class);
 		if (configurations != null)
@@ -247,35 +263,35 @@ public class IocContainerManager
 				}
 			}
 		}
-    }
+	}
 
 	private void initialize()
 	{
 		try
 		{
-//			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
-//			if (configurations != null)
-//			{
-//				for (JClassType configurationClassType : configurations)
-//				{
-//					String configurationClassName = configurationClassType.getQualifiedSourceName();
-//					Class<?> configurationClass = Class.forName(configurationClassName);
-//					if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
-//					{
-//						IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
-//						if (configuration.isEnabled())
-//						{
-//							if (logger.isInfoEnabled())
-//							{
-//								logger.info("Configuring new ioc module ["+configurationClassName+"]...");
-//							}
-//							configuration.configure();
-//						}
-//					}
-//				}
-//			}
-//TODO resolver como fazer esta busca por classes.
-			
+			//			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
+			//			if (configurations != null)
+			//			{
+			//				for (JClassType configurationClassType : configurations)
+			//				{
+			//					String configurationClassName = configurationClassType.getQualifiedSourceName();
+			//					Class<?> configurationClass = Class.forName(configurationClassName);
+			//					if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
+			//					{
+			//						IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
+			//						if (configuration.isEnabled())
+			//						{
+			//							if (logger.isInfoEnabled())
+			//							{
+			//								logger.info("Configuring new ioc module ["+configurationClassName+"]...");
+			//							}
+			//							configuration.configure();
+			//						}
+			//					}
+			//				}
+			//			}
+			//TODO resolver como fazer esta busca por classes.
+
 			configureAnnotatedClasses();
 		}
 		catch (Exception e)
@@ -284,24 +300,24 @@ public class IocContainerManager
 		}
 	}
 
-	
+
 	/**
 	 * 
 	 * @param type
 	 * @return
 	 */
 	private static boolean isBindable(Class<?> type, boolean iocRootType)
-    {
-	    boolean bindable = !ClassUtils.isSimpleType(type);
-	    
-	    if (bindable && !iocRootType)
-	    {
-	    	if (type.getAnnotation(Controller.class) != null || type.getAnnotation(DataSource.class) != null)
-	    	{
-	    		bindable = false;
-	    	}
-	    }
-	    
+	{
+		boolean bindable = !ClassUtils.isSimpleType(type);
+
+		if (bindable && !iocRootType)
+		{
+			if (type.getAnnotation(Controller.class) != null || type.getAnnotation(DataSource.class) != null)
+			{
+				bindable = false;
+			}
+		}
+
 		return bindable;
-    }
+	}
 }

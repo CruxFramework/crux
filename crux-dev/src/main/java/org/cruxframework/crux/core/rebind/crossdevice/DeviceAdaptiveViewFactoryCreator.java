@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.widget.ControllerAccessHandler;
@@ -44,7 +45,14 @@ public class DeviceAdaptiveViewFactoryCreator extends ViewFactoryCreator
 	public DeviceAdaptiveViewFactoryCreator(RebindContext context, View view, String device, final String controllerName)
     {
 	    super(context, view, device);
-	    controllerClass = context.getControllers().getController(controllerName, Device.valueOf(device));
+	    try
+        {
+	        controllerClass = context.getControllers().getController(controllerName, Device.valueOf(device));
+        }
+        catch (ResourceNotFoundException e)
+        {
+        	throw new CruxGeneratorException("Error generating cross device widget.", e);
+        }
 		this.controllerAccessHandler = new ControllerAccessHandler(){
 
 			@Override

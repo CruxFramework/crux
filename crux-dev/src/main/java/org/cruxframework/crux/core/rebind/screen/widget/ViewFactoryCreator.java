@@ -54,6 +54,7 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyCreator;
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
@@ -1606,7 +1607,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		public String getControllerImplClassName(String controller, Device device)
         {
-			String controllerClass = controllersScanner.getController(controller, device);
+			String controllerClass;
+            try
+            {
+	            controllerClass = controllersScanner.getController(controller, device);
+            }
+            catch (ResourceNotFoundException e)
+            {
+    			throw new CruxGeneratorException("Can not found the controller ["+controller+"]. Check your classpath and the inherit modules");
+            }
 	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
         }
     }

@@ -29,8 +29,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
-import org.cruxframework.crux.core.rebind.context.scanner.ResourceScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.View;
@@ -221,9 +220,13 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	protected void initializeController(View view)
 	{
 		controllerName = templateParser.getTemplateController(view, baseIntf.getQualifiedSourceName(), device);
-		String controllerClassName = context.getControllers().getController(controllerName, device);
-		if (controllerClassName == null)
-		{
+		String controllerClassName;
+        try
+        {
+	        controllerClassName = context.getControllers().getController(controllerName, device);
+        }
+        catch (ResourceNotFoundException e)
+        {
 			throw new CruxGeneratorException("Error generating invoker. Controller ["+controllerName+"] not found.");
 		}
 		

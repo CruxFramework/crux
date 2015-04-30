@@ -39,7 +39,6 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public class DataSourceScanner 
 {
 	private Map<String, Map<String, String>> dataSourcesCanonicalNames;
-	private Map<String, Map<String, String>> dataSourcesClassNames;
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
@@ -53,7 +52,7 @@ public class DataSourceScanner
 	 * @param name
 	 * @return
 	 */
-	public String getDataSource(String name, Device device)
+	public String getDataSource(String name, Device device) throws ResourceNotFoundException
 	{
 		initializeDataSources();
 		Map<String, String> map = dataSourcesCanonicalNames.get(name);
@@ -61,6 +60,10 @@ public class DataSourceScanner
 		if (result == null && !device.equals(Device.all))
 		{
 			result = map.get(Device.all.toString());
+		}
+		if (result == null)
+		{
+        	throw new ResourceNotFoundException("Can not found requested dataSource ["+name+"], for device ["+device+"].");
 		}
 		return result;
 	}
@@ -70,12 +73,12 @@ public class DataSourceScanner
 	 * @param name
 	 * @return
 	 */
-	public Class<?> getDataSourceClass(String name, Device device)
+	public Class<?> getDataSourceClass(String name, Device device) throws ResourceNotFoundException
 	{
 		initializeDataSources();
 		try
         {
-			Map<String, String> map = dataSourcesClassNames.get(name);
+			Map<String, String> map = dataSourcesCanonicalNames.get(name);
 			String result = map.get(device.toString());
 			if (result == null && !device.equals(Device.all))
 			{
@@ -85,7 +88,7 @@ public class DataSourceScanner
         }
         catch (Exception e)
         {
-        	return null;
+        	throw new ResourceNotFoundException("Can not found requested dataSource ["+name+"], for device ["+device+"].");
         }
 	}
 	
@@ -119,7 +122,6 @@ public class DataSourceScanner
 			try
 			{
 				dataSourcesCanonicalNames = new HashMap<String, Map<String, String>>();
-				dataSourcesClassNames = new HashMap<String, Map<String, String>>();
 				JClassType[] dataSourceTypes;
 				dataSourceTypes = jClassScanner.searchClassesByInterface(DataSource.class.getCanonicalName());
 				if (dataSourceTypes != null)
@@ -176,21 +178,20 @@ public class DataSourceScanner
 	 */
 	private void addResource(JClassType datasourceClass, String datasourceKey, Device device)
     {
-	    if (!dataSourcesCanonicalNames.containsKey(datasourceKey))
-	    {
-	    	dataSourcesCanonicalNames.put(datasourceKey, new HashMap<String, String>());
-	    	dataSourcesClassNames.put(datasourceKey, new HashMap<String, String>());
-	    }
-	    Map<String, String> canonicallCassNamesByDevice = dataSourcesCanonicalNames.get(datasourceKey);
-	    Map<String, String> classNamesByDevice = dataSourcesClassNames.get(datasourceKey);
-	    
-	    String deviceKey = device.toString();
-		if (dataSourcesCanonicalNames.containsKey(deviceKey))
-	    {
-	    	throw new CruxGeneratorException("Duplicated alis for Datasource: ["+datasourceKey+"].");
-	    }
-		canonicallCassNamesByDevice.put(deviceKey, datasourceClass.getQualifiedSourceName());
-		classNamesByDevice.put(deviceKey, datasourceClass.getName());
+		if (!datasourceClass.isAbstract())
+		{
+			if (!dataSourcesCanonicalNames.containsKey(datasourceKey))
+			{
+				dataSourcesCanonicalNames.put(datasourceKey, new HashMap<String, String>());
+			}
+			Map<String, String> canonicallCassNamesByDevice = dataSourcesCanonicalNames.get(datasourceKey);
+			
+			String deviceKey = device.toString();
+			if (dataSourcesCanonicalNames.containsKey(deviceKey))
+			{
+				throw new CruxGeneratorException("Duplicated alis for Datasource: ["+datasourceKey+"].");
+			}
+			canonicallCassNamesByDevice.put(deviceKey, datasourceClass.getQualifiedSourceName());
+		}
     }
-
 }

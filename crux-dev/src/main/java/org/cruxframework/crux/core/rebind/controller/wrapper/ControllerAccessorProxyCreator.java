@@ -24,6 +24,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -59,11 +60,19 @@ public class ControllerAccessorProxyCreator extends AbstractViewBindableProxyCre
 			if (target != null) 
 			{
 				controllerName = target.value();
-				String controller = context.getControllers().getController(controllerName, Device.valueOf(getDeviceFeatures()));
+				String controller;
+                try
+                {
+	                controller = context.getControllers().getController(controllerName, Device.valueOf(getDeviceFeatures()));
+                }
+                catch (ResourceNotFoundException e)
+                {
+                	throw new CruxGeneratorException("Error generating method ["+method.getName()+"] from ControllerAccessor ["+method.getEnclosingType().getQualifiedSourceName()+"]. Can not identify the controller type.");
+                }
 				JClassType controllerType = context.getGeneratorContext().getTypeOracle().findType(controller);
 				if (controllerType == null)
 				{
-					throw new CruxGeneratorException("Error generating method ["+method.getName()+"] from ControllerAccessor ["+method.getEnclosingType().getQualifiedSourceName()+"]. Can not identify the controller type.");
+                	throw new CruxGeneratorException("Error generating method ["+method.getName()+"] from ControllerAccessor ["+method.getEnclosingType().getQualifiedSourceName()+"]. Can not identify the controller type.");
 				}
 				if (!returnTypeClass.isAssignableFrom(controllerType))
 				{

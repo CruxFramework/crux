@@ -39,14 +39,15 @@ public class CodeServer
 {
 	private static final Log logger = LogFactory.getLog(CodeServer.class);
 
-	private String moduleName;
-	private String sourceDir;
-	private boolean noPrecompile = false;
-	private String workDir;
 	private String bindAddress = "localhost";
 	private String launcherDir;
+	private String moduleName;
+	private boolean noPrecompile = false;
 	private int port = getDefaultPort();
+	private CodeServerRecompileListener recompileListener;
+	private String sourceDir;
 	private String webDir;
+	private String workDir;
 
 
 	public String getModuleName()
@@ -54,19 +55,9 @@ public class CodeServer
     	return moduleName;
     }
 
-	public void setModuleName(String moduleName)
-    {
-    	this.moduleName = moduleName;
-    }
-
 	public String getSourceDir()
     {
     	return sourceDir;
-    }
-
-	public void setSourceDir(String sourceDir)
-    {
-    	this.sourceDir = sourceDir;
     }
 
 	public String getWorkDir()
@@ -74,32 +65,66 @@ public class CodeServer
     	return workDir;
     }
 
+	public void setModuleName(String moduleName)
+    {
+    	this.moduleName = moduleName;
+    }
+
+	public void setSourceDir(String sourceDir)
+    {
+    	this.sourceDir = sourceDir;
+    }
+
 	public void setWorkDir(String workDir)
     {
     	this.workDir = workDir;
     }
 	
+	protected ConsoleParametersProcessor createParametersProcessor()
+	{
+		ConsoleParameter parameter;
+		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("CodeServer");
+
+		parameter = new ConsoleParameter("-moduleName", "The name of the module to be compiled.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("name", "Module name"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("-sourceDir", "The application source folder.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dir", "Source dir"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-bindAddress", "The ip address of the code server. Defaults to 127.0.0.1.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("ip", "Ip address"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-noprecompile", "If informed, code server will not pre compile the source.", false, true));
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startJetty", "If informed, starts the default application server (Jetty).", false, true));
+		
+		parameter = new ConsoleParameter("-locale", "The locale used by hotdeployment scanner to recompile the project.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("locale", "locale"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-port", "The port where the code server will run.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-workDir", "The root of the directory tree where the code server will write compiler output. If not supplied, a temporary directory will be used.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dir", "Work dir"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-webDir", "The directory to be updated by code server compiler. If provided, after each code server compilation, this folder will be updated.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dir", "Web dir"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
+		return parametersProcessor;	
+	}
+	
 	protected int getDefaultPort()
 	{
 		return 9876;
-	}
-	
-	protected void runGWTCodeServer(String[] args) throws Exception 
-	{
-		Options options = new Options();
-		if (!options.parseArgs(args)) 
-		{
-			System.exit(1);
-		}
-//		options.addTags("-XnoenforceStrictResources");
-		try 
-		{
-			com.google.gwt.dev.codeserver.CodeServer.main(options);
-		} 
-		catch (Throwable t) 
-		{
-			logger.error("Error running code server", t);
-		}
 	}
 
 	protected String[] getServerParameters()
@@ -196,50 +221,28 @@ public class CodeServer
 	        {
 	        	webDir = parameter.getValue();
 	        	launcherDir = parameter.getValue();
+	        	recompileListener = new CodeServerRecompileListener(webDir);
 	        }
         }
     }
 
-	protected ConsoleParametersProcessor createParametersProcessor()
+	protected void runGWTCodeServer(String[] args) throws Exception 
 	{
-		ConsoleParameter parameter;
-		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("CodeServer");
-
-		parameter = new ConsoleParameter("-moduleName", "The name of the module to be compiled.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("name", "Module name"));
-		parametersProcessor.addSupportedParameter(parameter);
-		
-		parameter = new ConsoleParameter("-sourceDir", "The application source folder.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dir", "Source dir"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-bindAddress", "The ip address of the code server. Defaults to 127.0.0.1.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("ip", "Ip address"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-noprecompile", "If informed, code server will not pre compile the source.", false, true));
-
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startJetty", "If informed, starts the default application server (Jetty).", false, true));
-		
-		parameter = new ConsoleParameter("-locale", "The locale used by hotdeployment scanner to recompile the project.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("locale", "locale"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-port", "The port where the code server will run.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-workDir", "The root of the directory tree where the code server will write compiler output. If not supplied, a temporary directory will be used.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dir", "Work dir"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-webDir", "The directory to be updated by code server compiler. If provided, after each code server compilation, this folder will be updated.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dir", "Web dir"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
-		return parametersProcessor;	
+		Options options = new Options();
+		if (!options.parseArgs(args)) 
+		{
+			System.exit(1);
+		}
+		options.setJobChangeListener(recompileListener);
+//		options.addTags("-XnoenforceStrictResources");
+		try 
+		{
+			com.google.gwt.dev.codeserver.CodeServer.main(options);
+		} 
+		catch (Throwable t) 
+		{
+			logger.error("Error running code server", t);
+		}
 	}	
 	
 	public static void main(String[] args)
