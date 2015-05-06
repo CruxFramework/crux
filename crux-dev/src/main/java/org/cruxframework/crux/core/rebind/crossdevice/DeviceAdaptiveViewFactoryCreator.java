@@ -42,9 +42,9 @@ public class DeviceAdaptiveViewFactoryCreator extends ViewFactoryCreator
 	 * @param device
 	 * @param controllerName
 	 */
-	public DeviceAdaptiveViewFactoryCreator(RebindContext context, View view, String device, final String controllerName)
+	public DeviceAdaptiveViewFactoryCreator(RebindContext context, View view, boolean viewChanged, String device, final String controllerName)
     {
-	    super(context, view, device);
+	    super(context, view, viewChanged, device);
 	    try
         {
 	        controllerClass = context.getControllers().getController(controllerName, Device.valueOf(device));

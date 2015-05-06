@@ -175,19 +175,19 @@ public class FileUtils
 		{
 			for (File file : files)
 			{
-				if (handler == null || handler.isValidEntry(getEntryName(file, inputDirNameLength)))
+				if(!file.isDirectory())
 				{
-					if(!file.isDirectory())
+					if (handler == null || handler.isValidEntry(getEntryName(file, inputDirNameLength)))
 					{
 						File destFile = new File(destDir, file.getName());
 						FileInputStream stream = new FileInputStream(file);
 						write(stream, destFile);
 					}
-					else
-					{
-						File dir = new File(destDir, file.getName());
-						copyFilesFromDir(file, dir, handler, inputDirNameLength);
-					}
+				}
+				else
+				{
+					File dir = new File(destDir, file.getName());
+					copyFilesFromDir(file, dir, handler, inputDirNameLength);
 				}
 			}
 		}

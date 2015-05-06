@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.context.loader;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.dev.resource.Resource;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -46,12 +46,12 @@ public class ScreenRebindLoader implements ScreenLoader
     }
 
 	@Override
-    public InputStream getScreen(String id) throws ScreenException
+    public Resource getScreen(String id) throws ScreenException
     {
 		initialize();
 		if (screens.containsKey(id))
 		{
-			return context.getResourcesOracle().getResourceAsStream(screens.get(id));
+			return context.getResourcesOracle().getResource(screens.get(id));
 		}
 		return null;
     }

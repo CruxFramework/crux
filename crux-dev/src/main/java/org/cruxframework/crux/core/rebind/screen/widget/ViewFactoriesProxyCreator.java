@@ -43,6 +43,7 @@ import org.cruxframework.crux.core.server.Environment;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.core.ext.CachedGeneratorResult;
 import com.google.gwt.core.ext.TreeLogger;
 
 /**
@@ -52,8 +53,13 @@ import com.google.gwt.core.ext.TreeLogger;
  */
 public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
+	private Set<String> changedViews;
 	private Map<String, Set<View>> fragmentedViews = new HashMap<String, Set<View>>();
+	private long lastCompilationTime;
+	private CachedGeneratorResult lastResult;
 	private ScreenFactory screenFactory;
+	private List<View> views;
+	private static Map<String, ViewFactoryCreator> viewFactoryCache = new HashMap<String, ViewFactoryCreator>();
 
 	/**
 	 * @param logger
@@ -66,11 +72,44 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
     }
 	
 	@Override
+	public String create() throws CruxGeneratorException
+	{
+		initializeViews();
+		String className = getProxyQualifiedName();
+	    if (!hasChangedView())
+	    {
+	    	if (findCacheableImplementationAndMarkForReuseIfAvailable())
+	    	{
+	    		return className;
+	    	}
+	    }
+		if (isAlreadyGenerated(className))
+		{
+			return className;
+		}
+		
+		SourcePrinter printer = getSourcePrinter();
+		if (printer == null)
+		{
+			return className;
+		}
+
+		generateSubTypes(printer);
+		generateProxyContructor(printer);
+		generateProxyMethods(printer);
+		generateProxyFields(printer);
+		generateProxyResources();
+
+		printer.commit();
+		return className;
+	}
+	
+	@Override
 	public String getProxySimpleName()
 	{
 	    return super.getProxySimpleName()+"_"+this.getDeviceFeatures();
 	}
-
+	
 	/**
 	 * 
 	 * @param sourceWriter
@@ -88,13 +127,13 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	    sourceWriter.println("callback = CreateCallback.EMPTY_CALLBACK;");
 	    sourceWriter.println("}");
 	    
-	    generateViewCreation(sourceWriter, getViews());
+		generateViewCreation(sourceWriter, views);
 
 	    sourceWriter.println("}");
 
 	    generateFragmentedViewFactoryCreation(sourceWriter);
     }
-
+	
 	/**
 	 * @param sourceWriter
 	 * @param controllerClassNames
@@ -144,15 +183,15 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	    sourceWriter.println("public "+Device.class.getCanonicalName()+" getCurrentDevice(){ ");
 		sourceWriter.println("return "+Device.class.getCanonicalName()+"."+getDeviceFeatures()+";");
 		sourceWriter.println("}");
-    }	
-	
+    }
+
 	@Override
     protected void generateProxyMethods(SourcePrinter sourceWriter) throws CruxGeneratorException
     {
 		generateCreateViewMethod(sourceWriter);
 		generateGetCurrentDeviceMethod(sourceWriter);
     }
-	
+
 	@Override
 	protected void generateProxyResources()
 	{
@@ -164,7 +203,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
         {
 	        throw new CruxGeneratorException("Error generating host pages for crux screens.", e);
         }
-	}
+	}	
 	
 	/**
 	 * @param sourceWriter
@@ -233,7 +272,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		}
 		sourceWriter.println("throw new InterfaceConfigException(\"View [\"+name+\"] was not found. Check if you import it using useView attribute.\");");
 	}
-
+	
 	@Override
 	protected String[] getImports()
 	{
@@ -281,14 +320,16 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 			throw new CruxGeneratorException();
         }
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	protected List<View> getViews()
+	protected void initializeViews()
 	{
-		List<View> views = new ArrayList<View>();
+		initializeLastCompilationVariables();
+		views = new ArrayList<View>();
+		changedViews = new HashSet<String>();
 		if (!Environment.isProduction())
 		{
 			try
@@ -300,6 +341,10 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 					if (innerView != null)
 					{
 						views.add(innerView);
+						if (innerView.getLastModified() >= lastCompilationTime)
+						{
+							changedViews.add(innerView.getId());
+						}
 					}
 				}
 			}
@@ -319,7 +364,6 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 				findViews(screen, views, added);
 			}
 		}
-		return views;
 	}
 	
 	/**
@@ -335,10 +379,15 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		{
 			added.add(rootView.getId());
 			views.add(rootView);
+			if (screen.getLastModified() >= lastCompilationTime)
+			{
+				changedViews.add(rootView.getId());
+			}
+			
 			findViews(rootView, views, added);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param view
@@ -364,6 +413,11 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 						if (innerView != null)
 						{
 							views.add(innerView);
+							if (innerView.getLastModified() >= lastCompilationTime)
+							{
+								changedViews.add(innerView.getId());
+							}
+							
 							findViews(innerView, views, added);
 						}
                     }
@@ -390,7 +444,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		}
 		finally
 		{
-			factoryCreator.prepare(null, null);
+			factoryCreator.prepare(null, true, null);
 		}
     }
 	
@@ -402,21 +456,51 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	{
 		if (Environment.isProduction())
 		{
-			return new ViewFactoryCreator(context, view, getDeviceFeatures());
+			return new ViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures());
 		}
 		else
-		{
-			ViewFactoryCreator factory = view.getFactory();
+		{   
+			ViewFactoryCreator factory = viewFactoryCache.get(view.getId());
 			if (factory == null)
 			{
-				factory = new ViewFactoryCreator(context, view, getDeviceFeatures());
-				view.setFactory(factory);
+				factory = new ViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures());
+				viewFactoryCache.put(view.getId(), factory);
 			}
 			else
 			{
-				factory.prepare(context, getDeviceFeatures());
+				factory.prepare(context, isChanged(view), getDeviceFeatures());
 			}
 			return factory;
 		}
+	}
+
+	private boolean hasChangedView()
+	{
+		return changedViews.size() > 0;
+	}
+	
+	private void initializeLastCompilationVariables()
+	{
+		lastResult = context.getGeneratorContext().getCachedGeneratorResult();
+		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
+		{
+			lastCompilationTime =  -1;
+		}
+		else
+		{
+			try
+			{
+				lastCompilationTime = lastResult.getTimeGenerated();
+			}
+			catch(RuntimeException e)
+			{
+				lastCompilationTime = -1;
+			}
+		}
+	}
+	
+	private boolean isChanged(View view)
+	{
+		return changedViews.contains(view.getId());
 	}
 }

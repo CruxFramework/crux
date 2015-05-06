@@ -15,10 +15,11 @@
  */
 package org.cruxframework.crux.core.declarativeui.view;
 
-import java.io.InputStream;
 import java.util.List;
 
 import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
+
+import com.google.gwt.dev.resource.Resource;
 /**
  * @author Thiago da Rosa de Bustamante
  *
@@ -27,7 +28,7 @@ public interface ViewLoader
 {
 	TemplateLoader getTemplateLoader();
 	
-	InputStream getView(String id) throws ViewException;
+	Resource getView(String id) throws ViewException;
 	
 	/**
 	 * Return a list with resource paths of all views that matches the given locator
@@ -47,7 +48,7 @@ public interface ViewLoader
         }
 
 		@Override
-        public InputStream getView(String id) throws ViewException
+        public Resource getView(String id) throws ViewException
         {
 	        return null;
         }

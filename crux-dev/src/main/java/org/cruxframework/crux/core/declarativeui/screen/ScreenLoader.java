@@ -15,10 +15,11 @@
  */
 package org.cruxframework.crux.core.declarativeui.screen;
 
-import java.io.InputStream;
 import java.util.Set;
 
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
+
+import com.google.gwt.dev.resource.Resource;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -28,7 +29,7 @@ public interface ScreenLoader
 {
 	ViewLoader getViewLoader();
 	
-	InputStream getScreen(String id) throws ScreenException;
+	Resource getScreen(String id) throws ScreenException;
 
 	Set<String> getScreens();
 }

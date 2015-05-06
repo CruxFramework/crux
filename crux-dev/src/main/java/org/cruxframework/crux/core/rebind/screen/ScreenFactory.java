@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.google.gwt.core.ext.linker.EmittedArtifact.Visibility;
+import com.google.gwt.dev.resource.Resource;
 
 
 /**
@@ -74,16 +75,22 @@ public class ScreenFactory
 				return screen;
 			}
 
-			InputStream inputStream = screenLoader.getScreen(id);
+			Resource resource = screenLoader.getScreen(id);
+			if (resource == null)
+			{
+				throw new ScreenConfigException("Error retrieving screen ["+id+"].crux.xml.");
+			}
+			InputStream inputStream = resource.openContents();
 			Document screenView = viewFactory.getViewDocument(id, device, inputStream);
 			StreamUtils.safeCloseStream(inputStream);
 			if (screenView == null)
 			{
 				throw new ScreenConfigException("Screen ["+id+"].crux.xml not found!");
 			}
-			screen = parseScreen(id, device, screenView);
+			screen = parseScreen(id, device, screenView, resource.getLastModified());
 			if(screen != null)
 			{
+				screen.setLastModified(resource.getLastModified());
 				screenCache.put(cacheKey, screen);
 			}
 			return screen;
@@ -117,7 +124,8 @@ public class ScreenFactory
 			try
 			{
 				OutputStream stream = context.getGeneratorContext().tryCreateResource(context.getLogger(), screenId+".crux.xml");
-				InputStream inputStream = screenLoader.getScreen(screenId);
+				Resource resource = screenLoader.getScreen(screenId);
+				InputStream inputStream = resource.openContents();
 				Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
 				StreamUtils.safeCloseStream(inputStream);
 				viewFactory.generateHTML(screenId, screenView, stream);
@@ -140,14 +148,14 @@ public class ScreenFactory
 	 * @throws IOException
 	 * @throws ScreenConfigException 
 	 */
-	private Screen parseScreen(String id, String device, Document screenView) throws IOException, ScreenConfigException
+	private Screen parseScreen(String id, String device, Document screenView, long lastModified) throws IOException, ScreenConfigException
 	{
 		Screen screen = null;
 		String screenModule = getScreenModule(screenView);
 
 		if(screenModule != null)
 		{
-			View rootView = viewFactory.getView(id, device, screenView, true);
+			View rootView = viewFactory.getView(id, device, screenView, lastModified, true);
 
 			screen = new Screen(id, screenModule, rootView);
 		}

@@ -32,7 +32,61 @@ import org.cruxframework.crux.core.server.Environment;
  */
 public class ServiceFactoryImpl implements ServiceFactory 
 {
+	private static boolean initialized = false;
 	private static final Log logger = LogFactory.getLog(ServiceFactoryImpl.class);
+	
+	private FactoryStrategy strategy;
+
+	/**
+	 * This Constructor select the best strategy to use. 
+	 */
+	public ServiceFactoryImpl()
+	{
+		if (Environment.isProduction() || Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanningForDevelopment()))
+		{
+			strategy = new CompileTimeStrategy();
+		}
+		else
+		{
+			strategy = new RuntimeStrategy();
+		}
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.core.server.dispatch.ServiceFactory#getService(java.lang.String)
+	 */
+	public Object getService(String serviceName) 
+	{
+		initialize(null);
+		return strategy.getService(serviceName);
+	}
+
+	/**
+	 * @see org.cruxframework.crux.core.server.dispatch.ServiceFactory#initialize(javax.servlet.ServletContext)
+	 */
+	public void initialize(ServletContext context) 
+	{
+		if (initialized)
+		{
+			return;
+		}
+		if (!strategy.initialize(context))
+		{
+			if (strategy instanceof CompileTimeStrategy)
+			{
+				logger.info("RPC services map not found. Using runtime strategy for services...");
+				strategy = new RuntimeStrategy();
+				strategy.initialize(context);
+			}
+			else
+			{
+				logger.error("Error initializing RPC services.");
+			}
+		}
+		initialized = true;
+
+	}
+	
 	
 	/**
 	 * This class uses a file generated during application compilation to find out which
@@ -78,7 +132,7 @@ public class ServiceFactoryImpl implements ServiceFactory
 		 */
 		boolean initialize(ServletContext context);
 	}
-	
+
 	/**
 	 * This class scan the application classpath to the first class to build a map of 
 	 * interfaces implementations and uses it to find out which
@@ -106,48 +160,6 @@ public class ServiceFactoryImpl implements ServiceFactory
 		public boolean initialize(ServletContext context)
 		{
 			return true;
-		}
-	}
-
-	private FactoryStrategy strategy;
-	
-	
-	/**
-	 * This Constructor select the best strategy to use. 
-	 */
-	public ServiceFactoryImpl()
-	{
-		if (Environment.isProduction() || Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanningForDevelopment()))
-		{
-			strategy = new CompileTimeStrategy();
-		}
-		else
-		{
-			strategy = new RuntimeStrategy();
-		}
-	}
-
-	/**
-	 * @see org.cruxframework.crux.core.server.dispatch.ServiceFactory#getService(java.lang.String)
-	 */
-	public Object getService(String serviceName) 
-	{
-		return strategy.getService(serviceName);
-	}
-
-	/**
-	 * @see org.cruxframework.crux.core.server.dispatch.ServiceFactory#initialize(javax.servlet.ServletContext)
-	 */
-	public void initialize(ServletContext context) 
-	{
-		if (!strategy.initialize(context))
-		{
-			if (strategy instanceof CompileTimeStrategy)
-			{
-				logger.info("Error initializing services. Using runtime strategy for services...");
-				strategy = new RuntimeStrategy();
-				strategy.initialize(context);
-			}
 		}
 	}
 }

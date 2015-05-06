@@ -167,7 +167,6 @@ public class CodeServer
 		}
 		if (moduleName != null && moduleName.length() > 0)
 		{
-//			String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
 			args.add(moduleName);
 		}
 		

@@ -42,7 +42,6 @@ public abstract class AbstractProxyCreator
 {
 	protected RebindContext context;
 	protected boolean cacheable;
-	protected boolean cacheableVersionFound;
 
 	/**
 	 * @param logger
@@ -73,7 +72,6 @@ public abstract class AbstractProxyCreator
 	    {
 	    	if (findCacheableImplementationAndMarkForReuseIfAvailable())
 	    	{
-	    		this.cacheableVersionFound = true;
 	    		return className;
 	    	}
 	    }
@@ -379,11 +377,6 @@ public abstract class AbstractProxyCreator
 	protected boolean isCacheable()
 	{
 		return cacheable;
-	}
-	
-	protected boolean cacheableVersionFound()
-	{
-		return cacheableVersionFound;
 	}
 	
     /**

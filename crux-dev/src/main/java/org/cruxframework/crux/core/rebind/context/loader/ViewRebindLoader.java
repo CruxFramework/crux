@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.context.loader;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.dev.resource.Resource;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -54,12 +54,12 @@ public class ViewRebindLoader implements ViewLoader
     }	
 	
 	@Override
-    public InputStream getView(String id) throws ViewException
+    public Resource getView(String id) throws ViewException
     {
 		initialize();
 		if (views.containsKey(id))
 		{
-			return context.getResourcesOracle().getResourceAsStream(views.get(id).fullPath);
+			return context.getResourcesOracle().getResource(views.get(id).fullPath);
 		}
 		return null;
     }

@@ -37,11 +37,13 @@ import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.w3c.dom.Document;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.ext.CachedGeneratorResult;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.dev.resource.Resource;
 import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -59,11 +61,13 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	private JClassType deviceAdaptiveControllerClass;
 	private JClassType hasHandlersClass;
 	private IocContainerRebind iocContainerRebind;
+	private long lastCompilationTime;
 	private Document template;
 	private CrossDevicesTemplateParser templateParser;
 	private View view;
 	private String viewClassName;
 	private DeviceAdaptiveViewFactoryCreator viewFactoryCreator;
+	private Resource templateResource;
 
 	/**
 	 * 
@@ -73,18 +77,25 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	 */
 	public DeviceAdaptiveProxyCreator(RebindContext context, JClassType baseIntf)
     {
-	    super(context, baseIntf, true);//TODO verificar esse cache
+	    super(context, baseIntf, true);
 
-	    deviceAdaptiveControllerClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptiveController.class.getCanonicalName());
-	    deviceAdaptiveClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptive.class.getCanonicalName());
-	    hasHandlersClass = context.getGeneratorContext().getTypeOracle().findType(HasHandlers.class.getCanonicalName());
-	    
+	    initializeLastCompilationVariables();
 	    initializeTemplateParser();
-		view = templateParser.getTemplateView(template,  baseIntf.getQualifiedSourceName(), device);
-		initializeController(view);
-		viewFactoryCreator = new DeviceAdaptiveViewFactoryCreator(context, view, getDeviceFeatures(), controllerName);
-		viewClassName = viewFactoryCreator.create();
-		iocContainerRebind = new IocContainerRebind(context, view, device.toString());
+    	if ((templateResource.getLastModified() >= lastCompilationTime) || 
+    		!findCacheableImplementationAndMarkForReuseIfAvailable())
+    	{
+    		template = templateParser.getDeviceAdaptiveTemplate(templateResource);
+
+    		deviceAdaptiveControllerClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptiveController.class.getCanonicalName());
+    		deviceAdaptiveClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptive.class.getCanonicalName());
+    		hasHandlersClass = context.getGeneratorContext().getTypeOracle().findType(HasHandlers.class.getCanonicalName());
+
+    		view = templateParser.getTemplateView(template,  baseIntf.getQualifiedSourceName(), templateResource.getLastModified(), device);
+    		initializeController(view);
+    		viewFactoryCreator = new DeviceAdaptiveViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures(), controllerName);
+    		viewClassName = viewFactoryCreator.create();
+    		iocContainerRebind = new IocContainerRebind(context, view, device.toString());
+    	}
     }
 
 	@Override
@@ -92,13 +103,14 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	{
 		return DeviceAdaptiveController.class.getPackage().getName() + "." + getProxySimpleName();
 	}
-	
+
 	@Override
 	public String getProxySimpleName()
 	{
 		String name = super.getProxySimpleName();
 		return name+"_"+getDeviceFeatures();
-	}
+	}	
+	
 	
 	/**
 	 * 
@@ -111,7 +123,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).setBoundWidget(this);");
 		iocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getTypedIocContainer()", view, device);
 	}
-
+	
 	@Override
     protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException
     {
@@ -128,7 +140,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).init();");
 		srcWriter.println("}");
     }
-
+	
 	@Override
     protected void generateProxyFields(SourcePrinter srcWriter) throws CruxGeneratorException
     {
@@ -175,7 +187,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		}
     }
 
-    @Override
+	@Override
     protected String[] getImports()
     {
 	    return new String[]{
@@ -184,7 +196,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	    		GWT.class.getCanonicalName()
 	    };
     }
-	
+
 	/**
 	 * @return a sourceWriter for the proxy class
 	 */
@@ -213,7 +225,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
-	/**
+    /**
 	 * 
 	 * @return
 	 */
@@ -263,17 +275,46 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
         {
 	    	this.device = device;
 	    	templateParser = new CrossDevicesTemplateParser(context, baseIntf, device);
-	    	template = templateParser.getDeviceAdaptiveTemplate();
-	    	if (template == null)
+	    	templateResource = templateParser.getDeviceAdaptiveTemplateResource();
+	    	if (templateResource != null)
 	    	{
-	    		throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
+	    		break;
 	    	}
         }
+	    if (templateResource == null)
+	    {
+	    	throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
+	    }
     }
 
 	protected boolean mustDelegateToController(JMethod method)
     {
 	    JClassType enclosingType = method.getEnclosingType();
 		return (!enclosingType.equals(deviceAdaptiveClass) && !enclosingType.equals(hasHandlersClass));
-    }	
+    }
+	
+	private void initializeLastCompilationVariables()
+	{
+		CachedGeneratorResult lastResult = context.getGeneratorContext().getCachedGeneratorResult();
+		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
+		{
+			lastCompilationTime =  -1;
+		}
+		else
+		{
+			try
+			{
+				lastCompilationTime = lastResult.getTimeGenerated();
+			}
+			catch(RuntimeException e)
+			{
+				lastCompilationTime = -1;
+			}
+		}
+	}
+
+	private boolean isChanged(View view)
+	{
+		return (view.getLastModified() >= lastCompilationTime);
+	}	
 }

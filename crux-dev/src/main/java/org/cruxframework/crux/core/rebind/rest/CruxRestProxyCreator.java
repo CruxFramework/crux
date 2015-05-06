@@ -97,7 +97,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 
 	public CruxRestProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(context, baseIntf, false);
+		super(context, baseIntf, true);
 		callbackType = context.getGeneratorContext().getTypeOracle().findType(Callback.class.getCanonicalName());
 		restProxyType = context.getGeneratorContext().getTypeOracle().findType(RestProxy.class.getCanonicalName());
 		javascriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());

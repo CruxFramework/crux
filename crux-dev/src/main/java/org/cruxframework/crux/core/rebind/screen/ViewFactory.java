@@ -36,6 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
+import com.google.gwt.dev.resource.Resource;
+
 
 /**
  * Creates a representation for Crux views
@@ -74,15 +76,24 @@ public class ViewFactory
 			return cache.get(cacheKey);
 		}
 		
-		InputStream inputStream = context.getScreenLoader().getViewLoader().getView(id);
-		if (inputStream == null)
+		Resource resource = context.getScreenLoader().getViewLoader().getView(id);
+		if (resource == null)
 		{
+			throw new ScreenConfigException("View ["+id+"] not found!");
+		}
+		InputStream inputStream;
+        try
+        {
+	        inputStream = resource.openContents();
+        }
+        catch (IOException e)
+        {
 			throw new ScreenConfigException("View ["+id+"] not found!");
 		}
 		Document viewDoc = viewProcessor.getView(inputStream, id, device);
 		StreamUtils.safeCloseStream(inputStream);
 		
-		View view = getView(id, device, viewDoc, false);
+		View view = getView(id, device, viewDoc, resource.getLastModified(), false);
 		cache.put(cacheKey, view);
 		return view;
 	}
@@ -95,12 +106,14 @@ public class ViewFactory
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public View getView(String id, String device, Document view, boolean rootView) throws ScreenConfigException
+	public View getView(String id, String device, Document view, long lastModified, boolean rootView) throws ScreenConfigException
 	{
 		try 
 		{
 			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
-			return parseView(id, metadata, rootView);
+			View result = parseView(id, metadata, rootView);
+			result.setLastModified(lastModified);
+			return result;
 		} 
 		catch (Exception e) 
 		{

@@ -55,7 +55,7 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 
 	public DatabaseProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(context, baseIntf, false);
+		super(context, baseIntf, true);
 		idxDatabaseImplClass = new IDBDatabaseProxyCreator(context, baseIntf).create();
 		sqlDatabaseImplClass = new SQLDatabaseProxyCreator(context, baseIntf).create();
 	}

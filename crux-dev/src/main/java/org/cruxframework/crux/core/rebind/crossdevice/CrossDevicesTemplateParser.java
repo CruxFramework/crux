@@ -51,49 +51,49 @@ public class CrossDevicesTemplateParser
 	private Device device;
 	private static DocumentBuilder documentBuilder;
 	private static Lock builderLock = new ReentrantLock();
-	
+
 	public CrossDevicesTemplateParser(RebindContext context, JClassType baseIntf, Device device)
-    {
+	{
 		this.context = context;
 		this.baseIntf = baseIntf;
 		this.device = device;
 		this.viewFactory = new ViewFactory(context);
-		
+
 		initializeDocumentBuilder();
-    }
+	}
 
 	private static void initializeDocumentBuilder()
-    {
-	    if (documentBuilder == null)
-	    {
-	    	builderLock.lock();
-	    	try
-	    	{
-	    	    if (documentBuilder == null)
-	    	    {
-	    	    	DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-	    	    	documentBuilderFactory.setNamespaceAware(true);
-	    	    	documentBuilder = documentBuilderFactory.newDocumentBuilder();
-	    	    }
-	    	}
-	    	catch (ParserConfigurationException e)
-	    	{
-	    		throw new CrossDevicesException("Error creating XML Parser.", e);
-	    	}
-	    	finally
-	    	{
-		    	builderLock.unlock();
-	    		
-	    	}
-	    }
-    }
+	{
+		if (documentBuilder == null)
+		{
+			builderLock.lock();
+			try
+			{
+				if (documentBuilder == null)
+				{
+					DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+					documentBuilderFactory.setNamespaceAware(true);
+					documentBuilder = documentBuilderFactory.newDocumentBuilder();
+				}
+			}
+			catch (ParserConfigurationException e)
+			{
+				throw new CrossDevicesException("Error creating XML Parser.", e);
+			}
+			finally
+			{
+				builderLock.unlock();
+
+			}
+		}
+	}
 
 	/**
 	 * 
 	 * @return
 	 */
 	public String getTemplateController(View view, String deviceAdaptive, Device device)
-    {
+	{
 		Iterator<String> controllers = view.iterateControllers();
 		String controllerName = null;
 		if (controllers.hasNext())
@@ -109,83 +109,88 @@ public class CrossDevicesTemplateParser
 			throw new CrossDevicesException("Can not find the controller attribute for deviceAdaptive widget ["+deviceAdaptive+"]. Device ["+device.toString()+"]");
 		}
 		return controllerName;
-    }
-	
+	}
+
 	/**
 	 * 
 	 * @param template
+	 * @param lastModified 
 	 * @param qualifiedSourceName
 	 * @param device
 	 * @return
 	 */
-	public View getTemplateView(Document template, String deviceAdaptive, Device device)
-    {
-	    try
-	    {
-	    	return viewFactory.getView(deviceAdaptive, device.toString(), template, false);
-	    }
-	    catch (Exception e)
-	    {
+	public View getTemplateView(Document template, String deviceAdaptive, long lastModified, Device device)
+	{
+		try
+		{
+			return viewFactory.getView(deviceAdaptive, device.toString(), template, lastModified, false);
+		}
+		catch (Exception e)
+		{
 			throw new CrossDevicesException("Error retrieving metadata from template associated with the deviceAdaptive widget ["+deviceAdaptive+"]. Device ["+device.toString()+"]", e);
-	    }
-    }
+		}
+	}
 
-	public Document getDeviceAdaptiveTemplate()
-    {
+	public Resource getDeviceAdaptiveTemplateResource()
+	{
 		Templates templates = baseIntf.getAnnotation(Templates.class);
 		Template template = getTemplateForDevice(templates);
-		JPackage adaptiveDevicePackage = baseIntf.getPackage();
-		
-		String templateResource = "/"+(adaptiveDevicePackage!=null?adaptiveDevicePackage.getName().replaceAll("\\.", "/"):"")+"/"+template.name()+".xdevice.xml";
-		Resource resource = context.getGeneratorContext().getResourcesOracle().getResource(templateResource);
+		if (template != null)
+		{
+			JPackage adaptiveDevicePackage = baseIntf.getPackage();
+
+			String templateResource = (adaptiveDevicePackage!=null?adaptiveDevicePackage.getName().replaceAll("\\.", "/"):"")+"/"+template.name()+".xdevice.xml";
+			return context.getGeneratorContext().getResourcesOracle().getResource(templateResource);
+		}
+		return null;
+	}
+
+	public Document getDeviceAdaptiveTemplate(Resource resource)
+	{
 		if (resource != null)
 		{
-            try
-            {
-            	InputStream stream = resource.openContents();
-            	try
-            	{
-            		return documentBuilder.parse(stream);
-            	}
-            	finally
-            	{
-            		if (stream != null)
-            		{
-            			try
-            			{
-            				stream.close();
-            			}
-            			catch (IOException e)
-            			{
-            				// do nothing
-            			}
-            		}
-            	}
-            }
-            catch (Exception e)
-            {
-            	return null;
-            }
+			try
+			{
+				InputStream stream = resource.openContents();
+				try
+				{
+					return documentBuilder.parse(stream);
+				}
+				finally
+				{
+					if (stream != null)
+					{
+						try
+						{
+							stream.close();
+						}
+						catch (IOException e)
+						{
+							// do nothing
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
-    	return null;
-    }
+		return null;
+	}
 
 	private Template getTemplateForDevice(Templates templates)
-    {
+	{
 		Template defaultTemplate = null;
-		
+
 		for (Template template : templates.value())
-        {
-	        if (template.device().equals(device))
-	        {
-	        	return template;
-	        }
-	        if (template.device().equals(Device.all))
-	        {
-	        	defaultTemplate = template;
-	        }
-        }
-		
-	    return defaultTemplate;
-    }
+		{
+			if (template.device().equals(device))
+			{
+				return template;
+			}
+		}
+
+		return defaultTemplate;
+	}
 }

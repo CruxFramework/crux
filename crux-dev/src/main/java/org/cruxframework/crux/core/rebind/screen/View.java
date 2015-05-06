@@ -25,7 +25,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,35 +37,35 @@ import com.google.gwt.dev.util.collect.HashSet;
  */
 public class View 
 {
-	protected String id;
-	protected String title;
-	protected String width;
-	protected String height;
-	protected String fragment;
-	protected String smallViewport;
-	protected String largeViewport;
-	protected String dataObject;
-	protected boolean disableRefresh;
-	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
-	protected Set<String> widgetTypes = new HashSet<String>();
-	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected List<String> controllers = new ArrayList<String>();
-	@Deprecated
-	@Legacy
-	protected List<String> serializers = new ArrayList<String>();
-	protected List<String> formatters = new ArrayList<String>();
+	protected String dataObject;
 	@Deprecated
 	@Legacy
 	protected List<String> dataSources = new ArrayList<String>();
-	protected List<String> views = new ArrayList<String>();
+	protected boolean disableRefresh;
+	protected Map<String, Event> events = new HashMap<String, Event>();
+	protected List<String> formatters = new ArrayList<String>();
+	protected String fragment;
+	protected String height;
+	protected String id;
+	protected String largeViewport;
 	protected List<String> resources = new ArrayList<String>();
-	private ViewFactoryCreator factory = null;
-
+	@Deprecated
+	@Legacy
+	protected List<String> serializers = new ArrayList<String>();
+	protected String smallViewport;
+	protected String title;
+	protected List<String> views = new ArrayList<String>();
+	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
+	protected Set<String> widgetTypes = new HashSet<String>();
+	protected String width;
 	private final JSONArray elements;
-	private final JSONObject lazyDependencies;
-	private JSONObject viewElement;
-	private final boolean rootView;
+
 	private final String html;
+	private long lastModified;
+	private final JSONObject lazyDependencies;
+	private final boolean rootView;
+	private JSONObject viewElement;
 	
 	public View(String id, JSONArray elements, JSONObject lazyDependencies, String html, boolean rootView) 
 	{
@@ -82,50 +81,40 @@ public class View
 	}
 
 	/**
-	 * Return DeclarativeFactory associated to the given id
-	 * @param widgetId
+	 * DataObject bound to this view.
 	 * @return
 	 */
-	public Widget getWidget(String widgetId)
-	{
-		if (widgetId == null) return null;
-		return widgets.get(widgetId);
-	}
-
-	/**
-	 * Return a Set containing all types of widgets found on this view
-	 * @return
-	 */
-	public Set<String> getWidgetTypesIncluded()
-	{
-		return widgetTypes;
-	}
-	
-	/**
-	 * Iterate over widgets
-	 * @return
-	 */
-	public Iterator<Widget> iterateWidgets() 
-	{
-		return widgets.values().iterator();
-	}
-
-	/**
-	 * Retrieve the view width
-	 * @return
-	 */
-	public String getWidth()
+	public String getDataObject()
     {
-    	return width;
+    	return dataObject;
     }
 
 	/**
-	 * Set the view width
-	 * @param width
+	 * Return the elements metadata
+	 * @return
 	 */
-	public void setWidth(String width)
+	public JSONArray getElements()
     {
-    	this.width = width;
+    	return elements;
+    }
+	
+	/**
+	 * Return a event associated with the given id
+	 * @param evtId
+	 * @return
+	 */
+	public Event getEvent(String evtId)
+	{
+		return events.get(evtId);
+	}
+
+	/**
+	 * Fragment name, used for code spliting
+	 * @return
+	 */
+	public String getFragment()
+    {
+	    return this.fragment;
     }
 
 	/**
@@ -138,6 +127,195 @@ public class View
     }
 
 	/**
+	 * 
+	 * @return
+	 */
+	public String getHtml()
+	{
+		return html;
+	}
+
+	/**
+	 * Return view identifier
+	 * @return
+	 */
+	public String getId() 
+	{
+		return id;
+	}
+
+	/**
+	 * Viewport for large devices
+	 * 
+	 * @return
+	 */
+	public String getLargeViewport()
+    {
+    	return largeViewport;
+    }
+	
+	public long getLastModified()
+	{
+		return lastModified;
+	}
+	
+	/**
+	 * Return the lazy dependencies metadata
+	 * @return
+	 */
+	public JSONObject getLazyDependencies()
+	{
+		return lazyDependencies;
+	}
+	
+	/**
+	 * Viewport for small devices
+	 * 
+	 * @return
+	 */
+	public String getSmallViewport()
+    {
+    	return smallViewport;
+    }
+
+	/**
+	 * Return the view title
+	 * @return
+	 */
+	public String getTitle()
+	{
+		return title;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSONObject getViewElement()
+    {
+    	return viewElement;
+    }
+
+	/**
+	 * Return DeclarativeFactory associated to the given id
+	 * @param widgetId
+	 * @return
+	 */
+	public Widget getWidget(String widgetId)
+	{
+		if (widgetId == null) return null;
+		return widgets.get(widgetId);
+	}
+	
+	/**
+	 * Return a Set containing all types of widgets found on this view
+	 * @return
+	 */
+	public Set<String> getWidgetTypesIncluded()
+	{
+		return widgetTypes;
+	}
+	
+	/**
+	 * Retrieve the view width
+	 * @return
+	 */
+	public String getWidth()
+    {
+    	return width;
+    }
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isDisableRefresh()
+    {
+    	return disableRefresh;
+    }
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isRootView()
+	{
+		return rootView;
+	}
+	
+	/**
+	 * Iterate over view controllers
+	 * @return
+	 */
+	public Iterator<String> iterateControllers()
+	{
+		return controllers.iterator();
+	}
+	
+	/**
+	 * Iterate over view dataSources
+	 * @return
+	 */
+	public Iterator<String> iterateDataSources()
+	{
+		return dataSources.iterator();
+	}
+	
+	/**
+	 * Iterate over view events
+	 * @return
+	 */
+	public Iterator<Event> iterateEvents()
+	{
+		return events.values().iterator();
+	}
+	
+	/**
+	 * Iterate over view formatters
+	 * @return
+	 */
+	public Iterator<String> iterateFormatters()
+	{
+		return formatters.iterator();
+	}
+	
+	/**
+	 * Iterate over view resources
+	 * @return
+	 */
+	public Iterator<String> iterateResources()
+	{
+		return resources.iterator();
+	}	
+
+	/**
+	 * Iterate over view serializers
+	 * @return
+	 */
+	public Iterator<String> iterateSerializers()
+	{
+		return serializers.iterator();
+	}
+	
+	/**
+	 * Iterate over screen views
+	 * @return
+	 */
+	public Iterator<String> iterateViews()
+	{
+		return views.iterator();
+	}
+
+	/**
+	 * Iterate over widgets
+	 * @return
+	 */
+	public Iterator<Widget> iterateWidgets() 
+	{
+		return widgets.values().iterator();
+	}
+	
+	/**
 	 * Set the view height
 	 * @param height
 	 */
@@ -146,6 +324,148 @@ public class View
     	this.height = height;
     }
 
+	/**
+	 * Sets the view title
+	 * @param title
+	 */
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
+	/**
+	 * Set the view width
+	 * @param width
+	 */
+	public void setWidth(String width)
+    {
+    	this.width = width;
+    }
+
+	/**
+	 * 
+	 * @param controller
+	 * @return
+	 */
+	public boolean useController(String controller)
+	{
+		return controllers.contains(controller);
+	}
+
+	/**
+	 * 
+	 * @param datasource
+	 * @return
+	 */
+	public boolean useDataSource(String datasource)
+	{
+		return dataSources.contains(datasource);
+	}
+
+	/**
+	 * 
+	 * @param formatter
+	 * @return
+	 */
+	public boolean useFormatter(String formatter)
+	{
+		return formatters.contains(formatter);
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public boolean useResource(String resource)
+	{
+		return resources.contains(resource);
+	}
+
+	/**
+	 * Import a controller into view
+	 * @param event
+	 */
+	protected void addController(String controller)
+	{
+		if (!StringUtils.isEmpty(controller))
+		{
+			controllers.add(controller);
+		}
+	}
+
+	/**
+	 * Import a dataSource into view
+	 * @param event
+	 */
+	protected void addDataSource(String dataSource)
+	{
+		if (!StringUtils.isEmpty(dataSource))
+		{
+			dataSources.add(dataSource);
+		}
+	}
+
+	/**
+	 * Add a new event to view
+	 * @param event
+	 */
+	protected void addEvent(Event event)
+	{
+		if (event != null)
+		{
+			events.put(event.getId(), event);
+		}
+	}
+
+	/**
+	 * Import a formatter into view
+	 * @param event
+	 */
+	protected void addFormatter(String formatter)
+	{
+		if (!StringUtils.isEmpty(formatter))
+		{
+			formatters.add(formatter);
+		}
+	}
+
+	/**
+	 * Import a resources into view
+	 * @param event
+	 */
+	protected void addResource(String resource)
+	{
+		if (!StringUtils.isEmpty(resource))
+		{
+			resources.add(resource);
+		}
+	}
+
+	/**
+	 * Import a serializer for a CruxSerializable into view
+	 * @param event
+	 */
+	protected void addSerializer(String serializer)
+	{
+		if (!StringUtils.isEmpty(serializer))
+		{
+			serializers.add(serializer);
+		}
+	}
+
+	/**
+	 * Import a view into screen
+	 * @param event
+	 */
+	protected void addView(String view)
+	{
+		if (!StringUtils.isEmpty(view))
+		{
+			views.add(view); 
+		}
+	}
+	
 	/**
 	 * Add a new widget to view
 	 * @param widget
@@ -161,255 +481,7 @@ public class View
 			}
 		}
 	}
-
-	/**
-	 * Return view identifier
-	 * @return
-	 */
-	public String getId() 
-	{
-		return id;
-	}
 	
-	/**
-	 * Add a new event to view
-	 * @param event
-	 */
-	protected void addEvent(Event event)
-	{
-		if (event != null)
-		{
-			events.put(event.getId(), event);
-		}
-	}
-	
-	/**
-	 * Return a event associated with the given id
-	 * @param evtId
-	 * @return
-	 */
-	public Event getEvent(String evtId)
-	{
-		return events.get(evtId);
-	}
-	
-	/**
-	 * Iterate over view events
-	 * @return
-	 */
-	public Iterator<Event> iterateEvents()
-	{
-		return events.values().iterator();
-	}
-
-	/**
-	 * Import a controller into view
-	 * @param event
-	 */
-	protected void addController(String controller)
-	{
-		if (!StringUtils.isEmpty(controller))
-		{
-			controllers.add(controller);
-		}
-	}
-	
-	/**
-	 * Iterate over view controllers
-	 * @return
-	 */
-	public Iterator<String> iterateControllers()
-	{
-		return controllers.iterator();
-	}
-
-	/**
-	 * 
-	 * @param controller
-	 * @return
-	 */
-	public boolean useController(String controller)
-	{
-		return controllers.contains(controller);
-	}
-	
-	/**
-	 * Import a resources into view
-	 * @param event
-	 */
-	protected void addResource(String resource)
-	{
-		if (!StringUtils.isEmpty(resource))
-		{
-			resources.add(resource);
-		}
-	}
-	
-	/**
-	 * Iterate over view resources
-	 * @return
-	 */
-	public Iterator<String> iterateResources()
-	{
-		return resources.iterator();
-	}
-
-	/**
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	public boolean useResource(String resource)
-	{
-		return resources.contains(resource);
-	}
-	
-	/**
-	 * 
-	 * @param datasource
-	 * @return
-	 */
-	public boolean useDataSource(String datasource)
-	{
-		return dataSources.contains(datasource);
-	}
-	
-	/**
-	 * 
-	 * @param formatter
-	 * @return
-	 */
-	public boolean useFormatter(String formatter)
-	{
-		return formatters.contains(formatter);
-	}
-	
-	/**
-	 * Import a serializer for a CruxSerializable into view
-	 * @param event
-	 */
-	protected void addSerializer(String serializer)
-	{
-		if (!StringUtils.isEmpty(serializer))
-		{
-			serializers.add(serializer);
-		}
-	}
-	
-	/**
-	 * Iterate over view serializers
-	 * @return
-	 */
-	public Iterator<String> iterateSerializers()
-	{
-		return serializers.iterator();
-	}
-	
-	/**
-	 * Import a formatter into view
-	 * @param event
-	 */
-	protected void addFormatter(String formatter)
-	{
-		if (!StringUtils.isEmpty(formatter))
-		{
-			formatters.add(formatter);
-		}
-	}
-	
-	/**
-	 * Iterate over view formatters
-	 * @return
-	 */
-	public Iterator<String> iterateFormatters()
-	{
-		return formatters.iterator();
-	}	
-
-	/**
-	 * Import a dataSource into view
-	 * @param event
-	 */
-	protected void addDataSource(String dataSource)
-	{
-		if (!StringUtils.isEmpty(dataSource))
-		{
-			dataSources.add(dataSource);
-		}
-	}
-	
-	/**
-	 * Iterate over view dataSources
-	 * @return
-	 */
-	public Iterator<String> iterateDataSources()
-	{
-		return dataSources.iterator();
-	}
-
-	/**
-	 * Return the elements metadata
-	 * @return
-	 */
-	public JSONArray getElements()
-    {
-    	return elements;
-    }
-	
-	/**
-	 * Return the lazy dependencies metadata
-	 * @return
-	 */
-	public JSONObject getLazyDependencies()
-	{
-		return lazyDependencies;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public ViewFactoryCreator getFactory() 
-	{
-		return factory;
-	}
-
-	/**
-	 * 
-	 * @param factory
-	 */
-	public void setFactory(ViewFactoryCreator factory) 
-	{
-		this.factory = factory;
-	}
-
-	/**
-	 * Fragment name, used for code spliting
-	 * @return
-	 */
-	public String getFragment()
-    {
-	    return this.fragment;
-    }
-
-	/**
-	 * Fragment name, used for code spliting
-	 * @param fragment
-	 */
-	protected void setFragment(String fragment)
-    {
-    	this.fragment = fragment;
-    }
-
-	/**
-	 * DataObject bound to this view.
-	 * @return
-	 */
-	public String getDataObject()
-    {
-    	return dataObject;
-    }
-
 	/**
 	 * DataObject bound to this view.
 	 * @param dataObject
@@ -420,34 +492,6 @@ public class View
     }
 
 	/**
-	 * Viewport for small devices
-	 * 
-	 * @return
-	 */
-	public String getSmallViewport()
-    {
-    	return smallViewport;
-    }
-
-	/**
-	 * Viewport for small devices
-	 * @param smallViewport
-	 */
-	protected void setSmallViewport(String smallViewport)
-    {
-    	this.smallViewport = smallViewport;
-    }
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isDisableRefresh()
-    {
-    	return disableRefresh;
-    }
-
-	/**
 	 * 
 	 * @param disableRefresh
 	 */
@@ -455,15 +499,14 @@ public class View
     {
     	this.disableRefresh = disableRefresh;
     }
-
+	
 	/**
-	 * Viewport for large devices
-	 * 
-	 * @return
+	 * Fragment name, used for code spliting
+	 * @param fragment
 	 */
-	public String getLargeViewport()
+	protected void setFragment(String fragment)
     {
-    	return largeViewport;
+    	this.fragment = fragment;
     }
 
 	/**
@@ -476,71 +519,19 @@ public class View
     }
 
 	/**
-	 * Return the view title
-	 * @return
+	 * Viewport for small devices
+	 * @param smallViewport
 	 */
-	public String getTitle()
-	{
-		return title;
-	}
-
-	/**
-	 * Sets the view title
-	 * @param title
-	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
-	
-	/**
-	 * Import a view into screen
-	 * @param event
-	 */
-	protected void addView(String view)
-	{
-		if (!StringUtils.isEmpty(view))
-		{
-			views.add(view); 
-		}
-	}
-	
-	/**
-	 * Iterate over screen views
-	 * @return
-	 */
-	public Iterator<String> iterateViews()
-	{
-		return views.iterator();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isRootView()
-	{
-		return rootView;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String getHtml()
-	{
-		return html;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public JSONObject getViewElement()
+	protected void setSmallViewport(String smallViewport)
     {
-    	return viewElement;
+    	this.smallViewport = smallViewport;
     }
 
+	void setLastModified(long lastModified)
+    {
+		this.lastModified = lastModified;
+    }
+	
 	/**
 	 * 
 	 * @param viewElement
