@@ -36,7 +36,7 @@ import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
@@ -66,20 +66,20 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 public class ViewParser
 {
 	public static final String CRUX_VIEW_PREFIX = "_crux_view_prefix_";
+	private static Set<String> attachableWidgets;
+	private static final String CRUX_CORE_NAMESPACE= "http://www.cruxframework.org/crux";
 	private static final String CRUX_CORE_SCREEN = "screen";
 	private static final String CRUX_CORE_SPLASH_SCREEN = "splashScreen";
-	private static final String CRUX_CORE_NAMESPACE= "http://www.cruxframework.org/crux";
 	private static DocumentBuilder documentBuilder;
 	private static XPathExpression findCruxPagesBodyExpression;
-	private static XPathExpression findHTMLHeadExpression;
 	private static XPathExpression findCruxSplashScreenExpression;
+	private static XPathExpression findHTMLHeadExpression;
+	private static Set<String> hasInnerHTMLWidgetTags;
 	private static Set<String> htmlPanelContainers;
-	private static final Log log = LogFactory.getLog(ViewProcessor.class);
+	private static final Log log = LogFactory.getLog(ViewParser.class);
 	private static Map<String, String> referenceWidgetsList;
 	private static final String WIDGETS_NAMESPACE_PREFIX= "http://www.cruxframework.org/crux/";
 	private static Set<String> widgetsSubTags;
-	private static Set<String> hasInnerHTMLWidgetTags;
-	private static Set<String> attachableWidgets;
 	private static final String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
 	
 	static 
@@ -106,13 +106,13 @@ public class ViewParser
         }
 	}
 	
-	private final boolean escapeXML;
-	private final boolean indentOutput;
+	private Document cruxPageDocument;
 	private String cruxTagName;
+	private final boolean escapeXML;
+	private Document htmlDocument;
+	private final boolean indentOutput;
 	private int jsIndentationLvl;
 	private final String viewId;
-	private Document htmlDocument;
-	private Document cruxPageDocument;
 	private final boolean xhtmlInput;
 
 	/**
@@ -131,137 +131,6 @@ public class ViewParser
 		this.indentOutput = indentOutput;
 		this.xhtmlInput = xhtmlInput;
     }
-	
-	/**
-	 * That method maps all widgets that needs special handling from Crux.
-	 * Panels that can contain HTML mixed with widgets as contents (like {@link HTMLPanel}) and widgets 
-	 * that must not be attached to DOM must be handled	differentially. 
-	 *    
-	 * @return
-	 * @throws ViewParserException 
-	 */
-	private static void generateSpecialWidgetsList() throws ViewParserException
-	{
-		htmlPanelContainers = new HashSet<String>();
-		attachableWidgets = new HashSet<String>();
-		Set<String> registeredLibraries = WidgetConfig.getRegisteredLibraries();
-		for (String library : registeredLibraries)
-		{
-			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
-			for (String widget : factories)
-			{
-				try
-				{
-					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
-					DeclarativeFactory factory = clientClass.getAnnotation(DeclarativeFactory.class);
-					if (factory.htmlContainer())
-					{
-						htmlPanelContainers.add(library+"_"+widget);				
-					}
-					if (factory.attachToDOM())
-					{
-						attachableWidgets.add(library+"_"+widget);				
-					}
-				}
-				catch (Exception e)
-				{
-					throw new ViewParserException("Error creating XSD File: Error generating widgets reference list.", e);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Some widgets can define tags with custom names that has its type as other widget. It can be handled properly
-	 * and those situations are mapped by this method. 
-	 * 
-	 * @return
-	 * @throws ViewParserException 
-	 */
-	private static void generateReferenceWidgetsList() throws ViewParserException
-	{
-		referenceWidgetsList = new HashMap<String, String>();
-		widgetsSubTags = new HashSet<String>();
-		hasInnerHTMLWidgetTags = new HashSet<String>();
-		Set<String> registeredLibraries = WidgetConfig.getRegisteredLibraries();
-		for (String library : registeredLibraries)
-		{
-			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
-			for (String widget : factories)
-			{
-				try
-				{
-					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
-					generateReferenceWidgetsListFromTagChildren(clientClass.getAnnotation(TagChildren.class), 
-																		library, widget, new HashSet<String>());
-				}
-				catch (Exception e)
-				{
-					throw new ViewParserException("Error creating XSD File: Error generating widgets reference list.", e);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param widgetList 
-	 * @param tagChildren
-	 * @param parentLibrary
-	 * @throws ViewParserException 
-	 */
-	private static void generateReferenceWidgetsListFromTagChildren(TagChildren tagChildren, 
-																    String parentLibrary, String parentWidget, Set<String> added) throws ViewParserException
-	{
-		if (tagChildren != null)
-		{
-			String parentPath;
-			for (TagChild child : tagChildren.value())
-			{
-				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
-				if (!added.contains(processorClass.getCanonicalName()))
-				{
-					parentPath = parentWidget;
-					added.add(processorClass.getCanonicalName());
-					TagConstraints childAttributes = ViewUtils.getChildTagConstraintsAnnotation(processorClass);
-					if (childAttributes!= null)
-					{
-						if (!StringUtils.isEmpty(childAttributes.tagName()))
-						{
-							parentPath = parentWidget+"_"+childAttributes.tagName();
-							if (WidgetCreator.class.isAssignableFrom(childAttributes.type()))
-							{
-								DeclarativeFactory declarativeFactory = childAttributes.type().getAnnotation(DeclarativeFactory.class);
-								if (declarativeFactory != null)
-								{
-									referenceWidgetsList.put(parentLibrary+"_"+parentPath,
-											declarativeFactory.library()+"_"+declarativeFactory.id());
-								}
-							}
-							else
-							{
-								widgetsSubTags.add(parentLibrary+"_"+parentPath);							
-							}
-						}
-						if (HTMLTag.class.isAssignableFrom(childAttributes.type()))
-						{
-							hasInnerHTMLWidgetTags.add(parentLibrary+"_"+parentPath);
-						}
-					}
-					
-					try
-					{
-						generateReferenceWidgetsListFromTagChildren(processorClass.getAnnotation(TagChildren.class), 
-																	parentLibrary, parentPath, added);
-					}
-					catch (Exception e)
-					{
-						throw new ViewParserException("Error creating XSD File: Error generating widgets list.", e);
-					}
-				}
-			}
-		}				
-	}
 	
 	/**Extract the view metadata form the current document
 	 * @param element
@@ -328,172 +197,24 @@ public class ViewParser
         	throw new ViewParserException(e.getMessage(), e);
         }
 	}
-
-	/**
-	 * @param cruxPageScreen
-	 * @param cruxArrayMetaData
-	 * @throws ViewParserException 
-	 */
-	private void generateCruxScreenMetaData(Element cruxPageScreen, StringBuilder cruxArrayMetaData) throws ViewParserException
-    {
-		generateCruxMetadataForView(cruxPageScreen, cruxArrayMetaData, xhtmlInput);		
-    }
-
-	/**
-	 * 
-	 * @param htmlElement
-	 * @param elementsMetadata
-	 * @throws ViewParserException
-	 */
-	private void generateCruxMetadataForView(Element htmlElement, StringBuilder elementsMetadata) throws ViewParserException
-    {
-		generateCruxMetadataForView(htmlElement, elementsMetadata, !xhtmlInput);		
-    }
-
-	/**
-	 * 
-	 * @param cruxPageScreen
-	 * @param cruxArrayMetaData
-	 * @param generateViewTag
-	 * @throws ViewParserException
-	 */
-	private void generateCruxMetadataForView(Element cruxPageScreen, StringBuilder cruxArrayMetaData, boolean generateViewTag) throws ViewParserException
-    {
-	    writeIndentationSpaces(cruxArrayMetaData);
-		if (generateViewTag)
-		{
-			cruxArrayMetaData.append("{");
-			cruxArrayMetaData.append("\"_type\":\"screen\"");
-			
-			generateCruxMetaDataAttributes(cruxPageScreen, cruxArrayMetaData);
-			
-			cruxArrayMetaData.append("}");
-		}
-		StringBuilder childrenMetaData = new StringBuilder();
-		generateCruxMetaData(cruxPageScreen, childrenMetaData);
-		
-		if (childrenMetaData.length() > 0)
-		{
-			if (generateViewTag)
-			{
-				cruxArrayMetaData.append(",");
-			}
-			cruxArrayMetaData.append(childrenMetaData);
-		}
-    }
-
-	/**
-	 * @param viewId 
-	 * @throws ViewParserException 
-	 */
-	private void translateHTMLHostDocument() throws ViewParserException
-    {
-		Element htmlHeadElement = getPageHeadElement(htmlDocument);
-		Element htmlBodyElement = getPageBodyElement(htmlDocument);
-		Element cruxHeadElement = getPageHeadElement(cruxPageDocument);
-		
-		clearCurrentWidget();
-		translateDocument(cruxHeadElement, htmlHeadElement, true);
-		clearCurrentWidget();
-		
-		generateCruxMetaDataElement(htmlBodyElement);
-		generateCruxModuleElement(htmlBodyElement);
-		handleCruxSplashScreen();
-    }
 	
 	/**
-	 * 
-	 * @param htmlBodyElement
-	 * @throws ViewParserException
-	 */
-	private void generateCruxModuleElement(Element htmlBodyElement) throws ViewParserException
-    {
-		Element child = getScreenModule(cruxPageDocument);
-		if (child == null)
-		{
-			throw new ViewParserException("No module declared on screen ["+viewId+"].");
-		}
-		Node htmlChild = htmlDocument.importNode(child, false);
-		htmlBodyElement.appendChild(htmlChild);
-    }
-
-	/**
-	 * 
-	 * @param source
+	 * @param tagName
 	 * @return
-	 * @throws ViewParserException
 	 */
-	private Element getScreenModule(Document source) throws ViewParserException 
+	private boolean allowInnerHTML(String tagName)
 	{
-		Element result = null;
-		NodeList nodeList = source.getElementsByTagName("script");
-		int length = nodeList.getLength();
-		for (int i = 0; i < length; i++)
-		{
-			Element item = (Element) nodeList.item(i);
-			
-			String src = item.getAttribute("src");
-			
-			if (src != null && src.endsWith(".nocache.js"))
-			{
-				if (result != null)
-				{
-					throw new ViewParserException("Multiple modules in the same html page is not allowed in CRUX.");
-				}
-				result = item;
-			}
-		}
-		return result;
-	}	
-	
-	/**
-	 * 
-	 * @throws ViewParserException
-	 */
-	private void handleCruxSplashScreen() throws ViewParserException
-    {
-		try
-        {
-	        NodeList splashScreenNodes = (NodeList)findCruxSplashScreenExpression.evaluate(cruxPageDocument, XPathConstants.NODESET);
-	        if (splashScreenNodes.getLength() > 0)
-	        {
-	        	if (splashScreenNodes.getLength() > 1)
-	        	{
-	            	throw new ViewParserException("The view ["+this.viewId+"] declares more than one splashScreen. Only one is allowed.");
-	        	}
-	        	Element splashScreen = (Element)splashScreenNodes.item(0);
-	        	translateSplashScreen(splashScreen, getPageBodyElement(htmlDocument));
-	        }
-        }
-        catch (XPathExpressionException e)
-        {
-        	throw new ViewParserException("Error inspecting the view ["+this.viewId+"]. Error while searching for splashScreen elements.", e);
-        }
-    }
-
-	/**
-	 * @param cruxPageNode
-	 * @param htmlNode
-	 * @param htmlDocument
-	 */
-	private void translateSplashScreen(Element cruxPageNode, Element htmlNode)
-	{
-		Element splashScreen = htmlDocument.createElement("div");
-		splashScreen.setAttribute("id", "cruxSplashScreen");
-		
-		String style = cruxPageNode.getAttribute("style");
-		if (!StringUtils.isEmpty(style))
-		{
-			splashScreen.setAttribute("style", style);
-		}
-		String transactionDelay = cruxPageNode.getAttribute("transactionDelay");
-		if (!StringUtils.isEmpty(transactionDelay))
-		{
-			splashScreen.setAttribute("transactionDelay", transactionDelay);
-		}
-		htmlNode.appendChild(splashScreen);
+		return hasInnerHTMLWidgetTags.contains(tagName);	
 	}
 	
+	/**
+	 * 
+	 */
+	private void clearCurrentWidget()
+	{
+		cruxTagName = "";
+	}
+
 	/**
 	 * @param cruxPageDocument
 	 * @return
@@ -526,6 +247,18 @@ public class ViewParser
 			htmlDocument.getDocumentElement().setAttribute("manifest", manifest);
 		}
 	    return htmlDocument;
+    }
+
+	/**
+	 * 
+	 * @param cruxArrayMetaData
+	 * @param htmlElement
+	 * @throws ViewParserException
+	 */
+	private void generateCruxInnerHTMLMetadata(StringBuilder cruxArrayMetaData, Element htmlElement) throws ViewParserException
+    {
+	    String innerHTML = getHTMLFromNode(htmlElement);
+    	cruxArrayMetaData.append(",\"_html\":\""+innerHTML+"\"");
     }
 
 	/**
@@ -580,27 +313,6 @@ public class ViewParser
 		cruxArrayMetaData.append("}");
     }
 
-	/**
-	 * 
-	 * @param cruxArrayMetaData
-	 * @param htmlElement
-	 * @throws ViewParserException
-	 */
-	private void generateCruxInnerHTMLMetadata(StringBuilder cruxArrayMetaData, Element htmlElement) throws ViewParserException
-    {
-	    String innerHTML = getHTMLFromNode(htmlElement);
-    	cruxArrayMetaData.append(",\"_html\":\""+innerHTML+"\"");
-    }
-	
-	/**
-	 * @param tagName
-	 * @return
-	 */
-	private boolean allowInnerHTML(String tagName)
-	{
-		return hasInnerHTMLWidgetTags.contains(tagName);	
-	}
-	
 	/**
 	 * @param cruxPageBodyElement
 	 * @param cruxArrayMetaData
@@ -689,18 +401,17 @@ public class ViewParser
 			}
 		}
 	}
-
+	
 	/**
 	 * @param htmlHeadElement
 	 * @throws ViewParserException 
 	 */
 	private void generateCruxMetaDataElement(Element htmlHeadElement) throws ViewParserException
     {
-		ScreenFactory factory = ScreenFactory.getInstance();
 		String screenModule = null;
 		try
 		{
-			screenModule = factory.getScreenModule(cruxPageDocument);
+			screenModule = ScreenFactory.getScreenModule(cruxPageDocument);
 			
 		}
 		catch (Exception e)
@@ -714,12 +425,12 @@ public class ViewParser
 		}
 		try
 		{
-			String screenId = factory.getRelativeScreenId(this.viewId, screenModule);
+			String screenId = this.viewId;
 
 			Element cruxMetaData = htmlDocument.createElement("script");
 			cruxMetaData.setAttribute("id", "__CruxMetaDataTag_");		
 			htmlHeadElement.appendChild(cruxMetaData);
-			Text textNode = htmlDocument.createTextNode("var __CruxScreen_ = \""+screenModule+"/"+HTMLUtils.escapeJavascriptString(screenId, escapeXML)+"\"");
+			Text textNode = htmlDocument.createTextNode("var __CruxScreen_ = \""+HTMLUtils.escapeJavascriptString(screenId, escapeXML)+"\"");
 			cruxMetaData.appendChild(textNode);
 		}
 		catch (Exception e)
@@ -727,6 +438,129 @@ public class ViewParser
 			throw new ViewParserException(e.getMessage(), e);
 		}
     }
+
+	/**
+	 * 
+	 * @param htmlElement
+	 * @param elementsMetadata
+	 * @throws ViewParserException
+	 */
+	private void generateCruxMetadataForView(Element htmlElement, StringBuilder elementsMetadata) throws ViewParserException
+    {
+		generateCruxMetadataForView(htmlElement, elementsMetadata, !xhtmlInput);		
+    }	
+	
+	/**
+	 * 
+	 * @param cruxPageScreen
+	 * @param cruxArrayMetaData
+	 * @param generateViewTag
+	 * @throws ViewParserException
+	 */
+	private void generateCruxMetadataForView(Element cruxPageScreen, StringBuilder cruxArrayMetaData, boolean generateViewTag) throws ViewParserException
+    {
+	    writeIndentationSpaces(cruxArrayMetaData);
+		if (generateViewTag)
+		{
+			cruxArrayMetaData.append("{");
+			cruxArrayMetaData.append("\"_type\":\"screen\"");
+			
+			generateCruxMetaDataAttributes(cruxPageScreen, cruxArrayMetaData);
+			
+			cruxArrayMetaData.append("}");
+		}
+		StringBuilder childrenMetaData = new StringBuilder();
+		generateCruxMetaData(cruxPageScreen, childrenMetaData);
+		
+		if (childrenMetaData.length() > 0)
+		{
+			if (generateViewTag)
+			{
+				cruxArrayMetaData.append(",");
+			}
+			cruxArrayMetaData.append(childrenMetaData);
+		}
+    }
+
+	/**
+	 * 
+	 * @param htmlBodyElement
+	 * @throws ViewParserException
+	 */
+	private void generateCruxModuleElement(Element htmlBodyElement) throws ViewParserException
+    {
+		Element child = getScreenModule(cruxPageDocument);
+		if (child == null)
+		{
+			throw new ViewParserException("No module declared on screen ["+viewId+"].");
+		}
+		Node htmlChild = htmlDocument.importNode(child, false);
+		htmlBodyElement.appendChild(htmlChild);
+    }
+	
+	/**
+	 * @param cruxPageScreen
+	 * @param cruxArrayMetaData
+	 * @throws ViewParserException 
+	 */
+	private void generateCruxScreenMetaData(Element cruxPageScreen, StringBuilder cruxArrayMetaData) throws ViewParserException
+    {
+		generateCruxMetadataForView(cruxPageScreen, cruxArrayMetaData, xhtmlInput);		
+    }
+
+	/**
+	 * @return
+	 */
+	private String getCurrentWidgetTag()
+	{
+		return cruxTagName;
+	}
+
+	/**
+	 * @param node
+	 * @return
+	 * @throws ViewParserException 
+	 */
+	private String getHTMLFromNode(Element elem) throws ViewParserException
+	{
+		try
+		{
+			StringWriter innerHTML = new StringWriter(); 
+			NodeList children = elem.getChildNodes();
+			
+			if (children != null)
+			{
+				for (int i=0; i<children.getLength(); i++)
+				{
+					Node child = children.item(i);
+					if (!isCruxModuleImportTag(child))
+					{
+						HTMLUtils.write(child, innerHTML);
+					}
+				}
+			}
+	        return HTMLUtils.escapeJavascriptString(innerHTML.toString(), false);
+		}
+		catch (IOException e)
+		{
+			throw new ViewParserException(e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param node
+	 * @return
+	 */
+	private String getLibraryName(Node node)
+	{
+		String namespaceURI = node.getNamespaceURI();
+		
+		if (namespaceURI != null && namespaceURI.startsWith(WIDGETS_NAMESPACE_PREFIX))
+		{
+			return namespaceURI.substring(WIDGETS_NAMESPACE_PREFIX.length());
+		}
+		return null;
+	}
 	
 	/**
 	 * @param cruxPageDocument
@@ -750,14 +584,6 @@ public class ViewParser
         {
         	throw new ViewParserException(e.getMessage(), e);
         }
-	}
-	
-	/**
-	 * @return
-	 */
-	private String getCurrentWidgetTag()
-	{
-		return cruxTagName;
 	}
 
 	/**
@@ -794,26 +620,40 @@ public class ViewParser
 	 * @param node
 	 * @return
 	 */
-	private String getLibraryName(Node node)
-	{
-		String namespaceURI = node.getNamespaceURI();
-		
-		if (namespaceURI != null && namespaceURI.startsWith(WIDGETS_NAMESPACE_PREFIX))
-		{
-			return namespaceURI.substring(WIDGETS_NAMESPACE_PREFIX.length());
-		}
-		return null;
-	}
-
-	/**
-	 * @param node
-	 * @return
-	 */
 	private String getReferencedWidget(String tagName)
     {
 	    return referenceWidgetsList.get(tagName);
     }
-
+	
+	/**
+	 * 
+	 * @param source
+	 * @return
+	 * @throws ViewParserException
+	 */
+	private Element getScreenModule(Document source) throws ViewParserException 
+	{
+		Element result = null;
+		NodeList nodeList = source.getElementsByTagName("script");
+		int length = nodeList.getLength();
+		for (int i = 0; i < length; i++)
+		{
+			Element item = (Element) nodeList.item(i);
+			
+			String src = item.getAttribute("src");
+			
+			if (src != null && src.endsWith(".nocache.js"))
+			{
+				if (result != null)
+				{
+					throw new ViewParserException("Multiple modules in the same html page is not allowed in CRUX.");
+				}
+				result = item;
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * @param node
 	 * @return
@@ -837,38 +677,63 @@ public class ViewParser
 		
 		return HTMLUtils.escapeJavascriptString(text.toString().trim(), escapeXML);
 	}
-	
+
+	/**
+	 * 
+	 * @throws ViewParserException
+	 */
+	private void handleCruxSplashScreen() throws ViewParserException
+    {
+		try
+        {
+	        NodeList splashScreenNodes = (NodeList)findCruxSplashScreenExpression.evaluate(cruxPageDocument, XPathConstants.NODESET);
+	        if (splashScreenNodes.getLength() > 0)
+	        {
+	        	if (splashScreenNodes.getLength() > 1)
+	        	{
+	            	throw new ViewParserException("The view ["+this.viewId+"] declares more than one splashScreen. Only one is allowed.");
+	        	}
+	        	Element splashScreen = (Element)splashScreenNodes.item(0);
+	        	translateSplashScreen(splashScreen, getPageBodyElement(htmlDocument));
+	        }
+        }
+        catch (XPathExpressionException e)
+        {
+        	throw new ViewParserException("Error inspecting the view ["+this.viewId+"]. Error while searching for splashScreen elements.", e);
+        }
+    }
+
+	/**
+	 * 
+	 */
+	private void indent()
+	{
+		jsIndentationLvl++;
+	}
+
 	/**
 	 * @param node
 	 * @return
-	 * @throws ViewParserException 
 	 */
-	private String getHTMLFromNode(Element elem) throws ViewParserException
+	private boolean isAttachableWidget(Node node)
 	{
-		try
+		if (node instanceof Element)
 		{
-			StringWriter innerHTML = new StringWriter(); 
-			NodeList children = elem.getChildNodes();
-			
-			if (children != null)
-			{
-				for (int i=0; i<children.getLength(); i++)
-				{
-					Node child = children.item(i);
-					if (!isCruxModuleImportTag(child))
-					{
-						HTMLUtils.write(child, innerHTML);
-					}
-				}
-			}
-	        return HTMLUtils.escapeJavascriptString(innerHTML.toString(), false);
+			return isAttachableWidget(node.getLocalName(), getLibraryName(node));
 		}
-		catch (IOException e)
-		{
-			throw new ViewParserException(e.getMessage(), e);
-		}
-	} 
+		return false;
+	}
 
+	/**
+	 * @param localName
+	 * @param libraryName
+	 * @return
+	 */
+	private boolean isAttachableWidget(String localName, String libraryName)
+	{
+	    return attachableWidgets.contains(libraryName+"_"+localName);
+	}
+	
 	/**
 	 * 
 	 * @param node
@@ -885,16 +750,8 @@ public class ViewParser
 			return (namespaceURI == null || namespaceURI.equals(XHTML_NAMESPACE)) && tagName.equalsIgnoreCase("script") && (src != null && src.endsWith(".nocache.js"));
 		}
 		return false;
-	}
-	
-	/**
-	 * 
-	 */
-	private void indent()
-	{
-		jsIndentationLvl++;
-	}
-	
+	} 
+
 	/**
 	 * Check if the target node is child from a rootDocument element or from a native XHTML element.
 	 * 
@@ -949,30 +806,6 @@ public class ViewParser
 	}
 	
 	/**
-	 * @param node
-	 * @return
-	 */
-	private boolean isAttachableWidget(Node node)
-	{
-		if (node instanceof Element)
-		{
-			return isAttachableWidget(node.getLocalName(), getLibraryName(node));
-		}
-		return false;
-	}
-
-	/**
-	 * @param localName
-	 * @param libraryName
-	 * @return
-	 */
-	private boolean isAttachableWidget(String localName, String libraryName)
-	{
-	    return attachableWidgets.contains(libraryName+"_"+localName);
-	}
-	
-	
-	/**
 	 * @param tagName
 	 * @return
 	 */
@@ -980,7 +813,7 @@ public class ViewParser
     {
 	    return referenceWidgetsList.containsKey(tagName);
     }
-
+	
 	/**
 	 * @param localName
 	 * @param libraryName
@@ -988,7 +821,7 @@ public class ViewParser
 	 */
 	private boolean isWidget(String tagName)
     {
-	    return (WidgetConfig.getClientClass(tagName) != null);
+	    return (WidgetScanner.getClientClass(tagName) != null);
     }
 	
 	/**
@@ -1003,7 +836,7 @@ public class ViewParser
 		}
 		return widgetsSubTags.contains(cruxTagName);
     }
-	
+
 	/**
 	 * 
 	 */
@@ -1011,7 +844,8 @@ public class ViewParser
 	{
 		jsIndentationLvl--;
 	}
-
+	
+	
 	/**
 	 * @param cruxTagName
 	 */
@@ -1019,15 +853,7 @@ public class ViewParser
 	{
 		this.cruxTagName = cruxTagName;
 	}
-	
-	/**
-	 * 
-	 */
-	private void clearCurrentWidget()
-	{
-		cruxTagName = "";
-	}
-	
+
 	/**
 	 * @param cruxPageElement
 	 * @param htmlElement
@@ -1058,7 +884,7 @@ public class ViewParser
 			widgetHolder.setAttribute("id", ViewFactoryUtils.ENCLOSING_PANEL_PREFIX + CRUX_VIEW_PREFIX+cruxPageElement.getAttribute("id"));
 		}
     }
-
+	
 	/**
 	 * @param cruxPageElement
 	 * @param htmlElement
@@ -1101,6 +927,48 @@ public class ViewParser
 			}
 		}
     }
+
+	/**
+	 * @param viewId 
+	 * @throws ViewParserException 
+	 */
+	private void translateHTMLHostDocument() throws ViewParserException
+    {
+		Element htmlHeadElement = getPageHeadElement(htmlDocument);
+		Element htmlBodyElement = getPageBodyElement(htmlDocument);
+		Element cruxHeadElement = getPageHeadElement(cruxPageDocument);
+		
+		clearCurrentWidget();
+		translateDocument(cruxHeadElement, htmlHeadElement, true);
+		clearCurrentWidget();
+		
+		generateCruxMetaDataElement(htmlBodyElement);
+		generateCruxModuleElement(htmlBodyElement);
+		handleCruxSplashScreen();
+    }
+	
+	/**
+	 * @param cruxPageNode
+	 * @param htmlNode
+	 * @param htmlDocument
+	 */
+	private void translateSplashScreen(Element cruxPageNode, Element htmlNode)
+	{
+		Element splashScreen = htmlDocument.createElement("div");
+		splashScreen.setAttribute("id", "cruxSplashScreen");
+		
+		String style = cruxPageNode.getAttribute("style");
+		if (!StringUtils.isEmpty(style))
+		{
+			splashScreen.setAttribute("style", style);
+		}
+		String transactionDelay = cruxPageNode.getAttribute("transactionDelay");
+		if (!StringUtils.isEmpty(transactionDelay))
+		{
+			splashScreen.setAttribute("transactionDelay", transactionDelay);
+		}
+		htmlNode.appendChild(splashScreen);
+	}
 	
 	/**
 	 * @param cruxPageElement
@@ -1128,7 +996,7 @@ public class ViewParser
 		}
 		return cruxTagName;
     }
-
+	
 	/**
 	 * @param out
 	 * @throws IOException
@@ -1143,7 +1011,7 @@ public class ViewParser
 		}
 	    HTMLUtils.write(htmlDocument.getDocumentElement(), out, indentOutput);
 	}
-	
+
 	/**
 	 * @param cruxArrayMetaData
 	 */
@@ -1157,5 +1025,136 @@ public class ViewParser
 				cruxArrayMetaData.append("  ");
 			}
 	    }
-    }	
+    }
+	
+	/**
+	 * Some widgets can define tags with custom names that has its type as other widget. It can be handled properly
+	 * and those situations are mapped by this method. 
+	 * 
+	 * @return
+	 * @throws ViewParserException 
+	 */
+	private static void generateReferenceWidgetsList() throws ViewParserException
+	{
+		referenceWidgetsList = new HashMap<String, String>();
+		widgetsSubTags = new HashSet<String>();
+		hasInnerHTMLWidgetTags = new HashSet<String>();
+		Set<String> registeredLibraries = WidgetScanner.getRegisteredLibraries();
+		for (String library : registeredLibraries)
+		{
+			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
+			for (String widget : factories)
+			{
+				try
+				{
+					Class<?> clientClass = Class.forName(WidgetScanner.getClientClass(library, widget));
+					generateReferenceWidgetsListFromTagChildren(clientClass.getAnnotation(TagChildren.class), 
+																		library, widget, new HashSet<String>());
+				}
+				catch (Exception e)
+				{
+					throw new ViewParserException("Error creating XSD File: Error generating widgets reference list.", e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param widgetList 
+	 * @param tagChildren
+	 * @param parentLibrary
+	 * @throws ViewParserException 
+	 */
+	private static void generateReferenceWidgetsListFromTagChildren(TagChildren tagChildren, 
+																    String parentLibrary, String parentWidget, Set<String> added) throws ViewParserException
+	{
+		if (tagChildren != null)
+		{
+			String parentPath;
+			for (TagChild child : tagChildren.value())
+			{
+				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
+				if (!added.contains(processorClass.getCanonicalName()))
+				{
+					parentPath = parentWidget;
+					added.add(processorClass.getCanonicalName());
+					TagConstraints childAttributes = ViewUtils.getChildTagConstraintsAnnotation(processorClass);
+					if (childAttributes!= null)
+					{
+						if (!StringUtils.isEmpty(childAttributes.tagName()))
+						{
+							parentPath = parentWidget+"_"+childAttributes.tagName();
+							if (WidgetCreator.class.isAssignableFrom(childAttributes.type()))
+							{
+								DeclarativeFactory declarativeFactory = childAttributes.type().getAnnotation(DeclarativeFactory.class);
+								if (declarativeFactory != null)
+								{
+									referenceWidgetsList.put(parentLibrary+"_"+parentPath,
+											declarativeFactory.library()+"_"+declarativeFactory.id());
+								}
+							}
+							else
+							{
+								widgetsSubTags.add(parentLibrary+"_"+parentPath);							
+							}
+						}
+						if (HTMLTag.class.isAssignableFrom(childAttributes.type()))
+						{
+							hasInnerHTMLWidgetTags.add(parentLibrary+"_"+parentPath);
+						}
+					}
+					
+					try
+					{
+						generateReferenceWidgetsListFromTagChildren(processorClass.getAnnotation(TagChildren.class), 
+																	parentLibrary, parentPath, added);
+					}
+					catch (Exception e)
+					{
+						throw new ViewParserException("Error creating XSD File: Error generating widgets list.", e);
+					}
+				}
+			}
+		}				
+	}
+	
+	/**
+	 * That method maps all widgets that needs special handling from Crux.
+	 * Panels that can contain HTML mixed with widgets as contents (like {@link HTMLPanel}) and widgets 
+	 * that must not be attached to DOM must be handled	differentially. 
+	 *    
+	 * @return
+	 * @throws ViewParserException 
+	 */
+	private static void generateSpecialWidgetsList() throws ViewParserException
+	{
+		htmlPanelContainers = new HashSet<String>();
+		attachableWidgets = new HashSet<String>();
+		Set<String> registeredLibraries = WidgetScanner.getRegisteredLibraries();
+		for (String library : registeredLibraries)
+		{
+			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
+			for (String widget : factories)
+			{
+				try
+				{
+					Class<?> clientClass = Class.forName(WidgetScanner.getClientClass(library, widget));
+					DeclarativeFactory factory = clientClass.getAnnotation(DeclarativeFactory.class);
+					if (factory.htmlContainer())
+					{
+						htmlPanelContainers.add(library+"_"+widget);				
+					}
+					if (factory.attachToDOM())
+					{
+						attachableWidgets.add(library+"_"+widget);				
+					}
+				}
+				catch (Exception e)
+				{
+					throw new ViewParserException("Error creating XSD File: Error generating widgets reference list.", e);
+				}
+			}
+		}
+	}	
 }

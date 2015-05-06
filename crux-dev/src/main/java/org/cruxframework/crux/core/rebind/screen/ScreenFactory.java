@@ -14,20 +14,23 @@
  * the License.
  */
 package org.cruxframework.crux.core.rebind.screen;
- 
-import java.io.File;
+
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Set;
 
-import org.cruxframework.crux.core.rebind.module.Module;
-import org.cruxframework.crux.core.rebind.module.Modules;
+import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.utils.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.google.gwt.core.ext.linker.EmittedArtifact.Visibility;
+import com.google.gwt.dev.resource.Resource;
 
 
 /**
@@ -38,40 +41,21 @@ import org.w3c.dom.NodeList;
  */
 public class ScreenFactory 
 {
-	private static ScreenFactory instance = new ScreenFactory();
-	
-	private static final Lock screenLock = new ReentrantLock();
-	private static final long UNCHANGED_RESOURCE = -1;
-	private static final long REPROCESS_RESOURCE = -2;	
-
 	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
-	private Map<String, Long> screenLastModified = new HashMap<String, Long>();		
+	private ScreenLoader screenLoader;
+	private ViewFactory viewFactory;
+	private RebindContext context;
 
 	/**
 	 * Singleton Constructor
 	 */
-	private ScreenFactory() 
+	public ScreenFactory(RebindContext context) 
 	{
+		this.context = context;
+		this.screenLoader = context.getScreenLoader();
+		this.viewFactory = new ViewFactory(context);
 	}
-	
-	/**
-	 * Singleton method
-	 * @return
-	 */
-	public static ScreenFactory getInstance()
-	{
-		return instance;
-	}
-	
-	/**
-	 * Clear the screen cache
-	 */
-	public void clearScreenCache()
-	{
-		screenCache.clear();
-		ViewFactory.getInstance().clearViewCache();
-	}
-	
+
 	/**
 	 * Factory method for screens.
 	 * @param id
@@ -83,100 +67,132 @@ public class ScreenFactory
 	{
 		try 
 		{
-			long lastModified = getScreenLastModified(id);
-			String cacheId = device==null?id:id+"_"+device;
-			
-			Screen screen = getFromCache(id, cacheId, lastModified);
+			String cacheKey = device==null?id:id+"_"+device;
+
+			Screen screen = screenCache.get(cacheKey);
 			if (screen != null)
 			{
 				return screen;
 			}
 
-			
-			screenLock.lock();
+			Resource resource = screenLoader.getScreen(id);
+			if (resource == null)
+			{
+				throw new ScreenConfigException("Error retrieving screen ["+id+"].crux.xml.");
+			}
+			InputStream inputStream = resource.openContents();
+			Document screenView = viewFactory.getViewDocument(id, device, inputStream);
+			StreamUtils.safeCloseStream(inputStream);
+			if (screenView == null)
+			{
+				throw new ScreenConfigException("Screen ["+id+"].crux.xml not found!");
+			}
+			screen = parseScreen(id, device, screenView, resource.getLastModified());
+			if(screen != null)
+			{
+				screen.setLastModified(resource.getLastModified());
+				screenCache.put(cacheKey, screen);
+			}
+			return screen;
+
+		} 
+		catch (IOException e) 
+		{
+			throw new ScreenConfigException("Error retrieving screen ["+id+"].crux.xml.", e);
+		}
+	}
+
+	public Set<String> getScreens()
+	{
+		return screenLoader.getScreens();
+	}
+
+	/**
+	 * Retrieve the viewFactory.
+	 * @return
+	 */
+	public ViewFactory getViewFactory()
+	{
+		return viewFactory;
+	}
+
+	public void generateHostPages(String device) throws ScreenConfigException
+	{
+		Set<String> screenIDs = getScreens();
+		for (String screenId : screenIDs)
+		{
 			try
 			{
-				if (getFromCache(id, cacheId, lastModified) == null)
-				{
-					Document screenView;
-					String relativeScreenId = Modules.getInstance().removeModuleIfPresent(id);
-			    	if (!relativeScreenId.equals(id))
-			    	{
-			    		String module = id.substring(0, id.indexOf("/"));
-			    		screenView = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(relativeScreenId, module, device);
-			    	}
-			    	else
-			    	{
-			    		screenView = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(id, device);
-			    	}
-			    	
-					if (screenView == null)
-					{
-						throw new ScreenConfigException("Screen ["+id+"] not found!");
-					}
-					screen = parseScreen(id, device, screenView);
-					if(screen != null)
-					{
-						screenCache.put(cacheId, screen);
-						saveScreenLastModified(cacheId, lastModified);
-					}
-				}
+				OutputStream stream = context.getGeneratorContext().tryCreateResource(context.getLogger(), screenId+".crux.xml");
+				Resource resource = screenLoader.getScreen(screenId);
+				InputStream inputStream = resource.openContents();
+				Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
+				StreamUtils.safeCloseStream(inputStream);
+				viewFactory.generateHTML(screenId, screenView, stream);
+				StreamUtils.safeCloseStream(stream);
+				context.getGeneratorContext().commitResource(context.getLogger(), stream).setVisibility(Visibility.Private);
 			}
-			finally
+			catch (Exception e)
 			{
-				screenLock.unlock();
+				throw new ScreenConfigException("Error generating HTML file for crux page ["+screenId+".crux.xml]", e);
 			}
-			return getFromCache(id, cacheId, lastModified);
-			
-		} 
-		catch (Throwable e) 
-		{
-			throw new ScreenConfigException("Error retrieving screen ["+id+"].", e);
 		}
 	}
 
 	/**
+	 * Parse the HTML page and build the Crux Screen. 
 	 * @param id
-	 * @param module
+	 * @param device
+	 * @param screenView
 	 * @return
+	 * @throws IOException
 	 * @throws ScreenConfigException 
 	 */
-	public String getRelativeScreenId(String id, String module) throws ScreenConfigException
+	private Screen parseScreen(String id, String device, Document screenView, long lastModified) throws IOException, ScreenConfigException
 	{
-		Module mod = Modules.getInstance().getModule(module);
-		if (mod == null)
+		Screen screen = null;
+		String screenModule = getScreenModule(screenView);
+
+		if(screenModule != null)
 		{
-			throw new ScreenConfigException("No module declared on screen ["+id+"].");
+			View rootView = viewFactory.getView(id, device, screenView, lastModified, true);
+
+			screen = new Screen(id, screenModule, rootView);
 		}
-		return Modules.getInstance().getRelativeScreenId(mod, id);
+		else
+		{
+			throw new ScreenConfigException("No module declared on screen ["+id+"].crux.xml.");
+		}
+
+		return screen;
 	}
-	
+
 	/**
 	 * @param nodeList
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public String getScreenModule(Document source) throws ScreenConfigException
+	public static String getScreenModule(Document source) throws ScreenConfigException
 	{
 		String result = null;
-		
+
 		NodeList nodeList = source.getElementsByTagName("script");
 		int length = nodeList.getLength();
 		for (int i = 0; i < length; i++)
 		{
 			Element item = (Element) nodeList.item(i);
-			
+
 			String src = item.getAttribute("src");
-			
+
 			if (src != null && src.endsWith(".nocache.js"))
 			{
 				if (result != null)
 				{
 					throw new ScreenConfigException("Multiple modules in the same html page is not allowed in CRUX.");
 				}
-				
+
 				int lastSlash = src.lastIndexOf("/");
-				
+
 				if(lastSlash >= 0)
 				{
 					int firstDotAfterSlash = src.indexOf(".", lastSlash);
@@ -190,112 +206,5 @@ public class ScreenFactory
 			}
 		}
 		return result;
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 * @param cacheId
-	 * @param lastModified
-	 * @return
-	 */
-	private Screen getFromCache(String id,String cacheId, long lastModified)
-	{
-		Screen screen = screenCache.get(cacheId);
-		if (screen != null)
-		{
-			if (mustReprocessScreen(cacheId, lastModified))
-			{
-				screenCache.remove(cacheId);
-				screen = null;
-			}
-		}
-		return screen;
-	}
-
-	/**
-	 * @param id
-	 * @param lastModified
-	 * @return
-	 */
-	private boolean mustReprocessScreen(String id, long lastModified)
-	{
-		if (lastModified == REPROCESS_RESOURCE)
-		{
-			return true;
-		}
-		if (lastModified == UNCHANGED_RESOURCE)
-		{
-			return false;
-		}
-		
-		return (!screenLastModified.containsKey(id) || !screenLastModified.get(id).equals(lastModified));
-	}
-
-	/**
-	 * @param id
-	 * @param lastModified
-	 */
-	private void saveScreenLastModified(String id, long lastModified)
-	{
-	    if (id.toLowerCase().startsWith("file:"))
-	    {
-	    	screenLastModified.put(id, lastModified);
-	    }
-	    else
-	    {
-	    	screenLastModified.put(id, UNCHANGED_RESOURCE);
-	    }
-	}
-	
-	/**
-	 * @param id
-	 * @return
-	 */
-	private long getScreenLastModified(String id)
-    {
-	    if (id.toLowerCase().startsWith("file:"))
-	    {
-	    	try
-            {
-	            File screenFile = new File(new URL(id).toURI());
-	            return screenFile.lastModified();
-            }
-            catch (Exception e)
-            {
-            	return REPROCESS_RESOURCE;
-            }
-	    }
-	    
-	    return UNCHANGED_RESOURCE;
-    }
-
-	/**
-	 * Parse the HTML page and build the Crux Screen. 
-	 * @param id
-	 * @param device
-	 * @param screenView
-	 * @return
-	 * @throws IOException
-	 * @throws ScreenConfigException 
-	 */
-	private Screen parseScreen(String id, String device, Document screenView) throws IOException, ScreenConfigException
-	{
-		Screen screen = null;
-		String screenModule = getScreenModule(screenView);
-
-		if(screenModule != null)
-		{
-			String relativeScreenId = getRelativeScreenId(id, screenModule);
-			View rootView = ViewFactory.getInstance().getView(screenModule+"/"+relativeScreenId, device, screenView, true);
-			
-			screen = new Screen(id, relativeScreenId, screenModule, rootView);
-		}
-		else
-		{
-			throw new ScreenConfigException("No module declared on screen ["+id+"].");
-		}
-		
-		return screen;
 	}
 }

@@ -17,16 +17,21 @@ package org.cruxframework.crux.tools.launcher;
 
 import java.net.MalformedURLException;
 
-import org.cruxframework.crux.core.rebind.module.Module;
-import org.cruxframework.crux.core.rebind.module.Modules;
-import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
+
+import com.google.gwt.dev.DevMode;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class CruxLauncher
 {
+	private static final Log log = LogFactory.getLog(CruxLauncher.class);
 	/**
 	 * 
 	 * @param args
@@ -34,19 +39,7 @@ public class CruxLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		CruxRegisterUtil.registerFilesCruxBridge(args);
-		
-		String initialModule = CruxRegisterUtil.getModule(args);
-		Module module = Modules.getInstance().getModule(initialModule);
-		if (module != null)
-		{
-			initialModule = module.getFullName();
-		}
-		
-		String[] newArgs = new String[args.length+1];
-		System.arraycopy(args, 0, newArgs, 0, args.length);
-		newArgs[args.length] = initialModule;
-		
-		com.google.gwt.dev.DevMode.main(newArgs);
+		log.warn("CruxLauncher is deprecated. Use "+DevMode.class.getCanonicalName());
+		DevMode.main(args);
 	}
 }

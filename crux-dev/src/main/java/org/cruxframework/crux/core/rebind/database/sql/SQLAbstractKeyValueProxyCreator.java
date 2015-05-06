@@ -27,13 +27,12 @@ import org.cruxframework.crux.core.client.utils.FileUtils;
 import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.AbstractKeyValueProxyCreator;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -47,10 +46,10 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 {
 	private JClassType blobType;
 
-	public SQLAbstractKeyValueProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, String[] keyPath)
+	public SQLAbstractKeyValueProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, String[] keyPath)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
-		this.blobType = context.getTypeOracle().findType(Blob.class.getCanonicalName());
+		super(context, targetObjectType, objectStoreName, keyPath);
+		this.blobType = context.getGeneratorContext().getTypeOracle().findType(Blob.class.getCanonicalName());
 	}
 
 	@Override
@@ -146,7 +145,7 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 	protected void generateGetKeyRangeFactoryMethod(SourcePrinter srcWriter, String parentName)
     {
 		srcWriter.println("public KeyRangeFactory<"+getKeyTypeName()+"> getKeyRangeFactory(){");
-		String keyRangeFatoryClassName = new SQLKeyRangeFactoryProxyCreator(context, logger, targetObjectType, objectStoreName, keyPath, parentName).create();
+		String keyRangeFatoryClassName = new SQLKeyRangeFactoryProxyCreator(context, targetObjectType, objectStoreName, keyPath, parentName).create();
 		srcWriter.println("return (KeyRangeFactory<"+getKeyTypeName()+">) new "+keyRangeFatoryClassName+"();");
 		srcWriter.println("}");
 		srcWriter.println();

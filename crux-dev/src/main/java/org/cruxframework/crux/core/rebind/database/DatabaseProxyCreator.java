@@ -31,12 +31,11 @@ import org.cruxframework.crux.core.client.db.Transaction.TransactionCallback;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.idb.IDBDatabaseProxyCreator;
 import org.cruxframework.crux.core.rebind.database.sql.SQLDatabaseProxyCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.logging.client.LogConfiguration;
@@ -54,11 +53,11 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	private String idxDatabaseImplClass;
 	private String sqlDatabaseImplClass;
 
-	public DatabaseProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public DatabaseProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, false);
-		idxDatabaseImplClass = new IDBDatabaseProxyCreator(logger, context, baseIntf).create();
-		sqlDatabaseImplClass = new SQLDatabaseProxyCreator(logger, context, baseIntf).create();
+		super(context, baseIntf, true);
+		idxDatabaseImplClass = new IDBDatabaseProxyCreator(context, baseIntf).create();
+		sqlDatabaseImplClass = new SQLDatabaseProxyCreator(context, baseIntf).create();
 	}
 
 	@Override
@@ -334,7 +333,7 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	{
 		JPackage pkg = baseIntf.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -350,6 +349,6 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		}
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 }

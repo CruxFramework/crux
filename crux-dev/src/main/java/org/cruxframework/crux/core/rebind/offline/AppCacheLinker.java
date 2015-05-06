@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.offline;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,15 +28,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.screen.OfflineScreen;
 import org.cruxframework.crux.core.rebind.screen.OfflineScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
-import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
-import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
+import org.cruxframework.crux.tools.scanner.offline.OfflineScreens;
 import org.w3c.dom.Document;
 
 import com.google.gwt.core.ext.LinkerContext;
@@ -251,28 +245,29 @@ public class AppCacheLinker extends AbstractLinker
 	private Artifact<?> createCacheManifestLoader(LinkerContext context, TreeLogger logger, String artifactGroupId, String startScreenId)
 	    throws UnableToCompleteException
 	{
-		try
-		{
-			ViewProcessor.setForceIndent(true);
-			ViewProcessor.setOutputCharset("UTF-8");
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			Document screen = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(startScreenId,
-			    context.getModuleName(), null);
-			if (screen == null)
-			{
-				logger.log(TreeLogger.ERROR, "Error generating offline app page. Can not found target screen. ScreenID[" + startScreenId
-				    + "]");
-				throw new UnableToCompleteException();
-			}
-			screen.getDocumentElement().setAttribute("manifest", getManifestName(artifactGroupId));
-			ViewProcessor.generateHTML(startScreenId, screen, out);
-			return emitString(logger, out.toString("UTF-8"), getManifestLoaderName(artifactGroupId));
-		}
-		catch (Exception e)
-		{
-			logger.log(TreeLogger.ERROR, "Error generating offline app page", e);
-			throw new UnableToCompleteException();
-		}
+//		try
+//		{
+//			ViewProcessor.setForceIndent(true);
+//			ViewProcessor.setOutputCharset("UTF-8");
+//			ByteArrayOutputStream out = new ByteArrayOutputStream();
+//			Document screen = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(startScreenId,
+//			    context.getModuleName(), null);
+//			if (screen == null)
+//			{
+//				logger.log(TreeLogger.ERROR, "Error generating offline app page. Can not found target screen. ScreenID[" + startScreenId
+//				    + "]");
+//				throw new UnableToCompleteException();
+//			}
+//			screen.getDocumentElement().setAttribute("manifest", getManifestName(artifactGroupId));
+//			ViewProcessor.generateHTML(startScreenId, screen, out);
+//			return emitString(logger, out.toString("UTF-8"), getManifestLoaderName(artifactGroupId));
+//		}
+//		catch (Exception e)
+//		{
+//			logger.log(TreeLogger.ERROR, "Error generating offline app page", e);
+//			throw new UnableToCompleteException();
+//		}
+		return null;
 	}
 	
 	/**********************************************************
@@ -412,21 +407,22 @@ public class AppCacheLinker extends AbstractLinker
 
 	private String getTargetScreenId(LinkerContext context, TreeLogger logger, String screenID) throws UnableToCompleteException
 	{
-		if (StringUtils.isEmpty(screenID))
-		{
-			screenID = CruxBridge.getInstance().getLastPageRequested();
-			try
-			{
-				screenID = ScreenFactory.getInstance().getScreen(screenID, null).getRelativeId();
-			}
-			catch (ScreenConfigException e)
-			{
-				logger.log(TreeLogger.ERROR, e.getMessage(), e);
-				throw new UnableToCompleteException();
-			}
-		}
-		// TODO checar se a pagina esta no lugar certo... aceitar apenas na raiz do modulo (/cruxsite/<nomePagina>.html)
-		return screenID;
+//		if (StringUtils.isEmpty(screenID))
+//		{
+//			screenID = CruxBridge.getInstance().getLastPageRequested();
+//			try
+//			{
+//				screenID = ScreenFactory.getInstance().getScreen(screenID, null).getRelativeId();
+//			}
+//			catch (ScreenConfigException e)
+//			{
+//				logger.log(TreeLogger.ERROR, e.getMessage(), e);
+//				throw new UnableToCompleteException();
+//			}
+//		}
+//		// TODO checar se a pagina esta no lugar certo... aceitar apenas na raiz do modulo (/cruxsite/<nomePagina>.html)
+//		return screenID;
+		return null;
 	}
 
 	static long getCurrentTimeTruncatingMiliseconds()

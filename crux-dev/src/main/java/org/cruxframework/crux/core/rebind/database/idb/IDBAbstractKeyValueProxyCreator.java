@@ -18,12 +18,11 @@ package org.cruxframework.crux.core.rebind.database.idb;
 import java.util.Date;
 
 import org.cruxframework.crux.core.client.db.indexeddb.IDBCursorWithValue;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.AbstractKeyValueProxyCreator;
 import org.cruxframework.crux.core.server.Environment;
 
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -33,16 +32,16 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public abstract class IDBAbstractKeyValueProxyCreator extends AbstractKeyValueProxyCreator
 {
 
-	public IDBAbstractKeyValueProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, String[] keyPath)
+	public IDBAbstractKeyValueProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, String[] keyPath)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 	}
 
 	
 	protected void generateGetKeyRangeFactoryMethod(SourcePrinter srcWriter, String parentName)
     {
 		srcWriter.println("public KeyRangeFactory<"+getKeyTypeName()+"> getKeyRangeFactory(){");
-		String keyRangeFatoryClassName = new IDBKeyRangeFactoryProxyCreator(context, logger, targetObjectType, objectStoreName, keyPath, parentName).create();
+		String keyRangeFatoryClassName = new IDBKeyRangeFactoryProxyCreator(context, targetObjectType, objectStoreName, keyPath, parentName).create();
 		srcWriter.println("return (KeyRangeFactory<"+getKeyTypeName()+">) new "+keyRangeFatoryClassName+"();");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -225,7 +224,7 @@ public abstract class IDBAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 		
 		srcWriter.println(cursorRequestVar+".onSuccess(new IDBCursorEvent.Handler(){");
 		srcWriter.println("public void onSuccess(IDBCursorEvent event){");
-		String cursorClassName = new IDBCursorProxyCreator(context, logger, targetObjectType, objectStoreName, keyPath, cursorName).create();
+		String cursorClassName = new IDBCursorProxyCreator(context, targetObjectType, objectStoreName, keyPath, cursorName).create();
 		srcWriter.println(IDBCursorWithValue.class.getCanonicalName()+" cursor = event.getCursor();");
 		srcWriter.println("if ("+callbackVar+" != null){");
 

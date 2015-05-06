@@ -58,7 +58,6 @@ class ChildrenAnnotationScanner
 {
 	private static final int UNBOUNDED = -1;
 
-	private WidgetCreatorHelper factoryHelper;
 	private LazyPanelFactory lazyFactory;
 	private Map<String, ChildrenProcessor> scannedProcessors;
 	
@@ -70,7 +69,6 @@ class ChildrenAnnotationScanner
 	 */
 	ChildrenAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
     {
-		this.factoryHelper = new WidgetCreatorHelper(type);
 		this.widgetCreator = widgetCreator;
 		this.lazyFactory = new LazyPanelFactory(widgetCreator.getViewFactory());
     }
@@ -81,7 +79,7 @@ class ChildrenAnnotationScanner
 	ChildrenProcessor scanChildren()
     {
 		scannedProcessors = new HashMap<String, WidgetCreatorAnnotationsProcessor.ChildrenProcessor>();
-		return scanChildren(factoryHelper.getFactoryClass(), false);
+		return scanChildren(widgetCreator.getClass(), false);
     }
 		
 	/**
@@ -186,7 +184,7 @@ class ChildrenAnnotationScanner
 																  Class<?> childProcessorClass, boolean isAgregator,
 																  WidgetChildProcessor<?> processor, Device[] supportedDevices)
     {
-	    TagConstraints processorAttributes = this.factoryHelper.getChildtrenAttributesAnnotation(childProcessorClass);
+	    TagConstraints processorAttributes = this.widgetCreator.getChildtrenAttributesAnnotation(childProcessorClass);
 	    final String widgetProperty = (processorAttributes!=null?processorAttributes.widgetProperty():"");
 	    String tagName = (processorAttributes!=null?processorAttributes.tagName():"");
 
@@ -217,9 +215,9 @@ class ChildrenAnnotationScanner
 	private ChildrenProcessor createChildProcessorForText(Class<?> processorClass, TagChild child, final boolean acceptNoChildren)
     {
 		Class<?> childProcessor = child.value();
-		TagConstraints processorAttributes = factoryHelper.getChildtrenAttributesAnnotation(childProcessor);
+		TagConstraints processorAttributes = widgetCreator.getChildtrenAttributesAnnotation(childProcessor);
 		final String widgetProperty = processorAttributes.widgetProperty();
-		final boolean isHasText = HasText.class.isAssignableFrom(factoryHelper.getWidgetType());
+		final boolean isHasText = HasText.class.isAssignableFrom(widgetCreator.getWidgetClass());
 		
 	    ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator.getView().getId())
 		{
@@ -408,7 +406,7 @@ class ChildrenAnnotationScanner
 	private ChildrenProcessor doCreateChildrenProcessorForSingleChild(Class<?> processorClass, final boolean acceptNoChildren, 
 											WidgetChildProcessor<?> processor, Class<?> childProcessorClass, Device[] supportedDevices)
     {
-		TagConstraints processorAttributes = this.factoryHelper.getChildtrenAttributesAnnotation(childProcessorClass);
+		TagConstraints processorAttributes = this.widgetCreator.getChildtrenAttributesAnnotation(childProcessorClass);
 		final String widgetProperty = (processorAttributes!=null?processorAttributes.widgetProperty():"");
 		String tagName = (processorAttributes!=null?processorAttributes.tagName():"");
 
@@ -481,7 +479,7 @@ class ChildrenAnnotationScanner
 		try
 		{
 			Class<?> childProcessorType = child.value();
-			TagConstraints processorAttributes = factoryHelper.getChildtrenAttributesAnnotation(childProcessorType);
+			TagConstraints processorAttributes = widgetCreator.getChildtrenAttributesAnnotation(childProcessorType);
 
 			if (processorAttributes != null)
 			{

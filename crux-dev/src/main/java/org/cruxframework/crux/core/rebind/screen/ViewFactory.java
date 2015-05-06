@@ -17,29 +17,26 @@ package org.cruxframework.crux.core.rebind.screen;
  
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.declarativeui.template.Templates;
-import org.cruxframework.crux.core.declarativeui.view.Views;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
-import org.cruxframework.crux.core.rebind.datasource.DataSources;
-import org.cruxframework.crux.core.rebind.formatter.Formatters;
-import org.cruxframework.crux.core.rebind.resources.Resources;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+
+import com.google.gwt.dev.resource.Resource;
 
 
 /**
@@ -50,37 +47,20 @@ import org.w3c.dom.Document;
  */
 public class ViewFactory 
 {
-	private static ViewFactory instance = new ViewFactory();
 	private static final Log logger = LogFactory.getLog(ViewFactory.class);
-	
-	private static final Lock viewLock = new ReentrantLock();
-	private Map<String, View> viewCache = new HashMap<String, View>();
-
-	/**
-	 * Singleton Constructor
-	 */
-	private ViewFactory() 
-	{
-		Templates.initialize();
-	}
+	private Map<String, View> cache = new HashMap<String, View>();
+	private RebindContext context;
+	private ViewProcessor viewProcessor;
 	
 	/**
-	 * Singleton method
-	 * @return
+	 * Default Constructor
 	 */
-	public static ViewFactory getInstance()
+	public ViewFactory(RebindContext context) 
 	{
-		return instance;
+		this.context = context;
+		this.viewProcessor = new ViewProcessor(context.getScreenLoader().getViewLoader());
 	}
 	
-	/**
-	 * Clear the screen cache
-	 */
-	public void clearViewCache()
-	{
-		viewCache.clear();
-	}
-
 	/**
 	 * Factory method for views.
 	 * @param id viewId
@@ -90,23 +70,32 @@ public class ViewFactory
 	 */
 	public View getView(String id, String device) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
+		String cacheKey = id + "_" + device; 
+		if (cache.containsKey(cacheKey))
 		{
-			return viewCache.get(cacheKey);
+			return cache.get(cacheKey);
 		}
-		URL view = Views.getView(id);
 		
-		URLStreamManager manager = new URLStreamManager(view);
-		InputStream inputStream = manager.open();
-		Document viewDoc = ViewProcessor.getView(inputStream, id, device);
-		manager.close();
-		
-		if (viewDoc == null)
+		Resource resource = context.getScreenLoader().getViewLoader().getView(id);
+		if (resource == null)
 		{
 			throw new ScreenConfigException("View ["+id+"] not found!");
 		}
-		return getView(id, device, viewDoc, false);
+		InputStream inputStream;
+        try
+        {
+	        inputStream = resource.openContents();
+        }
+        catch (IOException e)
+        {
+			throw new ScreenConfigException("View ["+id+"] not found!");
+		}
+		Document viewDoc = viewProcessor.getView(inputStream, id, device);
+		StreamUtils.safeCloseStream(inputStream);
+		
+		View view = getView(id, device, viewDoc, resource.getLastModified(), false);
+		cache.put(cacheKey, view);
+		return view;
 	}
 	
 	/**
@@ -117,60 +106,42 @@ public class ViewFactory
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public View getView(String id, String device, Document view, boolean rootView) throws ScreenConfigException
+	public View getView(String id, String device, Document view, long lastModified, boolean rootView) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
-		{
-			return viewCache.get(cacheKey);
-		}
-		viewLock.lock();
 		try 
 		{
-			if (viewCache.containsKey(cacheKey))
-			{
-				return viewCache.get(cacheKey);
-			}
-			JSONObject metadata = ViewProcessor.extractWidgetsMetadata(id, view, rootView);
+			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
 			View result = parseView(id, metadata, rootView);
-			viewCache.put(cacheKey, result);
+			result.setLastModified(lastModified);
 			return result;
 		} 
-		catch (Throwable e) 
+		catch (Exception e) 
 		{
 			throw new ScreenConfigException("Error retrieving view ["+id+"].", e);
-		}
-		finally
-		{
-			viewLock.unlock();
 		}
 	}
 	
 	/**
-	 * Test if a target json object represents a widget definition for Crux.
-	 * @param cruxObject
-	 * @return
-	 * @throws JSONException
-	 */
-	public boolean isValidWidget(JSONObject cruxObject) throws JSONException
-	{
-		if (cruxObject.has("_type"))
-		{
-			String type = cruxObject.getString("_type");
-			return (type != null && !"screen".equals(type));
-		}
-		return false;
-	}
-
-	/**
-	 * Builds the cache key
+	 * 
 	 * @param id
 	 * @param device
+	 * @param stream
 	 * @return
+	 * @throws ScreenConfigException
 	 */
-	private String getCacheKey(String id, String device)
+	public Document getViewDocument(String id, String device, InputStream stream) throws ScreenConfigException
 	{
-		return id+"_"+device;
+		return viewProcessor.getView(stream, id, device);
+	}
+	
+	public List<String> getViews(String viewLocator)
+    {
+	    return context.getScreenLoader().getViewLoader().getViews(viewLocator);
+    }
+	
+	protected void generateHTML(String viewId, Document view, OutputStream out)
+	{
+		viewProcessor.generateHTML(viewId, view, out);
 	}
 	
 	/**
@@ -448,74 +419,6 @@ public class ViewFactory
 	 * @param elem
 	 * @throws ScreenConfigException 
 	 */
-	private void parseViewUseDatasourceAttribute(View view, JSONObject elem) throws ScreenConfigException
-    {
-	    String datasourceStr;
-        try
-        {
-        	datasourceStr = elem.getString("useDataSource");
-        }
-        catch (JSONException e)
-        {
-			throw new ScreenConfigException(e);
-        }
-	    if (datasourceStr != null)
-	    {
-	    	String[] datasources = RegexpPatterns.REGEXP_COMMA.split(datasourceStr);
-	    	for (String datasource : datasources)
-	    	{
-	    		datasource = datasource.trim();
-	    		if (!StringUtils.isEmpty(datasource))
-	    		{
-	    			if (!DataSources.hasDataSource(datasource))
-	    			{
-	    				throw new ScreenConfigException("Datasource ["+datasource+"], declared on view ["+view.getId()+"], not found!");
-	    			}
-	    			view.addDataSource(datasource);
-	    		}
-	    	}
-	    }
-    }
-
-	/**
-	 * @param view
-	 * @param elem
-	 * @throws ScreenConfigException 
-	 */
-	private void parseViewUseFormatterAttribute(View view, JSONObject elem) throws ScreenConfigException
-    {
-	    String formatterStr;
-        try
-        {
-        	formatterStr = elem.getString("useFormatter");
-        }
-        catch (JSONException e)
-        {
-			throw new ScreenConfigException(e);
-        }
-	    if (formatterStr != null)
-	    {
-	    	String[] formatters = RegexpPatterns.REGEXP_COMMA.split(formatterStr);
-	    	for (String formatter : formatters)
-	    	{
-	    		formatter = formatter.trim();
-	    		if (!StringUtils.isEmpty(formatter))
-	    		{
-	    			if (Formatters.getFormatter(formatter) == null)
-	    			{
-	    				throw new ScreenConfigException("Formatter ["+formatter+"], declared on view ["+view.getId()+"], not found!");
-	    			}
-	    			view.addFormatter(formatter);
-	    		}
-	    	}
-	    }
-    }
-
-	/**
-	 * @param view
-	 * @param elem
-	 * @throws ScreenConfigException 
-	 */
 	/**
 	 * @param view
 	 * @param elem
@@ -540,11 +443,83 @@ public class ViewFactory
 	    		handler = handler.trim();
 	    		if (!StringUtils.isEmpty(handler))
 	    		{
-	    			if (!ClientControllers.hasController(handler))
+	    			if (!context.getControllers().hasController(handler))
 	    			{
 	    				throw new ScreenConfigException("Controller ["+handler+"], declared on view ["+view.getId()+"], not found!");
 	    			}
 	    			view.addController(handler);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param view
+	 * @param elem
+	 * @throws ScreenConfigException 
+	 */
+	@Deprecated
+	@Legacy
+	private void parseViewUseDatasourceAttribute(View view, JSONObject elem) throws ScreenConfigException
+    {
+	    String datasourceStr;
+        try
+        {
+        	datasourceStr = elem.getString("useDataSource");
+        }
+        catch (JSONException e)
+        {
+			throw new ScreenConfigException(e);
+        }
+	    if (datasourceStr != null)
+	    {
+	    	String[] datasources = RegexpPatterns.REGEXP_COMMA.split(datasourceStr);
+	    	for (String datasource : datasources)
+	    	{
+	    		datasource = datasource.trim();
+	    		if (!StringUtils.isEmpty(datasource))
+	    		{
+	    			if (!context.getDataSources().hasDataSource(datasource))
+	    			{
+	    				throw new ScreenConfigException("Datasource ["+datasource+"], declared on view ["+view.getId()+"], not found!");
+	    			}
+	    			view.addDataSource(datasource);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param view
+	 * @param elem
+	 * @throws ScreenConfigException 
+	 */
+	@Deprecated
+	@Legacy
+	private void parseViewUseFormatterAttribute(View view, JSONObject elem) throws ScreenConfigException
+    {
+	    String formatterStr;
+        try
+        {
+        	formatterStr = elem.getString("useFormatter");
+        }
+        catch (JSONException e)
+        {
+			throw new ScreenConfigException(e);
+        }
+	    if (formatterStr != null)
+	    {
+	    	String[] formatters = RegexpPatterns.REGEXP_COMMA.split(formatterStr);
+	    	for (String formatter : formatters)
+	    	{
+	    		formatter = formatter.trim();
+	    		if (!StringUtils.isEmpty(formatter))
+	    		{
+	    			if (context.getFormatters().getFormatter(formatter) == null)
+	    			{
+	    				throw new ScreenConfigException("Formatter ["+formatter+"], declared on view ["+view.getId()+"], not found!");
+	    			}
+	    			view.addFormatter(formatter);
 	    		}
 	    	}
 	    }
@@ -574,7 +549,7 @@ public class ViewFactory
 	    		res = res.trim();
 	    		if (!StringUtils.isEmpty(res))
 	    		{
-	    			if (!Resources.hasResource(res))
+	    			if (!context.getResources().hasResource(res))
 	    			{
 	    				throw new ScreenConfigException("Resource ["+res+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -609,7 +584,7 @@ public class ViewFactory
 	    		useView = useView.trim();
 	    		if (!StringUtils.isEmpty(useView))
 	    		{
-	    			if (Views.isViewName(useView) && Views.getView(useView) == null)
+	    			if (!context.getScreenLoader().getViewLoader().isValidViewLocator(useView))
 	    			{
 	    				throw new ScreenConfigException("View ["+useView+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -618,4 +593,20 @@ public class ViewFactory
 	    	}
 	    }
     }
+
+	/**
+	 * Test if a target json object represents a widget definition for Crux.
+	 * @param cruxObject
+	 * @return
+	 * @throws JSONException
+	 */
+	public static boolean isValidWidget(JSONObject cruxObject) throws JSONException
+	{
+		if (cruxObject.has("_type"))
+		{
+			String type = cruxObject.getString("_type");
+			return (type != null && !"screen".equals(type));
+		}
+		return false;
+	}
 }

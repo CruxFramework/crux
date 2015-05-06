@@ -22,10 +22,9 @@ import org.cruxframework.crux.core.client.db.IDXCursor;
 import org.cruxframework.crux.core.client.db.indexeddb.IDBCursor;
 import org.cruxframework.crux.core.client.db.indexeddb.IDBCursorWithValue;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -40,11 +39,11 @@ public class IDBCursorProxyCreator extends IDBAbstractKeyValueProxyCreator
 	private String idbCursorVariable;
 	private final String cursorName;
 
-	public IDBCursorProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, String[] keyPath, String cursorName)
+	public IDBCursorProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, String[] keyPath, String cursorName)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 		this.cursorName = cursorName;
-		this.cursorType = context.getTypeOracle().findType(IDXCursor.class.getCanonicalName());
+		this.cursorType = context.getGeneratorContext().getTypeOracle().findType(IDXCursor.class.getCanonicalName());
 		this.idbCursorVariable = "idbCursor";
 	}
 
@@ -161,7 +160,7 @@ public class IDBCursorProxyCreator extends IDBAbstractKeyValueProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = cursorType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -177,7 +176,7 @@ public class IDBCursorProxyCreator extends IDBAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("IDXCursor<"+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

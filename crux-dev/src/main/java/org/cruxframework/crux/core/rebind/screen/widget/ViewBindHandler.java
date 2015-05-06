@@ -26,15 +26,13 @@ import java.util.regex.Matcher;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.converter.Converters;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -46,13 +44,13 @@ import com.google.gwt.dev.util.collect.HashSet;
  */
 public class ViewBindHandler
 {
-	private GeneratorContext context;
+	private RebindContext context;
 	private Map<String, String> dataObjectBinderVariables = new HashMap<String, String>();
 	private Set<String> dataObjects = new HashSet<String>();
 	private View view;
 	private ViewFactoryCreator viewFactoryCreator;
 
-	public ViewBindHandler(GeneratorContext context, View view, ViewFactoryCreator viewFactoryCreator)
+	public ViewBindHandler(RebindContext context, View view, ViewFactoryCreator viewFactoryCreator)
     {
 		this.context = context;
 		this.view = view;
@@ -77,7 +75,7 @@ public class ViewBindHandler
 		{
 			dataObjectBinder = ViewFactoryCreator.createVariableName("dataObjectBinder");
 			dataObjectBinderVariables.put(dataObjectAlias, dataObjectBinder);
-			String dataObjectClassName = DataObjects.getDataObject(dataObjectAlias);//getObjectDataBinding(dataObjectAlias).getDataObjectClassName();
+			String dataObjectClassName = context.getDataObjects().getDataObject(dataObjectAlias);//getObjectDataBinding(dataObjectAlias).getDataObjectClassName();
 			
 			out.println("final " + DataObjectBinder.class.getCanonicalName() + "<" + dataObjectClassName + "> " + dataObjectBinder + "=" + 
 					ViewFactoryCreator.getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+");");
@@ -92,7 +90,7 @@ public class ViewBindHandler
 		{
 			return null;
 		}
-	    JClassType widgetType = context.getTypeOracle().findType(widgetClassName);
+	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
 		String trimPropertyValue = propertyValue.trim();
 		if (RegexpPatterns.REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING.matcher(trimPropertyValue).matches())
 		{
@@ -195,16 +193,16 @@ public class ViewBindHandler
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
  
 	    addDataObject(dataObject);
 	    
-	    JClassType dataObjectType = context.getTypeOracle().findType(dataObjectClassName);
+	    JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 	    JClassType converterType = getConverterType(context, converter);
 	    
 	    String converterParams = null;
 	    if (bindParts.length > 3 && converterType != null && 
-	    		converterType.findConstructor(new JType[]{context.getTypeOracle().findType(String.class.getCanonicalName())}) != null)
+	    		converterType.findConstructor(new JType[]{context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName())}) != null)
 	    {
 	    	converterParams = bindParts[3];
 	    }
@@ -237,7 +235,7 @@ public class ViewBindHandler
 	    	expressionParts.add(expressionPart);
         }
 	    
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    boolean negate = operator.startsWith("NOT ");
 	    if (negate)
 	    {
@@ -253,7 +251,7 @@ public class ViewBindHandler
     {
 	    ExpressionDataBinding result;
 	    Matcher matcher = RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(trimPropertyValue);
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    int pos = 0;
 	    boolean hasExpression = false;
 	    while (matcher.find())
@@ -289,16 +287,16 @@ public class ViewBindHandler
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
  
 	    addDataObject(dataObject);
 	    
-	    JClassType widgetType = context.getTypeOracle().findType(widgetClassName);
-	    JClassType dataObjectType = context.getTypeOracle().findType(dataObjectClassName);
+	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
+	    JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 	    JClassType converterType = getConverterType(context, converter);
 	    String converterParams = null;
 	    if (bindParts.length > 3 && converterType != null && 
-	    		converterType.findConstructor(new JType[]{context.getTypeOracle().findType(String.class.getCanonicalName())}) != null)
+	    		converterType.findConstructor(new JType[]{context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName())}) != null)
 	    {
 	    	converterParams = bindParts[3];
 	    }
@@ -322,7 +320,7 @@ public class ViewBindHandler
 	    trimPropertyValue = trimPropertyValue.substring(3, trimPropertyValue.length()-1);
 	    ExpressionPart expressionPart = getExpressionPart(trimPropertyValue);
 	    
-	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
+	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath);
 	    result.addReadBinding(expressionPart);
 	    if (!JClassUtils.isCompatibleTypes(widgetPropertyType, expressionPart.getType()))
 	    {
@@ -342,7 +340,7 @@ public class ViewBindHandler
 		if (text!= null &&  RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(text).matches())
 		{
 			String[] parts = getBindingParts(text, true);
-			return (DataObjects.getDataObject(parts[0]) != null);
+			return (context.getDataObjects().getDataObject(parts[0]) != null);
 		}
 		return false;
 	}
@@ -381,13 +379,13 @@ public class ViewBindHandler
 	    return result.toString();
 	}
 
-	public static JClassType getConverterType(GeneratorContext context, String bindConverter)
+	public static JClassType getConverterType(RebindContext context, String bindConverter)
     {
 		JClassType converterType = null;
 	    if (!StringUtils.isEmpty(bindConverter))
 	    {
-	    	String converterClassName = Converters.getConverter(bindConverter);
-	    	converterType = context.getTypeOracle().findType(converterClassName);
+	    	String converterClassName = context.getConverters().getConverter(bindConverter);
+	    	converterType = context.getGeneratorContext().getTypeOracle().findType(converterClassName);
 	    }
 	    return converterType;
     }

@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.controller.wrapper;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -32,6 +33,6 @@ public class ControllerAccessorGenerator extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
     {
-	    return new ControllerAccessorProxyCreator(logger, ctx, baseIntf);
+	    return new ControllerAccessorProxyCreator(new RebindContext(ctx, logger), baseIntf);
     }
 }

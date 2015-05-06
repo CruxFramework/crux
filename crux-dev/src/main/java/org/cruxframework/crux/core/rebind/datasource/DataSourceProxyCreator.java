@@ -29,13 +29,12 @@ import org.cruxframework.crux.core.client.screen.views.ViewAware;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -71,9 +70,9 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 	 * @param context
 	 * @param crossDocumentIntf
 	 */
-	public DataSourceProxyCreator(TreeLogger logger, GeneratorContext context, JClassType dataSourceClass)
+	public DataSourceProxyCreator(RebindContext context, JClassType dataSourceClass)
 	{
-		super(logger, context, false);
+		super(context, false);
 		this.dataSourceClass = dataSourceClass;
 		this.dtoType = getDtoTypeFromClass();
 		this.recordType = getRecordTypeFromClass();
@@ -142,7 +141,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
     			throw new CruxGeneratorException("Datasource ["+dataSourceClass.getQualifiedSourceName()+"] has an invalid ColumnDefinition ["+colKey+"].");
     		}
 
-    		JClassType comparableType = context.getTypeOracle().findType(Comparable.class.getCanonicalName());
+    		JClassType comparableType = context.getGeneratorContext().getTypeOracle().findType(Comparable.class.getCanonicalName());
 
     		boolean isSortable = (propType.isPrimitive() != null) || (comparableType.isAssignableFrom((JClassType) propType));
     		String propTypeName = JClassUtils.getGenericDeclForType(propType);
@@ -337,7 +336,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 	{
 		JPackage pkg = dataSourceClass.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -355,7 +354,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 		composerFactory.setSuperclass(dataSourceClass.getParameterizedQualifiedSourceName());
 		composerFactory.addImplementedInterface(ViewAware.class.getCanonicalName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**

@@ -24,6 +24,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.shared.rest.annotation.CookieParam;
 import org.cruxframework.crux.core.shared.rest.annotation.FormParam;
@@ -31,8 +32,6 @@ import org.cruxframework.crux.core.shared.rest.annotation.HeaderParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -44,13 +43,11 @@ import com.google.gwt.user.client.Cookies;
  */
 class BodyParameterHandler extends AbstractParameterHelper
 {
-	private final TreeLogger logger;
-	private final GeneratorContext context;
+	private final RebindContext context;
 
-	public BodyParameterHandler(TreeLogger logger, GeneratorContext context)
+	public BodyParameterHandler(RebindContext context)
     {
 		super(context);
-		this.logger = logger;
 		this.context = context;
     }
 	
@@ -77,7 +74,7 @@ class BodyParameterHandler extends AbstractParameterHelper
 				}
 
 				hasBodyObject = true;
-				String serializerName = new JSonSerializerProxyCreator(context, logger, parameters[i].getType()).create();
+				String serializerName = new JSonSerializerProxyCreator(context, parameters[i].getType()).create();
 				srcWriter.println(builder+".setHeader(\""+HttpHeaderNames.CONTENT_TYPE+"\", \"application/json\");");
 				srcWriter.println("JSONValue serialized = new "+serializerName+"().encode("+parameters[i].getName()+");");
 				srcWriter.println("String requestData = (serialized==null||serialized.isNull()!=null)?null:serialized.toString();");

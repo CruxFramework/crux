@@ -24,13 +24,11 @@ import org.cruxframework.crux.core.client.screen.views.ViewFactory;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.resources.Resources;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.logging.client.LogConfiguration;
@@ -49,9 +47,9 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
 	private String loggerVariable;
 	private final Device device;
 
-	public ResourcesHandlerProxyCreator(TreeLogger logger, GeneratorContext context, String resourceId, View view, String devive)
+	public ResourcesHandlerProxyCreator(RebindContext context, String resourceId, View view, String devive)
     {
-	    super(logger, context, false);
+	    super(context, false);
 		this.resourceId = resourceId;
 		this.view = view;
 		this.device = Device.valueOf(devive);
@@ -69,7 +67,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
 	@Override
 	protected void generateProxyMethods(SourcePrinter printer) throws CruxGeneratorException
 	{
-    	String resourceClass = Resources.getResource(resourceId, device);
+    	String resourceClass = context.getResources().getResource(resourceId, device);
     	if (resourceClass == null)
     	{
     		throw new CruxGeneratorException("Resource ["+resourceId+"], declared on View ["+view.getId()+"] could not be found for device ["+device.name()+"].");
@@ -99,7 +97,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
 	 */
 	private void generateCssInjectionResources(SourcePrinter printer, String resourceVariable, String resourceKey, String resourceClass)
     {
-		JClassType resourceType = context.getTypeOracle().findType(resourceClass);
+		JClassType resourceType = context.getGeneratorContext().getTypeOracle().findType(resourceClass);
 		
     	if (resourceType == null)
     	{
@@ -109,7 +107,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
     	JMethod[] methods = resourceType.getOverridableMethods();
     	if (methods != null)
     	{
-    		JClassType cssResourceType = context.getTypeOracle().findType(CssResource.class.getCanonicalName());		
+    		JClassType cssResourceType = context.getGeneratorContext().getTypeOracle().findType(CssResource.class.getCanonicalName());		
     		for (JMethod method : methods)
             {
 	            if (method.getReturnType().isClassOrInterface().isAssignableTo(cssResourceType))
@@ -141,7 +139,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
     protected SourcePrinter getSourcePrinter()
     {
 		String packageName = ViewFactory.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -156,7 +154,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
     }
 	
     /**

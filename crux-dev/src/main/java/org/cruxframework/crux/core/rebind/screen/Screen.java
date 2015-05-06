@@ -25,14 +25,13 @@ package org.cruxframework.crux.core.rebind.screen;
 public class Screen 
 {
 	protected String id;
-	protected String relativeId;
 	protected String module;
 	protected View rootView;
+	private long lastModified;
 	
-	public Screen(String id, String relativeId, String module, View rootView) 
+	public Screen(String id, String module, View rootView) 
 	{
 		this.id = id;
-		this.relativeId = relativeId;
 		this.module = module;
 		this.rootView = rootView;
 	}
@@ -46,14 +45,11 @@ public class Screen
 		return id;
 	}
 	
-	/**
-	 * @return
-	 */
-	public String getRelativeId()
+	public long getLastModified()
 	{
-		return relativeId;
+		return lastModified;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -69,5 +65,10 @@ public class Screen
 	public View getRootView()
     {
     	return rootView;
+    }
+
+	void setLastModified(long lastModified)
+    {
+		this.lastModified = lastModified;
     }
 }

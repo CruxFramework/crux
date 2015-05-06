@@ -35,11 +35,10 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewAware;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -74,9 +73,9 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	 * @param context
 	 * @param crossDocumentIntf
 	 */
-	public ControllerProxyCreator(TreeLogger logger, GeneratorContext context, JClassType controllerClass)
+	public ControllerProxyCreator(RebindContext context, JClassType controllerClass)
 	{
-		super(logger, context, false);
+		super(context, false);
 		this.controllerClass = controllerClass;
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		this.controllerName = controllerAnnot.value();
@@ -176,7 +175,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	{
 		JPackage pkg = controllerClass.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -194,7 +193,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		composerFactory.setSuperclass(controllerClass.getQualifiedSourceName());
 		composerFactory.addImplementedInterface(ViewAware.class.getCanonicalName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**

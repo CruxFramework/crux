@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
+import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.rest.util.HttpResponseCodes;
 import org.cruxframework.crux.core.utils.StreamUtils;
@@ -64,13 +65,14 @@ public class ViewTester extends HttpServlet
 
 	protected void processRequest(HttpServletResponse resp, String moduleName) throws IOException, UnsupportedEncodingException
     {
-		ViewTesterScreen.registerTestViewPageRequested(moduleName);
 	    InputStream screenResource = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/cruxViewTester.crux.xml");
 	    String screenContent = StreamUtils.readAsUTF8(screenResource);
 	    screenContent = screenContent.replace("{moduleName}", moduleName);
 	    ByteArrayInputStream inputStream = new ByteArrayInputStream(screenContent.getBytes("UTF-8"));
 
-	    Document screen = ViewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
-	    ViewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
+	    
+	    ViewProcessor viewProcessor = new ViewProcessor(new ViewLoader.SimpleViewLoader());
+	    Document screen = viewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
+	    viewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
     }
 }

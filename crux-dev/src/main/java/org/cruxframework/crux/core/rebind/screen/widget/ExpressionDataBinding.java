@@ -23,7 +23,7 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -37,6 +37,7 @@ public class ExpressionDataBinding
 {
 	protected static String WIDGET_VAR_REF = "widget";
 
+	private RebindContext context;
 	private Set<String> convertersDeclarations = new HashSet<String>();
 	private Set<String> dataObjects = new HashSet<String>();
 	private StringBuilder expression = new StringBuilder();
@@ -44,8 +45,9 @@ public class ExpressionDataBinding
 	private String widgetPropertyPath;
 	private JClassType widgetType;
 
-	public ExpressionDataBinding(JClassType widgetType, String widgetPropertyPath)
+	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath)
     {
+		this.context = context;
 		this.widgetType = widgetType;
 		this.widgetPropertyPath = widgetPropertyPath;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
@@ -159,7 +161,7 @@ public class ExpressionDataBinding
 	        }
 	        if (isReferenced)
 	        {
-	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	        	String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
 	        	result.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
 	        }
         }
@@ -197,7 +199,7 @@ public class ExpressionDataBinding
 	        }
 	        if (isReferenced)
 	        {
-	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	        	String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
 	        	writeExpression.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
 	        }
         }

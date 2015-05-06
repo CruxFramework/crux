@@ -18,16 +18,16 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 import org.cruxframework.crux.core.client.controller.Expose;
 import org.cruxframework.crux.core.client.controller.Factory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JGenericType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -118,7 +118,7 @@ public abstract class EvtProcessor extends AbstractProcessor
      * @param controllerAccessHandler
      */
     public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, Class<?> eventClass,
-    		                        String cruxEvent, GeneratorContext context, View view, ControllerAccessHandler controllerAccessHandler, Device device)
+    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, Device device)
     {
     	printEvtCall(out, eventValue, eventName, eventClass!= null? eventClass.getCanonicalName():null, cruxEvent, context, view, 
     			controllerAccessHandler, device, true);
@@ -136,7 +136,7 @@ public abstract class EvtProcessor extends AbstractProcessor
      * @param controllerAccessHandler
      */
     public static void printEvtCall(SourcePrinter out, String eventValue, String eventName,String parameterClassName,
-    		                        String cruxEvent, GeneratorContext context, View view, ControllerAccessHandler controllerAccessHandler, 
+    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, 
     		                        Device device, boolean allowNoParameterCall)
     {
     	Event event = EventFactory.getEvent(eventName, eventValue);
@@ -161,7 +161,7 @@ public abstract class EvtProcessor extends AbstractProcessor
      * @param allowNoParameterCall
      */
     public static boolean checkEvtCall(String eventValue, String eventName,String parameterClassName,
-            GeneratorContext context, View view, Device device, boolean allowNoParameterCall)
+            RebindContext context, View view, Device device, boolean allowNoParameterCall)
     {
     	Event event = EventFactory.getEvent(eventName, eventValue);
 
@@ -170,21 +170,25 @@ public abstract class EvtProcessor extends AbstractProcessor
     		throw new CruxGeneratorException("Error parsing controller method declaration on view ["+view.getId()+"]. ["+eventValue+"] is not a valid method declaration.");
     	}
     	
-    	JClassType eventClassType = parameterClassName==null?null:context.getTypeOracle().findType(parameterClassName);
+    	JClassType eventClassType = parameterClassName==null?null:context.getGeneratorContext().getTypeOracle().findType(parameterClassName);
 
     	if (!view.useController(event.getController()))
     	{
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , used on view ["+view.getId()+"], was not declared on this view. Use the useController attribute to import the controller into this view.");
     	}
     	
-    	String controller = ClientControllers.getController(event.getController(), device);
-    	if (controller == null)
-    	{
+    	String controller;
+        try
+        {
+	        controller = context.getControllers().getController(event.getController(), device);
+        }
+        catch (ResourceNotFoundException e)
+        {
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , declared on view ["+view.getId()+"], not found.");
     	}
 
     	boolean hasEventParameter = true;
-    	JClassType controllerClass = context.getTypeOracle().findType(controller);
+    	JClassType controllerClass = context.getGeneratorContext().getTypeOracle().findType(controller);
     	if (controllerClass == null)
     	{
     		String message = "Controller class ["+controller+"] , declared on view ["+view.getId()+"], could not be loaded. "
@@ -225,14 +229,14 @@ public abstract class EvtProcessor extends AbstractProcessor
 	 * @param exposedMethod
 	 * @param context
 	 */
-	private static void checkExposedMethod(Event event, String controller, JMethod exposedMethod, GeneratorContext context)
+	private static void checkExposedMethod(Event event, String controller, JMethod exposedMethod, RebindContext context)
 	{
 		if (exposedMethod.getAnnotation(Expose.class) == null && exposedMethod.getAnnotation(Factory.class) == null)
     	{
     		throw new CruxGeneratorException(" Method ["+event.getMethod()+"] of Controller ["+controller+"] is not exposed, so it can not be called from crux.xml pages.");
     	}
 
-		JClassType runtimeExceptionType = context.getTypeOracle().findType(RuntimeException.class.getCanonicalName());
+		JClassType runtimeExceptionType = context.getGeneratorContext().getTypeOracle().findType(RuntimeException.class.getCanonicalName());
 
     	JClassType[] methodThrows = exposedMethod.getThrows();
     	if (methodThrows != null)
@@ -309,20 +313,24 @@ public abstract class EvtProcessor extends AbstractProcessor
     {
     	Event event = EventFactory.getEvent(eventName, eventValue);
 
-    	JClassType eventClassType = creator.getContext().getTypeOracle().findType(eventClass.getCanonicalName());
+    	JClassType eventClassType = creator.getContext().getGeneratorContext().getTypeOracle().findType(eventClass.getCanonicalName());
 
     	if (!creator.getView().useController(event.getController()))
     	{
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , used on view ["+creator.getView().getId()+"], was not declared on this view. Use the useController attribute to import the controller into this view.");
     	}
-    	String controller = ClientControllers.getController(event.getController(), creator.getDevice());
-    	if (controller == null)
-    	{
+    	String controller;
+        try
+        {
+	        controller = creator.getContext().getControllers().getController(event.getController(), creator.getDevice());
+        }
+        catch (ResourceNotFoundException e)
+        {
     		throw new CruxGeneratorException("Controller ["+event.getController()+"] , declared on view ["+creator.getView().getId()+"], not found.");
     	}
 
     	boolean hasEventParameter = true;
-    	JClassType controllerClass = creator.getContext().getTypeOracle().findType(controller);
+    	JClassType controllerClass = creator.getContext().getGeneratorContext().getTypeOracle().findType(controller);
     	if (controllerClass == null)
     	{
 			String message = "Controller class ["+controller+"] , declared on view ["+creator.getView().getId()+"], could not be loaded. "

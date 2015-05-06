@@ -21,25 +21,22 @@ import java.util.Date;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 
 public class JsonPRestCreatorHelper
 {
-	protected GeneratorContext context;
-	protected TreeLogger logger;
+	protected RebindContext context;
 	private JClassType javascriptObjectType;
 
-	public JsonPRestCreatorHelper(GeneratorContext context, TreeLogger logger)
+	public JsonPRestCreatorHelper(RebindContext context)
 	{
 		this.context = context;
-		this.logger = logger;
-		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+		javascriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
 		
 	}
 	
@@ -104,7 +101,7 @@ public class JsonPRestCreatorHelper
 		srcWriter.println("try{");
 
 		srcWriter.println("JSONValue jsonValue = new JSONString(jsonText);");
-		String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
+		String serializerName = new JSonSerializerProxyCreator(context, callbackResultType).create();
 		srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 		
 		srcWriter.println(callbackParameterName+".onSuccess(result);");
@@ -139,7 +136,7 @@ public class JsonPRestCreatorHelper
 		srcWriter.println("try{");
 
 		srcWriter.println("JSONValue jsonValue = new JSONNumber(value);");
-		String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
+		String serializerName = new JSonSerializerProxyCreator(context, callbackResultType).create();
 		srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 		srcWriter.println(callbackParameterName+".onSuccess(result);");
 		srcWriter.println("}catch (Exception e){");
@@ -157,7 +154,7 @@ public class JsonPRestCreatorHelper
 	    srcWriter.println("public void onSuccess(Integer value){");
 		srcWriter.println("try{");
 		srcWriter.println("JSONValue jsonValue = new JSONNumber(value);");
-		String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
+		String serializerName = new JSonSerializerProxyCreator(context, callbackResultType).create();
 		srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 		srcWriter.println(callbackParameterName+".onSuccess(result);");
 		srcWriter.println("}catch (Exception e){");
@@ -182,7 +179,7 @@ public class JsonPRestCreatorHelper
 		else
 		{
 			srcWriter.println("JSONValue jsonValue = new JSONObject(obj);");
-			String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
+			String serializerName = new JSonSerializerProxyCreator(context, callbackResultType).create();
 			srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 		}
 		srcWriter.println(callbackParameterName+".onSuccess(result);");

@@ -16,28 +16,11 @@
 package org.cruxframework.crux.core.rebind;
 
 import java.io.PrintWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import org.cruxframework.crux.core.declarativeui.view.Views;
-import org.cruxframework.crux.core.rebind.module.Modules;
-import org.cruxframework.crux.core.rebind.screen.Screen;
-import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
-import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
-import org.cruxframework.crux.core.rebind.screen.View;
-import org.cruxframework.crux.core.rebind.screen.ViewFactory;
-import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.server.development.ViewTesterScreen;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.SelectionProperty;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -53,11 +36,10 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	private static final String PROXY_SUFFIX = "_Impl";
 	protected JClassType baseIntf;
 
-	public AbstractInterfaceWrapperProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf, boolean cacheable)
+	public AbstractInterfaceWrapperProxyCreator(RebindContext context, JClassType baseIntf, boolean cacheable)
     {
-	    super(logger, context, cacheable);
+	    super(context, cacheable);
 		this.baseIntf = baseIntf;
-		DevelopmentScanners.initializeScanners();
     }
 
 	/**
@@ -88,13 +70,12 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	{
 		try
 		{
-			SelectionProperty userAgent = context.getPropertyOracle().getSelectionProperty(logger, "user.agent");
+			SelectionProperty userAgent = context.getGeneratorContext().getPropertyOracle().getSelectionProperty(context.getLogger(), "user.agent");
 			return userAgent==null?null:userAgent.getCurrentValue();
 		}
 		catch (BadPropertyValueException e)
 		{
-			logger.log(TreeLogger.ERROR, "Can not read user.agent property.",e);
-			throw new CruxGeneratorException();
+			throw new CruxGeneratorException("Can not read user.agent property.",e);
 		}
 	}
 	
@@ -106,7 +87,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	{
 		try
 		{
-			SelectionProperty device = context.getPropertyOracle().getSelectionProperty(logger, "device.features");
+			SelectionProperty device = context.getGeneratorContext().getPropertyOracle().getSelectionProperty(context.getLogger(), "device.features");
 			return device==null?null:device.getCurrentValue();
 		}
 		catch (BadPropertyValueException e)
@@ -115,114 +96,6 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 		}
 	}
 	
-	protected String getModule()
-	{
-		try
-		{
-			if (ViewTesterScreen.isTestViewScreen())
-			{
-				return ViewTesterScreen.getModuleForViewTesting();
-			}
-			else
-			{
-				String screenID = CruxBridge.getInstance().getLastPageRequested();
-				Screen requestedScreen = ScreenFactory.getInstance().getScreen(screenID, getDeviceFeatures());
-				if(requestedScreen != null)
-				{
-					return requestedScreen.getModule();
-				}
-			}
-			return null;
-		}
-		catch (ScreenConfigException e)
-		{
-			logger.log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve current module.",e);
-			throw new CruxGeneratorException();
-        }
-	}
-	
-	/**
-	 * 
-	 * @param logger
-	 * @return
-	 * @throws CruxGeneratorException
-	 */
-	protected List<Screen> getScreens() throws CruxGeneratorException
-	{
-		try
-        {
-	        List<Screen> screens = new ArrayList<Screen>();
-
-	        String module = getModule();
-	        
-	        if(module != null)
-	        {
-	        	Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module);
-	        	
-	        	if (screenIDs == null)
-	        	{
-	        		throw new ScreenConfigException("Can not find the module ["+module+"].");
-	        	}
-	        	for (String screenID : screenIDs)
-	        	{
-	        		Screen screen = ScreenFactory.getInstance().getScreen(screenID, getDeviceFeatures());
-	        		if(screen != null)
-	        		{
-	        			screens.add(screen);
-	        		}
-	        	}
-	        }
-	        
-	        return screens;
-        }
-        catch (ScreenConfigException e)
-        {
-			logger.log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve module's list of screens.",e);
-			throw new CruxGeneratorException();
-        }
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected List<View> getViews()
-	{
-		List<View> views = new ArrayList<View>();
-		if (ViewTesterScreen.isTestViewScreen())
-		{
-			try
-			{
-				String moduleId = getModule();
-				List<String> viewList = Views.getViews("*", moduleId);
-				for (String viewName : viewList)
-				{
-					URL url = Views.getView(viewName);
-					if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
-					{
-						View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
-						views.add(innerView);
-					}
-				}
-			}
-			catch (ScreenConfigException e)
-			{
-				logger.log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve list of views.",e);
-				throw new CruxGeneratorException();
-			}
-			
-		}
-		else
-		{
-			List<Screen> screens = getScreens();
-			HashSet<String> added = new HashSet<String>();
-			for (Screen screen : screens)
-			{
-				findViews(screen, views, added);
-			}
-		}
-		return views;
-	}
 		
 	/**
 	 * @return a sourceWriter for the proxy class
@@ -232,7 +105,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	{
 		JPackage pkg = baseIntf.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -249,7 +122,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**
@@ -258,62 +131,6 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	protected boolean findCacheableImplementationAndMarkForReuseIfAvailable()
 	{
 		return findCacheableImplementationAndMarkForReuseIfAvailable(baseIntf);
-	}
-	
-	/**
-	 * 
-	 * @param screen
-	 * @param views
-	 * @param added
-	 */
-	private void findViews(Screen screen, List<View> views, Set<String> added) 
-	{
-		View rootView = screen.getRootView();
-		if (!added.contains(rootView.getId()))
-		{
-			added.add(rootView.getId());
-			views.add(rootView);
-			findViews(rootView, views, added, screen.getModule());
-		}
-	}
-	
-	/**
-	 * 
-	 * @param view
-	 * @param views
-	 * @param added
-	 */
-	private void findViews(View view, List<View> views, Set<String> added, String moduleId) 
-	{
-		try
-		{
-			Iterator<String> iterator = view.iterateViews();
-			while (iterator.hasNext())
-			{
-				String viewLocator = iterator.next();
-				if (!added.contains(viewLocator))
-				{
-					added.add(viewLocator);
-					
-					List<String> viewList = Views.getViews(viewLocator, moduleId);
-					for (String viewName : viewList)
-                    {
-						URL url = Views.getView(viewName);
-						if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
-						{
-							View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
-							views.add(innerView);
-							findViews(innerView, views, added, moduleId);
-						}
-                    }
-				}
-			}
-		}
-		catch (ScreenConfigException e)
-		{
-			logger.log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve screen's list of views.",e);
-			throw new CruxGeneratorException();
-		}
 	}
 	
 	/**

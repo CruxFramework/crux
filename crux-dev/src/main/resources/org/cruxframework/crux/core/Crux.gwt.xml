@@ -9,6 +9,11 @@
 
     <inherits name="org.cruxframework.crux.core.CruxShared"/>
     <set-property name="gwt.logging.enabled" value="FALSE"/>    
+	
+	<define-linker name="screenLinker" class="org.cruxframework.crux.core.rebind.screen.linker.ScreenLinker"/>
+	<add-linker name="screenLinker"/>
+		
+	<define-configuration-property name="view.base.folder" is-multi-valued="true" />
 		
 	<!-- Cross-dDevice support -->
 	<!-- Property to identify the device screen features -->
@@ -26,12 +31,7 @@
 	<generate-with class="org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryGenerator">
 		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.ViewFactory" />
 	</generate-with>
-	
-	<!-- Specify the generator for registered formatters.     -->
-	<generate-with class="org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersGenerator">
-		<when-type-assignable class="org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters" />
-	</generate-with>
-	
+		
 	<!-- Specify the generator for screen wrappers.     -->
 	<generate-with class="org.cruxframework.crux.core.rebind.screen.wrapper.WidgetAccessorGenerator">
 		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.WidgetAccessor" />

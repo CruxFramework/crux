@@ -30,14 +30,15 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	protected int size;
 	protected LazyDataLoader<T> dataLoader;
 
-    public LazyDataProvider()
+    public LazyDataProvider(DataProvider.DataHandler<T> handler)
 	{
+    	super(handler);
 		this.data = CollectionFactory.createArray();
 	}
 
-	public LazyDataProvider(LazyDataLoader<T> dataLoader)
+	public LazyDataProvider(DataProvider.DataHandler<T> handler, LazyDataLoader<T> dataLoader)
     {
-		this();
+		this(handler);
 		this.dataLoader = dataLoader;
     }
 	

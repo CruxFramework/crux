@@ -18,12 +18,13 @@ package org.cruxframework.crux.core.rebind;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.CachedGeneratorResult;
 import com.google.gwt.core.ext.ConfigurationProperty;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -39,26 +40,23 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public abstract class AbstractProxyCreator
 {
-	protected GeneratorContext context;
-	protected TreeLogger logger;
+	protected RebindContext context;
 	protected boolean cacheable;
-	protected boolean cacheableVersionFound;
 
 	/**
 	 * @param logger
 	 * @param context
 	 * @param crossDocumentIntf
 	 */
-	public AbstractProxyCreator(TreeLogger logger, GeneratorContext context, boolean cacheable)
+	public AbstractProxyCreator(RebindContext context, boolean cacheable)
     {
-		this.logger = logger;
 		this.context = context;
 		this.cacheable = cacheable;
     }
 	
 	protected boolean isAlreadyGenerated(String className)
 	{
-		return context.getTypeOracle().findType(className) != null;
+		return context.getGeneratorContext().getTypeOracle().findType(className) != null;
 	}
 	
 	/**
@@ -74,7 +72,6 @@ public abstract class AbstractProxyCreator
 	    {
 	    	if (findCacheableImplementationAndMarkForReuseIfAvailable())
 	    	{
-	    		this.cacheableVersionFound = true;
 	    		return className;
 	    	}
 	    }
@@ -92,10 +89,19 @@ public abstract class AbstractProxyCreator
 		generateProxyContructor(printer);
 		generateProxyMethods(printer);
 		generateProxyFields(printer);
+		generateProxyResources();
 
 		printer.commit();
 		return className;
 	}
+
+	/**
+	 * 
+	 */
+	protected void generateProxyResources()
+    {
+	    
+    }
 
 	/**
 	 * @param srcWriter
@@ -191,12 +197,14 @@ public abstract class AbstractProxyCreator
 	/**
 	 * @return
 	 */
+	@Deprecated
+	@Legacy
 	protected boolean isCrux2OldInterfacesCompatibilityEnabled()
     {//TODO remover isso
 		String value;
 		try
         {
-	        ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("enableCrux2OldInterfacesCompatibility");
+	        ConfigurationProperty property = context.getGeneratorContext().getPropertyOracle().getConfigurationProperty("enableCrux2OldInterfacesCompatibility");
 	        List<String> values = property.getValues();
 	        if (values != null && values.size() > 0)
 	        {
@@ -329,8 +337,8 @@ public abstract class AbstractProxyCreator
 	
 	protected boolean findCacheableImplementationAndMarkForReuseIfAvailable(JClassType baseIntf)
 	{
-		CachedGeneratorResult lastResult = context.getCachedGeneratorResult();
-		if (lastResult == null || !context.isGeneratorResultCachingEnabled())
+		CachedGeneratorResult lastResult = context.getGeneratorContext().getCachedGeneratorResult();
+		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
 		{
 			return false;
 		}
@@ -353,7 +361,7 @@ public abstract class AbstractProxyCreator
 
 			if (lastModified != 0L && lastModified < lastResult.getTimeGenerated())
 			{
-				return context.tryReuseTypeFromCache(proxyName);
+				return context.getGeneratorContext().tryReuseTypeFromCache(proxyName);
 			}
 		}
 		catch (RuntimeException ex)
@@ -369,11 +377,6 @@ public abstract class AbstractProxyCreator
 	protected boolean isCacheable()
 	{
 		return cacheable;
-	}
-	
-	protected boolean cacheableVersionFound()
-	{
-		return cacheableVersionFound;
 	}
 	
     /**

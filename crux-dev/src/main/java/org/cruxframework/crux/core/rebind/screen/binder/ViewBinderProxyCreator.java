@@ -21,11 +21,10 @@ import org.cruxframework.crux.core.client.screen.views.Target;
 import org.cruxframework.crux.core.client.screen.views.ViewBinder;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -49,9 +48,9 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
 	 * @param logger
 	 * @param context
 	 */
-	public ViewBinderProxyCreator(TreeLogger logger, GeneratorContext context, JClassType invokerIntf)
+	public ViewBinderProxyCreator(RebindContext context, JClassType invokerIntf)
     {
-	    super(logger, context, invokerIntf);
+	    super(context, invokerIntf);
 	    try
         {
 	    	viewBinderType = invokerIntf.getOracle().getType(ViewBinder.class.getCanonicalName());

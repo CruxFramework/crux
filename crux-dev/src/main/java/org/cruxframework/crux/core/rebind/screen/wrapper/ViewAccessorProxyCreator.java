@@ -24,10 +24,9 @@ import org.cruxframework.crux.core.client.screen.views.ViewContainer;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
 import org.cruxframework.crux.core.rebind.AbstractWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -50,9 +49,9 @@ public class ViewAccessorProxyCreator extends AbstractWrapperProxyCreator
 	 * @param logger
 	 * @param context
 	 */
-	public ViewAccessorProxyCreator(TreeLogger logger, GeneratorContext context, JClassType invokerIntf)
+	public ViewAccessorProxyCreator(RebindContext context, JClassType invokerIntf)
     {
-	    super(logger, context, invokerIntf);
+	    super(context, invokerIntf);
 	    try
         {
 	        viewType = invokerIntf.getOracle().getType(View.class.getCanonicalName());

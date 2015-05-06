@@ -18,9 +18,11 @@ package org.cruxframework.crux.core.client.screen;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
+import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.core.client.screen.views.View;
@@ -468,6 +470,17 @@ public class Screen
 	public RegisteredControllers getRegisteredControllers()
     {
 	    return getView().getRegisteredControllers();
+    }
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Deprecated
+	@Legacy
+	public RegisteredClientFormatters getRegisteredFormatters()
+    {
+	    return getView().getRegisteredFormatters();
     }
 	
 	/**

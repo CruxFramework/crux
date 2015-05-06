@@ -38,12 +38,11 @@ import org.cruxframework.crux.core.ioc.IocConfigImpl;
 import org.cruxframework.crux.core.ioc.IocContainerManager;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -60,21 +59,61 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
  */
 public class IocContainerRebind extends AbstractProxyCreator
 { 
-	protected final View view;
 	protected Map<String, IocConfig<?>> configurations;
-	protected JClassType viewBindableType;
-	protected JClassType remoteServiceType;
 	protected Device device;
+	protected IocContainerManager iocContainerManager;
+	protected JClassType remoteServiceType;
+	protected final View view;
+	protected JClassType viewBindableType;
 
-	public IocContainerRebind(TreeLogger logger, GeneratorContext context, View view, String device)
+	public IocContainerRebind(RebindContext context, View view, String device)
     {
-	    super(logger, context, false);
+	    super(context, false);
 		this.view = view;
-		viewBindableType = context.getTypeOracle().findType(ViewBindable.class.getCanonicalName());
-		remoteServiceType = context.getTypeOracle().findType(RemoteService.class.getCanonicalName());
+		viewBindableType = context.getGeneratorContext().getTypeOracle().findType(ViewBindable.class.getCanonicalName());
+		remoteServiceType = context.getGeneratorContext().getTypeOracle().findType(RemoteService.class.getCanonicalName());
 		this.device = Device.valueOf(device);
-		configurations = IocContainerManager.getConfigurationsForView(view, this.device);
+		iocContainerManager = new IocContainerManager(context);
+		configurations = iocContainerManager.getConfigurationsForView(view, this.device);
     }
+
+	@Override
+    public String getProxyQualifiedName()
+    {
+	    return IocProvider.class.getPackage().getName()+"."+getProxySimpleName();
+    }
+
+	@Override
+	public String getProxySimpleName()
+	{
+		String className = (view != null ? view.getId():"")+"_"+device.toString(); 
+		className = className.replaceAll("[\\W]", "_");
+		return "IocContainer_"+className;
+	}
+	
+	/**
+	 * 
+	 * @param srcWriter
+	 * @param type
+	 * @param parentVariable
+	 * @param iocContainerVariable
+	 * @param view
+	 * @param device
+	 */
+	public void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, String iocContainerVariable, 
+			View view, Device device)
+	{
+		Map<String, IocConfig<?>> configurations = iocContainerManager.getConfigurationsForView(view, device);
+		injectFieldsAndMethods(srcWriter, type, parentVariable, new HashSet<String>(), iocContainerVariable, configurations);
+	}
+
+	@Override
+	protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException
+	{
+		srcWriter.println("public "+getProxySimpleName()+"(View view){");
+		srcWriter.println("super(view);");
+		srcWriter.println("}");
+	}
 
 	@Override
     protected void generateProxyMethods(SourcePrinter srcWriter) throws CruxGeneratorException
@@ -87,14 +126,42 @@ public class IocContainerRebind extends AbstractProxyCreator
 		}
     }
 
-	@Override
-	protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException
-	{
-		srcWriter.println("public "+getProxySimpleName()+"(View view){");
-		srcWriter.println("super(view);");
-		srcWriter.println("}");
-	}
+	/**
+	 * @return
+	 */
+    protected String[] getImports()
+    {
+	    String[] imports = new String[] {
+	    	org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName(),	
+    		GWT.class.getCanonicalName()
+		};
+	    return imports;
+    }
 	
+	@Override
+    protected SourcePrinter getSourcePrinter()
+    {
+		String packageName = IocProvider.class.getPackage().getName();
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
+
+		if (printWriter == null)
+		{
+			return null;
+		}
+
+		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
+
+		String[] imports = getImports();
+		for (String imp : imports)
+		{
+			composerFactory.addImport(imp);
+		}
+		
+		composerFactory.setSuperclass(IocContainer.class.getCanonicalName());
+
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+    }
+
 	/**
 	 * 
 	 * @param srcWriter
@@ -105,7 +172,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 		try
 		{
 			srcWriter.println("public  "+className+" get"+className.replace('.', '_')+"("+Scope.class.getCanonicalName()+" scope, String subscope){");
-			JClassType type = JClassUtils.getType(context.getTypeOracle(), className);
+			JClassType type = JClassUtils.getType(context.getGeneratorContext().getTypeOracle(), className);
 
 			IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(className);
 			Class<?> providerClass = iocConfig.getProviderClass();
@@ -130,7 +197,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 				srcWriter.println(className+" result = _getScope(scope).getValue(new "+IocProvider.class.getCanonicalName()+"<"+className+">(){");
 				srcWriter.println("public "+className+" get(){");
 				String instantiationClass = getInstantiationClass(className);
-				JClassType instantiationType = context.getTypeOracle().findType(instantiationClass);
+				JClassType instantiationType = context.getGeneratorContext().getTypeOracle().findType(instantiationClass);
 				if (instantiationType == null)
 				{
 					throw new CruxGeneratorException("Can not found type: "+instantiationClass);
@@ -167,27 +234,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 		}
 		
     }
-
-	/**
-	 * 
-	 * @param className
-	 * @return
-	 */
-	private String getInstantiationClass(String className)
-    {
-		if (className.endsWith("Async"))
-		{
-			String serviceInterface = className.substring(0, className.length() - 5);
-			JClassType type = context.getTypeOracle().findType(serviceInterface);
-			if (type != null && type.isAssignableTo(remoteServiceType))
-			{
-				return type.getQualifiedSourceName();
-			}
-		}
-		
-	    return className;
-    }
-
+	
 	/**
 	 * 
 	 * @param srcWriter
@@ -205,39 +252,118 @@ public class IocContainerRebind extends AbstractProxyCreator
 
 	/**
 	 * 
-	 * @param srcWriter
-	 * @param type
-	 * @param parentVariable
-	 * @param iocContainerVariable
-	 * @param view
-	 * @param device
+	 * @param className
+	 * @return
 	 */
-	public static void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, String iocContainerVariable, 
-			View view, Device device)
-	{
-		Map<String, IocConfig<?>> configurations = IocContainerManager.getConfigurationsForView(view, device);
-		injectFieldsAndMethods(srcWriter, type, parentVariable, new HashSet<String>(), iocContainerVariable, configurations);
-	}
+	private String getInstantiationClass(String className)
+    {
+		if (className.endsWith("Async"))
+		{
+			String serviceInterface = className.substring(0, className.length() - 5);
+			JClassType type = context.getGeneratorContext().getTypeOracle().findType(serviceInterface);
+			if (type != null && type.isAssignableTo(remoteServiceType))
+			{
+				return type.getQualifiedSourceName();
+			}
+		}
+		
+	    return className;
+    }
+
+	@SuppressWarnings("deprecation")
+    private static String getFieldInjectionExpression(JField field, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
+    {
+		Inject inject = field.getAnnotation(Inject.class);
+		if (inject != null)
+		{
+			JType fieldType = field.getType();
+			if (!field.isStatic())
+			{
+				if (fieldType.isClassOrInterface() != null)
+				{
+					String fieldTypeName = fieldType.getQualifiedSourceName();
+					IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(fieldTypeName);
+					if (iocConfig != null)
+					{
+						if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
+						{
+							return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+									"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
+						}
+						return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+								"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
+					}
+					else
+					{
+						return "GWT.create("+fieldTypeName+".class)";
+					}
+				}
+				else
+				{
+					throw new IoCException("Error injecting field ["+field.getName()+"] from type ["+field.getEnclosingType().getQualifiedSourceName()+"]. Primitive fields can not be handled by ioc container.");
+				}
+			}
+			else
+			{
+				throw new IoCException("Error injecting field ["+field.getName()+"] from type ["+field.getEnclosingType().getQualifiedSourceName()+"]. Static fields can not be handled by ioc container.");
+			}
+		}
+	    return null;
+    }
+
+	private static Inject getInjectAnnotation(JParameter parameter)
+    {
+		Inject result = parameter.getAnnotation(Inject.class);
+		if (result == null)
+		{
+			result = parameter.getEnclosingMethod().getAnnotation(Inject.class);
+		}
+		return result;
+    }
 	
-	/**
-	 * 
-	 * @param srcWriter
-	 * @param type
-	 * @param parentVariable
-	 * @param added
-	 * @param iocContainerVariable
-	 * @param configurations
-	 */
-	private static void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, Set<String> added, String iocContainerVariable, 
-			Map<String, IocConfig<?>> configurations)
-	{
-        injectFields(srcWriter, type, parentVariable, added, iocContainerVariable, configurations);
-        injectMethods(srcWriter, type, parentVariable, added, iocContainerVariable, configurations);
-        if (type.getSuperclass() != null)
+	@SuppressWarnings("deprecation")
+    private static String getParameterInjectionExpression(JParameter parameter, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
+    {
+		JType parameterType = parameter.getType();
+		if (parameterType.isClassOrInterface() != null)
+		{
+			String fieldTypeName = parameterType.getQualifiedSourceName();
+			IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(fieldTypeName);
+			if (iocConfig != null)
+			{
+				Inject inject = getInjectAnnotation(parameter);
+				if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
+				{
+					return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+							"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
+				}
+				return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+						"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
+			}
+			else
+			{
+				return "GWT.create("+fieldTypeName+".class)";
+			}
+		}
+		else
+		{
+			throw new IoCException("Error injecting parameter ["+parameter.getName()+"] from method ["+parameter.getEnclosingMethod().getReadableDeclaration()+"]. Primitive fields can not be handled by ioc container.");
+		}
+    }
+
+	@SuppressWarnings("deprecation")
+    private static String getScopeName(org.cruxframework.crux.core.client.ioc.Inject.Scope scope)
+    {
+		switch (scope)
         {
-        	injectFieldsAndMethods(srcWriter, type.getSuperclass(), parentVariable, added, iocContainerVariable, configurations);
-        }
-	}
+			case DOCUMENT:
+				return Scope.SINGLETON.name();
+			case DEFAULT:
+				return Scope.LOCAL.name();
+			default:
+				return scope.name();
+		}
+    }
 
 	/**
 	 * 
@@ -287,8 +413,28 @@ public class IocContainerRebind extends AbstractProxyCreator
 				}
         	}
         }
-    }
-	
+    }	
+
+	/**
+	 * 
+	 * @param srcWriter
+	 * @param type
+	 * @param parentVariable
+	 * @param added
+	 * @param iocContainerVariable
+	 * @param configurations
+	 */
+	private static void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, Set<String> added, String iocContainerVariable, 
+			Map<String, IocConfig<?>> configurations)
+	{
+        injectFields(srcWriter, type, parentVariable, added, iocContainerVariable, configurations);
+        injectMethods(srcWriter, type, parentVariable, added, iocContainerVariable, configurations);
+        if (type.getSuperclass() != null)
+        {
+        	injectFieldsAndMethods(srcWriter, type.getSuperclass(), parentVariable, added, iocContainerVariable, configurations);
+        }
+	}
+
 	/**
 	 * 
 	 * @param srcWriter
@@ -340,150 +486,5 @@ public class IocContainerRebind extends AbstractProxyCreator
 	        	}
         	}
         }
-    }
-
-	@Override
-    public String getProxyQualifiedName()
-    {
-	    return IocProvider.class.getPackage().getName()+"."+getProxySimpleName();
-    }
-
-	@Override
-	public String getProxySimpleName()
-	{
-		String className = (view != null ? view.getId():"")+"_"+device.toString(); 
-		className = className.replaceAll("[\\W]", "_");
-		return "IocContainer_"+className;
-	}
-
-	@Override
-    protected SourcePrinter getSourcePrinter()
-    {
-		String packageName = IocProvider.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
-
-		if (printWriter == null)
-		{
-			return null;
-		}
-
-		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
-
-		String[] imports = getImports();
-		for (String imp : imports)
-		{
-			composerFactory.addImport(imp);
-		}
-		
-		composerFactory.setSuperclass(IocContainer.class.getCanonicalName());
-
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
-    }
-	
-	/**
-	 * @return
-	 */
-    protected String[] getImports()
-    {
-	    String[] imports = new String[] {
-	    	org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName(),	
-    		GWT.class.getCanonicalName()
-		};
-	    return imports;
-    }
-
-	@SuppressWarnings("deprecation")
-    private static String getFieldInjectionExpression(JField field, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
-    {
-		Inject inject = field.getAnnotation(Inject.class);
-		if (inject != null)
-		{
-			JType fieldType = field.getType();
-			if (!field.isStatic())
-			{
-				if (fieldType.isClassOrInterface() != null)
-				{
-					String fieldTypeName = fieldType.getQualifiedSourceName();
-					IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(fieldTypeName);
-					if (iocConfig != null)
-					{
-						if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
-						{
-							return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-									"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
-						}
-						return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-								"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
-					}
-					else
-					{
-						return "GWT.create("+fieldTypeName+".class)";
-					}
-				}
-				else
-				{
-					throw new IoCException("Error injecting field ["+field.getName()+"] from type ["+field.getEnclosingType().getQualifiedSourceName()+"]. Primitive fields can not be handled by ioc container.");
-				}
-			}
-			else
-			{
-				throw new IoCException("Error injecting field ["+field.getName()+"] from type ["+field.getEnclosingType().getQualifiedSourceName()+"]. Static fields can not be handled by ioc container.");
-			}
-		}
-	    return null;
-    }
-
-	@SuppressWarnings("deprecation")
-    private static String getScopeName(org.cruxframework.crux.core.client.ioc.Inject.Scope scope)
-    {
-		switch (scope)
-        {
-			case DOCUMENT:
-				return Scope.SINGLETON.name();
-			case DEFAULT:
-				return Scope.LOCAL.name();
-			default:
-				return scope.name();
-		}
-    }	
-
-	@SuppressWarnings("deprecation")
-    private static String getParameterInjectionExpression(JParameter parameter, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
-    {
-		JType parameterType = parameter.getType();
-		if (parameterType.isClassOrInterface() != null)
-		{
-			String fieldTypeName = parameterType.getQualifiedSourceName();
-			IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(fieldTypeName);
-			if (iocConfig != null)
-			{
-				Inject inject = getInjectAnnotation(parameter);
-				if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
-				{
-					return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-							"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
-				}
-				return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-						"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
-			}
-			else
-			{
-				return "GWT.create("+fieldTypeName+".class)";
-			}
-		}
-		else
-		{
-			throw new IoCException("Error injecting parameter ["+parameter.getName()+"] from method ["+parameter.getEnclosingMethod().getReadableDeclaration()+"]. Primitive fields can not be handled by ioc container.");
-		}
-    }
-
-	private static Inject getInjectAnnotation(JParameter parameter)
-    {
-		Inject result = parameter.getAnnotation(Inject.class);
-		if (result == null)
-		{
-			result = parameter.getEnclosingMethod().getAnnotation(Inject.class);
-		}
-		return result;
     }	
 }

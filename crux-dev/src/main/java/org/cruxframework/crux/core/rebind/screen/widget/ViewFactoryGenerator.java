@@ -15,12 +15,15 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
-import org.cruxframework.crux.core.rebind.AbstractGenerator;
-import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.IncrementalGenerator;
+import com.google.gwt.core.ext.RebindMode;
+import com.google.gwt.core.ext.RebindResult;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.UnableToCompleteException;
 
 /**
  * Generates a ViewFactory class.  
@@ -28,11 +31,27 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewFactoryGenerator extends AbstractGenerator
+public class ViewFactoryGenerator extends IncrementalGenerator
 {
 	@Override
-    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
-    {
-	    return new ViewFactoriesProxyCreator(logger, ctx);
-    }
+	public long getVersionId() 
+	{
+		return 1L;
+	}
+	
+	@Override
+	public RebindResult generateIncrementally(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException
+	{
+		ViewFactoriesProxyCreator proxy = new ViewFactoriesProxyCreator(new RebindContext(context, logger));
+		String returnType = proxy.create();
+		logger.log(Type.INFO, "CHAMOU O VIEW FACTORYGENERATOR");
+		if (returnType == null)
+		{
+		    return new RebindResult(RebindMode.USE_EXISTING, typeName);
+		}
+		else
+		{
+		    return new RebindResult(RebindMode.USE_PARTIAL_CACHED, returnType);
+		}
+	}
 }

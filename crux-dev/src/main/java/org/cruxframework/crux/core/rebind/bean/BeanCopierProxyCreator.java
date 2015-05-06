@@ -18,12 +18,11 @@ package org.cruxframework.crux.core.rebind.bean;
 import org.cruxframework.crux.core.client.bean.BeanCopier;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -41,10 +40,10 @@ public class BeanCopierProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	 * @param context
 	 * @param baseIntf
 	 */
-	public BeanCopierProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public BeanCopierProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, true);
-		JClassType beanCopierType = context.getTypeOracle().findType(BeanCopier.class.getCanonicalName());
+		super(context, baseIntf, true);
+		JClassType beanCopierType = context.getGeneratorContext().getTypeOracle().findType(BeanCopier.class.getCanonicalName());
 		JClassType[] parameterTypes = JClassUtils.getActualParameterTypes(baseIntf, beanCopierType);
 		aType = parameterTypes[0];
 		bType = parameterTypes[1];

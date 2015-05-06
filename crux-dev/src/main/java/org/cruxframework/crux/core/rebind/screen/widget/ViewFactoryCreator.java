@@ -28,6 +28,7 @@ import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.datasource.RegisteredDataSources;
+import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
@@ -51,14 +52,14 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyCreator;
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
-import org.cruxframework.crux.core.rebind.i18n.MessageClasses;
+import org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersProxyCreator;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
-import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
@@ -71,10 +72,11 @@ import org.json.JSONObject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.CachedGeneratorResult;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JRealClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dom.client.Element;
@@ -107,70 +109,24 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private static NameFactory nameFactory = new NameFactory();
 	private static String viewVariable = "__view";
 
+	protected ViewBindHandler bindHandler;
+	protected ControllerAccessHandler controllerAccessHandler;
+	protected String iocContainerClassName;
+	protected final View view;
+	protected WidgetConsumer widgetConsumer;
 	private Map<String, Boolean> attachToDOMFactories = new HashMap<String, Boolean>();
-	private Map<String, String> declaredMessages = new HashMap<String, String>();
 	private Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
-	private Map<String, WidgetCreatorHelper> creatorHelpers = new HashMap<String, WidgetCreatorHelper>();
+	private ViewDataBindingsProcessor dataBindingProcessor;
+	private Map<String, String> declaredMessages = new HashMap<String, String>();
+	private String device;
 	private final LazyPanelFactory lazyFactory;
 	private final Set<String> lazyPanels = new HashSet<String>();
-	private final LinkedList<PostProcessingPrinter> postProcessingCode = new LinkedList<PostProcessingPrinter>();
 	private String loggerVariable;
-	private String viewPanelVariable;
-	private String device;
-	private Set<String> rootPanelChildren;
+	private final LinkedList<PostProcessingPrinter> postProcessingCode = new LinkedList<PostProcessingPrinter>();
 	private Set<String> resources;
-	protected final String module;
-	protected final View view;
-	protected ControllerAccessHandler controllerAccessHandler;
-	protected WidgetConsumer widgetConsumer;
-	protected String iocContainerClassName;
-	protected ViewBindHandler bindHandler;
-	private ViewDataBindingsProcessor dataBindingProcessor;
-
-	/**
-	 *
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public interface WidgetConsumer
-	{
-		public static EmptyWidgetConsumer EMPTY_WIDGET_CONSUMER = new EmptyWidgetConsumer();
-
-		void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem);
-	}
-
-	/**
-	 *
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public interface LazyCompatibleWidgetConsumer extends WidgetConsumer
-	{
-		void handleLazyWholeWidgetCreation(SourcePrinter out, String widgetId);
-		void handleLazyWrapChildrenCreation(SourcePrinter out, String widgetId);
-	}
-
-	/**
-	 *
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class EmptyWidgetConsumer implements WidgetConsumer
-	{
-		public void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem)
-		{
-		}
-	}
-
-	/**
-	 * 
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public interface DataBindingProcessor
-	{
-		void processBindings(SourcePrinter out, WidgetCreatorContext context);
-	}
+	private Set<String> rootPanelChildren;
+	private boolean viewChanged;
+	private String viewPanelVariable;
 
 	/**
 	 * Constructor
@@ -178,48 +134,197 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param context
 	 * @param logger
 	 * @param view
+	 * @param viewChanged 
 	 * @param device
 	 * @param module
 	 */
-	public ViewFactoryCreator(GeneratorContext context, TreeLogger logger, View view, String device, String module)
+	public ViewFactoryCreator(RebindContext context, View view, boolean viewChanged, String device)
     {
-		super(logger, context, false);
+		super(context, true);
 		this.view = view;
+		this.viewChanged = viewChanged;
 		this.device = device;
-		this.module = module;
 		this.lazyFactory = new LazyPanelFactory(this);
 		this.loggerVariable = createVariableName("logger");
 		this.viewPanelVariable = createVariableName("viewPanel");
 		this.widgetConsumer = new ViewWidgetConsumer(this);
 		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
 		this.rootPanelChildren = new HashSet<String>();
-		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable);
+		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable, context.getControllers());
 		this.bindHandler = new ViewBindHandler(context, view, this);
+    }
+	
+	@Override
+	protected boolean findCacheableImplementationAndMarkForReuseIfAvailable()
+	{
+		CachedGeneratorResult lastResult = context.getGeneratorContext().getCachedGeneratorResult();
+		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
+		{
+			return false;
+		}
 
+		String proxyName = getProxyQualifiedName();
+
+		// check that it is available for reuse
+		if (!lastResult.isTypeCached(proxyName))
+		{
+			return false;
+		}
+
+		if (!viewChanged)
+		{
+			return context.getGeneratorContext().tryReuseTypeFromCache(proxyName);
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
+	 * @param dataObjectAlias
+	 * @param out
+	 * @return
+	 */
+	public String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
+	{
+		return bindHandler.getDataObjectBinderVariable(dataObjectAlias, out);
+	}
+
+	/**
+	 * 
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @return
+	 */
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+    {
+		JType widgetPropertyType = JClassUtils.getPropertyType(context.getGeneratorContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
+		if (widgetPropertyType == null)
+		{
+			throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");
+		}
+		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, widgetPropertyType);
     }
 
 	/**
-     * Creates a new unique name based off of{@code varName} and adds it to
-     * the list of known names.
+	 * 
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @param boundToAttribute
+	 * @return
+	 */
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+			boolean boundToAttribute)
+    {
+	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
+    }
+
+	/**
+	 * Return the qualified name of the ViewFactory class created for the associated screen
+	 * @return
+	 */
+	public String getProxyQualifiedName()
+    {
+	    return ViewFactory.class.getPackage().getName() + "." + getProxySimpleName();
+    }
+
+	/**
+	 * Return the simple name of the ViewFactory class created for the associated screen
+	 * @return
+	 */
+	public String getProxySimpleName()
+    {
+		String className = view.getId()+"_"+this.device;
+		className = className.replaceAll("[\\W]", "_");
+		return className;
+    }
+
+	/**
+     * 
+     * @return
+     */
+	public String getViewSuperClassName()
+    {
+	    if (isBindableView())
+	    {
+	    	return BindableView.class.getCanonicalName()+"<"+context.getDataObjects().getDataObject(view.getDataObject())+">";
+	    }
+	    return "View";
+    }
+
+	/**
+	 * Close the current postProcessing scope and schedule the execution of all scope commands.
 	 *
-	 * @param varName
-	 * @return
+	 * @param printer
 	 */
-	public static String createVariableName(String varName)
+	protected void commitPostProcessing(SourcePrinter printer)
 	{
-		return nameFactory.createName(varName);
+		PostProcessingPrinter postProcessingPrinter = this.postProcessingCode.removeLast();
+		String postProcessingCode = postProcessingPrinter.toString();
+		if (!StringUtils.isEmpty(postProcessingCode))
+		{
+			printer.println(Scheduler.class.getCanonicalName()+".get().scheduleDeferred(new "+
+					ScheduledCommand.class.getCanonicalName()+"(){");
+			printer.println("public void execute(){");
+			printer.print(postProcessingCode);
+			printer.println("}");
+			printer.println("});");
+		}
 	}
 
 	/**
-	 * Retrieve the object responsible for print controller access expressions on client JS
-	 * @return
+	 * Create a new scope for the post processing commands. All commands added by
+	 * {@code printlnPostProcessing} method will be added to this same scope, what means
+	 * that they will be fired together. When {@code commitPostProcessing} method is called,
+	 * the scope is closed and all scope commands are programmed for execution.
 	 */
-	protected ControllerAccessHandler getControllerAccessHandler()
+	protected void createPostProcessingScope()
 	{
-		return this.controllerAccessHandler;
+		this.postProcessingCode.add(new PostProcessingPrinter());
 	}
 
-	/**
+	protected void generateCreateDataObjectMethod(SourcePrinter printer)
+    {
+    	String dataObjectClass = context.getDataObjects().getDataObject(view.getDataObject());
+		printer.println("protected "+ dataObjectClass +" createDataObject(){");
+    	printer.println("return GWT.create("+dataObjectClass+".class);");
+    	printer.println("}");
+    }
+
+	protected void generateGetIocContainerMethod(SourcePrinter printer)
+    {
+    	printer.println("public "+ IocContainer.class.getCanonicalName() +" getIocContainer(){");
+    	printer.println("return iocContainer;");
+    	printer.println("}");
+
+    	printer.println("public "+ iocContainerClassName +" getTypedIocContainer(){");
+    	printer.println("return iocContainer;");
+    	printer.println("}");
+    }
+
+    /**
+	 * Generate the View Constructor
+	 */
+	@Override
+	protected void generateProxyContructor(SourcePrinter printer) throws CruxGeneratorException
+	{
+		String regsiteredControllersClass = new RegisteredControllersProxyCreator(context, view, iocContainerClassName, device).create();
+		String regsiteredDataSourcesClass = new RegisteredDataSourcesProxyCreator(context, view, iocContainerClassName, device).create();
+		String regsiteredFormattersClass = new RegisteredClientFormattersProxyCreator(context, view).create();
+
+		printer.println("protected "+getProxySimpleName()+"(String id){");
+		printer.println("super(id);");
+		printer.println("setTitle("+getDeclaredMessage(view.getTitle())+");");
+		printer.println("this.iocContainer = new "+iocContainerClassName+"(this);");
+		printer.println("this.registeredControllers = new "+regsiteredControllersClass+"(this, iocContainer);");
+		printer.println("this.registeredFormatters = new "+regsiteredFormattersClass+"();");
+		printer.println("this.registeredDataSources = new "+regsiteredDataSourcesClass+"(this, iocContainer);");
+		generateResources(printer);
+		printer.println("}");
+	}
+    
+    /**
 	 * Generate the View fields
 	 *
 	 * @param printer
@@ -229,6 +334,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("private "+RegisteredControllers.class.getCanonicalName()+" registeredControllers;");
 		printer.println("private "+RegisteredDataSources.class.getCanonicalName()+" registeredDataSources;");
+		printer.println("private "+RegisteredClientFormatters.class.getCanonicalName()+" registeredFormatters;");
+		
 		printer.println("protected "+ iocContainerClassName +" iocContainer;");
 
 		for (String messageClass: declaredMessages.keySet())
@@ -242,37 +349,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     }
 
 	/**
-	 * Generate the View Constructor
-	 */
-	@Override
-	protected void generateProxyContructor(SourcePrinter printer) throws CruxGeneratorException
-	{
-		String regsiteredControllersClass = new RegisteredControllersProxyCreator(logger, context, view, module, iocContainerClassName, device).create();
-		String regsiteredDataSourcesClass = new RegisteredDataSourcesProxyCreator(logger, context, view, iocContainerClassName, device).create();
-
-		printer.println("protected "+getProxySimpleName()+"(String id){");
-		printer.println("super(id);");
-		printer.println("setTitle("+getDeclaredMessage(view.getTitle())+");");
-		printer.println("this.iocContainer = new "+iocContainerClassName+"(this);");
-		printer.println("this.registeredControllers = new "+regsiteredControllersClass+"(this, iocContainer);");
-		printer.println("this.registeredDataSources = new "+regsiteredDataSourcesClass+"(this, iocContainer);");
-		generateResources(printer);
-		printer.println("}");
-	}
-
-	/**
-	 * Create ClientBundles for the declared resources on View
-	 * @param printer
-	 */
-	protected void generateResources(SourcePrinter printer)
-    {
-	   for (String resourceClass : resources)
-	    {
-	    	printer.println(resourceClass+".init();");
-	    }
-    }
-
-	/**
 	 * Generate the View methods.
 	 *
      * @param printer
@@ -283,6 +359,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	if(printer != null)
     	{
 	    	generateGetRegisteredControllersMethod(printer);
+	    	generateGetRegisteredFormattersMethod(printer);
 	    	generateCreateDataSourceMethod(printer);
 	    	generateCreateWidgetsMethod(printer);
 	    	generateRenderMethod(printer);
@@ -305,7 +382,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	while (dataObjects.hasNext())
     	{
     		String dataObjectAlias = dataObjects.next();
-        	String dataObjectClass = DataObjects.getDataObject(dataObjectAlias);
+        	String dataObjectClass = context.getDataObjects().getDataObject(dataObjectAlias);
     		printer.println("addDataObjectBinder(new "+DataObjectBinder.class.getCanonicalName()+"<"+dataObjectClass+">(this){");
     		printer.println("protected "+dataObjectClass+" createDataObject() {");
         	printer.println("return GWT.create("+dataObjectClass+".class);");
@@ -314,40 +391,128 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	}
 		printer.println("}");
     }
-    
-    protected void generateCreateDataObjectMethod(SourcePrinter printer)
+
+	/**
+	 * Create ClientBundles for the declared resources on View
+	 * @param printer
+	 */
+	protected void generateResources(SourcePrinter printer)
     {
-    	String dataObjectClass = DataObjects.getDataObject(view.getDataObject());
-		printer.println("protected "+ dataObjectClass +" createDataObject(){");
-    	printer.println("return GWT.create("+dataObjectClass+".class);");
-    	printer.println("}");
+	   for (String resourceClass : resources)
+	    {
+	    	printer.println(resourceClass+".init();");
+	    }
     }
 
-	protected void generateGetIocContainerMethod(SourcePrinter printer)
-    {
-    	printer.println("public "+ IocContainer.class.getCanonicalName() +" getIocContainer(){");
-    	printer.println("return iocContainer;");
-    	printer.println("}");
-
-    	printer.println("public "+ iocContainerClassName +" getTypedIocContainer(){");
-    	printer.println("return iocContainer;");
-    	printer.println("}");
-    }
-
-    @Override
+	@Override
     protected void generateSubTypes(SourcePrinter srcWriter) throws CruxGeneratorException
     {
-	    iocContainerClassName = new IocContainerRebind(logger, context, view, device).create();
+	    iocContainerClassName = new IocContainerRebind(context, view, device).create();
 	    resources = new HashSet<String>();
 	    Iterator<String> resources = view.iterateResources();
 	    while (resources.hasNext())
 	    {
 	    	String resourceKey = resources.next();
-	    	this.resources.add(new ResourcesHandlerProxyCreator(logger, context, resourceKey, view, device).create());
+	    	this.resources.add(new ResourcesHandlerProxyCreator(context, resourceKey, view, device).create());
 	    }
     }
 
 	/**
+	 * @return
+	 */
+	protected RebindContext getContext()
+	{
+		return context;
+	}
+
+	/**
+	 * Retrieve the object responsible for print controller access expressions on client JS
+	 * @return
+	 */
+	protected ControllerAccessHandler getControllerAccessHandler()
+	{
+		return this.controllerAccessHandler;
+	}
+
+	/**
+     * Gets the code necessary to access a i18n declared property or the own property, if
+     * it is not in declarative i18n format.
+     *
+	 * @param property
+	 * @return
+	 */
+	protected String getDeclaredMessage(String property)
+    {
+	    if (isKeyReference(property))
+	    {
+			if (isResourceReference(property))
+			{
+				return getResourceAccessExpression(property);
+			}
+			else
+			{
+				String[] messageParts = getKeyMessageParts(property);
+				String messageClassName = context.getMessages().getMessageClass(messageParts[0]);
+
+				// Checks if declared message is valid
+				this.checkDeclaredMessage(messageClassName, messageParts[0], messageParts[1]);
+
+				String messageVariable;
+
+				if (!declaredMessages.containsKey(messageClassName))
+				{
+					messageVariable= createVariableName("mesg");
+					declaredMessages.put(messageClassName, messageVariable);
+				}
+				else
+				{
+					messageVariable = declaredMessages.get(messageClassName);
+				}
+				return messageVariable+"."+messageParts[1]+"()";
+			}
+	    }
+	    else
+	    {
+	    	return property==null?null:EscapeUtils.quote(property);
+	    }
+    }
+
+	/**
+	 * Gets all messages declared on this screen
+	 * @return
+	 */
+	protected Map<String, String> getDeclaredMessages()
+	{
+		return declaredMessages;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+    protected String getDevice()
+	{
+		return this.device;
+	}
+
+	/**
+	 * @return
+	 */
+	protected TreeLogger getLogger()
+	{
+		return context.getLogger();
+	}
+
+	/**
+	 * Retrieves the logger variable name
+	 * @return
+	 */
+	protected String getLoggerVariable()
+	{
+		return loggerVariable;
+	}
+	
+    /**
 	 * Return the type of a given crux meta tag. This type could be {@code "screen"} 
 	 *  or another string referencing a registered {@code WidgetFactory}.
 	 *
@@ -360,6 +525,194 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
 	/**
+     * Gets the code necessary to access a resource property or the own property, if
+     * it is not in a resource reference format.
+     *
+	 * @param property
+	 * @return
+	 */
+	protected String getResourceAccessExpression(String property)
+	{
+	    if (isResourceReference(property))
+	    {
+	    	String[] resourceParts = getResourceParts(property);
+	    	String resourceKey = resourceParts[0];
+	    	String resourceProperty = resourceParts[1];
+	    	String resourceClassName = context.getResources().getResource(resourceKey, Device.valueOf(device));
+	    	
+	    	if (!view.useResource(resourceKey))
+	    	{
+				throw new CruxGeneratorException("The resource ["+resourceKey+"] is not imported into view ["+view.getId()+"]. Use the useResource atribute of view tag to import it first.");
+	    	}
+	    	String resourceObject = "(("+resourceClassName+")getResource("+EscapeUtils.quote(resourceKey)+"))";
+	    	
+	    	StringBuilder out = new StringBuilder();
+			JClassType resourceType = context.getGeneratorContext().getTypeOracle().findType(resourceClassName);
+			if (resourceType == null)
+			{
+				String message = "Resource ["+resourceKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
+				   + "\n Possible causes:"
+				   + "\n\t 1. Check if any type or subtype used by resource refers to another module and if this module is inherited in the .gwt.xml file."
+				   + "\n\t 2. Check if your resource or its members belongs to a client package."
+				   + "\n\t 3. Check the versions of all your modules."
+				   ;
+				throw new CruxGeneratorException(message);
+			}
+            try
+            {
+	            JClassUtils.buildGetValueExpression(out, resourceType, resourceProperty, resourceObject, false);
+            }
+            catch (NoSuchFieldException e)
+            {
+				throw new CruxGeneratorException("Resource ["+resourceKey+"] , declared on view ["+view.getId()+"], has an invalid expression ["+resourceProperty+"]", e);
+            }
+			return out.toString();
+	    }
+	    else
+	    {
+	    	return property==null?null:EscapeUtils.quote(property);
+	    }
+	}
+
+	/**
+	 * Creates and returns a new {@link SourceWriter}
+     * @return a new {@link SourceWriter}
+     */
+    protected SourcePrinter getSourcePrinter()
+    {
+		String packageName = ViewFactory.class.getPackage().getName();
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
+
+		if (printWriter == null)
+		{
+			return null;
+		}
+
+		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
+
+		composerFactory.setSuperclass(getViewSuperClassName());
+
+		String[] imports = getImports();
+		for (String imp : imports)
+		{
+			composerFactory.addImport(imp);
+		}
+
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+	}
+
+	/**
+	 * Create a new printer for a subType. That subType will be declared on the same package of the
+	 * {@code ViewFactory}.
+	 *
+	 * @param packageName
+     * @param subType
+     * @param superClass
+     * @param interfaces
+     * @param imports
+     * @param isInterface
+     * @return
+     */
+    protected SourcePrinter getSubTypeWriter(String packageName, String subType, String superClass, String[] interfaces, String[] imports)
+    {
+    	return getSubTypeWriter(packageName, subType, superClass, interfaces, imports, false);
+    }
+
+	/**
+	 * Create a new printer for a subType. That subType will be declared on the package name informed in the first parameter
+	 * if packageName isEmpty, subType will be declared on the same package of the { @code ViewFactory }.
+	 *
+	 * @param packageName
+     * @param subType
+     * @param superClass
+     * @param interfaces
+     * @param imports
+     * @param isInterface
+     * @return
+     */
+    protected SourcePrinter getSubTypeWriter(String packageName, String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
+    {
+    	if(StringUtils.isEmpty(packageName))
+    	{
+    		packageName = ViewFactory.class.getPackage().getName();
+    	}
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, subType);
+
+		if (printWriter == null)
+		{
+			return null;
+		}
+
+		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, subType);
+		if (isInterface)
+		{
+			composerFactory.makeInterface();
+		}
+
+		if (imports != null)
+		{
+			for (String imp : imports)
+			{
+				composerFactory.addImport(imp);
+			}
+		}
+
+		if (superClass != null)
+		{
+			composerFactory.setSuperclass(superClass);
+		}
+
+		if (interfaces != null)
+		{
+			for (String intf : interfaces)
+			{
+				composerFactory.addImplementedInterface(intf);
+			}
+		}
+
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+	}
+
+	/**
+	 * Create a new printer for a subType. That subType will be declared on the same package of the
+	 * {@code ViewFactory}.
+	 *
+     * @param subType
+     * @param superClass
+     * @param interfaces
+     * @param imports
+     * @return
+     */
+    protected SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports)
+    {
+    	return getSubTypeWriter(subType, superClass, interfaces, imports, false);
+    }
+	
+	/**
+	 * Create a new printer for a subType. That subType will be declared on the same package of the
+	 * {@code ViewFactory}.
+	 *
+     * @param subType
+     * @param superClass
+     * @param interfaces
+     * @param imports
+     * @param isInterface
+     * @return
+     */
+    protected SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
+    {
+    	return getSubTypeWriter(null, subType, superClass, interfaces, imports, isInterface);
+    }
+	
+	/**
+	 * @return
+	 */
+	protected View getView()
+	{
+		return this.view;
+	}
+	
+	/**
 	 * Returns the creator of the widgets of the given type.
 	 * @param widgetType
 	 * @return the creator of the widgets of the given type.
@@ -370,13 +723,11 @@ public class ViewFactoryCreator extends AbstractProxyCreator
         {
 	        if (!creators.containsKey(widgetType))
 	        {
-	        	String creatorClassName = WidgetConfig.getClientClass(widgetType);
+	        	String creatorClassName = WidgetScanner.getClientClass(widgetType);
 	        	Class<?> widgetCreator = Class.forName(creatorClassName);
 	        	WidgetCreator<?> factory = (WidgetCreator<?>) widgetCreator.newInstance();
 	        	factory.setViewFactory(this);
 	        	creators.put(widgetType, factory);
-	        	WidgetCreatorHelper creatorHelper = new WidgetCreatorHelper(widgetCreator);
-				creatorHelpers.put(widgetType, creatorHelper);
 	        }
         }
         catch (Exception e)
@@ -389,24 +740,57 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return creators.get(widgetType);
 	}
 
-	/**
-     * Returns a helper object to create the code of the widgets of the given type.
-	 * @param widgetType
-	 * @return a helper object to create the code of the widgets of the given type.
+    /**
+	 * 
+	 * @return
 	 */
-	protected WidgetCreatorHelper getWidgetCreatorHelper(String widgetType)
+	protected boolean isBindableView()
 	{
-		if (!creatorHelpers.containsKey(widgetType))
-		{
-			if (getWidgetCreator(widgetType) == null)
-			{
-				return null;
-			}
-		}
-		return creatorHelpers.get(widgetType);
+		return !StringUtils.isEmpty(view.getDataObject());
+	}
+
+    /**
+     * Returns <code>true</code> if the given text is an internationalization key.
+	 * @param text
+	 * @return <code>true</code> if the given text is an internationalization key.
+	 */
+	protected boolean isKeyReference(String text)
+	{
+		return text!= null && RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text).matches(); 
 	}
 
 	/**
+     * Returns <code>true</code> if the given text is a reference to a resource.
+	 * @param text
+	 * @return <code>true</code> if the given text is a reference to a resource.
+	 */
+	protected boolean isResourceReference(String text)
+	{
+		if (text!= null &&  RegexpPatterns.REGEXP_CRUX_RESOURCE.matcher(text).matches())
+		{
+			String[] parts = getResourceParts(text);
+			return (view.useResource(parts[0]));
+		}
+		return false;
+	}
+
+	/**
+	 * Check if the given metaElement refers to a valid widget
+	 *
+	 * @param element
+	 * @return
+	 */
+    protected boolean isValidWidget(JSONObject metaElem)
+	{
+		String type =  metaElem.optString("_type");
+		if (type != null && type.length() > 0 && !"screen".equals(type))
+		{
+			return true;
+		}
+		return false;
+	}
+
+    /**
 	 * Creates a new widget based on its meta-data element.
 	 *
 	 * @param printer
@@ -466,331 +850,52 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return widget;
 	}
 
-	/**
-	 * Close the current postProcessing scope and schedule the execution of all scope commands.
+    /**
+	 * @param context
+	 * @param changed 
+	 * @param device
+	 */
+    protected void prepare(RebindContext context, boolean changed, String device)
+	{
+		this.context = context;
+		this.lazyPanels.clear();
+		this.declaredMessages.clear();
+		this.postProcessingCode.clear();
+		this.device = device;
+		this.rootPanelChildren.clear();
+		this.viewChanged = changed;
+	}
+    
+    /**
+	 * Print code that will be executed after the viewFactory completes the widgets construction.
+	 * Note that this code will be executed from inside a Command class. Any variable accessed in
+	 * this code and declared outside need to be declared as final.
+	 *
+	 * @param s code string
+	 */
+    protected void printlnPostProcessing(String s)
+	{
+		this.postProcessingCode.getLast().println(s);
+	}
+    
+    /**
+	 * Generate the code for the View events creation
 	 *
 	 * @param printer
 	 */
-	protected void commitPostProcessing(SourcePrinter printer)
+	protected void processViewEvents(SourcePrinter printer)
 	{
-		PostProcessingPrinter postProcessingPrinter = this.postProcessingCode.removeLast();
-		String postProcessingCode = postProcessingPrinter.toString();
-		if (!StringUtils.isEmpty(postProcessingCode))
-		{
-			printer.println(Scheduler.class.getCanonicalName()+".get().scheduleDeferred(new "+
-					ScheduledCommand.class.getCanonicalName()+"(){");
-			printer.println("public void execute(){");
-			printer.print(postProcessingCode);
-			printer.println("}");
-			printer.println("});");
-		}
+		processHistoryChangedEvt(printer);
+		processClosingEvt(printer);
+		processCloseEvt(printer);
+		processResizedEvt(printer);
+		processLoadEvt(printer);
+		processUnloadEvt(printer);
+		processActivateEvt(printer);
+		processDeactivateEvt(printer);
 	}
 
 	/**
-	 * Create a new scope for the post processing commands. All commands added by
-	 * {@code printlnPostProcessing} method will be added to this same scope, what means
-	 * that they will be fired together. When {@code commitPostProcessing} method is called,
-	 * the scope is closed and all scope commands are programmed for execution.
-	 */
-	protected void createPostProcessingScope()
-	{
-		this.postProcessingCode.add(new PostProcessingPrinter());
-	}
-
-	/**
-	 * @return
-	 */
-	protected TreeLogger getLogger()
-	{
-		return this.logger;
-	}
-
-	/**
-	 * Retrieves the view variable name
-	 * @return
-	 */
-	public static String getViewVariable()
-	{
-		return viewVariable;
-	}
-	
-    /**
-     * 
-     * @return
-     */
-	public String getViewSuperClassName()
-    {
-	    if (isBindableView())
-	    {
-	    	return BindableView.class.getCanonicalName()+"<"+DataObjects.getDataObject(view.getDataObject())+">";
-	    }
-	    return "View";
-    }
-
-	/**
-	 * Retrieves the logger variable name
-	 * @return
-	 */
-	protected String getLoggerVariable()
-	{
-		return loggerVariable;
-	}
-
-	/**
-	 * @return
-	 */
-	protected View getView()
-	{
-		return this.view;
-	}
-
-	/**
-     * Gets the code necessary to access a i18n declared property or the own property, if
-     * it is not in declarative i18n format.
-     *
-	 * @param property
-	 * @return
-	 */
-	protected String getDeclaredMessage(String property)
-    {
-	    if (isKeyReference(property))
-	    {
-			if (isResourceReference(property))
-			{
-				return getResourceAccessExpression(property);
-			}
-			else
-			{
-				String[] messageParts = getKeyMessageParts(property);
-				String messageClassName = MessageClasses.getMessageClass(messageParts[0]);
-
-				// Checks if declared message is valid
-				this.checkDeclaredMessage(messageClassName, messageParts[0], messageParts[1]);
-
-				String messageVariable;
-
-				if (!declaredMessages.containsKey(messageClassName))
-				{
-					messageVariable= createVariableName("mesg");
-					declaredMessages.put(messageClassName, messageVariable);
-				}
-				else
-				{
-					messageVariable = declaredMessages.get(messageClassName);
-				}
-				return messageVariable+"."+messageParts[1]+"()";
-			}
-	    }
-	    else
-	    {
-	    	return property==null?null:EscapeUtils.quote(property);
-	    }
-    }
-
-	/**
-     * Gets the code necessary to access a resource property or the own property, if
-     * it is not in a resource reference format.
-     *
-	 * @param property
-	 * @return
-	 */
-	protected String getResourceAccessExpression(String property)
-	{
-	    if (isResourceReference(property))
-	    {
-	    	String[] resourceParts = getResourceParts(property);
-	    	String resourceKey = resourceParts[0];
-	    	String resourceProperty = resourceParts[1];
-	    	String resourceClassName = Resources.getResource(resourceKey, Device.valueOf(device));
-	    	
-	    	if (!view.useResource(resourceKey))
-	    	{
-				throw new CruxGeneratorException("The resource ["+resourceKey+"] is not imported into view ["+view.getId()+"]. Use the useResource atribute of view tag to import it first.");
-	    	}
-	    	String resourceObject = "(("+resourceClassName+")getResource("+EscapeUtils.quote(resourceKey)+"))";
-	    	
-	    	StringBuilder out = new StringBuilder();
-			JClassType resourceType = context.getTypeOracle().findType(resourceClassName);
-			if (resourceType == null)
-			{
-				String message = "Resource ["+resourceKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
-				   + "\n Possible causes:"
-				   + "\n\t 1. Check if any type or subtype used by resource refers to another module and if this module is inherited in the .gwt.xml file."
-				   + "\n\t 2. Check if your resource or its members belongs to a client package."
-				   + "\n\t 3. Check the versions of all your modules."
-				   ;
-				throw new CruxGeneratorException(message);
-			}
-            try
-            {
-	            JClassUtils.buildGetValueExpression(out, resourceType, resourceProperty, resourceObject, false);
-            }
-            catch (NoSuchFieldException e)
-            {
-				throw new CruxGeneratorException("Resource ["+resourceKey+"] , declared on view ["+view.getId()+"], has an invalid expression ["+resourceProperty+"]", e);
-            }
-			return out.toString();
-	    }
-	    else
-	    {
-	    	return property==null?null:EscapeUtils.quote(property);
-	    }
-	}
-
-	/**
-	 * 
-	 * @param propertyValue
-	 * @param widgetClassName
-	 * @param widgetPropertyPath
-	 * @param boundToAttribute
-	 * @return
-	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-			boolean boundToAttribute)
-    {
-	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
-    }
-	
-	/**
-	 * 
-	 * @param propertyValue
-	 * @param widgetClassName
-	 * @param widgetPropertyPath
-	 * @return
-	 */
-	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
-    {
-		JType widgetPropertyType = JClassUtils.getPropertyType(getContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
-		if (widgetPropertyType == null)
-		{
-			throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");
-		}
-		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, widgetPropertyType);
-    }
-	
-	/**
-	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
-	 * @param dataObjectAlias
-	 * @param out
-	 * @return
-	 */
-	public String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
-	{
-		return bindHandler.getDataObjectBinderVariable(dataObjectAlias, out);
-	}
-	
-	/**
-	 * Checks if declared message is valid
-	 * @param messageClassName
-	 * @param messageKey
-	 * @param messageMethod
-	 * @throws CruxGeneratorException
-	 */
-	private void checkDeclaredMessage(String messageClassName, String messageKey, String messageMethod) throws CruxGeneratorException
-	{
-		if (StringUtils.isEmpty(messageClassName))
-		{
-			throw new CruxGeneratorException("Message ["+messageKey+"] , declared on view ["+view.getId()+"], not found.");
-		}
-		else
-		{
-			JClassType messageClass = context.getTypeOracle().findType(messageClassName);
-			if (messageClass == null)
-			{
-				String message = "Message class ["+messageKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
-							   + "\n Possible causes:"
-							   + "\n\t 1. Check if any type or subtype used by message refers to another module and if this module is inherited in the .gwt.xml file."
-							   + "\n\t 2. Check if your message or its members belongs to a client package."
-							   + "\n\t 3. Check the versions of all your modules."
-							   ;
-				throw new CruxGeneratorException(message);
-			}
-			else
-			{
-				if (!hasMethod(messageClass, messageMethod, new JType[]{}))
-				{
-					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on view ["+view.getId()+"], does not exist in message class ["+messageClassName+"].");
-				}
-			}
-		}
-	}
-
-	/**
-	 * Verifies if a method exists into a interface
-	 * @param clazz
-	 * @param methodName
-	 * @param params
-	 * @return
-	 */
-	private boolean hasMethod(JClassType clazz, String methodName, JType[] params)
-	{
-		if (clazz != null && methodName != null)
-		{
-			JMethod method = clazz.findMethod(methodName, params);
-			if (method != null)
-			{
-				return true;
-			}
-
-			JClassType[] interfaces = clazz.getImplementedInterfaces();
-			if (interfaces != null)
-			{
-				for (JClassType intf : interfaces)
-				{
-					if (hasMethod(intf, methodName, params))
-					{
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
-	}
-
-    /**
-     * Returns <code>true</code> if the given text is an internationalization key.
-	 * @param text
-	 * @return <code>true</code> if the given text is an internationalization key.
-	 */
-	protected boolean isKeyReference(String text)
-	{
-		return text!= null && RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text).matches(); 
-	}
-
-    /**
-     * Returns <code>true</code> if the given text is a reference to a resource.
-	 * @param text
-	 * @return <code>true</code> if the given text is a reference to a resource.
-	 */
-	protected boolean isResourceReference(String text)
-	{
-		if (text!= null &&  RegexpPatterns.REGEXP_CRUX_RESOURCE.matcher(text).matches())
-		{
-			String[] parts = getResourceParts(text);
-			return (view.useResource(parts[0]));
-		}
-		return false;
-	}
-
-	/**
-	 * Gets all messages declared on this screen
-	 * @return
-	 */
-	protected Map<String, String> getDeclaredMessages()
-	{
-		return declaredMessages;
-	}
-
-	/**
-	 * @return
-	 */
-	protected GeneratorContext getContext()
-	{
-		return context;
-	}
-
-    /**
 	 * Gets the list of classes used by the ViewFactory.
 	 *
      * @return
@@ -819,347 +924,48 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
 	/**
-	 * Create a new printer for a subType. That subType will be declared on the same package of the
-	 * {@code ViewFactory}.
-	 *
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @return
-     */
-    protected SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports)
-    {
-    	return getSubTypeWriter(subType, superClass, interfaces, imports, false);
-    }
+	 * @return the widgetConsumer
+	 */
+	WidgetConsumer getScreenWidgetConsumer()
+	{
+		return widgetConsumer;
+	}
 
-    /**
-	 * Create a new printer for a subType. That subType will be declared on the same package of the
-	 * {@code ViewFactory}.
-	 *
-	 * @param packageName
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @param isInterface
-     * @return
-     */
-    protected SourcePrinter getSubTypeWriter(String packageName, String subType, String superClass, String[] interfaces, String[] imports)
-    {
-    	return getSubTypeWriter(packageName, subType, superClass, interfaces, imports, false);
-    }
-    
-    /**
-	 * Create a new printer for a subType. That subType will be declared on the same package of the
-	 * {@code ViewFactory}.
-	 *
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @param isInterface
-     * @return
-     */
-    protected SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
-    {
-    	return getSubTypeWriter(null, subType, superClass, interfaces, imports, isInterface);
-    }
-    
-    /**
-	 * Create a new printer for a subType. That subType will be declared on the package name informed in the first parameter
-	 * if packageName isEmpty, subType will be declared on the same package of the { @code ViewFactory }.
-	 *
-	 * @param packageName
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @param isInterface
-     * @return
-     */
-    protected SourcePrinter getSubTypeWriter(String packageName, String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
-    {
-    	if(StringUtils.isEmpty(packageName))
-    	{
-    		packageName = ViewFactory.class.getPackage().getName();
-    	}
-		PrintWriter printWriter = context.tryCreate(logger, packageName, subType);
-
-		if (printWriter == null)
+	/**
+	 * Checks if declared message is valid
+	 * @param messageClassName
+	 * @param messageKey
+	 * @param messageMethod
+	 * @throws CruxGeneratorException
+	 */
+	private void checkDeclaredMessage(String messageClassName, String messageKey, String messageMethod) throws CruxGeneratorException
+	{
+		if (StringUtils.isEmpty(messageClassName))
 		{
-			return null;
+			throw new CruxGeneratorException("Message ["+messageKey+"] , declared on view ["+view.getId()+"], not found.");
 		}
-
-		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, subType);
-		if (isInterface)
+		else
 		{
-			composerFactory.makeInterface();
-		}
-
-		if (imports != null)
-		{
-			for (String imp : imports)
+			JClassType messageClass = context.getGeneratorContext().getTypeOracle().findType(messageClassName);
+			if (messageClass == null)
 			{
-				composerFactory.addImport(imp);
+				String message = "Message class ["+messageKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
+							   + "\n Possible causes:"
+							   + "\n\t 1. Check if any type or subtype used by message refers to another module and if this module is inherited in the .gwt.xml file."
+							   + "\n\t 2. Check if your message or its members belongs to a client package."
+							   + "\n\t 3. Check the versions of all your modules."
+							   ;
+				throw new CruxGeneratorException(message);
+			}
+			else
+			{
+				if (!hasMethod(messageClass, messageMethod, new JType[]{}))
+				{
+					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on view ["+view.getId()+"], does not exist in message class ["+messageClassName+"].");
+				}
 			}
 		}
-
-		if (superClass != null)
-		{
-			composerFactory.setSuperclass(superClass);
-		}
-
-		if (interfaces != null)
-		{
-			for (String intf : interfaces)
-			{
-				composerFactory.addImplementedInterface(intf);
-			}
-		}
-
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
 	}
-
-	/**
-	 * Check if the given metaElement refers to a valid widget
-	 *
-	 * @param element
-	 * @return
-	 */
-    protected boolean isValidWidget(JSONObject metaElem)
-	{
-		String type =  metaElem.optString("_type");
-		if (type != null && type.length() > 0 && !StringUtils.unsafeEquals("screen",type))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * @param context
-	 * @param logger
-	 * @param device
-	 */
-    protected void prepare(GeneratorContext context, TreeLogger logger, String device)
-	{
-		this.context = context;
-		this.logger = logger;
-		this.lazyPanels.clear();
-		this.declaredMessages.clear();
-		this.postProcessingCode.clear();
-		this.device = device;
-		this.rootPanelChildren.clear();
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-    protected String getDevice()
-	{
-		return this.device;
-	}
-
-	/**
-	 * Print code that will be executed after the viewFactory completes the widgets construction.
-	 * Note that this code will be executed from inside a Command class. Any variable accessed in
-	 * this code and declared outside need to be declared as final.
-	 *
-	 * @param s code string
-	 */
-    protected void printlnPostProcessing(String s)
-	{
-		this.postProcessingCode.getLast().println(s);
-	}
-
-	/**
-	 * Generate the code for the View events creation
-	 *
-	 * @param printer
-	 */
-	protected void processViewEvents(SourcePrinter printer)
-	{
-		processHistoryChangedEvt(printer);
-		processClosingEvt(printer);
-		processCloseEvt(printer);
-		processResizedEvt(printer);
-		processLoadEvt(printer);
-		processUnloadEvt(printer);
-		processActivateEvt(printer);
-		processDeactivateEvt(printer);
-	}
-
-	/**
-	 * Processes the close event.
-	 *
-	 * @param printer
-	 */
-	private void processCloseEvt(SourcePrinter printer)
-    {
-	    Event onClose = view.getEvent("onClose");
-		if (onClose != null)
-		{
-			printer.println(viewVariable+".addWindowCloseHandler(new "+CloseHandler.class.getCanonicalName()+"<Window>(){");
-			printer.println("public void onClose("+CloseEvent.class.getCanonicalName()+"<Window> event){");
-
-			EvtProcessor.printEvtCall(printer, onClose.getController()+"."+onClose.getMethod(), "onClose",
-					CloseEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the closing event.
-	 *
-	 * @param printer
-	 */
-	private void processClosingEvt(SourcePrinter printer)
-    {
-	    Event onClosing = view.getEvent("onClosing");
-		if (onClosing != null)
-		{
-			printer.println(viewVariable+".addWindowClosingHandler(new Window.ClosingHandler(){");
-			printer.println("public void onWindowClosing("+ClosingEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onClosing.getController()+"."+onClosing.getMethod(), "onClosing",
-						ClosingEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the historyChanged event.
-	 *
-	 * @param printer
-	 */
-	private void processHistoryChangedEvt(SourcePrinter printer)
-    {
-	    Event onHistoryChanged = view.getEvent("onHistoryChanged");
-		if (onHistoryChanged != null)
-		{
-			printer.println(viewVariable+".addWindowHistoryChangedHandler(new "+ValueChangeHandler.class.getCanonicalName()+"<String>(){");
-			printer.println("public void onValueChange("+ValueChangeEvent.class.getCanonicalName()+"<String> event){");
-
-			EvtProcessor.printEvtCall(printer, onHistoryChanged.getController()+"."+onHistoryChanged.getMethod(),
-					"onHistoryChanged", ValueChangeEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the load event.
-	 *
-	 * @param printer
-	 */
-	private void processLoadEvt(SourcePrinter printer)
-	{
-	    Event onLoad = view.getEvent("onLoad");
-		if (onLoad != null)
-		{
-			printer.println(viewVariable+".addViewLoadHandler(new "+ViewLoadHandler.class.getCanonicalName()+"(){");
-			printer.println("public void onLoad("+ViewLoadEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onLoad.getController()+"."+onLoad.getMethod(),
-					"onLoad", ViewLoadEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the unload event.
-	 *
-	 * @param printer
-	 */
-	private void processUnloadEvt(SourcePrinter printer)
-	{
-	    Event onUnload = view.getEvent("onUnload");
-		if (onUnload != null)
-		{
-			printer.println(viewVariable+".addViewUnloadHandler(new "+ViewUnloadHandler.class.getCanonicalName()+"(){");
-			printer.println("public void onUnload("+ViewUnloadEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onUnload.getController()+"."+onUnload.getMethod(),
-					"onUnload", ViewUnloadEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the attach event.
-	 *
-	 * @param printer
-	 */
-	private void processActivateEvt(SourcePrinter printer)
-	{
-	    Event onActivate = view.getEvent("onActivate");
-		if (onActivate != null)
-		{
-			printer.println(viewVariable+".addViewActivateHandler(new "+ViewActivateHandler.class.getCanonicalName()+"(){");
-			printer.println("public void onActivate("+ViewActivateEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onActivate.getController()+"."+onActivate.getMethod(),
-					"onActivate", ViewActivateEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the attach event.
-	 *
-	 * @param printer
-	 */
-	private void processDeactivateEvt(SourcePrinter printer)
-	{
-	    Event onDeactivate = view.getEvent("onDeactivate");
-		if (onDeactivate != null)
-		{
-			printer.println(viewVariable+".addViewDeactivateHandler(new "+ViewDeactivateHandler.class.getCanonicalName()+"(){");
-			printer.println("public void onDeactivate("+ViewDeactivateEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onDeactivate.getController()+"."+onDeactivate.getMethod(),
-					"onDeactivate", ViewDeactivateEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-    }
-
-	/**
-	 * Processes the resized event.
-	 *
-	 * @param printer
-	 * @return
-	 */
-	private Event processResizedEvt(SourcePrinter printer)
-    {
-	    Event onResized = view.getEvent("onResized");
-		if (onResized != null)
-		{
-			printer.println("screen.addResizeHandler(new "+ResizeHandler.class.getCanonicalName()+"(){");
-			printer.println("public void onResize("+ResizeEvent.class.getCanonicalName()+" event){");
-
-			EvtProcessor.printEvtCall(printer, onResized.getController()+"."+onResized.getMethod(), "onResized",
-					ResizeEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
-
-			printer.println("}");
-			printer.println("});");
-		}
-	    return onResized;
-    }
 
 	/**
 	 * Generate the code for a widget creation, based on its metadata.
@@ -1194,14 +1000,13 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
 	/**
-	 *
 	 * @param printer
 	 */
-	private void generateInitializeLazyDependenciesMethod(SourcePrinter printer)
+	private void generateCreateDataSourceMethod(SourcePrinter printer)
     {
-    	printer.println("protected native "+org.cruxframework.crux.core.client.collection.Map.class.getCanonicalName()+"<String> initializeLazyDependencies()/*-{");
-    	printer.println("return "+view.getLazyDependencies().toString()+";");
-    	printer.println("}-*/;");
+    	printer.println("public "+DataSource.class.getCanonicalName()+"<?> createDataSource(String dataSource){");
+    	printer.println("return this.registeredDataSources.getDataSource(dataSource);");
+    	printer.println("}");
     }
 
 	/**
@@ -1245,41 +1050,38 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("}");
     }
 
-    private void processViewDimensions(SourcePrinter printer)
+	/**
+	 * @param printer
+	 */
+	private void generateGetRegisteredControllersMethod(SourcePrinter printer)
     {
-	    if (!StringUtils.isEmpty(this.view.getWidth()))
-	    {
-			printer.println("setWidth("+EscapeUtils.quote(this.view.getWidth())+");");
-	    }
-	    if (!StringUtils.isEmpty(this.view.getHeight()))
-	    {
-			printer.println("setHeight("+EscapeUtils.quote(this.view.getHeight())+");");
-	    }
-	    
+    	printer.println("public "+RegisteredControllers.class.getCanonicalName()+" getRegisteredControllers(){");
+    	printer.println("return this.registeredControllers;");
+    	printer.println("}");
     }
 
-	private void generateUpdateDimensionsMethods(SourcePrinter printer)
+	/**
+	 * @param printer
+	 */
+	@Deprecated
+	private void generateGetRegisteredFormattersMethod(SourcePrinter printer)
     {
-    	printer.println("protected void updateViewHeight(String height){");
-		printer.println("if (this."+viewPanelVariable+" != null){");
-		printer.println("this."+viewPanelVariable+".setHeight(height);");
-//		printer.println("if (this.getContainer() != null && this.getContainer().getContainerPanel(this) != null){");
-//		printer.println("this.getContainer().getContainerPanel(this).setHeight(height);");
-//		printer.println("}");
-		printer.println("}");
-		printer.println("}");
-
-		printer.println("protected void updateViewWidth(String width){");
-		printer.println("if (this."+viewPanelVariable+" != null){");
-		printer.println("this."+viewPanelVariable+".setWidth(width);");
-//		printer.println("if (this.getContainer() != null && this.getContainer().getContainerPanel(this) != null){");
-//		printer.println("this.getContainer().getContainerPanel(this).setWidth(width);");
-//		printer.println("}");
-		printer.println("}");
-		printer.println("}");
+    	printer.println("public "+RegisteredClientFormatters.class.getCanonicalName()+" getRegisteredFormatters(){");
+    	printer.println("return this.registeredFormatters;");
+    	printer.println("}");
     }
-	
-	
+
+	/**
+	 *
+	 * @param printer
+	 */
+	private void generateInitializeLazyDependenciesMethod(SourcePrinter printer)
+    {
+    	printer.println("protected native "+org.cruxframework.crux.core.client.collection.Map.class.getCanonicalName()+"<String> initializeLazyDependencies()/*-{");
+    	printer.println("return "+view.getLazyDependencies().toString()+";");
+    	printer.println("}-*/;");
+    }
+
 	/**
 	 * @param printer
 	 */
@@ -1364,6 +1166,21 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("}");
     }
 
+	private void generateUpdateDimensionsMethods(SourcePrinter printer)
+    {
+    	printer.println("protected void updateViewHeight(String height){");
+		printer.println("if (this."+viewPanelVariable+" != null){");
+		printer.println("this."+viewPanelVariable+".setHeight(height);");
+		printer.println("}");
+		printer.println("}");
+
+		printer.println("protected void updateViewWidth(String width){");
+		printer.println("if (this."+viewPanelVariable+" != null){");
+		printer.println("this."+viewPanelVariable+".setWidth(width);");
+		printer.println("}");
+		printer.println("}");
+    }
+
 	/**
 	 * 
 	 * @return
@@ -1375,101 +1192,39 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     }
 
 	/**
-	 * @param printer
-	 */
-	private void generateGetRegisteredControllersMethod(SourcePrinter printer)
-    {
-    	printer.println("public "+RegisteredControllers.class.getCanonicalName()+" getRegisteredControllers(){");
-    	printer.println("return this.registeredControllers;");
-    	printer.println("}");
-    }
-
-	/**
-	 * @param printer
-	 */
-	private void generateCreateDataSourceMethod(SourcePrinter printer)
-    {
-    	printer.println("public "+DataSource.class.getCanonicalName()+"<?> createDataSource(String dataSource){");
-    	printer.println("return this.registeredDataSources.getDataSource(dataSource);");
-    	printer.println("}");
-    }
-
-	/**
-	 * Split the i18n message and separate the messageClass alias from the message method
-	 *
-	 * @param text
+	 * Verifies if a method exists into a interface
+	 * @param clazz
+	 * @param methodName
+	 * @param params
 	 * @return
 	 */
-	protected static String[] getKeyMessageParts(String text)
+	private boolean hasMethod(JClassType clazz, String methodName, JType[] params)
 	{
-		text = text.substring(2, text.length()-1);
-		return text.split("\\.");
-	}
-
-	/**
-	 * Split the resourceReference and separate the resourceClass alias from the requested property
-	 *
-	 * @param text
-	 * @return
-	 */
-	protected static String[] getResourceParts(String text)
-	{
-		text = text.substring(2, text.length()-1);
-		int index = text.indexOf('.');
-		String[] result = new String[2];
-		result[0] = text.substring(0, index);
-		result[1] = text.substring(index+1, text.length());
-		return result;
-	}
-	
-	/**
-	 * Return the qualified name of the ViewFactory class created for the associated screen
-	 * @return
-	 */
-	public String getProxyQualifiedName()
-    {
-	    return ViewFactory.class.getPackage().getName() + "." + getProxySimpleName();
-    }
-
-	/**
-	 * Return the simple name of the ViewFactory class created for the associated screen
-	 * @return
-	 */
-	public String getProxySimpleName()
-    {
-		String className = view.getId()+"_"+this.device;
-		className = className.replaceAll("[\\W]", "_");
-		return className;
-    }
-
-    /**
-	 * Creates and returns a new {@link SourceWriter}
-     * @return a new {@link SourceWriter}
-     */
-    protected SourcePrinter getSourcePrinter()
-    {
-		String packageName = ViewFactory.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
-
-		if (printWriter == null)
+		if (clazz != null && methodName != null)
 		{
-			return null;
+			JMethod method = clazz.findMethod(methodName, params);
+			if (method != null)
+			{
+				return true;
+			}
+
+			JClassType[] interfaces = clazz.getImplementedInterfaces();
+			if (interfaces != null)
+			{
+				for (JClassType intf : interfaces)
+				{
+					if (hasMethod(intf, methodName, params))
+					{
+						return true;
+					}
+				}
+			}
 		}
 
-		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
-
-		composerFactory.setSuperclass(getViewSuperClassName());
-
-		String[] imports = getImports();
-		for (String imp : imports)
-		{
-			composerFactory.addImport(imp);
-		}
-
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return false;
 	}
 
-    /**
+	/**
      * Returns <code>true</code> if widgets of the given type should be attached to DOM after instantiated.
 	 * @param widgetType
 	 * @return <code>true</code> if widgets of the given type should be attached to DOM after instantiated.
@@ -1493,7 +1248,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	private boolean mustRenderLazily(String widgetType, JSONObject metaElem, String widgetId)
 	{
-		Class<?> widgetClass = getWidgetCreatorHelper(widgetType).getWidgetType();
+		Class<?> widgetClass = getWidgetCreator(widgetType).getWidgetClass();
 		if (Panel.class.isAssignableFrom(widgetClass))
 		{
 			if (!metaElem.optBoolean("visible", true))
@@ -1506,15 +1261,317 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
 	/**
-	 * 
+	 * Processes the attach event.
+	 *
+	 * @param printer
+	 */
+	private void processActivateEvt(SourcePrinter printer)
+	{
+	    Event onActivate = view.getEvent("onActivate");
+		if (onActivate != null)
+		{
+			printer.println(viewVariable+".addViewActivateHandler(new "+ViewActivateHandler.class.getCanonicalName()+"(){");
+			printer.println("public void onActivate("+ViewActivateEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onActivate.getController()+"."+onActivate.getMethod(),
+					"onActivate", ViewActivateEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+    /**
+	 * Processes the close event.
+	 *
+	 * @param printer
+	 */
+	private void processCloseEvt(SourcePrinter printer)
+    {
+	    Event onClose = view.getEvent("onClose");
+		if (onClose != null)
+		{
+			printer.println(viewVariable+".addWindowCloseHandler(new "+CloseHandler.class.getCanonicalName()+"<Window>(){");
+			printer.println("public void onClose("+CloseEvent.class.getCanonicalName()+"<Window> event){");
+
+			EvtProcessor.printEvtCall(printer, onClose.getController()+"."+onClose.getMethod(), "onClose",
+					CloseEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+	/**
+	 * Processes the closing event.
+	 *
+	 * @param printer
+	 */
+	private void processClosingEvt(SourcePrinter printer)
+    {
+	    Event onClosing = view.getEvent("onClosing");
+		if (onClosing != null)
+		{
+			printer.println(viewVariable+".addWindowClosingHandler(new Window.ClosingHandler(){");
+			printer.println("public void onWindowClosing("+ClosingEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onClosing.getController()+"."+onClosing.getMethod(), "onClosing",
+						ClosingEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+	
+	
+	/**
+	 * Processes the attach event.
+	 *
+	 * @param printer
+	 */
+	private void processDeactivateEvt(SourcePrinter printer)
+	{
+	    Event onDeactivate = view.getEvent("onDeactivate");
+		if (onDeactivate != null)
+		{
+			printer.println(viewVariable+".addViewDeactivateHandler(new "+ViewDeactivateHandler.class.getCanonicalName()+"(){");
+			printer.println("public void onDeactivate("+ViewDeactivateEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onDeactivate.getController()+"."+onDeactivate.getMethod(),
+					"onDeactivate", ViewDeactivateEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+	/**
+	 * Processes the historyChanged event.
+	 *
+	 * @param printer
+	 */
+	private void processHistoryChangedEvt(SourcePrinter printer)
+    {
+	    Event onHistoryChanged = view.getEvent("onHistoryChanged");
+		if (onHistoryChanged != null)
+		{
+			printer.println(viewVariable+".addWindowHistoryChangedHandler(new "+ValueChangeHandler.class.getCanonicalName()+"<String>(){");
+			printer.println("public void onValueChange("+ValueChangeEvent.class.getCanonicalName()+"<String> event){");
+
+			EvtProcessor.printEvtCall(printer, onHistoryChanged.getController()+"."+onHistoryChanged.getMethod(),
+					"onHistoryChanged", ValueChangeEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+	/**
+	 * Processes the load event.
+	 *
+	 * @param printer
+	 */
+	private void processLoadEvt(SourcePrinter printer)
+	{
+	    Event onLoad = view.getEvent("onLoad");
+		if (onLoad != null)
+		{
+			printer.println(viewVariable+".addViewLoadHandler(new "+ViewLoadHandler.class.getCanonicalName()+"(){");
+			printer.println("public void onLoad("+ViewLoadEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onLoad.getController()+"."+onLoad.getMethod(),
+					"onLoad", ViewLoadEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+	/**
+	 * Processes the resized event.
+	 *
+	 * @param printer
 	 * @return
 	 */
-	protected boolean isBindableView()
+	private Event processResizedEvt(SourcePrinter printer)
+    {
+	    Event onResized = view.getEvent("onResized");
+		if (onResized != null)
+		{
+			printer.println("screen.addResizeHandler(new "+ResizeHandler.class.getCanonicalName()+"(){");
+			printer.println("public void onResize("+ResizeEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onResized.getController()+"."+onResized.getMethod(), "onResized",
+					ResizeEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+	    return onResized;
+    }
+	
+	/**
+	 * Processes the unload event.
+	 *
+	 * @param printer
+	 */
+	private void processUnloadEvt(SourcePrinter printer)
 	{
-		return !StringUtils.isEmpty(view.getDataObject());
+	    Event onUnload = view.getEvent("onUnload");
+		if (onUnload != null)
+		{
+			printer.println(viewVariable+".addViewUnloadHandler(new "+ViewUnloadHandler.class.getCanonicalName()+"(){");
+			printer.println("public void onUnload("+ViewUnloadEvent.class.getCanonicalName()+" event){");
+
+			EvtProcessor.printEvtCall(printer, onUnload.getController()+"."+onUnload.getMethod(),
+					"onUnload", ViewUnloadEvent.class, "event", context, view, getControllerAccessHandler(), Device.valueOf(device));
+
+			printer.println("}");
+			printer.println("});");
+		}
+    }
+
+	private void processViewDimensions(SourcePrinter printer)
+    {
+	    if (!StringUtils.isEmpty(this.view.getWidth()))
+	    {
+			printer.println("setWidth("+EscapeUtils.quote(this.view.getWidth())+");");
+	    }
+	    if (!StringUtils.isEmpty(this.view.getHeight()))
+	    {
+			printer.println("setHeight("+EscapeUtils.quote(this.view.getHeight())+");");
+	    }
+	    
+    }
+
+	/**
+     * Creates a new unique name based off of{@code varName} and adds it to
+     * the list of known names.
+	 *
+	 * @param varName
+	 * @return
+	 */
+	public static String createVariableName(String varName)
+	{
+		return nameFactory.createName(varName);
+	}
+	
+	/**
+	 * Retrieves the view variable name
+	 * @return
+	 */
+	public static String getViewVariable()
+	{
+		return viewVariable;
+	}
+
+	/**
+	 * Split the i18n message and separate the messageClass alias from the message method
+	 *
+	 * @param text
+	 * @return
+	 */
+	protected static String[] getKeyMessageParts(String text)
+	{
+		text = text.substring(2, text.length()-1);
+		return text.split("\\.");
+	}
+
+    /**
+	 * Split the resourceReference and separate the resourceClass alias from the requested property
+	 *
+	 * @param text
+	 * @return
+	 */
+	protected static String[] getResourceParts(String text)
+	{
+		text = text.substring(2, text.length()-1);
+		int index = text.indexOf('.');
+		String[] result = new String[2];
+		result[0] = text.substring(0, index);
+		result[1] = text.substring(index+1, text.length());
+		return result;
+	}
+
+    /**
+	 * 
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public interface DataBindingProcessor
+	{
+		void processBindings(SourcePrinter out, WidgetCreatorContext context);
+	}
+
+	/**
+	 *
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static class EmptyWidgetConsumer implements WidgetConsumer
+	{
+		public void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem)
+		{
+		}
+	}
+
+	/**
+	 *
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public interface LazyCompatibleWidgetConsumer extends WidgetConsumer
+	{
+		void handleLazyWholeWidgetCreation(SourcePrinter out, String widgetId);
+		void handleLazyWrapChildrenCreation(SourcePrinter out, String widgetId);
 	}
 	
     /**
+	 *
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public interface WidgetConsumer
+	{
+		public static EmptyWidgetConsumer EMPTY_WIDGET_CONSUMER = new EmptyWidgetConsumer();
+
+		void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem);
+	}
+
+    private static class DefaultControllerAccessor implements ControllerAccessHandler
+    {
+		private ControllerScanner controllersScanner;
+		private final String viewVariable;
+
+		public DefaultControllerAccessor(String viewVariable, ControllerScanner controllersManager)
+        {
+			this.viewVariable = viewVariable;
+			this.controllersScanner = controllersManager;
+        }
+
+		public String getControllerExpression(String controller, Device device)
+        {
+
+	        return "(("+getControllerImplClassName(controller, device)+")"+viewVariable+".getController("
+			+EscapeUtils.quote(controller)+"))";
+        }
+
+		public String getControllerImplClassName(String controller, Device device)
+        {
+			String controllerClass;
+            try
+            {
+	            controllerClass = controllersScanner.getController(controller, device);
+            }
+            catch (ResourceNotFoundException e)
+            {
+    			throw new CruxGeneratorException("Can not found the controller ["+controller+"]. Check your classpath and the inherit modules");
+            }
+	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
+        }
+    }
+
+	/**
      * Printer for code that should be executed after the screen creation.
      *
      * @author Thiago da Rosa de Bustamante
@@ -1574,35 +1631,4 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     		}
     	}
     }
-
-    private static class DefaultControllerAccessor implements ControllerAccessHandler
-    {
-		private final String viewVariable;
-
-		public DefaultControllerAccessor(String viewVariable)
-        {
-			this.viewVariable = viewVariable;
-        }
-
-		public String getControllerExpression(String controller, Device device)
-        {
-
-	        return "(("+getControllerImplClassName(controller, device)+")"+viewVariable+".getController("
-			+EscapeUtils.quote(controller)+"))";
-        }
-
-		public String getControllerImplClassName(String controller, Device device)
-        {
-			String controllerClass = ClientControllers.getController(controller, device);
-	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
-        }
-    }
-
-	/**
-	 * @return the widgetConsumer
-	 */
-	WidgetConsumer getScreenWidgetConsumer()
-	{
-		return widgetConsumer;
-	}
 }

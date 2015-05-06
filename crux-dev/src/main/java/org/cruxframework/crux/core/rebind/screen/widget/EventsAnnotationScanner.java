@@ -36,14 +36,11 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
  */
 class EventsAnnotationScanner
 {
-	private WidgetCreatorHelper factoryHelper;
-
 	private final WidgetCreator<?> widgetCreator;
 
 	EventsAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
     {
 		this.widgetCreator = widgetCreator;
-		this.factoryHelper = new WidgetCreatorHelper(type);
     }
 	
 	/**
@@ -53,7 +50,7 @@ class EventsAnnotationScanner
 	List<EventCreator> scanEvents() throws CruxGeneratorException
 	{
 		ArrayList<EventCreator> events = new ArrayList<EventCreator>();
-		scanEvents(factoryHelper.getFactoryClass(), events, new HashSet<String>());
+		scanEvents(widgetCreator.getClass(), events, new HashSet<String>());
 		return events;
 	}
 	

@@ -25,7 +25,7 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
 import org.cruxframework.crux.core.rebind.screen.ViewFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildLazyCondition;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildLazyConditions;
@@ -106,7 +106,7 @@ public class LazyWidgets
 	 */
 	private static void initializeLazyChecker(String type) throws ClassNotFoundException
 	{
-		String widgetFactoryClass = WidgetConfig.getClientClass(type);
+		String widgetFactoryClass = WidgetScanner.getClientClass(type);
 		Class<?> factoryType = Class.forName(widgetFactoryClass);
 		
 		final List<WidgetLazyChecker> declaredCheckers = new ArrayList<WidgetLazyChecker>();
@@ -289,7 +289,6 @@ public class LazyWidgets
 	{
 		if (widget.has("_children"))
 		{
-			ViewFactory factory = ViewFactory.getInstance();
 			JSONArray children = widget.getJSONArray("_children");
 			int size = children.length();
 			for (int i=0; i<size; i++)
@@ -298,7 +297,7 @@ public class LazyWidgets
 				if (child != null)
 				{
 					String lazyId = parentId;
-					if (factory.isValidWidget(child))
+					if (ViewFactory.isValidWidget(child))
 					{
 						String childId = child.getString("id");
 					    addDependency(dependencies, childId, parentId);
@@ -325,7 +324,7 @@ public class LazyWidgets
 	 */
 	private void generateScreenLazyDeps(JSONObject dependencies, JSONObject widget) throws JSONException, ClassNotFoundException
     {
-		if (ViewFactory.getInstance().isValidWidget(widget))
+		if (ViewFactory.isValidWidget(widget))
 		{
 			boolean wholeWidgetLazy = checkLazy(widget);
 			boolean widgetChildrenLazy = checkChildrenLazy(widget);

@@ -20,10 +20,9 @@ import org.cruxframework.crux.core.client.screen.views.Target;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -44,9 +43,9 @@ public class WidgetAccessorProxyCreator extends AbstractViewBindableProxyCreator
 	 * @param logger
 	 * @param context
 	 */
-	public WidgetAccessorProxyCreator(TreeLogger logger, GeneratorContext context, JClassType invokerIntf)
+	public WidgetAccessorProxyCreator(RebindContext context, JClassType invokerIntf)
     {
-	    super(logger, context, invokerIntf);
+	    super(context, invokerIntf);
 	    try
         {
 	        widgetType = invokerIntf.getOracle().getType(IsWidget.class.getCanonicalName());

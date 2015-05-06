@@ -33,7 +33,90 @@ import org.cruxframework.crux.core.server.Environment;
  */
 public class RestServiceFactoryImpl implements RestServiceFactory
 {
+	private static boolean initialized = false;
 	private static final Log logger = LogFactory.getLog(RestServiceFactoryImpl.class);
+	
+	private ScanningStrategy strategy;
+
+	/**
+	 * This Constructor select the best strategy to use. 
+	 */
+	public RestServiceFactoryImpl()
+	{
+		if (Environment.isProduction() ||  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanningForDevelopment()))
+		{
+			strategy = new CompileTimeStrategy();
+		}
+		else
+		{
+			strategy = new RuntimeStrategy();
+		}
+	}
+	
+	@Override
+    public Object getService(Class<?> serviceClass)
+    {
+		try 
+		{
+			return serviceClass.newInstance();
+		} 
+		catch (Exception e) 
+		{
+			String msg = "Error creating REST service for class [" + serviceClass.getCanonicalName() + "].";
+			logger.error(msg, e);
+			throw new RuntimeException(msg, e);
+		}
+    }
+
+	/**
+	 * 
+	 * @param serviceName
+	 * @return
+	 */
+	public Class<?> getServiceClass(String serviceName) 
+	{
+		initialize(null);
+		try
+        {
+	        return Class.forName(strategy.getServiceClassName(serviceName));
+        }
+        catch (ClassNotFoundException e)
+        {
+			String msg = "Can not found class  associated with service ["+serviceName+"]";
+			logger.error(msg, e);
+			throw new RuntimeException(msg, e);
+        }
+	}
+	
+	
+	@Override
+	public void initialize(ServletContext context)
+	{
+		if (initialized)
+		{
+			return;
+		}
+		if (!strategy.initialize(context))
+		{
+			if (strategy instanceof CompileTimeStrategy)
+			{
+				logger.info("REST services map not found. Using runtime strategy for services...");
+				strategy = new RuntimeStrategy();
+				strategy.initialize(context);
+			}
+			else
+			{
+				logger.error("Error initializing REST services.");
+			}
+		}
+		initialized = true;
+	}
+
+	public Iterator<String> iterateRestServices()
+	{
+		initialize(null);
+		return strategy.iterateRestServices();
+	}
 	
 	/**
 	 * This class uses a file generated during application compilation to find out rest service classes.
@@ -59,17 +142,6 @@ public class RestServiceFactoryImpl implements RestServiceFactory
 		{
 		    return RestServicesCompileMap.iterateServices();
 		}
-	}
-
-	/**
-	 * Describes a strategy for service scanning.
-	 * @author Thiago da Rosa de Bustamante
-	 */
-	private static interface ScanningStrategy
-	{
-		String getServiceClassName(String serviceName);
-		boolean initialize(ServletContext context);
-		Iterator<String> iterateRestServices();
 	}
 	
 	/**
@@ -99,75 +171,15 @@ public class RestServiceFactoryImpl implements RestServiceFactory
 		    return RestServices.iterateServices();
 		}
 	}
-
-	private ScanningStrategy strategy;
-	
 	
 	/**
-	 * This Constructor select the best strategy to use. 
+	 * Describes a strategy for service scanning.
+	 * @author Thiago da Rosa de Bustamante
 	 */
-	public RestServiceFactoryImpl()
+	private static interface ScanningStrategy
 	{
-		if (Environment.isProduction() ||  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanningForDevelopment()))
-		{
-			strategy = new CompileTimeStrategy();
-		}
-		else
-		{
-			strategy = new RuntimeStrategy();
-		}
+		String getServiceClassName(String serviceName);
+		boolean initialize(ServletContext context);
+		Iterator<String> iterateRestServices();
 	}
-
-	/**
-	 * 
-	 * @param serviceName
-	 * @return
-	 */
-	public Class<?> getServiceClass(String serviceName) 
-	{
-		try
-        {
-	        return Class.forName(strategy.getServiceClassName(serviceName));
-        }
-        catch (ClassNotFoundException e)
-        {
-			String msg = "Can not found class  associated with service ["+serviceName+"]";
-			logger.error(msg, e);
-			throw new RuntimeException(msg, e);
-        }
-	}
-	
-	public Iterator<String> iterateRestServices()
-	{
-		return strategy.iterateRestServices();
-	}
-	
-	@Override
-	public void initialize(ServletContext context)
-	{
-		if (!strategy.initialize(context))
-		{
-			if (strategy instanceof CompileTimeStrategy)
-			{
-				logger.info("Error initializing REST services. Using runtime strategy for services...");
-				strategy = new RuntimeStrategy();
-				strategy.initialize(context);
-			}
-		}
-	}
-	
-	@Override
-    public Object getService(Class<?> serviceClass)
-    {
-		try 
-		{
-			return serviceClass.newInstance();
-		} 
-		catch (Exception e) 
-		{
-			String msg = "Error creating REST service for class [" + serviceClass.getCanonicalName() + "].";
-			logger.error(msg, e);
-			throw new RuntimeException(msg, e);
-		}
-    }
 }

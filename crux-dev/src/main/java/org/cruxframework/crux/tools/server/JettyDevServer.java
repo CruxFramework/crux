@@ -18,18 +18,11 @@ package org.cruxframework.crux.tools.server;
 import java.io.File;
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Map;
-
-import javax.servlet.DispatcherType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.declarativeui.filter.DeclarativeUIFilter;
-import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.server.DevModeInitializerListener;
 import org.cruxframework.crux.core.server.InitializerListener;
-import org.cruxframework.crux.core.server.development.ViewTester;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -52,13 +45,7 @@ public class JettyDevServer
 	private int port = getDefaultPort();
 
 	private File appRootDir;
-	private String pageOutputCharset = "UTF-8";
 	private boolean addDevelopmentComponents = false;
-
-	public JettyDevServer() 
-	{
-		CruxBridge.getInstance().setSingleVM(true);
-	}
 	
 	public void start() throws Exception 
 	{
@@ -81,14 +68,7 @@ public class JettyDevServer
 		server.setHandler(webContext);
 		if (addDevelopmentComponents)
 		{
-			webContext.addFilter(DeclarativeUIFilter.class, "*.html", EnumSet.allOf(DispatcherType.class));
-			webContext.addServlet(ViewTester.class, "/viewTester/*");
-			if (!webContext.getInitParams().containsKey(DevModeInitializerListener.OUTPUT_CHARSET))
-			{
-				webContext.setInitParameter(DevModeInitializerListener.OUTPUT_CHARSET, pageOutputCharset);
-			}
 			webContext.addEventListener(new InitializerListener());
-			webContext.addEventListener(new DevModeInitializerListener());
 		}
 		try 
 		{
@@ -118,10 +98,6 @@ public class JettyDevServer
 	        else if (parameter.getName().equals("-addDevelopmentComponents"))
 	        {
 	        	this.addDevelopmentComponents = true;
-	        }
-	        else if (parameter.getName().equals("-pageOutputCharset"))
-	        {
-	        	pageOutputCharset = parameter.getValue();
 	        }
 	        else if (parameter.getName().equals("-bindAddress"))
 	        {
@@ -164,10 +140,6 @@ public class JettyDevServer
 
 		parameter = new ConsoleParameter("-port", "The port where the jetty server will run.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-pageOutputCharset", "Output charset for generated pages.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dir", "Work dir"));
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parameter = new ConsoleParameter("-addDevelopmentComponents", "If informed, Server will add all components required for development on application context.", false, false);

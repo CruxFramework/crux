@@ -40,13 +40,9 @@ import org.cruxframework.crux.core.utils.RegexpPatterns;
 class AttributesAnnotationScanner
 {
 	private final WidgetCreator<?> widgetCreator;
-
-	private WidgetCreatorHelper factoryHelper;
-
 	
 	AttributesAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
     {
-		this.factoryHelper = new WidgetCreatorHelper(type);
 		this.widgetCreator = widgetCreator;
     }
 	
@@ -57,7 +53,7 @@ class AttributesAnnotationScanner
 	List<AttributeCreator> scanAttributes() throws CruxGeneratorException
 	{
 		ArrayList<AttributeCreator> attributes = new ArrayList<AttributeCreator>();
-		scanAttributes(factoryHelper.getFactoryClass(), attributes, new HashSet<String>());
+		scanAttributes(widgetCreator.getClass(), attributes, new HashSet<String>());
 		return attributes;
 	}
 	
@@ -214,7 +210,7 @@ class AttributesAnnotationScanner
 			setterMethod = ClassUtils.getSetterMethod(widgetPropertyPath);
 		}
 		Class<?> type = attr.type();
-		if (type == null ||  !(nestedProperty || ClassUtils.hasValidSetter(factoryHelper.getWidgetType(), setterMethod, type)))
+		if (type == null ||  !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, type)))
 		{//TODO: implement method check for nested property.
 			throw new CruxGeneratorException("Error generating widget factory. Widget does not have a valid setter for attribute: ["+attrName+"].");
 		}

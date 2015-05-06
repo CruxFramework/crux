@@ -30,8 +30,6 @@ import java.util.Set;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.server.Environment;
-import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
@@ -309,22 +307,6 @@ public final class Scanners
 					 continue with web folders scanning. */
 				urls = fiterLibs(ScannerURLS.getURLsForSearch());
 				scan(scanners, urls);
-				if (!Environment.isProduction())
-				{
-					try
-					{
-						URL[] webDirs = new URL[]{ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir()};
-						webDirs = fiterLibs(webDirs);
-						scan(scanners, webDirs);
-					}
-					catch (Exception e)
-					{
-						throw new ScannerException("Error scanning resources. Check if Scanners engine was properly initialized. "
-								+ "Verify if your application configures DevModeInitializerListener on web.xml properly. "
-								+ "Also, check if the resources from project source folder were correctly copied to the target folder. "
-								, e);
-					}
-				}
 			}
 			else
 			{

@@ -19,11 +19,6 @@ import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.server.Environment;
-import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
-
 
 /**
  * 
@@ -34,7 +29,6 @@ public class ScannerURLS
 {
 	static URL[] urls;
 	private static final Lock lock = new ReentrantLock();
-	private static final Log logger = LogFactory.getLog(ScannerURLS.class);
 	
 	/**
 	 * 
@@ -72,40 +66,7 @@ public class ScannerURLS
 		if (urls != null) return urls;
 		try
 		{
-			if (Environment.isProduction())
-			{
-				try
-				{
-					urls = ClassPathResolverInitializer.getClassPathResolver().findWebInfLibJars();
-				}
-				catch (Throwable e) 
-				{
-					logger.error("Error searching /WEB-INF/lib dir.", e);
-				}
-				URL webInfClasses = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
-				
-				if (webInfClasses != null)
-				{
-					urls = urls != null ? urls : new URL[0];
-					URL[] tempUrls = new URL[urls.length + 1];
-					System.arraycopy(urls, 0, tempUrls, 0, urls.length);
-					
-					urls = tempUrls;		
-					
-					try
-					{
-						urls[urls.length -1] = webInfClasses;
-					}
-					catch (Throwable e) 
-					{
-						logger.error("Error searching /WEB-INF/classes dir.", e);
-					}
-				}
-			}
-			else
-			{
-				urls = ClasspathUrlFinder.findClassPaths();
-			}
+			urls = ClasspathUrlFinder.findClassPaths();
 		}
 		finally
 		{

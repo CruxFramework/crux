@@ -37,10 +37,9 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBErrorEvent;
 import org.cruxframework.crux.core.client.db.indexeddb.events.IDBObjectRetrieveEvent;
 import org.cruxframework.crux.core.client.db.indexeddb.events.IDBObjectStoreEvent;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.server.Environment;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -57,12 +56,12 @@ public class IDBIndexProxyCreator extends IDBAbstractKeyValueProxyCreator
 	private String dbVariable;
 	private String[] objectStoreKeyPath;
 
-	public IDBIndexProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, 
+	public IDBIndexProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, 
 			String[] keyPath, String indexName, String[] objectStoreKeyPath)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 		this.objectStoreKeyPath = objectStoreKeyPath;
-		this.indexType = context.getTypeOracle().findType(IDXIndex.class.getCanonicalName());
+		this.indexType = context.getGeneratorContext().getTypeOracle().findType(IDXIndex.class.getCanonicalName());
 		this.idbIndexVariable = "idbIndex";
 		this.dbVariable = "db";
 		this.indexName = indexName;
@@ -220,7 +219,7 @@ public class IDBIndexProxyCreator extends IDBAbstractKeyValueProxyCreator
 		
 		srcWriter.println(cursorRequestVar+".onSuccess(new IDBCursorEvent.Handler(){");
 		srcWriter.println("public void onSuccess(IDBCursorEvent event){");
-		String cursorClassName = new IDBKeyCursorProxyCreator(context, logger, targetObjectType, objectStoreName, keyPath, objectStoreKeyPath, getIndexClassName()).create();
+		String cursorClassName = new IDBKeyCursorProxyCreator(context, targetObjectType, objectStoreName, keyPath, objectStoreKeyPath, getIndexClassName()).create();
 		srcWriter.println(IDBCursorWithValue.class.getCanonicalName()+" cursor = event.getCursor();");
 		srcWriter.println("if ("+callbackVar+" != null){");
 		
@@ -338,7 +337,7 @@ public class IDBIndexProxyCreator extends IDBAbstractKeyValueProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = indexType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -354,7 +353,7 @@ public class IDBIndexProxyCreator extends IDBAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("IDXIndex<"+getKeyTypeName(objectStoreKeyPath)+","+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

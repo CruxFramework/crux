@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.bean;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -32,6 +33,6 @@ public class BeanContentValidatorGenerator  extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
     {
-	    return new BeanContentValidatorProxyCreator(logger, ctx, baseIntf);
+	    return new BeanContentValidatorProxyCreator(new RebindContext(ctx, logger), baseIntf);
     }
 }

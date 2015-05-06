@@ -15,11 +15,17 @@
  */
 package org.cruxframework.crux.core.client.formatter;
 
+import org.cruxframework.crux.core.client.Legacy;
+import org.cruxframework.crux.core.client.converter.TypeConverter;
+
 
 /**
  * 
- * @author Thiago
+ * @author Thiago da Rosa de Bustamante
+ * @deprecated Use {@link TypeConverter} instead
  */
+@Deprecated
+@Legacy
 public interface Formatter
 {
 	String format(Object input) throws InvalidFormatException;

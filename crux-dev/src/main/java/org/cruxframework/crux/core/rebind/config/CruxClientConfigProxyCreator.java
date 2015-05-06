@@ -20,9 +20,7 @@ import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -35,9 +33,9 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 	 * @param logger
 	 * @param context
 	 */
-	public CruxClientConfigProxyCreator(TreeLogger logger, GeneratorContext context)
+	public CruxClientConfigProxyCreator(RebindContext context)
     {
-	    super(logger, context, context.getTypeOracle().findType(CruxClientConfig.class.getCanonicalName()), true);
+	    super(context, context.getGeneratorContext().getTypeOracle().findType(CruxClientConfig.class.getCanonicalName()), true);
     }
 	
 	@Override
@@ -55,8 +53,6 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
 		generateEnableCrux2OldInterfacesCompatibility(sourceWriter);
 		generatePreferWebSQLForNativeDB(sourceWriter);
-		generateNotifierCompilerPort(sourceWriter);
-		generateNotifierCompilerAddress(sourceWriter);
     }
 
 	protected void generatePreferWebSQLForNativeDB(SourcePrinter sourceWriter)
@@ -65,20 +61,6 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().preferWebSQLForNativeDB() + ";");
 		sourceWriter.println("}");
     }
-
-	protected void generateNotifierCompilerPort(SourcePrinter sourceWriter)
-	{
-		sourceWriter.println("public String notifierCompilerPort(){");
-		sourceWriter.println("return \"" + ConfigurationFactory.getConfigurations().notifierCompilerPort() + "\";");
-		sourceWriter.println("}");
-	}
-	
-	protected void generateNotifierCompilerAddress(SourcePrinter sourceWriter)
-	{
-		sourceWriter.println("public String notifierCompilerAddress(){");
-		sourceWriter.println("return \"" + ConfigurationFactory.getConfigurations().notifierCompilerAddress() + "\";");
-		sourceWriter.println("}");
-	}
 	
 	/**
 	 * @param sourceWriter

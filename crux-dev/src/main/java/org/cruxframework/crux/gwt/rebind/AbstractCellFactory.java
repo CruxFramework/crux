@@ -21,8 +21,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.cell.CustomCells;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
+import org.cruxframework.crux.core.rebind.cell.CustomCellScanner;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -68,6 +67,14 @@ import com.google.gwt.cell.client.TextInputCell;
 })
 public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extends WidgetCreator<C> 
 {
+	
+	private CustomCellScanner customCells;
+
+	public AbstractCellFactory()
+    {
+		customCells = new CustomCellScanner(getContext().getGeneratorContext());
+    }
+	
 	/**
 	 * @param metaElem
 	 * @return
@@ -75,7 +82,7 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 	protected String getDataObject(JSONObject metaElem)
     {
 		String dataObject = metaElem.optString("dataObject");
-		String dataObjectClass = DataObjects.getDataObject(dataObject);
+		String dataObjectClass = getContext().getDataObjects().getDataObject(dataObject);
 		if (StringUtils.isEmpty(dataObjectClass))
 		{
 			throw new CruxGeneratorException("DataObject ["+dataObject+"], referenced by widget ["+metaElem.optString("id")+"] not found.");
@@ -286,7 +293,7 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
     {
 	    String cellName = child.optString("cellName");
 	    assert (!StringUtils.isEmpty(cellName));
-		out.println("new "+CustomCells.getCustomCell(cellName)+"();");
+		out.println("new "+customCells.getCustomCell(cellName)+"();");
 		//TODO validar se o tipo do objeto informado no dataObject é compatível com o tipo do objeto renderizado pelo customCell (e também pelo dataProvider)
     }
 	

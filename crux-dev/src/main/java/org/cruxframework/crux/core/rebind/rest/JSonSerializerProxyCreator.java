@@ -34,6 +34,7 @@ import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.shared.json.annotations.JsonIgnore;
 import org.cruxframework.crux.core.shared.json.annotations.JsonProperty;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes;
@@ -42,7 +43,6 @@ import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -79,22 +79,22 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 	
 	private static NameFactory nameFactory = new NameFactory();
 
-	public JSonSerializerProxyCreator(GeneratorContext context, TreeLogger logger, JType targetObjectType)
+	public JSonSerializerProxyCreator(RebindContext context, JType targetObjectType)
 	{
-		this(context, logger, targetObjectType, new HashSet<String>());
+		this(context, targetObjectType, new HashSet<String>());
 	}
 	
-	public JSonSerializerProxyCreator(GeneratorContext context, TreeLogger logger, JType targetObjectType, Set<String> referencedTypes)
+	public JSonSerializerProxyCreator(RebindContext context, JType targetObjectType, Set<String> referencedTypes)
 	{
-		super(logger, context, true);
+		super(context, true);
 		registerReferencedType(targetObjectType, referencedTypes);
-		jsonEncoderType = context.getTypeOracle().findType(JsonEncoder.class.getCanonicalName());
-		exceptionType = context.getTypeOracle().findType(Exception.class.getCanonicalName());
-		listType = context.getTypeOracle().findType(List.class.getCanonicalName());
-		setType = context.getTypeOracle().findType(Set.class.getCanonicalName());
-		mapType = context.getTypeOracle().findType(Map.class.getCanonicalName());
-		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
-		stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
+		jsonEncoderType = context.getGeneratorContext().getTypeOracle().findType(JsonEncoder.class.getCanonicalName());
+		exceptionType = context.getGeneratorContext().getTypeOracle().findType(Exception.class.getCanonicalName());
+		listType = context.getGeneratorContext().getTypeOracle().findType(List.class.getCanonicalName());
+		setType = context.getGeneratorContext().getTypeOracle().findType(Set.class.getCanonicalName());
+		mapType = context.getGeneratorContext().getTypeOracle().findType(Map.class.getCanonicalName());
+		javascriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+		stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 		this.targetObjectType = targetObjectType;
 	}
 
@@ -131,7 +131,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = jsonEncoderType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -146,7 +146,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**
@@ -328,7 +328,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue()", objectType) + ";");
 			} else if (objectType.getQualifiedSourceName().equals("java.sql.Date"))
 			{
-				logger.log(TreeLogger.Type.WARN, "We recommend to avoid type ["+objectType.getParameterizedQualifiedSourceName()+"]: "
+				context.getLogger().log(TreeLogger.Type.WARN, "We recommend to avoid type ["+objectType.getParameterizedQualifiedSourceName()+"]: "
 						+ "there are some known issues with respect to Jackson timezone handling, partly due to design of this class.");
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue().replace(\"/\",\"-\")", objectType) + ";");
 			} else
@@ -398,7 +398,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		JClassType targetObjectType = getCollectionTargetType(objectType);
 		generateCollectionInstantiation(srcWriter, objectType, resultObjectVar, resultSourceName, targetObjectType);
 
-		String serializerName = new JSonSerializerProxyCreator(context, logger, targetObjectType, new HashSet<String>(referencedTypes)).create();
+		String serializerName = new JSonSerializerProxyCreator(context, targetObjectType, new HashSet<String>(referencedTypes)).create();
 		String serializerVar = nameFactory.createName("serializer");
 		srcWriter.println(serializerName+" "+serializerVar+" = new "+serializerName+"();");
 		if (isList)
@@ -477,7 +477,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		JClassType targetObjectType = getCollectionTargetType(objectType);
 		generateJSONValueCollectionForEncode(srcWriter, resultJSONValueVar, isList);
 
-		String serializerName = new JSonSerializerProxyCreator(context, logger, targetObjectType, new HashSet<String>(referencedTypes)).create();
+		String serializerName = new JSonSerializerProxyCreator(context, targetObjectType, new HashSet<String>(referencedTypes)).create();
 		String serializerVar = nameFactory.createName("serializer");
 		srcWriter.println(serializerName+" "+serializerVar+" = new "+serializerName+"();");
 		if (isList)
@@ -551,7 +551,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+jsonValueVar+".isObject().get("+
 										EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+").isString().stringValue(),"+
 										EscapeUtils.quote(innerObject.value().getName())+")){");
-				JClassType innerClass = context.getTypeOracle().findType(innerObject.value().getCanonicalName());
+				JClassType innerClass = context.getGeneratorContext().getTypeOracle().findType(innerObject.value().getCanonicalName());
 				String serializerName = getSerializerForType(innerClass);
 				srcWriter.println(resultObjectVar+" = new "+serializerName+"().decode("+jsonValueVar+");");
 				srcWriter.println("}");
@@ -618,10 +618,10 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		//check cyclic reference and clear user types after the recursive call.
 		if(referencedTypes.contains(paramType.getQualifiedSourceName()))
 		{
-			logger.log(TreeLogger.Type.WARN, "Recursive reference found: " + referencedTypes.toString() + "-> please check for cyclic references in order to avoid infinite loops.");
+			context.getLogger().log(TreeLogger.Type.WARN, "Recursive reference found: " + referencedTypes.toString() + "-> please check for cyclic references in order to avoid infinite loops.");
 		}
 		//run nested evaluation.
-		String serializerName = new JSonSerializerProxyCreator(context, logger, paramType, referencedTypes).create();
+		String serializerName = new JSonSerializerProxyCreator(context, paramType, referencedTypes).create();
 		
 		//revert processed list
 		this.referencedTypes = referencedTypesBackup;
@@ -644,7 +644,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				}
 				first = false;
 				srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+objectVar+".getClass().getName(),"+EscapeUtils.quote(innerObject.value().getName())+")){");
-				JClassType innerClass = context.getTypeOracle().findType(innerObject.value().getCanonicalName());
+				JClassType innerClass = context.getGeneratorContext().getTypeOracle().findType(innerObject.value().getCanonicalName());
 				String serializerName = getSerializerForType(innerClass);
 				srcWriter.println(resultJSONValueVar+" = new "+serializerName+"().encode(("+innerClass.getQualifiedSourceName()+")"+objectVar+");");
 

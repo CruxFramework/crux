@@ -19,12 +19,12 @@ import java.lang.annotation.Annotation;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
 import org.cruxframework.crux.core.shared.rest.annotation.QueryParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -35,7 +35,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
  */
 class QueryParameterHandler extends AbstractParameterHelper
 {
-	public QueryParameterHandler(GeneratorContext context)
+	public QueryParameterHandler(RebindContext context)
     {
 		super(context);
     }

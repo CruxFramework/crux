@@ -20,10 +20,10 @@ import java.util.Date;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 
@@ -36,10 +36,10 @@ abstract class AbstractParameterHelper
 	protected JClassType stringType;
 	protected JClassType dateType;
 	
-	public AbstractParameterHelper(GeneratorContext context)
+	public AbstractParameterHelper(RebindContext context)
     {
-		stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
-		dateType = context.getTypeOracle().findType(Date.class.getCanonicalName());
+		stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
+		dateType = context.getGeneratorContext().getTypeOracle().findType(Date.class.getCanonicalName());
     }
 	
 	protected void generateMethodParamToCodeForComplexType(SourcePrinter srcWriter, String parameterStringVariable, JType parameterType, 

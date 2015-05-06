@@ -20,14 +20,12 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.widget.ControllerAccessHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
-
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -40,15 +38,21 @@ public class DeviceAdaptiveViewFactoryCreator extends ViewFactoryCreator
 	/**
 	 * 
 	 * @param context
-	 * @param logger
 	 * @param view
 	 * @param device
-	 * @param controllerClass 
+	 * @param controllerName
 	 */
-	public DeviceAdaptiveViewFactoryCreator(GeneratorContext context, TreeLogger logger, View view, String device, final String controllerName, String module)
+	public DeviceAdaptiveViewFactoryCreator(RebindContext context, View view, boolean viewChanged, String device, final String controllerName)
     {
-	    super(context, logger, view, device, module);
-	    controllerClass = ClientControllers.getController(controllerName, Device.valueOf(device));
+	    super(context, view, viewChanged, device);
+	    try
+        {
+	        controllerClass = context.getControllers().getController(controllerName, Device.valueOf(device));
+        }
+        catch (ResourceNotFoundException e)
+        {
+        	throw new CruxGeneratorException("Error generating cross device widget.", e);
+        }
 		this.controllerAccessHandler = new ControllerAccessHandler(){
 
 			@Override

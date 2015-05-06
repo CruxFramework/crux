@@ -19,11 +19,10 @@ import org.cruxframework.crux.core.client.bean.BeanContentValidator;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 
@@ -41,10 +40,10 @@ public class BeanContentValidatorProxyCreator extends AbstractInterfaceWrapperPr
 	 * @param context
 	 * @param baseIntf
 	 */
-	public BeanContentValidatorProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public BeanContentValidatorProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, true);
-		JClassType beanComparatorType = context.getTypeOracle().findType(BeanContentValidator.class.getCanonicalName());
+		super(context, baseIntf, true);
+		JClassType beanComparatorType = context.getGeneratorContext().getTypeOracle().findType(BeanContentValidator.class.getCanonicalName());
 		JClassType[] parameterTypes = JClassUtils.getActualParameterTypes(baseIntf, beanComparatorType);
 		aType = parameterTypes[0];
 
