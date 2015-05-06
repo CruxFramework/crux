@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
+import org.cruxframework.crux.core.client.bean.BeanCopier;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.EagerDataLoader;
 import org.cruxframework.crux.core.client.dataprovider.EagerDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.EagerLoadEvent;
@@ -119,7 +121,24 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false", 
 								description="If true, ask bound DataProvider for data when widget is created.")
 	})
-	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	{
+		protected void createDataHandlerObject(SourcePrinter out, String dataObject)
+		{
+			String copierClassName = dataObject + "_Copier";
+			// TODO tentar ler do cache primeiro (tryReuse....)
+			getWidgetCreator().getSubTypeWriter(copierClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null);
+			
+			out.println("new " + DataProvider.DataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
+			out.println(copierClassName + " copier = GWT.create(" + copierClassName + ");");
+			out.println("public void clone(" + dataObject + " value){");
+			out.println(dataObject + " result = new " + dataObject + "();");
+			out.println("copier.copyTo(value, result);");
+			out.println("return result;");
+			out.println("}");
+			out.println("}");
+		}
+	}
 
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onLoadData", required=true, description="Event called to load the data set into this dataprovider.")
@@ -137,7 +156,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataLoaderClassName = EagerDataLoader.class.getCanonicalName();
 			String dataEventClassName =  EagerLoadEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.print(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onLoadData("+dataEventClassName+"<"+dataObject+"> event){");
 
@@ -193,7 +214,10 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			String dataMeasureEventClassName = MeasureDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
+
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onMeasureData("+dataMeasureEventClassName+"<"+dataObject+"> event){");
 
@@ -230,7 +254,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataLoaderClassName = StreamingDataLoader.class.getCanonicalName();
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
 

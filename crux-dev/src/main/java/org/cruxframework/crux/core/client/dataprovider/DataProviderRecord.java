@@ -65,7 +65,7 @@ public class DataProviderRecord<T> implements Cloneable
 	{
 		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
 		
-		record.recordObject = this.recordObject;
+		record.recordObject = dataProvider.dataHandler.clone(this.recordObject);
 		record.state = getCurrentState();
 		return record;
 	}
