@@ -28,79 +28,12 @@ import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataPr
 abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T> implements MeasurableProvider<T>
 {
 	protected DataProviderOperations<T> operations = new DataProviderOperations<T>(this);
+
+	public AbstractScrollableDataProvider(DataProvider.DataHandler<T> handler)
+    {
+	    super(handler);
+    }
 		
-	@Override
-	public void rollback()
-	{
-		this.operations.rollback();
-	}
-	
-	@Override
-	public void commit()
-	{
-		this.operations.commit();
-	}
-	
-	@Override
-	public DataProviderRecord<T> select(int index, boolean selected)
-	{
-		return operations.selectRecord(index, selected);
-	}
-
-	@Override
-	public DataProviderRecord<T> select(T object, boolean selected)
-	{
-		return operations.selectRecord(indexOf(object), selected);
-	}
-	
-	@Override
-	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
-	{
-		return operations.setReadOnly(index, readOnly);
-	}
-
-	@Override
-	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
-	{
-		return operations.setReadOnly(indexOf(object), readOnly);
-	}
-
-	@Override
-	public boolean isDirty()
-	{
-	    return operations.isDirty();
-	}
-	
-	@Override
-	public int indexOf(T boundObject)
-	{
-		return operations.getRecordIndex(boundObject);
-	}
-
-	@Override
-	public DataProviderRecord<T>[] getNewRecords()
-	{
-		return operations.getNewRecords();
-	}
-	
-	@Override
-	public DataProviderRecord<T>[] getRemovedRecords()
-	{
-		return operations.getRemovedRecords();
-	}	
-	
-	@Override
-	public DataProviderRecord<T>[] getSelectedRecords()
-	{
-		return operations.getSelectedRecords();
-	}	
-	
-	@Override
-	public DataProviderRecord<T>[] getUpdatedRecords()
-	{
-		return operations.getUpdatedRecords();
-	}
-
 	@Override
 	public DataProviderRecord<T> add(int beforeIndex, T object)
 	{
@@ -112,37 +45,29 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	{
 		return operations.insertRecord(object);
 	}
-
+	
 	@Override
-	public DataProviderRecord<T> remove(int index)
+	public void commit()
 	{
-		return operations.removeRecord(index);
+		this.operations.commit();
 	}
 
 	@Override
-	public DataProviderRecord<T> set(int index, T object)
+	public Array<T> filter(DataFilter<T> filter)
 	{
-		return operations.updateRecord(index, object);
+	    return operations.filter(filter);
 	}
 	
 	@Override
-	public void reset()
+	public void first()
 	{
-		super.reset();
-		operations.reset();
+		setFirstPosition(true);
 	}
 
 	@Override
-	protected void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
+	public DataProviderRecord<T>[] getNewRecords()
 	{
-		operations.updateState(record, previousState);
-	}
-	
-	@Override
-	public boolean hasNext()
-	{
-		ensureLoaded();
-		return (data != null && currentRecord < data.size() -1);
+		return operations.getNewRecords();
 	}
 
 	@Override
@@ -160,6 +85,31 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 	
 	@Override
+	public DataProviderRecord<T>[] getRemovedRecords()
+	{
+		return operations.getRemovedRecords();
+	}
+
+	@Override
+	public DataProviderRecord<T>[] getSelectedRecords()
+	{
+		return operations.getSelectedRecords();
+	}
+	
+	@Override
+	public DataProviderRecord<T>[] getUpdatedRecords()
+	{
+		return operations.getUpdatedRecords();
+	}	
+	
+	@Override
+	public boolean hasNext()
+	{
+		ensureLoaded();
+		return (data != null && currentRecord < data.size() -1);
+	}	
+	
+	@Override
 	public boolean hasPrevious()
 	{
 		ensureLoaded();
@@ -167,25 +117,15 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 
 	@Override
-	public void sort(Comparator<T> comparator)
+	public int indexOf(T boundObject)
 	{
-		ensureLoaded();
-		if (data != null)
-		{
-			sortArray(data, comparator);
-		}
+		return operations.getRecordIndex(boundObject);
 	}
 	
 	@Override
-	public int size()
+	public boolean isDirty()
 	{
-		return (data!=null?data.size():0);
-	}
-	
-	@Override
-	public void first()
-	{
-		setFirstPosition(true);
+	    return operations.isDirty();
 	}
 
 	@Override
@@ -194,9 +134,46 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		ensureLoaded();
 		currentRecord = size()-1;
 	}
+
+	@Override
+	public DataProviderRecord<T> remove(int index)
+	{
+		return operations.removeRecord(index);
+	}
 	
-    @Override
-	public void setData(T[] data)
+	@Override
+	public void reset()
+	{
+		super.reset();
+		operations.reset();
+	}
+
+	@Override
+	public void rollback()
+	{
+		this.operations.rollback();
+	}
+	
+	@Override
+	public DataProviderRecord<T> select(int index, boolean selected)
+	{
+		return operations.selectRecord(index, selected);
+	}
+
+	@Override
+	public DataProviderRecord<T> select(T object, boolean selected)
+	{
+		return operations.selectRecord(indexOf(object), selected);
+	}
+	
+	@Override
+	public DataProviderRecord<T> set(int index, T object)
+	{
+		return operations.updateRecord(index, object);
+	}
+
+	@Override
+	public void setData(Array<T> data)
 	{
 		if (data == null)
 		{
@@ -205,18 +182,18 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		} 
 		else 
 		{
-			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.length); 
-			for (int i=0; i<data.length; i++)
+			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.size());
+			for (int i=0; i<data.size(); i++)
 			{
 				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data[i]);
+				record.setRecordObject(data.get(i));
 				ret.set(i, record);
 			}
 			update(ret);
 		}
-	}	
+	}
 	
-    @Override
+	@Override
 	public void setData(List<T> data)
 	{
 		if (data == null)
@@ -237,8 +214,8 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		}
 	}
 	
-    @Override
-	public void setData(Array<T> data)
+	@Override
+	public void setData(T[] data)
 	{
 		if (data == null)
 		{
@@ -247,11 +224,11 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		} 
 		else 
 		{
-			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.size());
-			for (int i=0; i<data.size(); i++)
+			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.length); 
+			for (int i=0; i<data.length; i++)
 			{
 				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data.get(i));
+				record.setRecordObject(data[i]);
 				ret.set(i, record);
 			}
 			update(ret);
@@ -259,17 +236,38 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 
 	@Override
-	public Array<T> filter(DataFilter<T> filter)
+	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
 	{
-	    return operations.filter(filter);
-	}
-    
-	protected void setFirstPosition(boolean fireEvents)
-	{
-		currentRecord = -1;
-		next();
+		return operations.setReadOnly(index, readOnly);
 	}
 	
+    @Override
+	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
+	{
+		return operations.setReadOnly(indexOf(object), readOnly);
+	}	
+	
+    @Override
+	public int size()
+	{
+		return (data!=null?data.size():0);
+	}
+	
+    @Override
+	public void sort(Comparator<T> comparator)
+	{
+		ensureLoaded();
+		if (data != null)
+		{
+			sortArray(data, comparator);
+		}
+	}
+
+	protected void changePositionAfterSorting()
+    {
+	    first();
+    }
+    
 	protected void ensureLoaded()
 	{
 		if (!loaded)
@@ -277,22 +275,6 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 			throw new DataProviderExcpetion("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
-
-	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
-	{
-		array.sort(new Comparator<DataProviderRecord<T>>(){
-			public int compare(DataProviderRecord<T> o1, DataProviderRecord<T> o2)
-			{
-				return comparator.compare(o1.getRecordObject(), o2.getRecordObject());
-			}
-		});
-		changePositionAfterSorting();
-	}
-
-	protected void changePositionAfterSorting()
-    {
-	    first();
-    }
 	
 	protected Array<DataProviderRecord<T>> getTransactionRecords()
 	{
@@ -306,16 +288,39 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		
 		return transactionRecords;
 	}
-	
-	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
-	{
-		this.data = transactionRecords;
-	}
-	
-	protected abstract void update(Array<DataProviderRecord<T>> records);
 
 	protected int lockRecordForEdition(int recordIndex)
     {
 		return 0;
     }
+
+	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
+	{
+		this.data = transactionRecords;
+	}
+	
+	protected void setFirstPosition(boolean fireEvents)
+	{
+		currentRecord = -1;
+		next();
+	}
+	
+	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
+	{
+		array.sort(new Comparator<DataProviderRecord<T>>(){
+			public int compare(DataProviderRecord<T> o1, DataProviderRecord<T> o2)
+			{
+				return comparator.compare(o1.getRecordObject(), o2.getRecordObject());
+			}
+		});
+		changePositionAfterSorting();
+	}
+	
+	protected abstract void update(Array<DataProviderRecord<T>> records);
+
+	@Override
+	protected void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
+	{
+		operations.updateState(record, previousState);
+	}
 }

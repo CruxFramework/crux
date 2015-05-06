@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
+import org.cruxframework.crux.core.client.bean.BeanCopier;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.EagerDataLoader;
 import org.cruxframework.crux.core.client.dataprovider.EagerDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.EagerLoadEvent;
@@ -120,7 +122,24 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false", 
 								description="If true, ask bound DataProvider for data when widget is created.")
 	})
-	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	{
+		protected void createDataHandlerObject(SourcePrinter out, String dataObject)
+		{
+			String copierClassName = dataObject + "_Copier";
+			// TODO tentar ler do cache primeiro (tryReuse....)
+			getWidgetCreator().getSubTypeWriter(copierClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null);
+			
+			out.println("new " + DataProvider.DataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
+			out.println(copierClassName + " copier = GWT.create(" + copierClassName + ");");
+			out.println("public void clone(" + dataObject + " value){");
+			out.println(dataObject + " result = new " + dataObject + "();");
+			out.println("copier.copyTo(value, result);");
+			out.println("return result;");
+			out.println("}");
+			out.println("}");
+		}
+	}
 
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onLoadData", required=true, description="Event called to load the data set into this dataprovider.")
@@ -138,7 +157,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataLoaderClassName = EagerDataLoader.class.getCanonicalName();
 			String dataEventClassName =  EagerLoadEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.print(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onLoadData("+dataEventClassName+"<"+dataObject+"> event){");
 
@@ -151,7 +172,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="scrollableDataProvider", description="Define an eager data provider. You must provide a dataLader "
+	@TagConstraints(tagName="scrollableDataProvider", description="Define an eager data provider. You must provide a dataLoader "
 																+ "function for this provider")
 	public static class ScrollableDataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
@@ -162,7 +183,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="dataProvider", description="Define an eager paged data provider. You must provide a dataLader "
+	@TagConstraints(tagName="dataProvider", description="Define an eager paged data provider. You must provide a dataLoader "
 													  + "function for this provider")
 	public static class DataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
@@ -173,7 +194,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="lazyDataProvider", description="Define a lazy paged data provider. You must provide a lazyDataLader functions for this provider")
+	@TagConstraints(tagName="lazyDataProvider", description="Define a lazy paged data provider. You must provide a lazydataLoader functions for this provider")
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onMeasureData", required=true, description="Event called when the data provider is initialized. Use this to set the data set size."),
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
@@ -194,7 +215,10 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			String dataMeasureEventClassName = MeasureDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
+
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onMeasureData("+dataMeasureEventClassName+"<"+dataObject+"> event){");
 
@@ -213,7 +237,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="streamingDataProvider", description="Define a streaming paged data provider. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available. You must provide a streamingDataLader functions for this provider")
+	@TagConstraints(tagName="streamingDataProvider", description="Define a streaming paged data provider. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available. You must provide a streamingdataLoader functions for this provider")
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})
@@ -231,7 +255,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String dataLoaderClassName = StreamingDataLoader.class.getCanonicalName();
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
+			createDataHandlerObject(out, dataObject);
+			out.println(");");
 			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
 			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
 

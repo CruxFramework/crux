@@ -21,7 +21,7 @@ import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
-import org.cruxframework.crux.core.client.dataprovider.DataProviderExcpetion;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
 import org.cruxframework.crux.core.client.dataprovider.MeasurablePagedProvider;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
@@ -45,7 +45,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	protected Pager pager;
 	protected PagedDataProvider<T> dataProvider;
 	protected int pageSize = 25;
-	protected Renderer<T> renderer = getRenderer();
+	protected DataProvider.DataReader<T> reader = getDataReader();
 	private boolean transactionRunning = false;
 	
 	public int getPageSize()
@@ -319,9 +319,6 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	    refresh(false);
     }
 
-	protected abstract void clearRange(int startRecord);
-	protected abstract void clear(); 
-	
 	protected void onTransactionCompleted(boolean commited)
     {
 		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
@@ -358,12 +355,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 		for (int i=0; i<rowCount; i++)
 		{
-			T value = dataProvider.get();
-			if (value == null)
-			{
-				throw new DataProviderExcpetion("Index error = "+i);
-			}
-			renderer.render(value);
+			dataProvider.read(reader);
 			if (dataProvider.hasNext())
 			{
 				dataProvider.next();
@@ -392,6 +384,10 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 	}
 
+	protected abstract DataProvider.DataReader<T> getDataReader();
+	protected abstract void clearRange(int startRecord);
+	protected abstract void clear(); 
+	
 	private int getRowsToBeRendered()
 	{
 		if(isDataLoaded())
@@ -405,16 +401,5 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 
 		return 0;
-	}
-	
-	protected abstract Renderer<T> getRenderer();
-	
-	/**
-	 * Define a renderer, called when a record from DataProvider needs to be rendered by this widget 
-	 * @author Thiago da Rosa de Bustamante
-	 */
-	public static interface Renderer<T>
-	{
-		void render(T value);
 	}
 }
