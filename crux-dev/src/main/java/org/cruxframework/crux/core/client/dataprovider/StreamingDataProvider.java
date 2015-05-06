@@ -36,12 +36,14 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected Array<PageChangeHandler> pageChangeHandlers;
 	protected StreamingDataLoader<T> dataLoader;
 
-    public StreamingDataProvider()
+    public StreamingDataProvider(DataProvider.DataHandler<T> handler)
 	{
+    	super(handler);
 	}
 
-	public StreamingDataProvider(StreamingDataLoader<T> dataLoader)
+	public StreamingDataProvider(DataProvider.DataHandler<T> handler, StreamingDataLoader<T> dataLoader)
     {
+		super(handler);
 		this.dataLoader = dataLoader;
     }
 	

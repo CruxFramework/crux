@@ -26,175 +26,22 @@ import com.google.gwt.event.shared.HandlerRegistration;
 abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvider<E> 
                                               implements MeasurablePagedProvider<E>
 {
-	protected Array<PageLoadedHandler> pageLoadedHandlers;
+	protected int currentPage = 0;
+
 	protected Array<PageChangeHandler> pageChangeHandlers;
+	protected Array<PageLoadedHandler> pageLoadedHandlers;
 	
 	protected int pageSize = 10;
-	protected int currentPage = 0;
+	public AbstractPagedDataProvider(DataProvider.DataHandler<E> handler)
+    {
+	    super(handler);
+    }
 	
 	@Override
 	public DataProviderRecord<E> add(E object)
 	{
 		int index = getPageEndRecord()+1;
 		return operations.insertRecord(index, object);
-	}
-	
-	@Override
-	public int getCurrentPage()
-	{
-		return currentPage;
-	}
-
-	@Override
-	public int getPageCount()
-	{
-		int numRecords = size();
-		int pageSize = getPageSize();
-		
-		return (numRecords / pageSize) + (numRecords%pageSize==0?0:1);
-	}
-
-	@Override
-	public int getPageSize()
-	{
-		return pageSize;
-	}
-
-	@Override
-	public int getCurrentPageSize()
-	{
-		int pageEndRecord = getPageEndRecord();
-		if (pageEndRecord < 0)
-		{
-			return 0;
-		}
-		return pageEndRecord - getPageStartRecord() + 1;
-	}
-	
-	@Override
-	public int getCurrentPageStartRecord()
-	{
-	    return getPageStartRecord();
-	}
-	
-	@Override
-	public boolean hasNextPage()
-	{
-		ensureLoaded();
-		return (currentPage < getPageCount());
-	}
-
-	@Override
-	public boolean hasPreviousPage()
-	{
-		ensureLoaded();
-		return (currentPage > 1 );
-	}
-
-	@Override
-	public boolean nextPage()
-	{
-		if (hasNextPage())
-		{
-			currentPage++;
-			updateCurrentRecord();
-			return true;
-		}	
-		return false;
-	}
-
-	@Override
-	public boolean previousPage()
-	{
-		if (hasPreviousPage())
-		{
-			currentPage--;
-			updateCurrentRecord();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean setCurrentPage(int pageNumber)
-	{
-		return setCurrentPage(pageNumber, true);
-	}
-	
-	@Override
-	public void setPageSize(int pageSize)
-	{
-		if (pageSize < 1)
-		{
-			pageSize = 1;
-		}
-		this.pageSize = pageSize;
-		if (this.loaded)
-		{
-			updateCurrentRecord();
-		}
-	}
-	
-	@Override
-	public boolean hasNext()
-	{
-		return isRecordOnPage(currentRecord+1);
-	}
-	
-	@Override
-	public boolean hasPrevious()
-	{
-		return isRecordOnPage(currentRecord-1);
-	}
-	
-	@Override
-	public void reset()
-	{
-		super.reset();
-		currentPage = 0;
-	}	
-
-	@Override
-	protected void setFirstPosition(boolean fireEvents)
-	{
-		setCurrentPage(1, fireEvents);
-	}
-	
-	@Override
-	public void firstOnPage()
-	{
-		ensureLoaded();
-		currentRecord = getPageStartRecord();
-	}
-
-	@Override
-	public void last()
-	{
-		ensureLoaded();
-		currentRecord = getPageEndRecord();
-	}
-
-	@Override
-	public HandlerRegistration addPageLoadedHandler(final PageLoadedHandler handler)
-	{
-		if (pageLoadedHandlers == null)
-		{
-			pageLoadedHandlers = CollectionFactory.createArray();
-		}
-		
-		pageLoadedHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = pageLoadedHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					pageLoadedHandlers.remove(index);
-				}
-			}
-		};
 	}
 	
 	@Override
@@ -219,30 +66,188 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			}
 		};
 	}
-	
-	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
+
+	@Override
+	public HandlerRegistration addPageLoadedHandler(final PageLoadedHandler handler)
+	{
+		if (pageLoadedHandlers == null)
+		{
+			pageLoadedHandlers = CollectionFactory.createArray();
+		}
+		
+		pageLoadedHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = pageLoadedHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					pageLoadedHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public void firstOnPage()
 	{
 		ensureLoaded();
-		if (pageNumber > 0 && pageNumber <= getPageCount())
+		currentRecord = getPageStartRecord();
+	}
+
+	@Override
+	public int getCurrentPage()
+	{
+		return currentPage;
+	}
+	
+	@Override
+	public int getCurrentPageSize()
+	{
+		int pageEndRecord = getPageEndRecord();
+		if (pageEndRecord < 0)
 		{
-			currentPage = pageNumber;
+			return 0;
+		}
+		return pageEndRecord - getPageStartRecord() + 1;
+	}
+	
+	@Override
+	public int getCurrentPageStartRecord()
+	{
+	    return getPageStartRecord();
+	}
+
+	@Override
+	public int getPageCount()
+	{
+		int numRecords = size();
+		int pageSize = getPageSize();
+		
+		return (numRecords / pageSize) + (numRecords%pageSize==0?0:1);
+	}
+
+	@Override
+	public int getPageSize()
+	{
+		return pageSize;
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return isRecordOnPage(currentRecord+1);
+	}
+
+	@Override
+	public boolean hasNextPage()
+	{
+		ensureLoaded();
+		return (currentPage < getPageCount());
+	}
+	
+	@Override
+	public boolean hasPrevious()
+	{
+		return isRecordOnPage(currentRecord-1);
+	}
+	
+	@Override
+	public boolean hasPreviousPage()
+	{
+		ensureLoaded();
+		return (currentPage > 1 );
+	}
+	
+	@Override
+	public void last()
+	{
+		ensureLoaded();
+		currentRecord = getPageEndRecord();
+	}
+	
+	@Override
+	public boolean nextPage()
+	{
+		if (hasNextPage())
+		{
+			currentPage++;
+			updateCurrentRecord();
+			return true;
+		}	
+		return false;
+	}	
+
+	@Override
+	public boolean previousPage()
+	{
+		if (hasPreviousPage())
+		{
+			currentPage--;
 			updateCurrentRecord();
 			return true;
 		}
 		return false;
 	}
-
-	protected boolean isRecordOnPage(int record)
+	
+	@Override
+	public void reset()
 	{
-		ensureLoaded();
-		if (data == null)
-		{
-			return false;
-		}
-		int startPageRecord = getPageStartRecord();
-		int endPageRescord = getPageEndRecord();
-		return (record >= startPageRecord && record <= endPageRescord);
+		super.reset();
+		currentPage = 0;
 	}
+
+	@Override
+	public boolean setCurrentPage(int pageNumber)
+	{
+		return setCurrentPage(pageNumber, true);
+	}
+
+	@Override
+	public void setPageSize(int pageSize)
+	{
+		if (pageSize < 1)
+		{
+			pageSize = 1;
+		}
+		this.pageSize = pageSize;
+		if (this.loaded)
+		{
+			updateCurrentRecord();
+		}
+	}
+	
+	@Override
+	protected void changePositionAfterSorting()
+	{
+	    firstOnPage();
+	}
+	
+	protected void firePageChangeEvent(int pageNumber)
+    {
+		if (pageChangeHandlers != null)
+		{
+			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
+			for (int i = 0; i< pageChangeHandlers.size(); i++)
+			{
+				pageChangeHandlers.get(i).onPageChanged(event);
+			}
+		}
+    }
+
+	protected void firePageLoadedEvent(int start, int end)
+    {
+		if (pageLoadedHandlers != null)
+		{
+			PageLoadedEvent event = new PageLoadedEvent(this, start, end);
+			for (int i = 0; i< pageLoadedHandlers.size(); i++)
+			{
+				pageLoadedHandlers.get(i).onPageLoaded(event);
+			}
+		}
+    }
 
 	protected int getPageEndRecord()
 	{
@@ -263,52 +268,6 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		return pageEndRecord;
 	}
 
-	protected int getPageStartRecord()
-	{
-		return getPageStartRecord(currentPage);
-	}
-	
-	protected int getPageStartRecord(int page)
-	{
-		return (page - 1) * pageSize;
-	}
-	
-	protected void firePageLoadedEvent(int start, int end)
-    {
-		if (pageLoadedHandlers != null)
-		{
-			PageLoadedEvent event = new PageLoadedEvent(this, start, end);
-			for (int i = 0; i< pageLoadedHandlers.size(); i++)
-			{
-				pageLoadedHandlers.get(i).onPageLoaded(event);
-			}
-		}
-    }
-	
-	protected void firePageChangeEvent(int pageNumber)
-    {
-		if (pageChangeHandlers != null)
-		{
-			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
-			for (int i = 0; i< pageChangeHandlers.size(); i++)
-			{
-				pageChangeHandlers.get(i).onPageChanged(event);
-			}
-		}
-    }
-	
-	protected void updateCurrentRecord()
-	{
-		currentRecord = getPageStartRecord(); 
-//		firePageChangeEvent(currentPage);
-	}
-	
-	@Override
-	protected void changePositionAfterSorting()
-	{
-	    firstOnPage();
-	}
-	
 	protected int getPageForRecord(int recordNumber, boolean mayExpand)
 	{
 		int pageSize = getPageSize();
@@ -322,13 +281,15 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		return result;
 	}
 	
-	@Override
-	protected int lockRecordForEdition(int recordIndex)
-    {
-		int pageForRecord = getPageForRecord(recordIndex, true);
-		setCurrentPage(pageForRecord, false);
-		return getPageStartRecord(pageForRecord);
-    }
+	protected int getPageStartRecord()
+	{
+		return getPageStartRecord(currentPage);
+	}
+	
+	protected int getPageStartRecord(int page)
+	{
+		return (page - 1) * pageSize;
+	}
 	
 	@Override
 	protected Array<DataProviderRecord<E>> getTransactionRecords()
@@ -343,7 +304,27 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		}
 
 		return currentPageRecordsArray;
-	}	
+	}
+	
+	protected boolean isRecordOnPage(int record)
+	{
+		ensureLoaded();
+		if (data == null)
+		{
+			return false;
+		}
+		int startPageRecord = getPageStartRecord();
+		int endPageRescord = getPageEndRecord();
+		return (record >= startPageRecord && record <= endPageRescord);
+	}
+	
+	@Override
+	protected int lockRecordForEdition(int recordIndex)
+    {
+		int pageForRecord = getPageForRecord(recordIndex, true);
+		setCurrentPage(pageForRecord, false);
+		return getPageStartRecord(pageForRecord);
+    }
 	
 	@Override
 	protected void replaceTransactionData(Array<DataProviderRecord<E>> transactionRecords)
@@ -356,5 +337,29 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		{
 			data.insert(start+i, transactionRecords.get(i));
 		}
+	}
+	
+	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
+	{
+		ensureLoaded();
+		if (pageNumber > 0 && pageNumber <= getPageCount())
+		{
+			currentPage = pageNumber;
+			updateCurrentRecord();
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	protected void setFirstPosition(boolean fireEvents)
+	{
+		setCurrentPage(1, fireEvents);
+	}	
+	
+	protected void updateCurrentRecord()
+	{
+		currentRecord = getPageStartRecord(); 
+//		firePageChangeEvent(currentPage);
 	}
 }
