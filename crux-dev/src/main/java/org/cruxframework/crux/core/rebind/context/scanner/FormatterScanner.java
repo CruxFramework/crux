@@ -25,10 +25,9 @@ import org.cruxframework.crux.core.client.formatter.annotation.FormatterName;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 
@@ -45,9 +44,9 @@ public class FormatterScanner
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
-	public FormatterScanner(GeneratorContext context)
+	public FormatterScanner(JClassScanner jClassScanner)
     {
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner = jClassScanner;
     }
 
 	/**

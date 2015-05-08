@@ -756,7 +756,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	void setViewFactory(ViewFactoryCreator factory)
 	{
 		this.viewFactory = factory;
-		this.annotationProcessor = new WidgetCreatorAnnotationsProcessor(getClass(), this);
+		if (annotationProcessor == null)
+		{
+			this.annotationProcessor = new WidgetCreatorAnnotationsProcessor(getClass(), this);
+		}
 	}
 	
 	/**

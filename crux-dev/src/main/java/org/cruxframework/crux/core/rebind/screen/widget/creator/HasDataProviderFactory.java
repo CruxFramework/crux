@@ -127,8 +127,11 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		{
 			String copierClassName = dataObject + "_Copier";
 			// TODO tentar ler do cache primeiro (tryReuse....)
-			getWidgetCreator().getSubTypeWriter(copierClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null);
-			
+			SourcePrinter subTypeWriter = getWidgetCreator().getSubTypeWriter(copierClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null);
+			if (subTypeWriter != null)
+			{
+				subTypeWriter.commit();
+			}
 			out.println("new " + DataProvider.DataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
 			out.println(copierClassName + " copier = GWT.create(" + copierClassName + ");");
 			out.println("public void clone(" + dataObject + " value){");

@@ -13,11 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind;
+package org.cruxframework.crux.core.rebind.context;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -30,7 +32,8 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 public class JClassScanner
 {
 	private GeneratorContext context;
-
+	private Map<String, List<JClassType>> annotationsMap = null;
+	
 	public JClassScanner(GeneratorContext context)
     {
 		this.context = context;
@@ -49,16 +52,39 @@ public class JClassScanner
 	
 	public JClassType[] searchClassesByAnnotation(Class<? extends Annotation> annotationClass)
 	{
-		List<JClassType> result = new ArrayList<JClassType>(); 
-		for (JClassType type : context.getTypeOracle().getTypes()) 
+		initializeAnnotationsMap();
+		List<JClassType> result = annotationsMap.get(annotationClass.getCanonicalName());
+		if (result == null)
 		{
-			Annotation annotation = type.getAnnotation(annotationClass);
-			if (annotation != null)
-			{
-				result.add(type);
-			}
+			return new JClassType[0];
 		}
 		return result.toArray(new JClassType[result.size()]);
 	}
 	
+	private void initializeAnnotationsMap()
+	{
+		if (annotationsMap == null)
+		{
+			annotationsMap = new HashMap<String, List<JClassType>>();
+			for (JClassType type : context.getTypeOracle().getTypes()) 
+			{
+				Annotation[] annotations = type.getAnnotations();
+				if (annotations != null)
+				{
+					for (Annotation annotation : annotations)
+					{
+						String annotationName = annotation.annotationType().getCanonicalName();
+						List<JClassType> annotationsList = annotationsMap.get(annotationName);
+						if (annotationsList == null)
+						{
+							annotationsList = new ArrayList<JClassType>();
+							annotationsMap.put(annotationName, annotationsList);
+						}
+						annotationsList.add(type);
+					}
+				}
+			}
+		}
+	}
+
 }

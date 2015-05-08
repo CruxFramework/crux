@@ -25,10 +25,9 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.dto.DataObjectIdentifier;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 
@@ -45,9 +44,9 @@ public class DataObjectScanner
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
-	public DataObjectScanner(GeneratorContext context)
+	public DataObjectScanner(JClassScanner jClassScanner)
 	{
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner = jClassScanner;
 	}
 
 	/**

@@ -21,9 +21,8 @@ import java.util.Map;
 
 import org.cruxframework.crux.core.client.converter.TypeConverter.Converter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -37,9 +36,9 @@ public class ConverterScanner
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
-	public ConverterScanner(GeneratorContext context)
+	public ConverterScanner(JClassScanner jClassScanner)
 	{
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner = jClassScanner;
 	}
 
 	/**

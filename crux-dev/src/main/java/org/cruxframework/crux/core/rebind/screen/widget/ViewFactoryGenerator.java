@@ -22,7 +22,6 @@ import com.google.gwt.core.ext.IncrementalGenerator;
 import com.google.gwt.core.ext.RebindMode;
 import com.google.gwt.core.ext.RebindResult;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 
 /**
@@ -44,7 +43,6 @@ public class ViewFactoryGenerator extends IncrementalGenerator
 	{
 		ViewFactoriesProxyCreator proxy = new ViewFactoriesProxyCreator(new RebindContext(context, logger));
 		String returnType = proxy.create();
-		logger.log(Type.INFO, "CHAMOU O VIEW FACTORYGENERATOR");
 		if (returnType == null)
 		{
 		    return new RebindResult(RebindMode.USE_EXISTING, typeName);

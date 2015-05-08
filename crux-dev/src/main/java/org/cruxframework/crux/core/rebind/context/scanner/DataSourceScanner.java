@@ -23,9 +23,8 @@ import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 
@@ -42,9 +41,9 @@ public class DataSourceScanner
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 
-	public DataSourceScanner(GeneratorContext context)
+	public DataSourceScanner(JClassScanner jClassScanner)
     {
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner = jClassScanner;
     }
 
 	/**
