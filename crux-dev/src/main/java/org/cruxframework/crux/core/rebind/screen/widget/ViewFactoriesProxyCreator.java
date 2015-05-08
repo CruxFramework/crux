@@ -454,24 +454,17 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 	 */
 	private ViewFactoryCreator getViewFactoryCreator(View view)
 	{
-		if (Environment.isProduction())
+		ViewFactoryCreator factory = viewFactoryCache.get(view.getId());
+		if (factory == null)
 		{
-			return new ViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures());
+			factory = new ViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures());
+			viewFactoryCache.put(view.getId(), factory);
 		}
 		else
-		{   
-			ViewFactoryCreator factory = viewFactoryCache.get(view.getId());
-			if (factory == null)
-			{
-				factory = new ViewFactoryCreator(context, view, isChanged(view), getDeviceFeatures());
-				viewFactoryCache.put(view.getId(), factory);
-			}
-			else
-			{
-				factory.prepare(context, isChanged(view), getDeviceFeatures());
-			}
-			return factory;
+		{
+			factory.prepare(context, isChanged(view), getDeviceFeatures());
 		}
+		return factory;
 	}
 
 	private boolean hasChangedView()

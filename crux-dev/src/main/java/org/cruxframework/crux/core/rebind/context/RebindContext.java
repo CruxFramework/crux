@@ -17,7 +17,6 @@ package org.cruxframework.crux.core.rebind.context;
 
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
-import org.cruxframework.crux.core.rebind.JClassScanner;
 import org.cruxframework.crux.core.rebind.context.loader.ScreenRebindLoader;
 import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.ConverterScanner;
@@ -68,7 +67,7 @@ public class RebindContext
 	{
 		if (messageScanner == null)
 		{
-			messageScanner = new MessageScanner(generatorContext);
+			messageScanner = new MessageScanner(getClassScanner());
 		}
 		return messageScanner;
 	}
@@ -77,7 +76,7 @@ public class RebindContext
 	{
 		if (controllersScanner == null)
 		{
-			controllersScanner = new ControllerScanner(generatorContext);
+			controllersScanner = new ControllerScanner(getClassScanner());
 		}
 		return controllersScanner;
 	}
@@ -86,7 +85,7 @@ public class RebindContext
 	{
 		if (converterScanner == null)
 		{
-			converterScanner = new ConverterScanner(generatorContext);
+			converterScanner = new ConverterScanner(getClassScanner());
 		}
 		return converterScanner;
 	}
@@ -97,7 +96,7 @@ public class RebindContext
 	{
 		if (dataSourceScanner == null)
 		{
-			dataSourceScanner = new DataSourceScanner(generatorContext);
+			dataSourceScanner = new DataSourceScanner(getClassScanner());
 		}
 		return dataSourceScanner;
 	}
@@ -108,7 +107,7 @@ public class RebindContext
 	{
 		if (formatterScanner == null)
 		{
-			formatterScanner = new FormatterScanner(generatorContext);
+			formatterScanner = new FormatterScanner(getClassScanner());
 		}
 		return formatterScanner;
 	}
@@ -117,7 +116,7 @@ public class RebindContext
 	{
 		if (dataObjectScanner == null)
 		{
-			dataObjectScanner = new DataObjectScanner(generatorContext);
+			dataObjectScanner = new DataObjectScanner(getClassScanner());
 		}
 		return dataObjectScanner;
 	}
@@ -136,7 +135,7 @@ public class RebindContext
 	{
 		if (resourcesScanner == null)
 		{
-			resourcesScanner = new ResourceScanner(generatorContext);
+			resourcesScanner = new ResourceScanner(getClassScanner());
 		}
 		return resourcesScanner;
 	}

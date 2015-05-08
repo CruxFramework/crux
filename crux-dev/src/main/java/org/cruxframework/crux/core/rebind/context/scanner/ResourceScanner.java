@@ -22,9 +22,8 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 
@@ -40,9 +39,9 @@ public class ResourceScanner
 	private Map<String, Map<String, String>> resourcesCanonicalNames;
 	private Map<String, Map<String, String>> resourcesClassNames;
 	
-	public ResourceScanner(GeneratorContext context)
+	public ResourceScanner(JClassScanner jClassScanner)
     {
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner = jClassScanner;
     }
 	
 	/**

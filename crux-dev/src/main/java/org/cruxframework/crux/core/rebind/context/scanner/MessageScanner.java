@@ -20,9 +20,8 @@ import java.util.Map;
 
 import org.cruxframework.crux.core.client.i18n.MessageName;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.i18n.client.LocalizableResource;
 
@@ -36,9 +35,9 @@ public class MessageScanner
 	private JClassScanner jClassScanner;
 	private Map<String, String> messagesClasses = null;
 
-	public MessageScanner(GeneratorContext context)
+	public MessageScanner(JClassScanner jClassScanner)
 	{
-		jClassScanner = new JClassScanner(context);
+		this.jClassScanner =  jClassScanner;
 	}
 
 	/**

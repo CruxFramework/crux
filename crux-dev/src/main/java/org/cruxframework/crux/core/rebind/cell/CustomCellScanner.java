@@ -22,7 +22,7 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.cell.CustomCell;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.JClassScanner;
+import org.cruxframework.crux.core.rebind.context.JClassScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;

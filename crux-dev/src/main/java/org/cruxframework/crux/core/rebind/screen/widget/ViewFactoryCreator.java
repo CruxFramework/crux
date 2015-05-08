@@ -76,7 +76,6 @@ import com.google.gwt.core.ext.CachedGeneratorResult;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JRealClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dom.client.Element;
@@ -115,7 +114,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	protected final View view;
 	protected WidgetConsumer widgetConsumer;
 	private Map<String, Boolean> attachToDOMFactories = new HashMap<String, Boolean>();
-	private Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
+	private static Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
 	private ViewDataBindingsProcessor dataBindingProcessor;
 	private Map<String, String> declaredMessages = new HashMap<String, String>();
 	private String device;
@@ -726,7 +725,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	        	String creatorClassName = WidgetScanner.getClientClass(widgetType);
 	        	Class<?> widgetCreator = Class.forName(creatorClassName);
 	        	WidgetCreator<?> factory = (WidgetCreator<?>) widgetCreator.newInstance();
-	        	factory.setViewFactory(this);
 	        	creators.put(widgetType, factory);
 	        }
         }
@@ -737,7 +735,9 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 					+ "\n\t 1. Check if your resource file (View, Template, Screen ...) is validated according to the Crux Catalog."
         			,e);
         }
-		return creators.get(widgetType);
+		WidgetCreator<?> factory = creators.get(widgetType);
+		factory.setViewFactory(this);
+		return factory;
 	}
 
     /**
@@ -864,6 +864,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.device = device;
 		this.rootPanelChildren.clear();
 		this.viewChanged = changed;
+		if (context != null)
+		{
+			this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable, context.getControllers());
+			this.bindHandler = new ViewBindHandler(context, view, this);
+		}
+		else
+		{
+			this.controllerAccessHandler = null;
+			this.bindHandler = null;
+		}
 	}
     
     /**
