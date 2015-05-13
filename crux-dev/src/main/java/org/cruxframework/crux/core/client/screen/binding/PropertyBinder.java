@@ -15,7 +15,9 @@
  */
 package org.cruxframework.crux.core.client.screen.binding;
 
+import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.html5.api.MutationObserver;
+import org.cruxframework.crux.core.client.html5.api.MutationObserver.LoadCallback;
 import org.cruxframework.crux.core.client.html5.api.MutationObserver.MutationRecord;
 
 import com.google.gwt.core.client.JsArray;
@@ -62,12 +64,26 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 			{
 				if (event.isAttached())
 				{
-					mutationObserver = MutationObserver.createIfSupported(new MutationObserver.Callback()
+					MutationObserver.load(new MutationObserver.Callback()
 					{
 						@Override
 						public void onChanged(JsArray<MutationRecord> mutations, MutationObserver observer)
 						{
 							notifyChanges();
+						}
+					}, new LoadCallback()
+					{
+						@Override
+						public void onLoaded(MutationObserver mo)
+						{
+							mutationObserver = mo;					
+							mutationObserver.observe(widget.asWidget().getElement(), true, true, true);
+						}
+						
+						@Override
+						public void onError(String message)
+						{
+							Crux.getErrorHandler().handleError(Crux.getMessages().errorLoadingMutationObserver());
 						}
 					});
 				}
