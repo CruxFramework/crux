@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.utils;
 
 import org.cruxframework.crux.core.client.encoder.Base64;
 import org.cruxframework.crux.core.client.file.Blob;
+import org.cruxframework.crux.core.client.file.File;
 
 import com.google.gwt.typedarrays.client.ArrayBufferNative;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
@@ -78,17 +79,18 @@ public class FileUtils
 		return Blob.createIfSupported(ab, mimeString);
 	}
 
-	/*
+	/**
 	 * Create a new File from the dataURI string
 	 * @param dataURI
 	 * @param fileName
 	 * @return
-	 * TODO check status of https://bugzilla.mozilla.org/show_bug.cgi?id=819900
+	 * 
 	 */
-//	public static File fromDataURI(String dataURI, String fileName)
-//	{
-//		return File.createIfSupported(fromDataURI(dataURI), fileName);
-//	}
+	public static File fromDataURI(String dataURI, String fileName)
+	{
+		//TODO check status of https://bugzilla.mozilla.org/show_bug.cgi?id=819900
+		return File.createIfSupported(fromDataURI(dataURI), fileName);
+	}
 	
 	/**
 	 *  convert base64/URLEncoded data component to raw binary data held in a string
