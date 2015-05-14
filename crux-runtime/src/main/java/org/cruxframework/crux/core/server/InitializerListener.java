@@ -34,16 +34,7 @@ import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryI
  */
 public class InitializerListener implements ServletContextListener
 {
-	private static ServletContext context;
 	private static final Log logger = LogFactory.getLog(InitializerListener.class);
-	
-	/**
-	 * @return
-	 */
-	public static ServletContext getContext()
-	{
-		return context;
-	}//TODO remover isso tbm
 	
 	/**
 	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
@@ -59,7 +50,7 @@ public class InitializerListener implements ServletContextListener
 	{
 		try
 		{
-			context = contextEvent.getServletContext();
+			ServletContext context = contextEvent.getServletContext();
 			ServiceFactoryInitializer.initialize(context);
 			RestServiceFactoryInitializer.initialize(context);
 			

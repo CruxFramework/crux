@@ -210,11 +210,11 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			DataProviderRecord<T> record = getRecord();
 			if(record != null)
 			{
-				reader.read(record.getRecordObject());
+				reader.read(record.getRecordObject(), currentRecord);
 			}
 			else
 			{
-				reader.read(null);
+				reader.read(null, currentRecord);
 			}
 		}
 	}
@@ -227,11 +227,11 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		    DataProviderRecord<T> record = data.get(index);
 			if (record != null)
 			{
-				reader.read(record.getRecordObject());
+				reader.read(record.getRecordObject(), currentRecord);
 			}
 			else
 			{
-				reader.read(null);
+				reader.read(null, currentRecord);
 			}
 		}
 	}

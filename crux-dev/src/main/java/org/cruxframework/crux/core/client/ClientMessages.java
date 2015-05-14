@@ -121,4 +121,8 @@ public interface ClientMessages extends Messages
 	String restServiceUnexpectedError(String errorMesg);
 	@DefaultMessage("Can not invoke write operation for uri[{0}] without previously loading it.")
 	String restServiceMissingStateEtag(String uri);
+	
+	
+	@DefaultMessage("Can not load a required feature. Make sure that your browser support the current application.")
+	String errorLoadingMutationObserver();
 }
