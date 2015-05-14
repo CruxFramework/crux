@@ -18,6 +18,7 @@ package org.cruxframework.crux.gwt.rebind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasChangeHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasNameFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
@@ -35,8 +36,9 @@ import com.google.gwt.user.client.ui.FileUpload;
 })
 public class FileUploadFactory extends WidgetCreator<WidgetCreatorContext> 
 	   implements HasChangeHandlersFactory<WidgetCreatorContext>, 
-	   			  HasNameFactory<WidgetCreatorContext>
-{//TODO should implement HasEnabledFactory, but GWT FileUploadWidget does not implement HasEnabled. GWT Issue 5677
+	   			  HasNameFactory<WidgetCreatorContext>, 
+	   			  HasEnabledFactory<WidgetCreatorContext>
+{
 	@Override
     public WidgetCreatorContext instantiateContext()
     {

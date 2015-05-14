@@ -17,7 +17,13 @@ package org.cruxframework.crux.core.client.html5.api;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.resources.client.ResourceCallback;
+import com.google.gwt.resources.client.ResourceException;
+import com.google.gwt.resources.client.TextResource;
 
 /**
  * MutationObserver provides developers a way to react to changes in a DOM. 
@@ -30,6 +36,14 @@ public class MutationObserver extends JavaScriptObject
 	 * Default constructor
 	 */
 	protected MutationObserver(){}
+	
+	/**
+	 * Stops the MutationObserver instance from receiving notifications of DOM mutations. 
+	 * Until the observe() method is used again, observer's callback will not be invoked.
+	 */
+	public final native void disconnect()/*-{
+		this.disconnect();
+	}-*/;
 	
 	/**
 	 * Observe the given node for modifications
@@ -56,7 +70,7 @@ public class MutationObserver extends JavaScriptObject
 	{
 		observe(node, false, true, false);
 	}
-	
+
 	/**
 	 * Observe the given node for modifications on its children.
 	 * @param node the node to be monitored.
@@ -65,14 +79,6 @@ public class MutationObserver extends JavaScriptObject
 	{
 		observe(node, true, false, false);
 	}
-
-	/**
-	 * Stops the MutationObserver instance from receiving notifications of DOM mutations. 
-	 * Until the observe() method is used again, observer's callback will not be invoked.
-	 */
-	public final native void disconnect()/*-{
-		this.disconnect();
-	}-*/;
 	
 	/**
 	 * Verify if the current browser supports the MutationObserver API.
@@ -87,13 +93,44 @@ public class MutationObserver extends JavaScriptObject
 	 * @param callback A handler for the mutations.
 	 * @return the MutationObserver
 	 */
-	public static MutationObserver createIfSupported(Callback callback)
+	public static void load(final Callback callback, final LoadCallback loadCallback)
 	{
 		if (isSupported())
 		{
-			return create(callback);
+			loadCallback.onLoaded(create(callback));
 		}
-		return null;
+		else
+		{
+	            try
+                {
+	                Polyfill.INSTANCE.mutationObserver().getText(new ResourceCallback<TextResource>()
+	                {
+	                	@Override
+	                	public void onError(ResourceException e)
+	                	{
+	                		loadCallback.onError(e.getMessage());						
+	                	}
+	                	
+	                	@Override
+	                	public void onSuccess(TextResource resource)
+	                	{
+	                		ScriptInjector.fromString(resource.getText()).setRemoveTag(true).inject();
+	                		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+	                		{
+	                			@Override
+	                			public void execute()
+	                			{
+	                				loadCallback.onLoaded(create(callback));
+	                			}
+	                		});
+	                	}
+	                });
+                }
+                catch (ResourceException e)
+                {
+            		loadCallback.onError(e.getMessage());						
+                }
+		}
 	}
 	
 	protected static native MutationObserver create(Callback callback)/*-{
@@ -101,6 +138,40 @@ public class MutationObserver extends JavaScriptObject
 			callback.@org.cruxframework.crux.core.client.html5.api.MutationObserver.Callback::onChanged(Lcom/google/gwt/core/client/JsArray;Lorg/cruxframework/crux/core/client/html5/api/MutationObserver;)(mutations, observer);
         });
 	}-*/;
+	
+	/**
+	 * Define an handler for mutations observed.
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static interface Callback 
+	{
+		/**
+		 * The observer will call this method when a mutation occurs on the observed node.
+		 * @param mutations An array containing all the mutation records.
+		 * @param observer the MutationObserver instance.
+		 */
+		void onChanged(JsArray<MutationRecord> mutations, MutationObserver observer);
+	}
+	
+	/**
+	 * Interface used to load a new MutationObserver object.
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static interface LoadCallback
+	{
+		/**
+		 * Called when MutationObserver is not supported on browser
+		 * @param message error message 
+		 */
+		void onError(String message);
+		/**
+		 * Called when a MutationObserver is created successfully
+		 * @param mutationObserver observer created
+		 */
+		void onLoaded(MutationObserver mutationObserver);
+	}
 	
 	/**
 	 * MutationRecord is the object that will be passed to the observer's callback.
@@ -115,55 +186,11 @@ public class MutationObserver extends JavaScriptObject
 		protected MutationRecord() {}
 		
 		/**
-		 * Returns attributes if the mutation was an attribute mutation, characterData if 
-		 * it was a mutation to a CharacterData node, and childList if it was a mutation 
-		 * to the tree of nodes.
-		 * @return mutation type.
-		 */
-		public final native String getType()/*-{
-			return this.type;
-		}-*/;
-		
-		/**
-		 * Returns the node the mutation affected, depending on the type. For attributes, it is 
-		 * the element whose attribute changed. For characterData, it is the CharacterData node. 
-		 * For childList, it is the node whose children changed.
-		 * @return the node affected.
-		 */
-		public final native Node getTarget()/*-{
-			return this.target;
-		}-*/;
-		
-		/**
 		 * Return the nodes added. Will be an empty NodeList if no nodes were added.
 		 * @return the nodes added.
 		 */
 		public final native JsArray<Node> getAddedNodes()/*-{
 			return this.addedNodes;
-		}-*/;
-
-		/**
-		 * Return the nodes removed. Will be an empty NodeList if no nodes were removed.
-		 * @return the nodes removed.
-		 */
-		public final native JsArray<Node> getRemovedNodes()/*-{
-			return this.removedNodes;
-		}-*/;
-
-		/**
-		 * Return the previous sibling of the added or removed nodes, or null.
-		 * @return the previous sibling node.
-		 */
-		public final native Node getPreviousSibling()/*-{
-			return this.previousSibling;
-		}-*/;
-
-		/**
-		 * Return the next sibling of the added or removed nodes, or null.
-		 * @return the next sibling node.
-		 */
-		public final native Node getNextSibling()/*-{
-			return this.nextSibling;
 		}-*/;
 		
 		/**
@@ -181,7 +208,15 @@ public class MutationObserver extends JavaScriptObject
 		public final native String getAttributeNamespace()/*-{
 			return this.attributeNamespace;
 		}-*/;
-		
+
+		/**
+		 * Return the next sibling of the added or removed nodes, or null.
+		 * @return the next sibling node.
+		 */
+		public final native Node getNextSibling()/*-{
+			return this.nextSibling;
+		}-*/;
+
 		/**
 		 * The return value depends on the type. For attributes, it is the value of the changed 
 		 * attribute before the change. For characterData, it is the data of the changed node 
@@ -191,20 +226,41 @@ public class MutationObserver extends JavaScriptObject
 		public final native String getOldValue()/*-{
 			return this.oldValue;
 		}-*/;
-	}
-	
-	/**
-	 * Define an handler for mutations observed.
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static interface Callback 
-	{
+
 		/**
-		 * The observer will call this method when a mutation occurs on the observed node.
-		 * @param mutations An array containing all the mutation records.
-		 * @param observer the MutationObserver instance.
+		 * Return the previous sibling of the added or removed nodes, or null.
+		 * @return the previous sibling node.
 		 */
-		void onChanged(JsArray<MutationRecord> mutations, MutationObserver observer);
+		public final native Node getPreviousSibling()/*-{
+			return this.previousSibling;
+		}-*/;
+		
+		/**
+		 * Return the nodes removed. Will be an empty NodeList if no nodes were removed.
+		 * @return the nodes removed.
+		 */
+		public final native JsArray<Node> getRemovedNodes()/*-{
+			return this.removedNodes;
+		}-*/;
+		
+		/**
+		 * Returns the node the mutation affected, depending on the type. For attributes, it is 
+		 * the element whose attribute changed. For characterData, it is the CharacterData node. 
+		 * For childList, it is the node whose children changed.
+		 * @return the node affected.
+		 */
+		public final native Node getTarget()/*-{
+			return this.target;
+		}-*/;
+		
+		/**
+		 * Returns attributes if the mutation was an attribute mutation, characterData if 
+		 * it was a mutation to a CharacterData node, and childList if it was a mutation 
+		 * to the tree of nodes.
+		 * @return mutation type.
+		 */
+		public final native String getType()/*-{
+			return this.type;
+		}-*/;
 	}
 }
