@@ -85,15 +85,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	 */
 	protected String getDeviceFeatures()
 	{
-		try
-		{
-			SelectionProperty device = context.getGeneratorContext().getPropertyOracle().getSelectionProperty(context.getLogger(), "device.features");
-			return device==null?null:device.getCurrentValue();
-		}
-		catch (BadPropertyValueException e)
-		{
-			throw new CruxGeneratorException("Can not read device.features property.", e);
-		}
+		return GeneratorProperties.readSelectionPropertyValue(context, GeneratorProperties.DEVICE_FEATURES);
 	}
 	
 		

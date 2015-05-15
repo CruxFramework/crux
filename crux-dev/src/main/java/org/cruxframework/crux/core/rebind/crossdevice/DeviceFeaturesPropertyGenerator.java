@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.GeneratorProperties;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -68,7 +69,7 @@ public class DeviceFeaturesPropertyGenerator implements PropertyProviderGenerato
 		{
 			if (!VALID_VALUES.contains(value)) 
 			{
-				throw new CruxGeneratorException("Property device.features can not be assigned to value ["+value+"].");
+				throw new CruxGeneratorException("Property " + GeneratorProperties.DEVICE_FEATURES + " can not be assigned to value ["+value+"].");
 			}
 		}
 		StringSourceWriter body = new StringSourceWriter();

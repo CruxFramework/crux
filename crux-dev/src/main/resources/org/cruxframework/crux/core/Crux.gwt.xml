@@ -14,6 +14,7 @@
 	<add-linker name="screenLinker"/>
 		
 	<define-configuration-property name="view.base.folder" is-multi-valued="true" />
+	<define-configuration-property name="ioc.config.class" is-multi-valued="true" />
 		
 	<!-- Cross-dDevice support -->
 	<!-- Property to identify the device screen features -->
