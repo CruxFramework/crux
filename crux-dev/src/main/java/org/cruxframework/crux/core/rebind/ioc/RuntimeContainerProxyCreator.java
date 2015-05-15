@@ -29,11 +29,10 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.ioc.IocConfig;
 import org.cruxframework.crux.core.ioc.IocConfigImpl;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.GeneratorProperties;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.SelectionProperty;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
@@ -191,14 +190,6 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 	 */
 	private static String getDeviceFeatures(RebindContext context)
 	{
-		try
-		{
-			SelectionProperty device = context.getGeneratorContext().getPropertyOracle().getSelectionProperty(context.getLogger(), "device.features");
-			return device==null?null:device.getCurrentValue();
-		}
-		catch (BadPropertyValueException e)
-		{
-			throw new CruxGeneratorException("Can not read device.features property.", e);
-		}
+		return GeneratorProperties.readSelectionPropertyValue(context, GeneratorProperties.DEVICE_FEATURES);
 	}
 }

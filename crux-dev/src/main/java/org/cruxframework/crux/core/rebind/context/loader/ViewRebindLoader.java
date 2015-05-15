@@ -25,6 +25,7 @@ import java.util.Set;
 import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewException;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
+import org.cruxframework.crux.core.rebind.GeneratorProperties;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -109,7 +110,7 @@ public class ViewRebindLoader implements ViewLoader
 	{
 		if (!initialized)
 		{
-			List<String> screenFolders = ViewProperties.readPropertyValues(context, ViewProperties.VIEW_BASE_FOLDER);
+			List<String> screenFolders = GeneratorProperties.readConfigurationPropertyValues(context, GeneratorProperties.VIEW_BASE_FOLDER);
 			Set<String> pathNames = context.getResourcesOracle().getPathNames();
 			
 			for (String pathName : pathNames)

@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import org.cruxframework.crux.core.client.ioc.IoCResource;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoClass;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.rebind.GeneratorProperties;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.context.scanner.ResourceNotFoundException;
 import org.cruxframework.crux.core.rebind.screen.View;
@@ -269,29 +271,25 @@ public class IocContainerManager
 	{
 		try
 		{
-			//			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
-			//			if (configurations != null)
-			//			{
-			//				for (JClassType configurationClassType : configurations)
-			//				{
-			//					String configurationClassName = configurationClassType.getQualifiedSourceName();
-			//					Class<?> configurationClass = Class.forName(configurationClassName);
-			//					if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
-			//					{
-			//						IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
-			//						if (configuration.isEnabled())
-			//						{
-			//							if (logger.isInfoEnabled())
-			//							{
-			//								logger.info("Configuring new ioc module ["+configurationClassName+"]...");
-			//							}
-			//							configuration.configure();
-			//						}
-			//					}
-			//				}
-			//			}
-			//TODO resolver como fazer esta busca por classes.
-
+			List<String> iocConfigClasses = GeneratorProperties.readConfigurationPropertyValues(context, GeneratorProperties.IOC_CONFIG_CLASS);
+			
+			for (String configurationClassName : iocConfigClasses)
+            {
+				Class<?> configurationClass = Class.forName(configurationClassName);
+				if (!Modifier.isAbstract(configurationClass.getModifiers())  && IocContainerConfigurations.class.isAssignableFrom(configurationClass))
+				{
+					IocContainerConfigurations configuration = (IocContainerConfigurations)configurationClass.newInstance();
+					if (configuration.isEnabled())
+					{
+						if (logger.isInfoEnabled())
+						{
+							logger.info("Configuring new ioc module ["+configurationClassName+"]...");
+						}
+						configuration.configure();
+					}
+				}
+            }
+			
 			configureAnnotatedClasses();
 		}
 		catch (Exception e)
