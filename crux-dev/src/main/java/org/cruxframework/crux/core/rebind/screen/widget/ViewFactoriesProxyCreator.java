@@ -444,7 +444,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		}
 		finally
 		{
-			factoryCreator.prepare(null, true, null);
+			factoryCreator.prepare(null, true, null, null);
 		}
     }
 	
@@ -462,7 +462,7 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		}
 		else
 		{
-			factory.prepare(context, isChanged(view), getDeviceFeatures());
+			factory.prepare(context, isChanged(view), view, getDeviceFeatures());
 		}
 		return factory;
 	}
