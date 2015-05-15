@@ -111,7 +111,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	protected ViewBindHandler bindHandler;
 	protected ControllerAccessHandler controllerAccessHandler;
 	protected String iocContainerClassName;
-	protected final View view;
+	protected View view;
 	protected WidgetConsumer widgetConsumer;
 	private Map<String, Boolean> attachToDOMFactories = new HashMap<String, Boolean>();
 	private static Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
@@ -853,11 +853,13 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     /**
 	 * @param context
 	 * @param changed 
+     * @param view 
 	 * @param device
 	 */
-    protected void prepare(RebindContext context, boolean changed, String device)
+    protected void prepare(RebindContext context, boolean changed, View view, String device)
 	{
 		this.context = context;
+		this.view = view;
 		this.lazyPanels.clear();
 		this.declaredMessages.clear();
 		this.postProcessingCode.clear();
