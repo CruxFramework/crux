@@ -262,6 +262,11 @@
         <when-type-assignable class="org.cruxframework.crux.core.client.select.SelectEventsHandler" />
         <any>
             <when-property-is name="device.features" value="smallDisplayTouch" />
+        </any>
+    </replace-with>
+    <replace-with class="org.cruxframework.crux.core.client.select.SelectEventsHandlerTouchAndMouseImpl">
+        <when-type-assignable class="org.cruxframework.crux.core.client.select.SelectEventsHandler" />
+        <any>
             <when-property-is name="device.features" value="largeDisplayTouch" />
         </any>
     </replace-with>
