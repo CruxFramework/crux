@@ -25,33 +25,35 @@ import com.google.gwt.user.client.ui.HasEnabled;
  */
 public abstract class SelectEventsHandler implements HasEnabled
 {
-	protected SelectableWidget selectableWidget;
-	protected boolean preventDefaultTouchEvents = false;
-	protected boolean stopPropagationTouchEvents = false;
 	protected boolean allowPropagationToNonSelectableWidgets = false;
+	protected boolean preventDefaultTouchEvents = false;
+	protected SelectableWidget selectableWidget;
+	protected boolean stopPropagationTouchEvents = false;
 
 	private boolean enabled = true;
 
+	public abstract void handleWidget();
+	
 	@Override
 	public boolean isEnabled()
 	{
 	    return enabled;
 	}
+
+	public void select()
+	{
+		SelectEvent.fire(selectableWidget);
+	}
 	
+	public void setAllowPropagationToNonSelectableWidgets(boolean allowPropagationToNonSelectableWidgets) 
+	{
+		this.allowPropagationToNonSelectableWidgets = allowPropagationToNonSelectableWidgets;
+	}
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-	}
-
-	public void setSelectableWidget(SelectableWidget selectableWidget)
-	{
-		this.selectableWidget = selectableWidget;
-	}
-	
-	public void select()
-	{
-		SelectEvent.fire(selectableWidget);
 	}
 
 	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
@@ -59,15 +61,13 @@ public abstract class SelectEventsHandler implements HasEnabled
 		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
 	}
 
+	public void setSelectableWidget(SelectableWidget selectableWidget)
+	{
+		this.selectableWidget = selectableWidget;
+	}
+	
 	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents) 
 	{
 		this.stopPropagationTouchEvents = stopPropagationTouchEvents;
 	}
-
-	public void setAllowPropagationToNonSelectableWidgets(boolean allowPropagationToNonSelectableWidgets) 
-	{
-		this.allowPropagationToNonSelectableWidgets = allowPropagationToNonSelectableWidgets;
-	}
-	
-	public abstract void handleWidget();
 }

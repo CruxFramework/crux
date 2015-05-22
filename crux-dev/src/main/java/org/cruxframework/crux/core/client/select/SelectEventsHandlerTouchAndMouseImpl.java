@@ -19,36 +19,46 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-
+import com.google.gwt.event.dom.client.TouchStartEvent;
 
 /**
- * SelectEventsHanler Implementation for non touch devices
+ * SelectEventsHanler Implementation for touch devices that may have mouse support
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SelectEventsHandlerNoTouchImpl extends SelectEventsHandler
+public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTouchImpl implements ClickHandler
 {
+	private boolean handledByTouch = false;
+	
 	@Override
 	public void handleWidget()
 	{
-	    selectableWidget.addClickHandler(new ClickHandler()
+		super.handleWidget();
+		selectableWidget.addClickHandler(this);
+	}
+
+
+	@Override
+    public void onClick(ClickEvent event)
+    {
+		if (!handledByTouch && isEnabled())
 		{
-			@Override
-			public void onClick(ClickEvent event)
+			SelectEvent selectEvent = SelectEvent.fire(selectableWidget);
+			if (selectEvent.isCanceled())
 			{
-				if (isEnabled())
-				{
-					SelectEvent selectEvent = SelectEvent.fire(selectableWidget);
-					if (selectEvent.isCanceled())
-					{
-						event.preventDefault();
-					}
-					if (selectEvent.isStopped())
-					{
-						event.stopPropagation();
-					}
-				}
+				event.preventDefault();
 			}
-		});
+			if (selectEvent.isStopped())
+			{
+				event.stopPropagation();
+			}
+		}
+    }
+
+	@Override
+	public void onTouchStart(TouchStartEvent event)
+	{
+		super.onTouchStart(event);
+		handledByTouch = true;
 	}
 }
