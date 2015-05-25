@@ -44,22 +44,19 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 {
 	protected Pager pager;
 	protected PagedDataProvider<T> dataProvider;
-	protected int pageSize = 25;
 	protected DataProvider.DataReader<T> reader = getDataReader();
 	private boolean transactionRunning = false;
 	
 	public int getPageSize()
 	{
-		return pageSize;
+		assert dataProvider != null : "Data Provider must not be null at this time.";
+		return dataProvider.getPageSize();
 	}
 
 	public void setPageSize(int pageSize)
 	{
-		this.pageSize = pageSize;
-		if (dataProvider != null)
-		{
-			dataProvider.setPageSize(pageSize);
-		}
+		assert dataProvider != null : "Data Provider must not be null at this time.";
+		dataProvider.setPageSize(pageSize);
 	}
 
 	@Override
@@ -137,7 +134,6 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
     public void setDataProvider(PagedDataProvider<T> dataProvider, boolean autoLoadData)
     {
 		this.dataProvider = dataProvider;
-		this.dataProvider.setPageSize(pageSize);
 		
 		this.dataProvider.addPageLoadedHandler(new PageLoadedHandler()
 		{
