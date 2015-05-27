@@ -346,6 +346,10 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		{
 			currentPage = pageNumber;
 			updateCurrentRecord();
+			if(fireEvents)
+			{
+				firePageChangeEvent(currentPage);
+			}
 			return true;
 		}
 		return false;
@@ -360,6 +364,6 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
-//		firePageChangeEvent(currentPage);
+		firePageChangeEvent(currentPage);
 	}
 }
