@@ -45,37 +45,36 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	protected Pager pager;
 	protected PagedDataProvider<T> dataProvider;
 	protected DataProvider.DataReader<T> reader = getDataReader();
+	private boolean allowRefreshAfterDataChange = true;
 	private boolean transactionRunning = false;
 	
-	public int getPageSize()
+	public void add(T object)
 	{
-		assert dataProvider != null : "Data Provider must not be null at this time.";
-		return dataProvider.getPageSize();
-	}
-
-	public void setPageSize(int pageSize)
-	{
-		assert dataProvider != null : "Data Provider must not be null at this time.";
-		dataProvider.setPageSize(pageSize);
-	}
-
-	@Override
-	public void nextPage()
-	{
-		if(isDataLoaded())
+		if (dataProvider != null)
 		{
-			dataProvider.nextPage();
+			dataProvider.add(object);
+		}
+	}
+
+	protected abstract void clear();
+
+	protected abstract void clearRange(int startRecord);
+
+	public void commit()
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.commit();
 		}
 	}
 
 	@Override
-    public void previousPage()
+    public PagedDataProvider<T> getDataProvider()
     {
-		if(isDataLoaded())
-		{
-			dataProvider.previousPage();
-		}
+	    return dataProvider;
     }
+
+	protected abstract DataProvider.DataReader<T> getDataReader();
 
 	@Override
     public int getPageCount()
@@ -90,23 +89,28 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			return -1;
 		}
     }
+	
+	public int getPageSize()
+	{
+		assert dataProvider != null : "Data Provider must not be null at this time.";
+		return dataProvider.getPageSize();
+	}
 
-	@Override
-    public void setPager(Pager pager)
-    {
-		Pageable<PagedDataProvider<T>> pagerPageable = pager.getPageable();
-		if (pagerPageable != this)
+	private int getRowsToBeRendered()
+	{
+		if(isDataLoaded())
 		{
-			pager.setPageable(this);
-		}
-		else
-		{
-			this.pager = pager;
-			updatePager();
-			updatePagerState();		
-		}
-    }
+			if(dataProvider.getCurrentPage() == 0)
+			{
+				dataProvider.nextPage();
+			}
 
+			return dataProvider.getCurrentPageSize();
+		}
+
+		return 0;
+	}
+	
 	@Override
     public void goToPage(int page)
     {
@@ -123,11 +127,191 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
     }
 	
+	public int indexOf(T object)
+	{
+		if (dataProvider != null)
+		{
+			return dataProvider.indexOf(object);
+		}
+		return -1;
+	}
+	
+	/**
+	 * @return true if is allowed to refresh the page after the data 
+	 * provider changes some of their values. This generally happens after
+	 * a commit.
+	 */
+	protected boolean isAllowRefreshAfterDataChange() 
+	{
+		return allowRefreshAfterDataChange;
+	}
+
+	public boolean isDataLoaded()
+	{
+		return dataProvider != null && dataProvider.isLoaded();
+	}
+	
+	public boolean isDirty()
+	{
+		return dataProvider != null && dataProvider.isDirty();
+	}
+	
+	public void loadData()
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.load();
+		}
+	}
+	
 	@Override
-    public PagedDataProvider<T> getDataProvider()
+	public void nextPage()
+	{
+		if(isDataLoaded())
+		{
+			dataProvider.nextPage();
+		}
+	}
+	
+	protected void onTransactionCompleted(boolean commited)
     {
-	    return dataProvider;
+		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
+		transactionRunning = false;
+		updatePagerState();
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		{
+			@Override
+			public void execute()
+			{
+				refreshPage(pageStartRecordOnTransactionEnd);
+			}
+		});
     }
+	
+	protected void onTransactionStarted(int startRecord)
+    {
+		transactionRunning = true;
+		updatePagerState();
+		if(isDataLoaded() && pager != null)
+		{
+			pager.prepareTransaction(startRecord);
+		}
+    }
+	
+	@Override
+    public void previousPage()
+    {
+		if(isDataLoaded())
+		{
+			dataProvider.previousPage();
+		}
+    }
+
+	public void refresh()
+	{
+		refresh(true);
+	}
+	
+	protected void refresh(boolean clearPreviousData)
+	{
+		dataProvider.firstOnPage();
+		render(clearPreviousData);
+	}
+	
+	protected void refreshPage(int startRecord)
+    {
+		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
+	    if (refreshAll)
+	    {
+	    	clear();
+	    }
+	    else
+	    {
+	    	clearRange(startRecord);
+	    }
+	    refresh(false);
+    }
+	
+	public void remove(int index)
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.remove(index);
+		}
+	}
+
+	protected void render(boolean refresh)
+    {
+		if (refresh)
+		{
+			clear();
+		}
+		int rowCount = getRowsToBeRendered();
+
+		for (int i=0; i<rowCount; i++)
+		{
+			dataProvider.read(reader);
+			if (dataProvider.hasNext())
+			{
+				dataProvider.next();
+			}
+			else
+			{
+				break;
+			}
+		}
+		updatePager();
+    }
+
+	public void reset()
+	{
+		reset(false);
+	}
+
+	public void reset(boolean reloadData)
+	{
+		if(dataProvider != null)
+		{
+			dataProvider.reset();
+		}
+
+		if (pager != null)
+		{
+			pager.update(0, true);
+		}
+		
+		if (reloadData)
+		{
+			loadData();
+		}
+	}
+
+	public void rollback()
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.rollback();
+		}
+	}
+
+	public void set(int index, T object)
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.set(index, object);
+		}
+	}
+	
+	/**
+	 * @param allowRefreshAfterDataChange indicate if is allowed to 
+	 * refresh the page after the data provider changes some of their values. 
+	 * This generally happens after a commit. 
+	 */
+	protected void setAllowRefreshAfterDataChange(boolean allowRefreshAfterDataChange) 
+	{
+		this.allowRefreshAfterDataChange = allowRefreshAfterDataChange;
+	}
 
 	@SuppressWarnings("unchecked")
     @Override
@@ -177,7 +361,10 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			public void onDataChanged(DataChangedEvent event)
 			{
 				final int pageStartRecordOnTransactionEnd = AbstractPageable.this.dataProvider.getCurrentPageStartRecord();
-				refreshPage(pageStartRecordOnTransactionEnd);
+				if(allowRefreshAfterDataChange)
+				{
+					refreshPage(pageStartRecordOnTransactionEnd);
+				}
 			}
 		});
 		
@@ -200,170 +387,41 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
     }
 	
-	public void loadData()
+	@Override
+	public void setHeight(String height) 
 	{
-		if (dataProvider != null)
+		if(pager != null && pager.supportsInfiniteScroll())
 		{
-			dataProvider.load();
+			pager.asWidget().setHeight(height);
+		} 
+		else
+		{
+			super.setHeight(height);
 		}
 	}
 	
-	public boolean isDirty()
-	{
-		return dataProvider != null && dataProvider.isDirty();
-	}
-
-	public void add(T object)
-	{
-		if (dataProvider != null)
-		{
-			dataProvider.add(object);
-		}
-	}
-	
-	public void remove(int index)
-	{
-		if (dataProvider != null)
-		{
-			dataProvider.remove(index);
-		}
-	}
-	
-	public void set(int index, T object)
-	{
-		if (dataProvider != null)
-		{
-			dataProvider.set(index, object);
-		}
-	}
-	
-	public int indexOf(T object)
-	{
-		if (dataProvider != null)
-		{
-			return dataProvider.indexOf(object);
-		}
-		return -1;
-	}
-	
-	public void commit()
-	{
-		if (dataProvider != null)
-		{
-			dataProvider.commit();
-		}
-	}
-	
-	public void rollback()
-	{
-		if (dataProvider != null)
-		{
-			dataProvider.rollback();
-		}
-	}
-	
-	public boolean isDataLoaded()
-	{
-		return dataProvider != null && dataProvider.isLoaded();
-	}
-
-	public void reset()
-	{
-		reset(false);
-	}
-	
-	public void reset(boolean reloadData)
-	{
-		if(dataProvider != null)
-		{
-			dataProvider.reset();
-		}
-
-		if (pager != null)
-		{
-			pager.update(0, true);
-		}
-		
-		if (reloadData)
-		{
-			loadData();
-		}
-	}
-	
-	public void refresh()
-	{
-		refresh(true);
-	}
-	
-	protected void refresh(boolean clearPreviousData)
-	{
-		dataProvider.firstOnPage();
-		render(clearPreviousData);
-	}
-
-	protected void refreshPage(int startRecord)
+	@Override
+    public void setPager(Pager pager)
     {
-		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
-	    if (refreshAll)
-	    {
-	    	clear();
-	    }
-	    else
-	    {
-	    	clearRange(startRecord);
-	    }
-	    refresh(false);
-    }
-
-	protected void onTransactionCompleted(boolean commited)
-    {
-		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
-		transactionRunning = false;
-		updatePagerState();
-		
-		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		Pageable<PagedDataProvider<T>> pagerPageable = pager.getPageable();
+		if (pagerPageable != this)
 		{
-			@Override
-			public void execute()
-			{
-				refreshPage(pageStartRecordOnTransactionEnd);
-			}
-		});
-    }
-
-	protected void onTransactionStarted(int startRecord)
-    {
-		transactionRunning = true;
-		updatePagerState();
-		if(isDataLoaded() && pager != null)
-		{
-			pager.prepareTransaction(startRecord);
+			pager.setPageable(this);
 		}
-    }
-
-	protected void render(boolean refresh)
-    {
-		if (refresh)
+		else
 		{
-			clear();
+			this.pager = pager;
+			updatePager();
+			updatePagerState();		
 		}
-		int rowCount = getRowsToBeRendered();
-
-		for (int i=0; i<rowCount; i++)
-		{
-			dataProvider.read(reader);
-			if (dataProvider.hasNext())
-			{
-				dataProvider.next();
-			}
-			else
-			{
-				break;
-			}
-		}
-		updatePager();
-    }
-
+    } 
+	
+	public void setPageSize(int pageSize)
+	{
+		assert dataProvider != null : "Data Provider must not be null at this time.";
+		dataProvider.setPageSize(pageSize);
+	}
+	
 	protected void updatePager()
 	{
 		if(isDataLoaded() && pager != null)
@@ -371,31 +429,12 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			pager.update(dataProvider.getCurrentPage(),  !dataProvider.hasNextPage());
 		}
 	}
-	
+
 	protected void updatePagerState()
 	{
 		if(isDataLoaded() && pager != null)
 		{
 			pager.setEnabled(!transactionRunning);
 		}
-	}
-
-	protected abstract DataProvider.DataReader<T> getDataReader();
-	protected abstract void clearRange(int startRecord);
-	protected abstract void clear(); 
-	
-	private int getRowsToBeRendered()
-	{
-		if(isDataLoaded())
-		{
-			if(dataProvider.getCurrentPage() == 0)
-			{
-				dataProvider.nextPage();
-			}
-
-			return dataProvider.getCurrentPageSize();
-		}
-
-		return 0;
 	}
 }

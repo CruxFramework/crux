@@ -77,7 +77,7 @@ public abstract class AbstractPager extends Composite implements Pager
 	/**
 	 * @param enabled
 	 */
-	public final void setEnabled(boolean enabled)
+	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
 		if (enabled)
