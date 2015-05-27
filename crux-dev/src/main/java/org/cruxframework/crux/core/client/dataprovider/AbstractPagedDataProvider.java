@@ -364,6 +364,6 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
-		firePageChangeEvent(currentPage);
+//		firePageChangeEvent(currentPage);
 	}
 }
