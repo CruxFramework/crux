@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.JClassScanner;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetLibraries;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -219,7 +219,7 @@ public class ControllerScanner
 	    	Class<? extends IsWidget>[] widgets = widgetControllerAnnot.value();
 	    	for (Class<? extends IsWidget> widgetClass : widgets)
 	        {
-	    		String widgetType = WidgetScanner.getWidgetType(widgetClass);
+	    		String widgetType = WidgetLibraries.getInstance().getWidgetType(widgetClass);
 	    		if (!StringUtils.isEmpty(widgetType))
 	    		{
 	    			Set<String> controllers = widgetControllers.get(widgetType);

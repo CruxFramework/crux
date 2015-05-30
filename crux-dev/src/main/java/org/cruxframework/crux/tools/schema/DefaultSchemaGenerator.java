@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -41,7 +42,7 @@ import org.cruxframework.crux.core.declarativeui.template.TemplateParser;
 import org.cruxframework.crux.core.i18n.MessagesFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetLibraries;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AllChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
@@ -170,10 +171,11 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
-			Set<String> libraries = WidgetScanner.getRegisteredLibraries();
+			Iterator<String> libraries = WidgetLibraries.getInstance().iterateRegisteredLibraries();
 			Set<String> templateLibraries = Templates.getRegisteredLibraries();
-			for (String library : libraries)
+			while (libraries.hasNext())
 			{
+				String library = libraries.next();
 				logger.info("Generating xsd file for library ["+library+"]");
 				generateSchemaForLibrary(library, libraries, templateLibraries);
 			}
@@ -643,7 +645,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreSchema(Set<String> libraries, Set<String> templateLibraries)
+	private void generateCoreSchema(Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -661,8 +663,9 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			out.println("<xs:schema ");
 			out.println("xmlns=\"http://www.cruxframework.org/crux\" ");
 			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-			for (String lib : libraries)
+			while (libraries.hasNext())
 			{
+				String lib = libraries.next();
 				out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/crux/"+lib+"\" ");
 			}
 			for (String lib : templateLibraries)
@@ -732,10 +735,11 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param templateLibraries 
 	 * @param out
 	 */
-	private void generateCoreSchemasImport(Set<String> libraries, Set<String> templateLibraries, PrintStream out)
+	private void generateCoreSchemasImport(Iterator<String> libraries, Set<String> templateLibraries, PrintStream out)
 	{
-		for (String lib : libraries)
+		while (libraries.hasNext())
 		{
+			String lib = libraries.next();
 			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
 		}
 		for (String lib : templateLibraries)
@@ -944,7 +948,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
+	private void generateCoreWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		generateCoreWidgetsType(out, libraries, templateLibraries, "widgets", true, true);
 	}
@@ -955,7 +959,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreCrossDevWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
+	private void generateCoreCrossDevWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		generateCoreWidgetsType(out, libraries, templateLibraries, "widgetsCrossDev", false, true);
 	}
@@ -967,18 +971,20 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param groupName
 	 * @param supportCrossDevice
 	 */
-	private void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries, String groupName, boolean supportCrossDevice, boolean supportTemplates)
+	private void generateCoreWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries, String groupName, boolean supportCrossDevice, boolean supportTemplates)
 	{
 		out.println("<xs:group name=\""+groupName+"\">");
 		out.println("<xs:choice>");
 
-		for (String lib : libraries)
+		while (libraries.hasNext())
 		{
-			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(lib);
+			String lib = libraries.next();
+			Iterator<String> factories = WidgetLibraries.getInstance().iterateRegisteredLibraryWidgetCreators(lib);
 			if (factories != null)
 			{
-				for (String factoryID : factories)
+				while (factories.hasNext())
 				{
+					String factoryID = factories.next();
 					out.println("<xs:element ref=\"_"+lib+":"+factoryID+"\" />");
 				}
 			}
@@ -1227,7 +1233,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @throws ClassNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
-	private void generateSchemaForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries)
+	private void generateSchemaForLibrary(String library, Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1246,8 +1252,9 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			out.println("xmlns=\"http://www.cruxframework.org/crux/"+library+"\" ");
 			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
 			out.println("xmlns:c=\"http://www.cruxframework.org/crux\" ");
-			for (String lib : allLibraries)
+			while (libraries.hasNext())
 			{
+				String lib = libraries.next();
 				if (!lib.equals(library))
 				{
 					out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/crux/"+lib+"\" ");
@@ -1257,13 +1264,14 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			out.println("elementFormDefault=\"qualified\" ");
 			out.println("targetNamespace=\"" + targetNS + "\" >");
 
-			generateSchemaImportsForLibrary(library, allLibraries, templateLibraries, out);
+			generateSchemaImportsForLibrary(library, libraries, templateLibraries, out);
 
-			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
-			for (String id : factories)
+			Iterator<String> factories = WidgetLibraries.getInstance().iterateRegisteredLibraryWidgetCreators(library);
+			while (factories.hasNext())
 			{
+				String id = factories.next();
 				Class<? extends WidgetCreator<?>> widgetFactory = (Class<? extends WidgetCreator<?>>) 
-						Class.forName(WidgetScanner.getClientClass(library, id));
+						Class.forName(WidgetLibraries.getInstance().getClientClass(library, id));
 				generateTypeForFactory(out, widgetFactory, library);
 			}
 
@@ -1324,14 +1332,15 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	/**
 	 * 
 	 * @param library
-	 * @param allLibraries
+	 * @param libraries
 	 * @param out
 	 */
-	private void generateSchemaImportsForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries, PrintStream out)
+	private void generateSchemaImportsForLibrary(String library, Iterator<String> libraries, Set<String> templateLibraries, PrintStream out)
 	{
 		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
-		for (String lib : allLibraries)
+		while (libraries.hasNext())
 		{
+			String lib = libraries.next();
 			if (!lib.equals(library))
 			{
 				out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
@@ -1403,7 +1412,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateXDeviceSchema(Set<String> libraries, Set<String> templateLibraries)
+	private void generateXDeviceSchema(Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1462,7 +1471,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateViewSchema(Set<String> libraries, Set<String> templateLibraries)
+	private void generateViewSchema(Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1521,11 +1530,12 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param templateLibraries 
 	 * @param out
 	 */
-	private void generateViewSchemasImport(Set<String> libraries, PrintStream out)
+	private void generateViewSchemasImport(Iterator<String> libraries, PrintStream out)
 	{
 		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
-		for (String lib : libraries)
+		while (libraries.hasNext())
 		{
+			String lib = libraries.next();
 			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
 		}
 	}		
@@ -1535,7 +1545,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateTemplateSchema(Set<String> libraries, Set<String> templateLibraries)
+	private void generateTemplateSchema(Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{

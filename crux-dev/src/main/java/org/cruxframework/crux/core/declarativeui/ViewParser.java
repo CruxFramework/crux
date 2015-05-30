@@ -20,6 +20,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetScanner;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetLibraries;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
@@ -821,7 +822,7 @@ public class ViewParser
 	 */
 	private boolean isWidget(String tagName)
     {
-	    return (WidgetScanner.getClientClass(tagName) != null);
+	    return (WidgetLibraries.getInstance().getClientClass(tagName) != null);
     }
 	
 	/**
@@ -1039,15 +1040,17 @@ public class ViewParser
 		referenceWidgetsList = new HashMap<String, String>();
 		widgetsSubTags = new HashSet<String>();
 		hasInnerHTMLWidgetTags = new HashSet<String>();
-		Set<String> registeredLibraries = WidgetScanner.getRegisteredLibraries();
-		for (String library : registeredLibraries)
+		Iterator<String> registeredLibraries = WidgetLibraries.getInstance().iterateRegisteredLibraries();
+		while (registeredLibraries.hasNext())
 		{
-			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
-			for (String widget : factories)
+			String library = registeredLibraries.next();
+			Iterator<String> factories = WidgetLibraries.getInstance().iterateRegisteredLibraryWidgetCreators(library);
+			while (factories.hasNext())
 			{
+				String widget = factories.next();
 				try
 				{
-					Class<?> clientClass = Class.forName(WidgetScanner.getClientClass(library, widget));
+					Class<?> clientClass = Class.forName(WidgetLibraries.getInstance().getClientClass(library, widget));
 					generateReferenceWidgetsListFromTagChildren(clientClass.getAnnotation(TagChildren.class), 
 																		library, widget, new HashSet<String>());
 				}
@@ -1131,15 +1134,17 @@ public class ViewParser
 	{
 		htmlPanelContainers = new HashSet<String>();
 		attachableWidgets = new HashSet<String>();
-		Set<String> registeredLibraries = WidgetScanner.getRegisteredLibraries();
-		for (String library : registeredLibraries)
+		Iterator<String> registeredLibraries = WidgetLibraries.getInstance().iterateRegisteredLibraries();
+		while (registeredLibraries.hasNext())
 		{
-			Set<String> factories = WidgetScanner.getRegisteredLibraryFactories(library);
-			for (String widget : factories)
+			String library = registeredLibraries.next();
+			Iterator<String> factories = WidgetLibraries.getInstance().iterateRegisteredLibraryWidgetCreators(library);
+			while (factories.hasNext())
 			{
+				String widget = factories.next();
 				try
 				{
-					Class<?> clientClass = Class.forName(WidgetScanner.getClientClass(library, widget));
+					Class<?> clientClass = Class.forName(WidgetLibraries.getInstance().getClientClass(library, widget));
 					DeclarativeFactory factory = clientClass.getAnnotation(DeclarativeFactory.class);
 					if (factory.htmlContainer())
 					{

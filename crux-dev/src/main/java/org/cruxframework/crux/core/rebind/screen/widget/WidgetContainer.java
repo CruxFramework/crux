@@ -15,12 +15,16 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * A marker interface to inform Crux that a {@code WidgetFactory} can contain
  * other widgets
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public interface WidgetContainer
 {
 

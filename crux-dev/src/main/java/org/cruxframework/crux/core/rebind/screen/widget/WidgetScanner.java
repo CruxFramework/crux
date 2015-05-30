@@ -24,8 +24,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.client.Legacy;
-import org.cruxframework.crux.core.client.screen.RequiresResizeFactory;
 import org.cruxframework.crux.scanner.ClassScanner;
 
 
@@ -34,12 +32,10 @@ import org.cruxframework.crux.scanner.ClassScanner;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class WidgetScanner 
+class WidgetScanner 
 {
 	private static Map<String, String> config = null;
 	private static Map<String, String> widgets = null;
-	private static Set<String> widgetContainers = null;
-	private static Set<String> requiresResizeWidgets = null;
 	private static Map<String, Set<String>> registeredLibraries = null;
 	private static final Log logger = LogFactory.getLog(WidgetScanner.class);
 	private static final Lock lock = new ReentrantLock();
@@ -47,7 +43,7 @@ public class WidgetScanner
 	/**
 	 * 
 	 */
-	public static void initialize()
+	static void initialize()
 	{
 		if (config != null)
 		{
@@ -74,8 +70,6 @@ public class WidgetScanner
 	{
 		config = new HashMap<String, String>(100);
 		widgets = new HashMap<String, String>();
-		widgetContainers = new HashSet<String>();
-		requiresResizeWidgets = new HashSet<String>();
 		registeredLibraries = new HashMap<String, Set<String>>();
 		Set<String> factoriesNames =  ClassScanner.searchClassesByAnnotation(org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory.class);
 		if (factoriesNames != null)
@@ -96,16 +90,6 @@ public class WidgetScanner
 					
 					config.put(widgetType, factoryClass.getCanonicalName());
 					widgets.put(annot.targetWidget().getCanonicalName(), widgetType);
-					
-					if (WidgetContainer.class.isAssignableFrom(factoryClass))
-					{
-						widgetContainers.add(widgetType);
-					}
-					
-					if (RequiresResizeFactory.class.isAssignableFrom(factoryClass))
-					{
-						requiresResizeWidgets.add(widgetType);
-					}
 				} 
 				catch (ClassNotFoundException e) 
 				{
@@ -124,7 +108,7 @@ public class WidgetScanner
 	 * @param id
 	 * @return
 	 */
-	public static String getClientClass(String id)
+	static String getClientClass(String id)
 	{
 		if (config == null)
 		{
@@ -139,7 +123,7 @@ public class WidgetScanner
 	 * @param id
 	 * @return
 	 */
-	public static String getClientClass(String library, String id)
+	static String getClientClass(String library, String id)
 	{
 		if (config == null)
 		{
@@ -152,7 +136,7 @@ public class WidgetScanner
 	 * 
 	 * @return
 	 */
-	public static Set<String> getRegisteredLibraries()
+	static Set<String> getRegisteredLibraries()
 	{
 		if (registeredLibraries == null)
 		{
@@ -167,7 +151,7 @@ public class WidgetScanner
 	 * @param library
 	 * @return
 	 */
-	public static Set<String> getRegisteredLibraryFactories(String library)
+	static Set<String> getRegisteredLibraryFactories(String library)
 	{
 		if (registeredLibraries == null)
 		{
@@ -181,7 +165,7 @@ public class WidgetScanner
 	 * @param widgetClass
 	 * @return
 	 */
-	public static String getWidgetType(Class<?> widgetClass)
+	static String getWidgetType(Class<?> widgetClass)
     {
 		if (widgets == null)
 		{
@@ -189,32 +173,4 @@ public class WidgetScanner
 		}
 		return widgets.get(widgetClass.getCanonicalName());
     }
-	
-	/**
-	 * @param type
-	 * @return
-	 */
-	@Deprecated
-	@Legacy
-	public static boolean isWidgetContainer(String type)
-	{
-		if (widgetContainers == null)
-		{
-			initializeWidgetConfig();
-		}
-		return widgetContainers.contains(type);
-	}
-	
-	/**
-	 * @param type
-	 * @return
-	 */
-	public static boolean isRequiresResizeWidget(String type)
-	{
-		if (requiresResizeWidgets == null)
-		{
-			initializeWidgetConfig();
-		}
-		return requiresResizeWidgets.contains(type);
-	}
 }
