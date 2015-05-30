@@ -15,12 +15,16 @@
  */
 package org.cruxframework.crux.core.client.screen;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * A marker interface to inform Crux that a {@code WidgetFactory} creates a widget
  * that requires resize control from framework
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public interface RequiresResizeFactory
 {
 

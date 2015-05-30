@@ -23,5 +23,5 @@ import org.w3c.dom.Document;
  */
 public interface CruxXmlPreProcessor
 {
-	Document preprocess(Document doc, String userAgent);
+	Document preprocess(Document doc, String device);
 }
