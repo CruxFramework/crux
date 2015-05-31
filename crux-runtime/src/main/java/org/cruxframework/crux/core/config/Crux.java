@@ -111,7 +111,19 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.state.ClusteredResourceStateHandler")
 	String restServiceResourceStateHandler();
 	void setRestServiceResourceStateHandler(String value);
+	
+	@DefaultServerMessage("false")
+	String allowExperimentalFeatures();
+	void setAllowExperimentalFeatures(Boolean value);
+	
+	@DefaultServerMessage("null")
+	String cruxXmlPreProcessors();
+	void setCruxXmlPreProcessors(String value);
 
+	@DefaultServerMessage("null")
+	String cruxSchemaGenerators();
+	void setCruxSchemaGenerators(String value);
+	
 	@DefaultServerMessage("true")
 	String enableResourceStateCacheForRestServices();
 	void setEnableResourceStateCacheForRestServices(String value);
