@@ -28,12 +28,15 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.StreamUtils;
+import org.cruxframework.crux.tools.schema.SchemaGeneratorException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
@@ -103,6 +106,21 @@ public class ViewProcessor
 		}
 	}
 
+	private static CruxXmlPreProcessor createPreprocessor(String cruxXmlPreProcessorClass) throws SchemaGeneratorException
+	{
+		Class<?> preprocessorClass;
+        try
+        {
+        	preprocessorClass = Class.forName(cruxXmlPreProcessorClass);
+	        CruxXmlPreProcessor cruxXmlPreProcessor = (CruxXmlPreProcessor) preprocessorClass.newInstance();
+	        return cruxXmlPreProcessor;
+        }
+        catch (Exception e)
+        {
+	        throw new SchemaGeneratorException("Error, creating the CruxXmlPreProcessor class: "+e.getLocalizedMessage(),e);
+        }
+	}
+	
 	/**
 	 * Extract the widgets metadata from the view page.
      *
@@ -222,6 +240,25 @@ public class ViewProcessor
 	{
 		preProcessors = new ArrayList<CruxXmlPreProcessor>();
 		preProcessors.add(new TemplatesPreProcessor());
+		initializeCustomPreProcessors();
+	}
+
+	private static void initializeCustomPreProcessors() 
+	{
+		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().allowExperimentalFeatures()))
+		{
+			String strCruxXmlPreProcessors = ConfigurationFactory.getConfigurations().cruxXmlPreProcessors();
+			String[] cruxXmlPreProcessors = null;
+			if(!StringUtils.isEmpty(strCruxXmlPreProcessors))
+			{
+				cruxXmlPreProcessors = strCruxXmlPreProcessors.split(",");
+				
+				for(String cruxXmlPreProcessor : cruxXmlPreProcessors)
+				{
+					preProcessors.add(createPreprocessor(cruxXmlPreProcessor));
+				}
+			}
+		}
 	}
 
 	/**
