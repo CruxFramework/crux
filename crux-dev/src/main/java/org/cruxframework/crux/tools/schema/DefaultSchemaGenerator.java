@@ -250,55 +250,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 	}
 
-	protected void generateCoreSchemaBody(Set<String> libraries,
-			Set<String> templateLibraries, PrintStream out) 
-	{
-		generateCoreSchemasImport(libraries, templateLibraries, out);
-		generateCoreSplashScreenElement(out);
-		generateCoreScreenElement(out);
-		generateCoreCrossDeviceElement(out);
-		generateCoreWidgetsType(out, libraries, templateLibraries);	
-		generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
-	}
-
-	/**
-	 * @param projectBaseDir
-	 * @param webDir
-	 */
-	protected void initializeSchemaGenerator(File projectBaseDir, File webDir)
-	{
-		try
-		{
-			CruxBridge.getInstance().setSingleVM(true);
-			ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
-			URL[] urls = ClasspathUrlFinder.findClassPaths();
-			Scanners.setSearchURLs(urls);
-			DevelopmentScanners.initializeScanners();
-			
-			if (webDir == null)
-			{
-				webDir = new File(projectBaseDir, "war/");
-			}
-
-			ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
-			ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * @param targetNS
-	 * @param coreFile
-	 */
-	protected void registerNamespaceForCatalog(String targetNS, File file)
-	{
-		this.namespacesForCatalog.put(targetNS, file);
-	}
-
-	private void copyXHTMLSchema() 
+	protected void copyXHTMLSchema() 
 	{
 		try
 		{
@@ -326,7 +278,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param widgetFactory
 	 * @return
 	 */
-	private boolean factorySupportsInnerText(Class<? extends WidgetCreator<?>> widgetFactory)
+	protected boolean factorySupportsInnerText(Class<? extends WidgetCreator<?>> widgetFactory)
 	{
 		try
 		{
@@ -345,7 +297,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param children
 	 * @throws NoSuchMethodException
 	 */
-	private void generateAllChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) throws NoSuchMethodException
+	protected void generateAllChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) throws NoSuchMethodException
 	{
 		out.print("<xs:all ");
 		if (attributes!= null)
@@ -368,7 +320,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param added
 	 * @param processorClass
 	 */
-	private void generateAttributes(PrintStream out, String library, Set<String> added, Class<?> processorClass)
+	protected void generateAttributes(PrintStream out, String library, Set<String> added, Class<?> processorClass)
 	{
 		TagAttributesDeclaration attrsDecl = processorClass.getAnnotation(TagAttributesDeclaration.class);
 		if (attrsDecl != null)
@@ -442,7 +394,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param widgetFactory
 	 */
-	private void generateAttributesForFactory(PrintStream out, Class<?> widgetFactory, String library, Set<String> added)
+	protected void generateAttributesForFactory(PrintStream out, Class<?> widgetFactory, String library, Set<String> added)
 	{
 		generateAttributes(out, library, added, widgetFactory);
 
@@ -465,7 +417,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param library
 	 * @param added
 	 */
-	private void generateAttributesForProcessor(PrintStream out, Class<?> processorClass, String library, Set<String> added)
+	protected void generateAttributesForProcessor(PrintStream out, Class<?> processorClass, String library, Set<String> added)
 	{
 		try
 		{
@@ -488,7 +440,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param template
 	 */
-	private void generateAttributesForTemplate(PrintStream out, Document template)
+	protected void generateAttributesForTemplate(PrintStream out, Document template)
 	{
 		Set<String> attributesForTemplate = templateParser.getParameters(template);
 		for (String attrValue : attributesForTemplate)
@@ -506,7 +458,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
 	 */
-	private void generateChild(PrintStream out, TagChild tagChild, boolean parentIsAnAgregator, String library) throws SecurityException, NoSuchMethodException
+	protected void generateChild(PrintStream out, TagChild tagChild, boolean parentIsAnAgregator, String library) throws SecurityException, NoSuchMethodException
 	{
 		Class<? extends WidgetChildProcessor<?>> processorClass = tagChild.value();
 		TagConstraints attributes = ViewUtils.getChildTagConstraintsAnnotation(processorClass);
@@ -548,7 +500,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param processorClass
 	 * @throws NoSuchMethodException
 	 */
-	private void generateChildren(PrintStream out, String library, Class<?> processorClass) throws NoSuchMethodException
+	protected void generateChildren(PrintStream out, String library, Class<?> processorClass) throws NoSuchMethodException
 	{
 		TagChildren annot = processorClass.getAnnotation(TagChildren.class);
 		if (annot != null)
@@ -584,7 +536,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param widgetFactory
 	 */
-	private void generateChildrenForFactory(PrintStream out, Class<? extends WidgetCreator<?>> widgetFactory, String library)
+	protected void generateChildrenForFactory(PrintStream out, Class<? extends WidgetCreator<?>> widgetFactory, String library)
 	{
 		try
 		{
@@ -602,7 +554,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param widgetFactory
 	 * @param library
 	 */
-	private void generateChildrenForProcessor(PrintStream out, Class<? extends WidgetChildProcessor<?>> processorClass, String library)
+	protected void generateChildrenForProcessor(PrintStream out, Class<? extends WidgetChildProcessor<?>> processorClass, String library)
 	{
 		try
 		{
@@ -619,7 +571,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param template
 	 */
-	private void generateChildrenForTemplate(PrintStream out, Document template)
+	protected void generateChildrenForTemplate(PrintStream out, Document template)
 	{
 		Set<String> childrenForTemplate = templateParser.getSections(template);
 
@@ -641,7 +593,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param children
 	 * @throws NoSuchMethodException
 	 */
-	private void generateChoiceChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) throws NoSuchMethodException
+	protected void generateChoiceChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) throws NoSuchMethodException
 	{
 		out.print("<xs:choice ");
 		if (attributes!= null)
@@ -661,7 +613,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateCoreCrossDeviceElement(PrintStream out)
+	protected void generateCoreCrossDeviceElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"crossDevice\" type=\"CrossDevice\">");
 		out.println("<xs:annotation>");
@@ -723,7 +675,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreCrossDevWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
+	protected void generateCoreCrossDevWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
 	{
 		generateCoreWidgetsType(out, libraries, templateLibraries, "widgetsCrossDev", false, true);
 	}
@@ -733,7 +685,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreSchema(Set<String> libraries, Set<String> templateLibraries)
+	protected void generateCoreSchema(Set<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -772,7 +724,18 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			throw new SchemaGeneratorException(e.getMessage(), e);
 		}
-	}	
+	}
+
+	protected void generateCoreSchemaBody(Set<String> libraries,
+			Set<String> templateLibraries, PrintStream out) 
+	{
+		generateCoreSchemasImport(libraries, templateLibraries, out);
+		generateCoreSplashScreenElement(out);
+		generateCoreScreenElement(out);
+		generateCoreCrossDeviceElement(out);
+		generateCoreWidgetsType(out, libraries, templateLibraries);	
+		generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
+	}
 
 	/**
 	 * 
@@ -780,7 +743,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param templateLibraries 
 	 * @param out
 	 */
-	private void generateCoreSchemasImport(Set<String> libraries, Set<String> templateLibraries, PrintStream out)
+	protected void generateCoreSchemasImport(Set<String> libraries, Set<String> templateLibraries, PrintStream out)
 	{
 		for (String lib : libraries)
 		{
@@ -796,7 +759,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateCoreScreenElement(PrintStream out)
+	protected void generateCoreScreenElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"screen\" type=\"Screen\">");
 		out.println("<xs:annotation>");
@@ -817,13 +780,13 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"largeViewport\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"disableRefresh\" type=\"xs:boolean\" default=\"false\" />");
 		out.println("</xs:complexType>");
-	}
+	}	
 
 	/**
 	 * 
 	 * @param out
 	 */
-	private void generateCoreSplashScreenElement(PrintStream out)
+	protected void generateCoreSplashScreenElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"splashScreen\" type=\"SplashScreen\">");
 		out.println("<xs:annotation>");
@@ -843,7 +806,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
+	protected void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries)
 	{
 		generateCoreWidgetsType(out, libraries, templateLibraries, "widgets", true, true);
 	}
@@ -856,7 +819,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param groupName
 	 * @param supportCrossDevice
 	 */
-	private void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries, String groupName, boolean supportCrossDevice, boolean supportTemplates)
+	protected void generateCoreWidgetsType(PrintStream out, Set<String> libraries, Set<String> templateLibraries, String groupName, boolean supportCrossDevice, boolean supportTemplates)
 	{
 		out.println("<xs:group name=\""+groupName+"\">");
 		out.println("<xs:choice>");
@@ -901,7 +864,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param annot
 	 */
-	private void generateDocumentationForTypeFactory(PrintStream out, DeclarativeFactory annot)
+	protected void generateDocumentationForTypeFactory(PrintStream out, DeclarativeFactory annot)
     {
 	    String elementDescription = annot.description();
 		String demoURL = annot.infoURL();
@@ -933,7 +896,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateElementAttributesForAllViewElements(PrintStream out)
+	protected void generateElementAttributesForAllViewElements(PrintStream out)
 	{
 		out.println("<xs:attribute name=\"title\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"fragment\" type=\"xs:string\"/>");
@@ -959,7 +922,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param added
 	 * @param processorClass
 	 */
-	private void generateEvents(PrintStream out, Set<String> added, Class<?> processorClass)
+	protected void generateEvents(PrintStream out, Set<String> added, Class<?> processorClass)
 	{
 		TagEvents evts = processorClass.getAnnotation(TagEvents.class);
 		if (evts != null)
@@ -1013,7 +976,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param widgetFactory
 	 */
-	private void generateEventsForFactory(PrintStream out, Class<?> widgetFactory, Set<String> added)
+	protected void generateEventsForFactory(PrintStream out, Class<?> widgetFactory, Set<String> added)
 	{
 		generateEvents(out, added, widgetFactory);
 		Class<?> superclass = widgetFactory.getSuperclass();
@@ -1033,7 +996,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param processorClass
 	 */
-	private void generateEventsForProcessor(PrintStream out, Class<?> processorClass, Set<String> added)
+	protected void generateEventsForProcessor(PrintStream out, Class<?> processorClass, Set<String> added)
 	{
 		try
 		{
@@ -1057,7 +1020,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param processorClass
 	 * @param attributes
 	 */
-	private void generateGenericChildWithAttributes(PrintStream out, String library, Class<? extends WidgetChildProcessor<?>> processorClass, TagConstraints attributes)
+	protected void generateGenericChildWithAttributes(PrintStream out, String library, Class<? extends WidgetChildProcessor<?>> processorClass, TagConstraints attributes)
 	{
 		Class<?> type = attributes.type();
 		String tagName = attributes.tagName();
@@ -1136,7 +1099,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateOfflineSchema()
+	protected void generateOfflineSchema()
 	{
 		try
 		{
@@ -1171,7 +1134,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateOfflineScreenElement(PrintStream out)
+	protected void generateOfflineScreenElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"includes\" type=\"Includes\">");
 		out.println("<xs:annotation>");
@@ -1238,7 +1201,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @throws ClassNotFoundException 
 	 */
 	@SuppressWarnings("unchecked")
-	private void generateSchemaForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries)
+	protected void generateSchemaForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1294,7 +1257,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param library
 	 */
-	private void generateSchemaForTemplateLibrary(String library)
+	protected void generateSchemaForTemplateLibrary(String library)
 	{
 		try
 		{
@@ -1338,7 +1301,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param allLibraries
 	 * @param out
 	 */
-	private void generateSchemaImportsForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries, PrintStream out)
+	protected void generateSchemaImportsForLibrary(String library, Set<String> allLibraries, Set<String> templateLibraries, PrintStream out)
 	{
 		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
 		for (String lib : allLibraries)
@@ -1363,7 +1326,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param attributes
 	 * @param children
 	 */
-	private void generateSequenceChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) 
+	protected void generateSequenceChild(PrintStream out, TagConstraints attributes, TagChildren children, String library) 
 	{
 		try
 		{
@@ -1390,7 +1353,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateTemplateElement(PrintStream out)
+	protected void generateTemplateElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"template\" type=\"Template\" >");
 		out.println("<xs:annotation>");
@@ -1414,7 +1377,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateTemplateSchema(Set<String> libraries, Set<String> templateLibraries)
+	protected void generateTemplateSchema(Set<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1454,7 +1417,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * 
 	 * @param out
 	 */
-	private void generateTemplateSectionElement(PrintStream out)
+	protected void generateTemplateSectionElement(PrintStream out)
 	{
 		out.println("<xs:element name=\"section\" type=\"Section\" >");
 		out.println("<xs:annotation>");
@@ -1467,14 +1430,14 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("</xs:choice>");
 		out.println("<xs:attribute name=\"name\" type=\"xs:string\" use=\"required\"/>");
 		out.println("</xs:complexType>");
-	}		
+	}
 
 	/**
 	 * 
 	 * @param out
 	 * @param widgetFactory
 	 */
-	private void generateTypeForFactory(PrintStream out, Class<? extends WidgetCreator<?>> widgetFactory, String library)
+	protected void generateTypeForFactory(PrintStream out, Class<? extends WidgetCreator<?>> widgetFactory, String library)
 	{
 		DeclarativeFactory annot = widgetFactory.getAnnotation(DeclarativeFactory.class);
 		String elementName = annot.id();
@@ -1510,7 +1473,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param template
 	 */
-	private void generateTypeForTemplate(PrintStream out, Document template, String templateName)
+	protected void generateTypeForTemplate(PrintStream out, Document template, String templateName)
 	{
 		out.println("<xs:element name=\""+templateName+"\" type=\"T"+templateName+"\" />");
 		out.println("<xs:complexType name=\"T"+templateName+"\">");
@@ -1519,14 +1482,14 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		generateAttributesForTemplate(out, template);
 
 		out.println("</xs:complexType>");
-	}
+	}		
 
 	/**
 	 * 
 	 * @param out
 	 */
 	@SuppressWarnings("unchecked")
-	private void generateTypesForEnumerations(PrintStream out)
+	protected void generateTypesForEnumerations(PrintStream out)
 	{
 		for (String enumType : enumTypes.keySet())
 		{
@@ -1552,7 +1515,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param out
 	 * @param library
 	 */
-	private void generateTypesForSubTags(PrintStream out, String library)
+	protected void generateTypesForSubTags(PrintStream out, String library)
 	{
 		Set<String> added = new HashSet<String>();
 		while (subTagTypes.size() > 0)
@@ -1591,7 +1554,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateViewSchema(Set<String> libraries, Set<String> templateLibraries)
+	protected void generateViewSchema(Set<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1642,7 +1605,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			throw new SchemaGeneratorException(e.getMessage(), e);
 		}
-	}	
+	}
 
 	/**
 	 * 
@@ -1650,7 +1613,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param templateLibraries 
 	 * @param out
 	 */
-	private void generateViewSchemasImport(Set<String> libraries, PrintStream out)
+	protected void generateViewSchemasImport(Set<String> libraries, PrintStream out)
 	{
 		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
 		for (String lib : libraries)
@@ -1664,7 +1627,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateXDeviceSchema(Set<String> libraries, Set<String> templateLibraries)
+	protected void generateXDeviceSchema(Set<String> libraries, Set<String> templateLibraries)
 	{
 		try
 		{
@@ -1716,13 +1679,13 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			throw new SchemaGeneratorException(e.getMessage(), e);
 		}
-	}
+	}	
 
 	/**
 	 * @param value
 	 * @return
 	 */
-	private String getRelativeName(File value)
+	protected String getRelativeName(File value)
 	{
 		String absolutePath = value.toURI().getPath();
 		String projectPath = projectBaseDir.toURI().getPath();
@@ -1736,7 +1699,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private String getSchemaType(Class<?> type, String library)
+	protected String getSchemaType(Class<?> type, String library)
 	{
 		if (String.class.isAssignableFrom(type))
 		{
@@ -1817,10 +1780,38 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param processorClass
 	 * @return
 	 */
-	private boolean hasTextChild(Class<?> processorClass)
+	protected boolean hasTextChild(Class<?> processorClass)
 	{
 		TagChildren tagChildren = processorClass.getAnnotation(TagChildren.class);
 		return (tagChildren != null && tagChildren.value().length == 1 && TextChildProcessor.class.isAssignableFrom(tagChildren.value()[0].value()));
+	}
+
+	/**
+	 * @param projectBaseDir
+	 * @param webDir
+	 */
+	protected void initializeSchemaGenerator(File projectBaseDir, File webDir)
+	{
+		try
+		{
+			CruxBridge.getInstance().setSingleVM(true);
+			ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
+			URL[] urls = ClasspathUrlFinder.findClassPaths();
+			Scanners.setSearchURLs(urls);
+			DevelopmentScanners.initializeScanners();
+			
+			if (webDir == null)
+			{
+				webDir = new File(projectBaseDir, "war/");
+			}
+
+			ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
+			ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -1828,7 +1819,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param tagChild
 	 * @return
 	 */
-	private boolean isChildAnAgregator(TagChild tagChild)
+	protected boolean isChildAnAgregator(TagChild tagChild)
 	{
 		Class<? extends WidgetChildProcessor<?>> processorClass = tagChild.value();
 		return processorClass != null && (ChoiceChildProcessor.class.isAssignableFrom(processorClass) || 
@@ -1841,7 +1832,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param type
 	 * @return
 	 */
-	private boolean processorSupportsInnerText(Class<? extends WidgetChildProcessor<?>> processorClass)
+	protected boolean processorSupportsInnerText(Class<? extends WidgetChildProcessor<?>> processorClass)
 	{
 		try
 		{
@@ -1851,5 +1842,14 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @param targetNS
+	 * @param coreFile
+	 */
+	protected void registerNamespaceForCatalog(String targetNS, File file)
+	{
+		this.namespacesForCatalog.put(targetNS, file);
 	}
 }
