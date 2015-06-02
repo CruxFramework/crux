@@ -681,12 +681,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			out.println("elementFormDefault=\"qualified\" ");
 			out.println("targetNamespace=\"" + targetNS + "\" >");
 
-			generateCoreSchemasImport(libraries, templateLibraries, out);
-			generateCoreSplashScreenElement(out);
-			generateCoreScreenElement(out);
-			generateCoreCrossDeviceElement(out);
-			generateCoreWidgetsType(out, libraries, templateLibraries);	
-			generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
+			generateSchemas(libraries, templateLibraries, out);
 
 			out.println("</xs:schema>");
 			out.close();
@@ -695,6 +690,17 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			throw new SchemaGeneratorException(e.getMessage(), e);
 		}
+	}
+
+	protected void generateSchemas(Set<String> libraries,
+			Set<String> templateLibraries, PrintStream out) 
+	{
+		generateCoreSchemasImport(libraries, templateLibraries, out);
+		generateCoreSplashScreenElement(out);
+		generateCoreScreenElement(out);
+		generateCoreCrossDeviceElement(out);
+		generateCoreWidgetsType(out, libraries, templateLibraries);	
+		generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
 	}
 
 	/**
