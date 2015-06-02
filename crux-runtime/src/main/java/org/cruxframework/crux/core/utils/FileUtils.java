@@ -34,8 +34,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-
 /**
  * @author Gesse S. F. Dafe - <code>gesse@sysmap.com.br</code>
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -212,56 +210,6 @@ public class FileUtils
 		}
 
 		return name;
-	}
-
-	/**
-	 * Set the default TempDir
-	 */
-	public static void setTempDir()
-	{
-		if(Boolean.parseBoolean(ConfigurationFactory.getConfigurations().isRelativeCruxCompilationTempFolder()))
-		{
-			setTempDir(System.getProperty("java.io.tmpdir") + File.separator + ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
-		} else
-		{
-			setTempDir(ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
-		}
-	}
-
-	/**
-	 * @param tempDir
-	 */
-	public static void setTempDir(String tempDir)
-	{
-		System.setProperty("java.io.tmpdir", tempDir);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static String getTempDir()
-	{
-		String tmpDir = System.getProperty("java.io.tmpdir");
-		if (!tmpDir.endsWith("/") && !tmpDir.endsWith("\\"))
-		{
-			tmpDir += File.separator;
-		}
-		return tmpDir;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static File getTempDirFile()
-	{
-		File dir = new File(getTempDir());
-		if (!dir.exists() & !dir.mkdir()) 
-		{
-			return null;
-		}
-		return dir;
 	}
 
 	/**

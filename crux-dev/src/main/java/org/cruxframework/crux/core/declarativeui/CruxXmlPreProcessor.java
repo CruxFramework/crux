@@ -18,6 +18,9 @@ package org.cruxframework.crux.core.declarativeui;
 import org.w3c.dom.Document;
 
 /**
+ * Defines a pre processor for crux view processor class. This is used during the processing
+ * of all view files to perform operations on the original document. It is useful to process
+ * templates, conditional fragments etc. 
  * @author Thiago da Rosa de Bustamante
  *
  */

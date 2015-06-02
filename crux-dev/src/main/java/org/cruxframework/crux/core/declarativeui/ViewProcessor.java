@@ -30,9 +30,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.server.Environment;
+import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -59,11 +61,36 @@ public class ViewProcessor
 
 	public ViewProcessor(ViewLoader viewProvider)
     {
-		init();
-		preProcessors = new ArrayList<CruxXmlPreProcessor>();
+		initDocumentBuilder();
+		initPreprocessors(viewProvider);
+    }
+
+	private void initPreprocessors(ViewLoader viewProvider)
+    {
+	    preProcessors = new ArrayList<CruxXmlPreProcessor>();
 		if (viewProvider != null)
 		{
 			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateLoader()));
+		}
+		String xmlPreProcessors = ConfigurationFactory.getConfigurations().customCruxXmlPreProcessors();
+		
+		if (xmlPreProcessors != null && xmlPreProcessors.trim().length() > 0)
+		{
+			try
+			{
+				String[] processors = RegexpPatterns.REGEXP_COMMA.split(xmlPreProcessors);
+				for(String processor: processors)
+				{
+					Class<?> processorClass = Class.forName(processor.trim());
+					preProcessors.add((CruxXmlPreProcessor) processorClass.newInstance());
+				}
+			}
+			catch (Exception e)
+			{
+				log.error("Error registering a custom cruxXmlPreProcessor. "
+						+ "Please check your this expression on your Crux.properties file: ["
+					    + xmlPreProcessors + "]. Message: " + e.getMessage(), e);
+			}
 		}
     }
 	
@@ -206,7 +233,7 @@ public class ViewProcessor
 	/**
 	 * Initializes the static resources
 	 */
-	private static void init()
+	private static void initDocumentBuilder()
 	{
 		if (documentBuilder == null)
 		{

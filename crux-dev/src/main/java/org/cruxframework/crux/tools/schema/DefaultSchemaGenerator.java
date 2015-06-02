@@ -257,7 +257,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
-			ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
 			URL[] urls = ClasspathUrlFinder.findClassPaths();
 			Scanners.setSearchURLs(urls);
 			
