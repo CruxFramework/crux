@@ -117,7 +117,8 @@ public class ViewProcessor
         }
         catch (Exception e)
         {
-	        throw new SchemaGeneratorException("Error, creating the CruxXmlPreProcessor class: "+e.getLocalizedMessage(),e);
+			log.error("Error, creating the CruxXmlPreProcessor class: "+e.getLocalizedMessage(),e);
+			throw new RuntimeException(e.getMessage(), e);
         }
 	}
 	
@@ -255,7 +256,7 @@ public class ViewProcessor
 				
 				for(String cruxXmlPreProcessor : cruxXmlPreProcessors)
 				{
-					preProcessors.add(createPreprocessor(cruxXmlPreProcessor));
+					preProcessors.add(createPreprocessor(cruxXmlPreProcessor.trim()));
 				}
 			}
 		}

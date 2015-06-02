@@ -116,13 +116,9 @@ public interface Crux
 	String allowExperimentalFeatures();
 	void setAllowExperimentalFeatures(Boolean value);
 	
-	@DefaultServerMessage("null")
+	@DefaultServerMessage("")
 	String cruxXmlPreProcessors();
 	void setCruxXmlPreProcessors(String value);
-
-	@DefaultServerMessage("null")
-	String cruxSchemaGenerators();
-	void setCruxSchemaGenerators(String value);
 	
 	@DefaultServerMessage("true")
 	String enableResourceStateCacheForRestServices();
