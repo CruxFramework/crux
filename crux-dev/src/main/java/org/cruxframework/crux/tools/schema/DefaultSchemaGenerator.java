@@ -87,10 +87,10 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 	protected Map<String, File> namespacesForCatalog;
 	protected File projectBaseDir;
-	protected Stack<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
-	protected TemplateParser templateParser;
-
 	protected SchemaMessages schemaMessages;
+	protected Stack<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
+
+	protected TemplateParser templateParser;
 
 	private String XHTML_XSD = "xhtml.xsd";
 	
@@ -164,47 +164,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 	}	
 
-	/**
-	 * @see org.cruxframework.crux.tools.schema.CruxSchemaGenerator#generateSchemas()
-	 */
-	public void generateSchemas() throws SchemaGeneratorException
-	{
-		try
-		{
-			Iterator<String> libraries = WidgetLibraries.getInstance().iterateRegisteredLibraries();
-			Set<String> templateLibraries = Templates.getRegisteredLibraries();
-			while (libraries.hasNext())
-			{
-				String library = libraries.next();
-				logger.info("Generating xsd file for library ["+library+"]");
-				generateSchemaForLibrary(library, libraries, templateLibraries);
-			}
-
-			logger.info("Generating template.xsd file.");
-			generateTemplateSchema(libraries, templateLibraries);
-
-			for (String library : templateLibraries)
-			{
-				logger.info("Generating XSD file for library ["+library+"]");
-				generateSchemaForTemplateLibrary(library);
-			}
-
-			logger.info("Generating core.xsd file");
-			generateCoreSchema(libraries, templateLibraries);
-			generateOfflineSchema();
-			generateXDeviceSchema(libraries, templateLibraries);
-			generateViewSchema(libraries, templateLibraries);
-
-			copyXHTMLSchema();
-
-			logger.info("XSD Files Generated.");
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
 	@Override
 	public void generateDocumentation() throws SchemaGeneratorException
 	{
@@ -248,6 +207,58 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			throw new SchemaGeneratorException("Error generation HTML documentation for XSD files", e);
 		}
 	}
+
+	/**
+	 * @see org.cruxframework.crux.tools.schema.CruxSchemaGenerator#generateSchemas()
+	 */
+	public void generateSchemas() throws SchemaGeneratorException
+	{
+		try
+		{
+			Iterator<String> libraries = WidgetLibraries.getInstance().iterateRegisteredLibraries();
+			Set<String> templateLibraries = Templates.getRegisteredLibraries();
+			while (libraries.hasNext())
+			{
+				String library = libraries.next();
+				logger.info("Generating xsd file for library ["+library+"]");
+				generateSchemaForLibrary(library, libraries, templateLibraries);
+			}
+
+			logger.info("Generating template.xsd file.");
+			generateTemplateSchema(libraries, templateLibraries);
+
+			for (String library : templateLibraries)
+			{
+				logger.info("Generating XSD file for library ["+library+"]");
+				generateSchemaForTemplateLibrary(library);
+			}
+
+			logger.info("Generating core.xsd file");
+			generateCoreSchema(libraries, templateLibraries);
+			generateOfflineSchema();
+			generateXDeviceSchema(libraries, templateLibraries);
+			generateViewSchema(libraries, templateLibraries);
+
+			copyXHTMLSchema();
+
+			logger.info("XSD Files Generated.");
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
+		}
+	}
+
+	protected void generateCoreSchemaBody(Iterator<String> libraries, Set<String> templateLibraries, PrintStream out)
+    {
+	    generateCoreSchemasImport(libraries, templateLibraries, out);
+	    generateCoreSplashScreenElement(out);
+	    generateCoreScreenElement(out);
+	    generateCoreCrossDeviceElement(out);
+	    generateCoreWidgetsType(out, libraries, templateLibraries);	
+	    generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
+	    generateCoreTypesSupportingBinding(out);
+    }
 
 	/**
 	 * @param projectBaseDir
@@ -641,248 +652,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 	/**
 	 * 
-	 * @param libraries
-	 * @param templateLibraries 
-	 */
-	private void generateCoreSchema(Iterator<String> libraries, Set<String> templateLibraries)
-	{
-		try
-		{
-			File coreFile = new File(destDir, "core.xsd");
-			if (coreFile.exists())
-			{
-				coreFile.delete();
-			}
-			coreFile.createNewFile();
-
-			String targetNS = "http://www.cruxframework.org/crux";
-			registerNamespaceForCatalog(targetNS, coreFile);
-
-			PrintStream out = new PrintStream(coreFile);
-			out.println("<xs:schema ");
-			out.println("xmlns=\"http://www.cruxframework.org/crux\" ");
-			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-			while (libraries.hasNext())
-			{
-				String lib = libraries.next();
-				out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/crux/"+lib+"\" ");
-			}
-			for (String lib : templateLibraries)
-			{
-				out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/templates/"+lib+"\" ");
-			}
-			out.println("attributeFormDefault=\"unqualified\" ");
-			out.println("elementFormDefault=\"qualified\" ");
-			out.println("targetNamespace=\"" + targetNS + "\" >");
-
-			generateCoreSchemasImport(libraries, templateLibraries, out);
-			generateCoreSplashScreenElement(out);
-			generateCoreScreenElement(out);
-			generateCoreCrossDeviceElement(out);
-			generateCoreWidgetsType(out, libraries, templateLibraries);	
-			generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
-			generateCoreTypesSupportingBinding(out);
-			
-			out.println("</xs:schema>");
-			out.close();
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param libraries
-	 * @param templateLibraries 
-	 */
-	private void generateOfflineSchema()
-	{
-		try
-		{
-			File coreFile = new File(destDir, "offline.xsd");
-			if (coreFile.exists())
-			{
-				coreFile.delete();
-			}
-			coreFile.createNewFile();
-
-			String targetNS = "http://www.cruxframework.org/offline";
-			registerNamespaceForCatalog(targetNS, coreFile);
-
-			PrintStream out = new PrintStream(coreFile);
-			out.println("<xs:schema ");
-			out.println("xmlns=\"http://www.cruxframework.org/offline\" ");
-			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-			out.println("targetNamespace=\"" + targetNS + "\" >");
-
-			generateOfflineScreenElement(out);
-
-			out.println("</xs:schema>");
-			out.close();
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param libraries
-	 * @param templateLibraries 
-	 * @param out
-	 */
-	private void generateCoreSchemasImport(Iterator<String> libraries, Set<String> templateLibraries, PrintStream out)
-	{
-		while (libraries.hasNext())
-		{
-			String lib = libraries.next();
-			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
-		}
-		for (String lib : templateLibraries)
-		{
-			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/templates/"+lib+"\"/>");
-		}
-	}	
-
-	/**
-	 * 
-	 * @param out
-	 */
-	private void generateCoreScreenElement(PrintStream out)
-	{
-		out.println("<xs:element name=\"screen\" type=\"Screen\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.screenDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-
-		out.println("<xs:group name=\"ScreenContent\">");
-		out.println("<xs:choice>");
-		out.println("<xs:any minOccurs=\"0\" maxOccurs=\"unbounded\"/>");
-		out.println("</xs:choice>");
-		out.println("</xs:group>");
-
-		out.println("<xs:complexType name=\"Screen\" mixed=\"true\">");
-		out.println("<xs:group ref=\"ScreenContent\" />");
-		generateElementAttributesForAllViewElements(out);
-		out.println("<xs:attribute name=\"smallViewport\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"largeViewport\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"disableRefresh\" type=\"xs:boolean\" default=\"false\" />");
-		out.println("</xs:complexType>");
-	}
-
-	/**
-	 * 
-	 * @param out
-	 */
-	private void generateOfflineScreenElement(PrintStream out)
-	{
-		out.println("<xs:element name=\"includes\" type=\"Includes\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-		
-		out.println("<xs:element name=\"excludes\" type=\"Excludes\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-
-		out.println("<xs:element name=\"include\" type=\"Include\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-		
-		out.println("<xs:element name=\"exclude\" type=\"Exclude\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-
-		out.println("<xs:complexType name=\"Includes\" mixed=\"true\">");
-		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
-		out.println("<xs:element ref=\"include\" />");
-		out.println("</xs:choice>");
-		out.println("</xs:complexType>");
-
-		out.println("<xs:complexType name=\"Excludes\" mixed=\"true\">");
-		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
-		out.println("<xs:element ref=\"exclude\" />");
-		out.println("</xs:choice>");
-		out.println("</xs:complexType>");
-
-		out.println("<xs:complexType name=\"Include\" mixed=\"true\">");
-		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
-		out.println("</xs:complexType>");
-
-		out.println("<xs:complexType name=\"Exclude\" mixed=\"true\">");
-		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
-		out.println("</xs:complexType>");
-
-		out.println("<xs:element name=\"offlineScreen\" type=\"OfflineScreen\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineScreenDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-		out.println("<xs:complexType name=\"OfflineScreen\" mixed=\"true\">");
-		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
-		out.println("<xs:element ref=\"includes\" />");
-		out.println("<xs:element ref=\"excludes\" />");
-		out.println("</xs:choice>");
-		out.println("<xs:attribute name=\"moduleName\" type=\"xs:string\" use=\"required\"/>");
-		out.println("<xs:attribute name=\"screenId\" type=\"xs:string\" use=\"required\"/>");
-		out.println("</xs:complexType>");
-	}
-
-	/**
-	 * 
-	 * @param out
-	 */
-	private void generateElementAttributesForAllViewElements(PrintStream out)
-	{
-		out.println("<xs:attribute name=\"title\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"fragment\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useController\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useFormatter\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useDataSource\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useView\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onClosing\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onClose\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onResized\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onLoad\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onActivate\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"onHistoryChanged\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"width\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"height\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"dataObject\" type=\"xs:string\"/>");
-	}
-
-	/**
-	 * 
-	 * @param out
-	 */
-	private void generateCoreSplashScreenElement(PrintStream out)
-	{
-		out.println("<xs:element name=\"splashScreen\" type=\"SplashScreen\">");
-		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.splashScreenDescription())+"</xs:documentation>");
-		out.println("</xs:annotation>");
-		out.println("</xs:element>");
-
-		out.println("<xs:complexType name=\"SplashScreen\">");
-		out.println("<xs:attribute name=\"style\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"transactionDelay\" type=\"xs:integer\"/>");
-		out.println("</xs:complexType>");
-	}
-
-	/**
-	 * 
 	 * @param out
 	 */
 	private void generateCoreCrossDeviceElement(PrintStream out)
@@ -947,10 +716,146 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
+	private void generateCoreCrossDevWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
 	{
-		generateCoreWidgetsType(out, libraries, templateLibraries, "widgets", true, true);
+		generateCoreWidgetsType(out, libraries, templateLibraries, "widgetsCrossDev", false, true);
 	}
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries 
+	 */
+	private void generateCoreSchema(Iterator<String> libraries, Set<String> templateLibraries)
+	{
+		try
+		{
+			File coreFile = new File(destDir, "core.xsd");
+			if (coreFile.exists())
+			{
+				coreFile.delete();
+			}
+			coreFile.createNewFile();
+
+			String targetNS = "http://www.cruxframework.org/crux";
+			registerNamespaceForCatalog(targetNS, coreFile);
+
+			PrintStream out = new PrintStream(coreFile);
+			out.println("<xs:schema ");
+			out.println("xmlns=\"http://www.cruxframework.org/crux\" ");
+			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+			while (libraries.hasNext())
+			{
+				String lib = libraries.next();
+				out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/crux/"+lib+"\" ");
+			}
+			for (String lib : templateLibraries)
+			{
+				out.println("xmlns:_"+lib+"=\"http://www.cruxframework.org/templates/"+lib+"\" ");
+			}
+			out.println("attributeFormDefault=\"unqualified\" ");
+			out.println("elementFormDefault=\"qualified\" ");
+			out.println("targetNamespace=\"" + targetNS + "\" >");
+
+			generateCoreSchemaBody(libraries, templateLibraries, out);
+			
+			out.println("</xs:schema>");
+			out.close();
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
+		}
+	}	
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries 
+	 * @param out
+	 */
+	private void generateCoreSchemasImport(Iterator<String> libraries, Set<String> templateLibraries, PrintStream out)
+	{
+		while (libraries.hasNext())
+		{
+			String lib = libraries.next();
+			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
+		}
+		for (String lib : templateLibraries)
+		{
+			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/templates/"+lib+"\"/>");
+		}
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateCoreScreenElement(PrintStream out)
+	{
+		out.println("<xs:element name=\"screen\" type=\"Screen\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.screenDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:group name=\"ScreenContent\">");
+		out.println("<xs:choice>");
+		out.println("<xs:any minOccurs=\"0\" maxOccurs=\"unbounded\"/>");
+		out.println("</xs:choice>");
+		out.println("</xs:group>");
+
+		out.println("<xs:complexType name=\"Screen\" mixed=\"true\">");
+		out.println("<xs:group ref=\"ScreenContent\" />");
+		generateElementAttributesForAllViewElements(out);
+		out.println("<xs:attribute name=\"smallViewport\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"largeViewport\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"disableRefresh\" type=\"xs:boolean\" default=\"false\" />");
+		out.println("</xs:complexType>");
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateCoreSplashScreenElement(PrintStream out)
+	{
+		out.println("<xs:element name=\"splashScreen\" type=\"SplashScreen\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.splashScreenDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"SplashScreen\">");
+		out.println("<xs:attribute name=\"style\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"transactionDelay\" type=\"xs:integer\"/>");
+		out.println("</xs:complexType>");
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateCoreTypesSupportingBinding(PrintStream out)
+    {
+		out.println("<xs:simpleType name=\"_bindableInt\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+    
+		out.println("<xs:simpleType name=\"_bindableBoolean\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("false|true|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+		
+		out.println("<xs:simpleType name=\"_bindableFloat\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+(\\.[0-9]+)?|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+    }
 
 	/**
 	 * 
@@ -958,10 +863,11 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries 
 	 */
-	private void generateCoreCrossDevWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
+	private void generateCoreWidgetsType(PrintStream out, Iterator<String> libraries, Set<String> templateLibraries)
 	{
-		generateCoreWidgetsType(out, libraries, templateLibraries, "widgetsCrossDev", false, true);
+		generateCoreWidgetsType(out, libraries, templateLibraries, "widgets", true, true);
 	}
+
 	/**
 	 * 
 	 * @param out
@@ -1015,28 +921,59 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	/**
 	 * 
 	 * @param out
+	 * @param annot
 	 */
-	private void generateCoreTypesSupportingBinding(PrintStream out)
+	private void generateDocumentationForTypeFactory(PrintStream out, DeclarativeFactory annot)
     {
-		out.println("<xs:simpleType name=\"_bindableInt\">");
-		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+|@\\{.+\\}")+"\"/>");
-		out.println("</xs:restriction>");
-		out.println("</xs:simpleType>");
-    
-		out.println("<xs:simpleType name=\"_bindableBoolean\">");
-		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("false|true|@\\{.+\\}")+"\"/>");
-		out.println("</xs:restriction>");
-		out.println("</xs:simpleType>");
-		
-		out.println("<xs:simpleType name=\"_bindableFloat\">");
-		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+(\\.[0-9]+)?|@\\{.+\\}")+"\"/>");
-		out.println("</xs:restriction>");
-		out.println("</xs:simpleType>");
+	    String elementDescription = annot.description();
+		String demoURL = annot.infoURL();
+		String illustration = annot.illustration();
+		if ((elementDescription != null && elementDescription.length() > 0) ||
+			(demoURL != null && demoURL.length() > 0) || 
+			(illustration != null && illustration.length() > 0))
+		{
+			out.println("<xs:annotation>");
+			if (elementDescription != null && elementDescription.length() > 0)
+			{
+				out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(elementDescription)+"</xs:documentation>");
+			}
+			if (demoURL != null && demoURL.length() > 0)
+			{
+				out.println("<xs:appinfo source=\""+StringEscapeUtils.escapeXml(demoURL)+"\">"+
+						StringEscapeUtils.escapeXml(schemaMessages.moreInfoDescription())+"</xs:appinfo>");
+			}
+			if (illustration != null && illustration.length() > 0)
+			{
+				out.println("<xs:appinfo source=\""+StringEscapeUtils.escapeXml(illustration)+"\">"+
+						StringEscapeUtils.escapeXml(schemaMessages.illustrationDescription())+"</xs:appinfo>");
+			}
+			out.println("</xs:annotation>");
+		}
     }
-	
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateElementAttributesForAllViewElements(PrintStream out)
+	{
+		out.println("<xs:attribute name=\"title\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"fragment\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"useController\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"useFormatter\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"useDataSource\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"useView\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onClosing\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onClose\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onResized\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onLoad\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onActivate\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"onHistoryChanged\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"width\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"height\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"dataObject\" type=\"xs:string\"/>");
+	}
+
 	/**
 	 * 
 	 * @param out
@@ -1102,7 +1039,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			}
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param out
@@ -1224,6 +1161,107 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			}
 			out.println("</xs:element>");
 		}
+	}
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries 
+	 */
+	private void generateOfflineSchema()
+	{
+		try
+		{
+			File coreFile = new File(destDir, "offline.xsd");
+			if (coreFile.exists())
+			{
+				coreFile.delete();
+			}
+			coreFile.createNewFile();
+
+			String targetNS = "http://www.cruxframework.org/offline";
+			registerNamespaceForCatalog(targetNS, coreFile);
+
+			PrintStream out = new PrintStream(coreFile);
+			out.println("<xs:schema ");
+			out.println("xmlns=\"http://www.cruxframework.org/offline\" ");
+			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+			out.println("targetNamespace=\"" + targetNS + "\" >");
+
+			generateOfflineScreenElement(out);
+
+			out.println("</xs:schema>");
+			out.close();
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateOfflineScreenElement(PrintStream out)
+	{
+		out.println("<xs:element name=\"includes\" type=\"Includes\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		
+		out.println("<xs:element name=\"excludes\" type=\"Excludes\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:element name=\"include\" type=\"Include\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		
+		out.println("<xs:element name=\"exclude\" type=\"Exclude\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"Includes\" mixed=\"true\">");
+		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element ref=\"include\" />");
+		out.println("</xs:choice>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Excludes\" mixed=\"true\">");
+		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element ref=\"exclude\" />");
+		out.println("</xs:choice>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Include\" mixed=\"true\">");
+		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Exclude\" mixed=\"true\">");
+		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:element name=\"offlineScreen\" type=\"OfflineScreen\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineScreenDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		out.println("<xs:complexType name=\"OfflineScreen\" mixed=\"true\">");
+		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element ref=\"includes\" />");
+		out.println("<xs:element ref=\"excludes\" />");
+		out.println("</xs:choice>");
+		out.println("<xs:attribute name=\"moduleName\" type=\"xs:string\" use=\"required\"/>");
+		out.println("<xs:attribute name=\"screenId\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
 	}
 
 	/**
@@ -1411,139 +1449,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @param libraries
 	 * @param templateLibraries
 	 */
-	private void generateXDeviceSchema(Iterator<String> libraries, Set<String> templateLibraries)
-	{
-		try
-		{
-			File coreFile = new File(destDir, "xdevice.xsd");
-			if (coreFile.exists())
-			{
-				coreFile.delete();
-			}
-			coreFile.createNewFile();
-
-			String targetNS = "http://www.cruxframework.org/xdevice";
-			registerNamespaceForCatalog(targetNS, coreFile);
-
-			PrintStream out = new PrintStream(coreFile);
-			out.println("<xs:schema ");
-			out.println("xmlns=\"http://www.cruxframework.org/xdevice\" ");
-			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-			out.println("xmlns:c=\"http://www.cruxframework.org/crux\" ");
-			out.println("attributeFormDefault=\"unqualified\" ");
-			out.println("elementFormDefault=\"qualified\" ");
-			out.println("targetNamespace=\"" + targetNS + "\" >");
-
-			generateViewSchemasImport(libraries, out);
-
-			out.println("<xs:element name=\"xdevice\" type=\"XDevice\" >");
-			out.println("<xs:annotation>");
-			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.xdeviceDescription())+"</xs:documentation>");
-			out.println("</xs:annotation>");
-			out.println("</xs:element>");
-			out.println("<xs:complexType name=\"XDevice\">");
-			out.println("<xs:choice maxOccurs=\"unbounded\">");
-			out.println("<xs:group ref=\"c:widgetsCrossDev\" >");
-			out.println("<xs:annotation>");
-			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
-			out.println("</xs:annotation>");
-			out.println("</xs:group>");
-			out.println("<xs:any namespace=\"http://www.w3.org/1999/xhtml\"/>");
-			out.println("</xs:choice>");
-			out.println("<xs:attribute name=\"useController\" type=\"xs:string\" use=\"required\"/>");
-			out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
-			out.println("<xs:attribute name=\"width\" type=\"xs:string\"/>");
-			out.println("<xs:attribute name=\"height\" type=\"xs:string\"/>");
-			out.println("</xs:complexType>");
-
-			out.println("</xs:schema>");
-			out.close();
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param libraries
-	 * @param templateLibraries
-	 */
-	private void generateViewSchema(Iterator<String> libraries, Set<String> templateLibraries)
-	{
-		try
-		{
-			File coreFile = new File(destDir, "view.xsd");
-			if (coreFile.exists())
-			{
-				coreFile.delete();
-			}
-			coreFile.createNewFile();
-
-			String targetNS = "http://www.cruxframework.org/view";
-			registerNamespaceForCatalog(targetNS, coreFile);
-
-			PrintStream out = new PrintStream(coreFile);
-			out.println("<xs:schema ");
-			out.println("xmlns=\"http://www.cruxframework.org/view\" ");
-			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-			out.println("xmlns:c=\"http://www.cruxframework.org/crux\" ");
-			out.println("attributeFormDefault=\"unqualified\" ");
-			out.println("elementFormDefault=\"qualified\" ");
-			out.println("targetNamespace=\"" + targetNS + "\" >");
-
-			generateViewSchemasImport(libraries, out);
-
-			out.println("<xs:element name=\"view\" type=\"View\" >");
-			out.println("<xs:annotation>");
-			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.viewDescription())+"</xs:documentation>");
-			out.println("</xs:annotation>");
-			out.println("</xs:element>");
-			out.println("<xs:complexType name=\"View\">");
-			out.println("<xs:choice maxOccurs=\"unbounded\">");
-			out.println("<xs:group ref=\"c:widgets\" >");
-			out.println("<xs:annotation>");
-			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
-			out.println("</xs:annotation>");
-			out.println("</xs:group>");
-			out.println("<xs:any namespace=\"http://www.w3.org/1999/xhtml\"/>");
-			out.println("</xs:choice>");
-			generateElementAttributesForAllViewElements(out);
-			out.println("<xs:attribute name=\"onUnload\" type=\"xs:string\"/>");
-			out.println("<xs:attribute name=\"onDeactivate\" type=\"xs:string\"/>");
-			out.println("</xs:complexType>");
-
-			out.println("</xs:schema>");
-			out.close();
-		}
-		catch (Exception e)
-		{
-			throw new SchemaGeneratorException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param libraries
-	 * @param templateLibraries 
-	 * @param out
-	 */
-	private void generateViewSchemasImport(Iterator<String> libraries, PrintStream out)
-	{
-		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
-		while (libraries.hasNext())
-		{
-			String lib = libraries.next();
-			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
-		}
-	}		
-
-	/**
-	 * 
-	 * @param libraries
-	 * @param templateLibraries
-	 */
 	private void generateTemplateSchema(Iterator<String> libraries, Set<String> templateLibraries)
 	{
 		try
@@ -1597,7 +1502,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("</xs:choice>");
 		out.println("<xs:attribute name=\"name\" type=\"xs:string\" use=\"required\"/>");
 		out.println("</xs:complexType>");
-	}
+	}		
 
 	/**
 	 * 
@@ -1638,39 +1543,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	/**
 	 * 
 	 * @param out
-	 * @param annot
-	 */
-	private void generateDocumentationForTypeFactory(PrintStream out, DeclarativeFactory annot)
-    {
-	    String elementDescription = annot.description();
-		String demoURL = annot.infoURL();
-		String illustration = annot.illustration();
-		if ((elementDescription != null && elementDescription.length() > 0) ||
-			(demoURL != null && demoURL.length() > 0) || 
-			(illustration != null && illustration.length() > 0))
-		{
-			out.println("<xs:annotation>");
-			if (elementDescription != null && elementDescription.length() > 0)
-			{
-				out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(elementDescription)+"</xs:documentation>");
-			}
-			if (demoURL != null && demoURL.length() > 0)
-			{
-				out.println("<xs:appinfo source=\""+StringEscapeUtils.escapeXml(demoURL)+"\">"+
-						StringEscapeUtils.escapeXml(schemaMessages.moreInfoDescription())+"</xs:appinfo>");
-			}
-			if (illustration != null && illustration.length() > 0)
-			{
-				out.println("<xs:appinfo source=\""+StringEscapeUtils.escapeXml(illustration)+"\">"+
-						StringEscapeUtils.escapeXml(schemaMessages.illustrationDescription())+"</xs:appinfo>");
-			}
-			out.println("</xs:annotation>");
-		}
-    }
-
-	/**
-	 * 
-	 * @param out
 	 * @param template
 	 */
 	private void generateTypeForTemplate(PrintStream out, Document template, String templateName)
@@ -1682,7 +1554,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		generateAttributesForTemplate(out, template);
 
 		out.println("</xs:complexType>");
-	}	
+	}
 
 	/**
 	 * 
@@ -1746,6 +1618,139 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 				out.println("</xs:complexType>");
 				added.add(elementName);
 			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries
+	 */
+	private void generateViewSchema(Iterator<String> libraries, Set<String> templateLibraries)
+	{
+		try
+		{
+			File coreFile = new File(destDir, "view.xsd");
+			if (coreFile.exists())
+			{
+				coreFile.delete();
+			}
+			coreFile.createNewFile();
+
+			String targetNS = "http://www.cruxframework.org/view";
+			registerNamespaceForCatalog(targetNS, coreFile);
+
+			PrintStream out = new PrintStream(coreFile);
+			out.println("<xs:schema ");
+			out.println("xmlns=\"http://www.cruxframework.org/view\" ");
+			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+			out.println("xmlns:c=\"http://www.cruxframework.org/crux\" ");
+			out.println("attributeFormDefault=\"unqualified\" ");
+			out.println("elementFormDefault=\"qualified\" ");
+			out.println("targetNamespace=\"" + targetNS + "\" >");
+
+			generateViewSchemasImport(libraries, out);
+
+			out.println("<xs:element name=\"view\" type=\"View\" >");
+			out.println("<xs:annotation>");
+			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.viewDescription())+"</xs:documentation>");
+			out.println("</xs:annotation>");
+			out.println("</xs:element>");
+			out.println("<xs:complexType name=\"View\">");
+			out.println("<xs:choice maxOccurs=\"unbounded\">");
+			out.println("<xs:group ref=\"c:widgets\" >");
+			out.println("<xs:annotation>");
+			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
+			out.println("</xs:annotation>");
+			out.println("</xs:group>");
+			out.println("<xs:any namespace=\"http://www.w3.org/1999/xhtml\"/>");
+			out.println("</xs:choice>");
+			generateElementAttributesForAllViewElements(out);
+			out.println("<xs:attribute name=\"onUnload\" type=\"xs:string\"/>");
+			out.println("<xs:attribute name=\"onDeactivate\" type=\"xs:string\"/>");
+			out.println("</xs:complexType>");
+
+			out.println("</xs:schema>");
+			out.close();
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
+		}
+	}	
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries 
+	 * @param out
+	 */
+	private void generateViewSchemasImport(Iterator<String> libraries, PrintStream out)
+	{
+		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.cruxframework.org/crux\"/>");
+		while (libraries.hasNext())
+		{
+			String lib = libraries.next();
+			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.cruxframework.org/crux/"+lib+"\"/>");
+		}
+	}
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries
+	 */
+	private void generateXDeviceSchema(Iterator<String> libraries, Set<String> templateLibraries)
+	{
+		try
+		{
+			File coreFile = new File(destDir, "xdevice.xsd");
+			if (coreFile.exists())
+			{
+				coreFile.delete();
+			}
+			coreFile.createNewFile();
+
+			String targetNS = "http://www.cruxframework.org/xdevice";
+			registerNamespaceForCatalog(targetNS, coreFile);
+
+			PrintStream out = new PrintStream(coreFile);
+			out.println("<xs:schema ");
+			out.println("xmlns=\"http://www.cruxframework.org/xdevice\" ");
+			out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+			out.println("xmlns:c=\"http://www.cruxframework.org/crux\" ");
+			out.println("attributeFormDefault=\"unqualified\" ");
+			out.println("elementFormDefault=\"qualified\" ");
+			out.println("targetNamespace=\"" + targetNS + "\" >");
+
+			generateViewSchemasImport(libraries, out);
+
+			out.println("<xs:element name=\"xdevice\" type=\"XDevice\" >");
+			out.println("<xs:annotation>");
+			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.xdeviceDescription())+"</xs:documentation>");
+			out.println("</xs:annotation>");
+			out.println("</xs:element>");
+			out.println("<xs:complexType name=\"XDevice\">");
+			out.println("<xs:choice maxOccurs=\"unbounded\">");
+			out.println("<xs:group ref=\"c:widgetsCrossDev\" >");
+			out.println("<xs:annotation>");
+			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
+			out.println("</xs:annotation>");
+			out.println("</xs:group>");
+			out.println("<xs:any namespace=\"http://www.w3.org/1999/xhtml\"/>");
+			out.println("</xs:choice>");
+			out.println("<xs:attribute name=\"useController\" type=\"xs:string\" use=\"required\"/>");
+			out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
+			out.println("<xs:attribute name=\"width\" type=\"xs:string\"/>");
+			out.println("<xs:attribute name=\"height\" type=\"xs:string\"/>");
+			out.println("</xs:complexType>");
+
+			out.println("</xs:schema>");
+			out.close();
+		}
+		catch (Exception e)
+		{
+			throw new SchemaGeneratorException(e.getMessage(), e);
 		}
 	}
 
