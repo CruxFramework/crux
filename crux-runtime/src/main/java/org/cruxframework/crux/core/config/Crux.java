@@ -25,7 +25,7 @@ import org.cruxframework.crux.core.i18n.DefaultServerMessage;
 public interface Crux 
 {
 	@DefaultServerMessage("")
-	String customCruxXmlPreProcessors();
+	String cruxXmlPreProcessors();
 	
 	@DefaultServerMessage("false")
 	String disableRefreshByDefault();

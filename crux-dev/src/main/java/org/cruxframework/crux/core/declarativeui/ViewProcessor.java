@@ -72,7 +72,7 @@ public class ViewProcessor
 		{
 			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateLoader()));
 		}
-		String xmlPreProcessors = ConfigurationFactory.getConfigurations().customCruxXmlPreProcessors();
+		String xmlPreProcessors = ConfigurationFactory.getConfigurations().cruxXmlPreProcessors();
 		
 		if (xmlPreProcessors != null && xmlPreProcessors.trim().length() > 0)
 		{
