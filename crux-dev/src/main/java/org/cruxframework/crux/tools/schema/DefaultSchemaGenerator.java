@@ -484,7 +484,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			}	
 			else if (AnyWidgetChildProcessor.class.isAssignableFrom(processorClass))
 			{
-				out.println("<xs:group ref=\"c:widgets\" >");
+				out.println("<xs:group ref=\"c:widgets\">");
 				out.println("<xs:annotation>");
 				out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
 				out.println("</xs:annotation>");
@@ -1057,7 +1057,8 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		else if (AnyWidget.class.isAssignableFrom(type))
 		{
-			out.println("<xs:group ref=\"c:widgets\" >");
+			out.println("<xs:group ref=\"c:widgets\" minOccurs=\""+attributes.minOccurs()+
+					"\" maxOccurs=\""+attributes.maxOccurs()+"\">");
 			out.println("<xs:annotation>");
 			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
 			out.println("</xs:annotation>");
