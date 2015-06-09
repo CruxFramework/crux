@@ -105,6 +105,35 @@ public abstract class ViewContainer extends Composite
 
 	/**
 	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @return
+	 */
+	public boolean addLazy(String viewName)
+	{
+		return addLazy(viewName, viewName);
+	}
+	
+	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param viewId ID of the View to be added
+	 * @return
+	 */
+	public boolean addLazy(String viewName, String viewId)
+	{
+		createView(viewName, viewId, new CreateCallback()
+		{
+			@Override
+            public void onViewCreated(View view)
+            {
+				addView(view, true, null);
+            }
+		});
+		return true;
+	}
+	
+	/**
+	 * Adds a new view into the container, but does not load the view. 
 	 * @param view View to be added
 	 * @return
 	 */
