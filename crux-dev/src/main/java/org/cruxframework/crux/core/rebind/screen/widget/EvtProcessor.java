@@ -377,6 +377,7 @@ public abstract class EvtProcessor extends AbstractProcessor
 		printEvtCall(out, eventValue, "event");
 		out.println("}");
 		out.println("});");
+		//TODO adicionar tratamento de erro e logar a widgetId onde deu o erro aqui.
     }
 
 	/**
