@@ -57,6 +57,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
     @Override
     public void stopLoading()
     {
+    	previousPage--;
 		currentPage--;
 		updateCurrentRecord();
 		super.stopLoading();
@@ -139,6 +140,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		}
 		currentRecord = -1;
 		currentPage = 0;
+		previousPage = -1;
 		loaded = false;
 		size = -1;
 		operations.reset();

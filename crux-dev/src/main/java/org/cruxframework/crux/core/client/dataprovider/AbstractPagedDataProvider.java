@@ -27,6 +27,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
                                               implements MeasurablePagedProvider<E>
 {
 	protected int currentPage = 0;
+	protected int previousPage = -1;
 
 	protected Array<PageChangeHandler> pageChangeHandlers;
 	protected Array<PageLoadedHandler> pageLoadedHandlers;
@@ -173,6 +174,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	{
 		if (hasNextPage())
 		{
+			previousPage = currentPage;
 			currentPage++;
 			updateCurrentRecord();
 			return true;
@@ -185,6 +187,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	{
 		if (hasPreviousPage())
 		{
+			previousPage = currentPage;
 			currentPage--;
 			updateCurrentRecord();
 			return true;
@@ -196,6 +199,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	public void reset()
 	{
 		super.reset();
+		previousPage = -1;
 		currentPage = 0;
 	}
 
@@ -241,7 +245,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
     {
 		if (pageLoadedHandlers != null)
 		{
-			PageLoadedEvent event = new PageLoadedEvent(this, start, end);
+			PageLoadedEvent event = new PageLoadedEvent(this, start, end, previousPage, currentPage);
 			for (int i = 0; i< pageLoadedHandlers.size(); i++)
 			{
 				pageLoadedHandlers.get(i).onPageLoaded(event);
@@ -344,6 +348,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		ensureLoaded();
 		if (pageNumber > 0 && pageNumber <= getPageCount())
 		{
+			previousPage = currentPage;
 			currentPage = pageNumber;
 			updateCurrentRecord();
 			if(fireEvents)

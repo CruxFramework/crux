@@ -160,22 +160,24 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	public T get()
 	{
 		DataProviderRecord<T> record = getRecord();
+		T clonedRecord = null;
 		if(record != null)
 		{
-			dataHandler.clone(record.getRecordObject());
+			clonedRecord = dataHandler.clone(record.getRecordObject());
 		}
-		return null;
+		return clonedRecord;
 	}
 	
 	@Override
 	public T get(int index)
 	{
 	    DataProviderRecord<T> record = data.get(index);
+	    T clonedRecord = null;
 		if(record != null)
 		{
-			dataHandler.clone(record.getRecordObject());
+			clonedRecord = dataHandler.clone(record.getRecordObject());
 		}
-		return null;
+		return clonedRecord;
 	}
 	
     @Override
@@ -210,11 +212,11 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			DataProviderRecord<T> record = getRecord();
 			if(record != null)
 			{
-				reader.read(record.getRecordObject());
+				reader.read(record.getRecordObject(), currentRecord);
 			}
 			else
 			{
-				reader.read(null);
+				reader.read(null, currentRecord);
 			}
 		}
 	}
@@ -227,11 +229,11 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		    DataProviderRecord<T> record = data.get(index);
 			if (record != null)
 			{
-				reader.read(record.getRecordObject());
+				reader.read(record.getRecordObject(), currentRecord);
 			}
 			else
 			{
-				reader.read(null);
+				reader.read(null, currentRecord);
 			}
 		}
 	}
