@@ -35,6 +35,7 @@ import org.cruxframework.crux.core.client.dataprovider.TransactionStartHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base implementation for Pageable widgets
@@ -324,8 +325,12 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			@Override
 			public void onPageLoaded(PageLoadedEvent event)
 			{
-				boolean refresh = pager == null || !pager.supportsInfiniteScroll();
-				render(refresh);
+				boolean renewPagePanel = pager == null || !pager.supportsInfiniteScroll();
+				if (renewPagePanel)
+				{
+					initializeAndUpdatePagePanel(event.getCurrentPage() > event.getPreviousPage());
+				}
+				render(false);			
 			}
 		});
 		this.dataProvider.addLoadStoppedHandler(new DataLoadStoppedHandler()
@@ -387,6 +392,22 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
     }
 	
+	protected void initializeAndUpdatePagePanel(boolean forward)
+	{
+	     Panel pagePanel = initializePagePanel();
+		if (pager != null)
+	    {
+	     	pager.updatePagePanel(pagePanel, forward);
+		}
+	}
+	
+	/**
+	* Creates the panel that will contain all the page data and assign it 
+	* to the component page content panel.
+	* @return
+	*/
+	protected abstract Panel initializePagePanel();
+		
 	@Override
 	public void setHeight(String height) 
 	{
@@ -411,10 +432,17 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		else
 		{
 			this.pager = pager;
+			pager.initializeContentPanel(getContentPanel());
+			if (pager.supportsInfiniteScroll())
+			{
+				initializeAndUpdatePagePanel(true);
+			}
 			updatePager();
 			updatePagerState();		
 		}
     } 
+	
+	protected abstract Panel getContentPanel();
 	
 	public void setPageSize(int pageSize)
 	{
