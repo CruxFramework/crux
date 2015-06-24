@@ -543,7 +543,8 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		catch (Exception e)
 		{
-			logger.error("Error creating XSD File: Error generating children for Processor.", e);
+			logger.error("Error creating XSD File: Error generating children for Processor ["
+		          + widgetFactory.getCanonicalName() + "].", e);
 		}
 	}
 

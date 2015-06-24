@@ -32,6 +32,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected StreamingDataProviderOperations<T> operations = new StreamingDataProviderOperations<T>(this);
 	protected int pageSize = 10;
 	protected int currentPage = 0;
+	protected int previousPage = -1;
 	protected Array<PageLoadedHandler> pageFetchHandlers;
 	protected Array<PageChangeHandler> pageChangeHandlers;
 	protected StreamingDataLoader<T> dataLoader;
@@ -219,6 +220,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void stopLoading()
 	{
+		previousPage = currentPage;
 		currentPage--;
 		updateCurrentRecord();
 		super.stopLoading();
@@ -252,6 +254,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		{
 			checkChanges();
 		}
+		previousPage = currentPage;
 		currentPage = 1;
 		currentRecord = getPageStartRecord();
 		ensureCurrentPageLoaded();
@@ -279,6 +282,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	public void reset()
 	{
 		super.reset();
+		previousPage = -1;
 		currentPage = 0;
 		operations.reset();
 		
@@ -343,6 +347,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		checkChanges();
 		if (hasNextPage())
 		{
+			previousPage = currentPage;
 			currentPage++;
 			if (currentPage == 1)
 			{
@@ -362,6 +367,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		checkChanges();
 		if (hasPreviousPage())
 		{
+			previousPage = currentPage;
 			currentPage--;
 			updateCurrentRecord();
 			fetchCurrentPage();
@@ -375,6 +381,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		if (pageNumber < currentPage)
 		{
+			previousPage = currentPage;
 			currentPage = pageNumber;
 			updateCurrentRecord();
 			return true;
@@ -651,7 +658,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
     {
 		if (pageFetchHandlers != null)
 		{
-			PageLoadedEvent event = new PageLoadedEvent(this, start, end);
+			PageLoadedEvent event = new PageLoadedEvent(this, start, end, previousPage, currentPage);
 			for (int i = 0; i< pageFetchHandlers.size(); i++)
 			{
 				pageFetchHandlers.get(i).onPageLoaded(event);
@@ -680,6 +687,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
 		if (updateRecordsCount > 0)
 		{
+			previousPage = -1;
 			currentPage = 0;
 			currentRecord = -1;
 			nextPage();
