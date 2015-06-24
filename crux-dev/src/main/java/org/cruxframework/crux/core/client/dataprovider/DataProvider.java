@@ -293,8 +293,9 @@ public interface DataProvider<T>
 		/**
 		 * Read value from the dataProvider object
 		 * @param object the object
+		 * @param index object index on dataProvider
 		 */
-		void read(T object);
+		void read(T object, int index);
 	}
 	
 	/**

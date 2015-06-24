@@ -26,12 +26,16 @@ public class PageLoadedEvent extends BaseEvent<DataProvider<?>>
 {
 	private final int endRecord;
 	private final int startRecord;
+	private final int previousPage;
+	private final int currentPage;
 
-	protected PageLoadedEvent(DataProvider<?> source, int startRecord, int endRecord)
+	protected PageLoadedEvent(DataProvider<?> source, int startRecord, int endRecord, int previousPage, int currentPage)
     {
 	    super(source);
 		this.startRecord = startRecord;
 		this.endRecord = endRecord;
+		this.previousPage = previousPage;
+		this.currentPage = currentPage;
     }
 
 	/**
@@ -50,5 +54,23 @@ public class PageLoadedEvent extends BaseEvent<DataProvider<?>>
 	public int getStartRecord()
 	{
 		return startRecord;
+	}
+
+	/**
+	 * Retrieve the previous page (the page before the pagination event occurs).
+	 * @return previous page
+	 */
+	public int getPreviousPage()
+	{
+		return previousPage;
+	}
+
+	/**
+	 * Retrieve the current page (the page after the pagination event occurs).
+	 * @return current page
+	 */
+	public int getCurrentPage()
+	{
+		return currentPage;
 	}
 }

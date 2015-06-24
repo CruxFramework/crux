@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A pager is a component to navigate on pages of a {@link Pageable} widget.
@@ -60,4 +61,17 @@ public interface Pager extends IsWidget, HasPageHandlers, HasVisibility, HasEnab
 	 * @param startRecord first record on the transaction 
 	 */
 	void prepareTransaction(int startRecord);
+
+	/**
+	 * Called to update the pageable content panel assigning to it the given pagePanel.
+	 * @param pagePanel page panel.
+	 * @param forward true if the next page index is bigger than the previous page index.
+	 */
+	void updatePagePanel(Panel pagePanel, boolean forward);
+	
+	/**
+	 * Initialize the panel that will contain the pages
+	 * @param contentPanel the main panel, that contains the other pages.
+	 */
+	void initializeContentPanel(Panel contentPanel);
 }
