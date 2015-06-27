@@ -24,51 +24,11 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Define a base interface for classes that are capable to be paged by a {@link Pager}.  
  * @author Thiago da Rosa de Bustamante
  */
-public interface Pageable<T extends PagedDataProvider<?>> extends HasPagedDataProvider<T>, IsWidget
+public interface Pageable<T> extends HasPagedDataProvider<PagedDataProvider<T>>, IsWidget
 {
 	/**
-	 * Moves the pageable's cursor to the next page 
-	 */
-	void nextPage();
-	
-	/**
-	 * Moves the pageable's cursor to the previous page 
-	 */	
-	void previousPage();
-	
-	/**
-	 * Return the total number of pages
-	 * @return number of pages, -1 if unknown.
-	 */
-	int getPageCount();
-	
-	/**
-	 * Sets the pager for call back
+	 * Sets the pager to c
 	 * @param pager
 	 */
-	void setPager(Pager pager);
-	
-	/**
-	 * Moves the pageable's cursor to an arbitrary page
-	 * @param page page number
-	 */
-	void goToPage(int page);
-	
-	/**
-	 * Checks if pageable data is already available
-	 * @param page
-	 */
-	boolean isDataLoaded();	
-
-	/**
-	 * Retrieve the page size of this pageable widget
-	 * @return page size
-	 */
-	int getPageSize();
-
-	/**
-	 * Set the page size of this pageable widget
-	 * @param pageSize page size
-	 */
-	void setPageSize(int pageSize);
+	void setPager(HasPageable<T> pager);
 }

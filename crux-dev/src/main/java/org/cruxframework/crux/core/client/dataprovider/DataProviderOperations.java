@@ -68,7 +68,7 @@ class DataProviderOperations<T>
 	    	initialData.insert(index, record);
 	    }
 
-	    this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+	    this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 	
@@ -98,7 +98,7 @@ class DataProviderOperations<T>
 	    	initialData.remove(index);
 	    }
 		updateState(record, previousState);
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 	
@@ -117,7 +117,7 @@ class DataProviderOperations<T>
 			}
 			record.set(object);
 		}
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 

@@ -19,14 +19,14 @@ import org.cruxframework.crux.core.client.event.BaseEvent;
 
 
 /**
- * Event fired when a page on {@link PagedDataProvider} becomes active
+ * Event fired when a page on {@link PagedDataProvider} is requested
  * @author Thiago da Rosa de Bustamante
  */
-public class PageChangeEvent extends BaseEvent<DataProvider<?>>
+public class PageRequestedEvent extends BaseEvent<DataProvider<?>>
 {
 	private final int pageNumber;
 
-	protected PageChangeEvent(DataProvider<?> source, int pageNumber)
+	protected PageRequestedEvent(DataProvider<?> source, int pageNumber)
     {
 	    super(source);
 		this.pageNumber = pageNumber;

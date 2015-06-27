@@ -16,14 +16,14 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 /**
-* Handler for {@link PagedDataProvider} {@link PageChangeEvent} events
+* Handler for {@link PagedDataProvider} {@link PageRequestedEvent} events
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface PageChangeHandler
+public interface PageRequestedHandler
 {
 	/**
-	 * Callback method called when a {@link PagedDataProvider} page is loaded
+	 * Callback method called when a {@link PagedDataProvider} page change is requested
 	 */
-	void onPageChanged(PageChangeEvent event);
+	void onPageRequested(PageRequestedEvent event);
 }
