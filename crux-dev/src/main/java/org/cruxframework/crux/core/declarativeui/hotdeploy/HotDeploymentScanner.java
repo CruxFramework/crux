@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.declarativeui.crossdevice.CrossDevices;
 import org.cruxframework.crux.core.declarativeui.template.Templates;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ViewFactory;
@@ -118,6 +119,10 @@ public class HotDeploymentScanner
 				{
 					checkViewFile(file, fileName);
 				}
+				else if (fileName.endsWith("xdevice.xml"))
+				{
+					checkCrossDeviceFile(file, fileName);
+				}
 			}
 		}
 	}
@@ -127,7 +132,30 @@ public class HotDeploymentScanner
 	 * @param file
 	 * @param fileName
 	 */
-	protected boolean checkViewFile(File file, String fileName)
+	protected void checkCrossDeviceFile(File file, String fileName)
+    {
+	    long modified = file.lastModified();
+	    Long viewLastModified = lastModified.get("xdevice_"+fileName);
+	    if (viewLastModified == null)
+	    {
+	    	lastModified.put("xdevice_"+fileName, modified);
+	    }
+	    else if (viewLastModified < modified)
+	    {
+	    	lastModified.put("xdevice_"+fileName, modified);
+	    	logger.info("Crossdevice file modified: ["+fileName+"].");
+	    	CrossDevices.restart();
+	    	ScreenFactory.getInstance().clearScreenCache();
+	    	ViewFactory.getInstance().clearViewCache();
+	    }
+    }
+	
+	/**
+	 * 
+	 * @param file
+	 * @param fileName
+	 */
+	protected void checkViewFile(File file, String fileName)
     {
 	    long modified = file.lastModified();
 	    Long viewLastModified = lastModified.get("view_"+fileName);
@@ -141,9 +169,7 @@ public class HotDeploymentScanner
 	    	logger.info("View file modified: ["+fileName+"].");
 	    	ScreenFactory.getInstance().clearScreenCache();
 	    	ViewFactory.getInstance().clearViewCache();
-	    	return true;
 	    }
-	    return false;
     }
 
 	/**
@@ -151,7 +177,7 @@ public class HotDeploymentScanner
 	 * @param file
 	 * @param fileName
 	 */
-	protected boolean checkTemplateFile(File file, String fileName)
+	protected void checkTemplateFile(File file, String fileName)
     {
 	    long modified = file.lastModified();
 	    Long templateLastModified = lastModified.get("template_"+fileName);
@@ -165,9 +191,7 @@ public class HotDeploymentScanner
 	    	logger.info("Template file modified: ["+fileName+"].");
 	    	Templates.restart();
 	    	ScreenFactory.getInstance().clearScreenCache();
-	    	return true;
 	    }
-	    return false;
     }
 	
 	/**
