@@ -45,6 +45,12 @@ public interface DataProvider<T>
 	 */
 	DataProviderRecord<T> add(T object);
 	
+	/**Add a callback to be notified about resets on data provider
+	 * @param callback to be called when data provider is reset
+	 * @return a registration that allow handler do be removed
+	 */
+	HandlerRegistration addResetHandler(ResetHandler callback);
+	
 	/**Add a callback to be notified about any changes on data provider
 	 * @param callback to be called when data provider is changed
 	 * @return a registration that allow handler do be removed

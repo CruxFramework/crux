@@ -29,6 +29,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected int currentRecord = -1;
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected Array<DataChangedHandler> dataChangedHandlers;
+	protected Array<ResetHandler> resetHandlers;
 	protected DataProvider.DataHandler<T> dataHandler;
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
@@ -64,6 +65,29 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		};
 	}
 	
+	@Override
+	public HandlerRegistration addResetHandler(final ResetHandler handler)
+	{
+		if (resetHandlers == null)
+		{
+			resetHandlers = CollectionFactory.createArray();
+		}
+
+		resetHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = resetHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					resetHandlers.remove(index);
+				}
+			}
+		};
+	}	
+
 	@Override
 	public HandlerRegistration addDataLoadedHandler(final DataLoadedHandler handler)
 	{
@@ -247,6 +271,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		}
 		currentRecord = -1;
 		loaded = false;
+		fireResetEvent(); 
 	}
 	
 	@Override
@@ -260,16 +285,29 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		fireTransactionEndEvent(commited);
 	}
 	
-	protected void fireDataChangedEvent(DataChangedEvent event)
+	protected void fireDataChangedEvent(DataProviderRecord<?> currentRecord, int recordPosition)
     {
 		if (dataChangedHandlers != null)
 		{
+			DataChangedEvent event = new DataChangedEvent(this, currentRecord, recordPosition);
 			for (int i = 0; i< dataChangedHandlers.size(); i++)
 			{
 				dataChangedHandlers.get(i).onDataChanged(event);
 			}
 		}
     }
+	
+	protected void fireResetEvent()
+	{
+		if (resetHandlers != null)
+		{
+			ResetEvent event = new ResetEvent(this);
+			for (int i = 0; i< resetHandlers.size(); i++)
+			{
+				resetHandlers.get(i).onReset(event);
+			}
+		}
+	}
 	
 	protected void fireLoadedEvent()
     {

@@ -15,15 +15,15 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.event.BaseEvent;
+
 /**
-* Handler for {@link PagedDataProvider} {@link PageChangeEvent} events
  * @author Thiago da Rosa de Bustamante
- *
  */
-public interface PageChangeHandler
+public class ResetEvent extends BaseEvent<DataProvider<?>>
 {
-	/**
-	 * Callback method called when a {@link PagedDataProvider} page is loaded
-	 */
-	void onPageChanged(PageChangeEvent event);
+	protected ResetEvent(DataProvider<?> source)
+    {
+	    super(source);
+    }
 }

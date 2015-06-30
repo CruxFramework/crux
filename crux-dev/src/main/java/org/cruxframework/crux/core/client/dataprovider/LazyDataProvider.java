@@ -144,6 +144,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		loaded = false;
 		size = -1;
 		operations.reset();
+		fireResetEvent(); 
 	}
 		
 	@Override

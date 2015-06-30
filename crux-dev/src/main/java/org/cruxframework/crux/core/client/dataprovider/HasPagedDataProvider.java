@@ -22,4 +22,69 @@ package org.cruxframework.crux.core.client.dataprovider;
  */
 public interface HasPagedDataProvider<T extends PagedDataProvider<?>> extends HasDataProvider<T>
 {
+	/**
+	 * Moves the dataProvider's cursor to the next page 
+	 */
+	void nextPage();
+	
+	/**
+	 * Moves the dataProvider's cursor to the previous page 
+	 */	
+	void previousPage();
+	
+	/**
+	 * Return the total number of pages
+	 * @return number of pages, -1 if unknown.
+	 */
+	int getPageCount();
+	
+	/**
+	 * Moves the dataProvider's cursor to an arbitrary page
+	 * @param page page number
+	 */
+	void goToPage(int page);
+	
+	/**
+	 * Checks if dataProvider data is already available
+	 * @param page
+	 */
+	boolean isDataLoaded();	
+
+	/**
+	 * Retrieve the page size of the dataProvider
+	 * @return page size
+	 */
+	int getPageSize();
+
+	/**
+	 * Set the page size of the dataProvider
+	 * @param pageSize page size
+	 */
+	void setPageSize(int pageSize);
+	
+	/**
+	 * @return the currentPage
+	 */
+	int getCurrentPage();
+
+	/**
+	 * @return true if has more pages
+	 */
+	boolean hasNextPage();
+
+	/**
+	 * @return true if has previous pages
+	 */
+	boolean hasPreviousPage();
+	
+	
+	/**
+	 * Moves the dataProvider's cursor to the first page
+	 */
+	void firstPage();
+	
+	/**
+	 * Moves the dataProvider's cursor to the last page
+	 */
+	void lastPage();
 }

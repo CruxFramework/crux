@@ -15,63 +15,17 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
+import org.cruxframework.crux.core.client.dataprovider.HasPagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
- * A pager is a component to navigate on pages of a {@link Pageable} widget.
+ * A pager is a component to navigate on pages of a {@link PagedDataProvider}.
  * @author Thiago da Rosa de Bustamante
  */
-public interface Pager extends IsWidget, HasPageHandlers, HasVisibility, HasEnabled
+public interface Pager<T> extends IsWidget, HasPageHandlers, HasPagedDataProvider<PagedDataProvider<T>>, HasVisibility, HasEnabled
 {
-	/**
-	 * Update the pager after a page navigation on pageable DataProvider.
-	 * @param currentPage current page on DataProvider
-	 * @param isLastPage true if this is the last page
-	 */
-	void update(int currentPage, boolean isLastPage);
-	
-	/**
-	 * Bind this pager to a Pageable widget 
-	 * @param pageable
-	 */
-	void setPageable(Pageable<?> pageable);
-	
-	/**
-	 * Retrieves the bound pageable
-	 * @return the pageable bound to this pager
-	 */
-	<T extends PagedDataProvider<?>> Pageable<T> getPageable();
-	
-	/**
-	 * Inform if the pager supports that multiple pages are rendered into
-	 * the pageable widget. If this method returns false, the pageable widget
-	 * will first clear its content panel before render any new page data. If 
-	 * it return true, this panel will not be cleared, allowing infinit scrolling.
-	 * @return true if infinite scroll is supported
-	 */
-	boolean supportsInfiniteScroll();
-
-	/**
-	 * Allow the pager to prepare itself for a new transaction, starting on the given record
-	 * @param startRecord first record on the transaction 
-	 */
-	void prepareTransaction(int startRecord);
-
-	/**
-	* Called to update the pageable content panel assigning to it the given pagePanel.
-	* @param pagePanel page panel.
-	* @param forward true if the next page index is bigger than the previous page index.
-	*/
-	void updatePagePanel(Panel pagePanel, boolean forward);
-		
-	/**
-	* Initialize the panel that will contain the pages
-	* @param contentPanel the main panel, that contains the other pages.
-	*/
-	void initializeContentPanel(Panel contentPanel);
 }

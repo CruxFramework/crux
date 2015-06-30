@@ -29,10 +29,11 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected int currentPage = 0;
 	protected int previousPage = -1;
 
-	protected Array<PageChangeHandler> pageChangeHandlers;
+	protected Array<PageRequestedHandler> pageRequestedHandlers;
 	protected Array<PageLoadedHandler> pageLoadedHandlers;
 	
 	protected int pageSize = 10;
+	
 	public AbstractPagedDataProvider(DataProvider.DataHandler<E> handler)
     {
 	    super(handler);
@@ -46,23 +47,23 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	}
 	
 	@Override
-	public HandlerRegistration addPageChangeHandler(final PageChangeHandler handler)
+	public HandlerRegistration addPageRequestedHandler(final PageRequestedHandler handler)
 	{
-		if (pageChangeHandlers == null)
+		if (pageRequestedHandlers == null)
 		{
-			pageChangeHandlers = CollectionFactory.createArray();
+			pageRequestedHandlers = CollectionFactory.createArray();
 		}
 		
-		pageChangeHandlers.add(handler);
+		pageRequestedHandlers.add(handler);
 		return new HandlerRegistration()
 		{
 			@Override
 			public void removeHandler()
 			{
-				int index = pageChangeHandlers.indexOf(handler);
+				int index = pageRequestedHandlers.indexOf(handler);
 				if (index >= 0)
 				{
-					pageChangeHandlers.remove(index);
+					pageRequestedHandlers.remove(index);
 				}
 			}
 		};
@@ -177,6 +178,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			previousPage = currentPage;
 			currentPage++;
 			updateCurrentRecord();
+			firePageRequestedEvent(currentPage);
 			return true;
 		}	
 		return false;
@@ -190,6 +192,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			previousPage = currentPage;
 			currentPage--;
 			updateCurrentRecord();
+			firePageRequestedEvent(currentPage);
 			return true;
 		}
 		return false;
@@ -220,6 +223,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		if (this.loaded)
 		{
 			updateCurrentRecord();
+			firePageRequestedEvent(currentPage);
 		}
 	}
 	
@@ -229,14 +233,14 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	    firstOnPage();
 	}
 	
-	protected void firePageChangeEvent(int pageNumber)
+	protected void firePageRequestedEvent(int pageNumber)
     {
-		if (pageChangeHandlers != null)
+		if (pageRequestedHandlers != null)
 		{
-			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
-			for (int i = 0; i< pageChangeHandlers.size(); i++)
+			PageRequestedEvent event = new PageRequestedEvent(this, pageNumber);
+			for (int i = 0; i< pageRequestedHandlers.size(); i++)
 			{
-				pageChangeHandlers.get(i).onPageChanged(event);
+				pageRequestedHandlers.get(i).onPageRequested(event);
 			}
 		}
     }
@@ -351,9 +355,9 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			previousPage = currentPage;
 			currentPage = pageNumber;
 			updateCurrentRecord();
-			if(fireEvents)
+			if (fireEvents)
 			{
-				firePageChangeEvent(currentPage);
+				firePageRequestedEvent(currentPage);
 			}
 			return true;
 		}
@@ -369,6 +373,5 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
-		firePageChangeEvent(currentPage);
 	}
 }

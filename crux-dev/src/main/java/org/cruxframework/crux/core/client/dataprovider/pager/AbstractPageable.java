@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
+import org.cruxframework.crux.core.client.dataprovider.AbstractHasPagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.DataChangedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataChangedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
@@ -23,37 +24,37 @@ import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
-import org.cruxframework.crux.core.client.dataprovider.MeasurablePagedProvider;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
-import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
-import org.cruxframework.crux.core.client.dataprovider.TransactionStartEvent;
-import org.cruxframework.crux.core.client.dataprovider.TransactionStartHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base implementation for Pageable widgets
  * @author Thiago da Rosa de Bustamante
  */
-public abstract class AbstractPageable<T> extends Composite implements Pageable<PagedDataProvider<T>>
+public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T> implements Pageable<T>
 {
-	protected Pager pager;
-	protected PagedDataProvider<T> dataProvider;
+	protected HasPageable<T> pager;
 	protected DataProvider.DataReader<T> reader = getDataReader();
-	private boolean allowRefreshAfterDataChange = true;
-	private boolean transactionRunning = false;
+	protected boolean allowRefreshAfterDataChange = true;
+	protected HandlerRegistration pageLoadedHandler;
+	protected HandlerRegistration loadStoppedHandler;
+	protected HandlerRegistration transactionEndHandler;
+	protected HandlerRegistration dataChangedHandler;
+	protected HandlerRegistration dataFilterHandler;
 	
 	public void add(T object)
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.add(object);
+			getDataProvider().add(object);
 		}
 	}
 
@@ -63,76 +64,34 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 	public void commit()
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.commit();
+			getDataProvider().commit();
 		}
 	}
-
-	@Override
-    public PagedDataProvider<T> getDataProvider()
-    {
-	    return dataProvider;
-    }
 
 	protected abstract DataProvider.DataReader<T> getDataReader();
-
-	@Override
-    public int getPageCount()
-    {
-		if(isDataLoaded() && dataProvider instanceof MeasurablePagedProvider<?>)
-		{
-			MeasurablePagedProvider<?> ds = (MeasurablePagedProvider<?>) dataProvider;
-			return ds.getPageCount();
-		}
-		else
-		{
-			return -1;
-		}
-    }
-	
-	public int getPageSize()
-	{
-		assert dataProvider != null : "Data Provider must not be null at this time.";
-		return dataProvider.getPageSize();
-	}
 
 	private int getRowsToBeRendered()
 	{
 		if(isDataLoaded())
 		{
-			if(dataProvider.getCurrentPage() == 0)
+			if(getDataProvider().getCurrentPage() == 0)
 			{
-				dataProvider.nextPage();
+				getDataProvider().nextPage();
 			}
 
-			return dataProvider.getCurrentPageSize();
+			return getDataProvider().getCurrentPageSize();
 		}
 
 		return 0;
 	}
 	
-	@Override
-    public void goToPage(int page)
-    {
-		if(isDataLoaded())
-		{
-			if(dataProvider instanceof MeasurablePagedProvider<?>)
-			{
-				((MeasurablePagedProvider<?>) dataProvider).setCurrentPage(page);
-			}
-			else
-			{
-				throw new UnsupportedOperationException("This operation is only supported when using DataProviders that are instances of MeasurablePagedDataProvider");
-			}
-		}
-    }
-	
 	public int indexOf(T object)
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			return dataProvider.indexOf(object);
+			return getDataProvider().indexOf(object);
 		}
 		return -1;
 	}
@@ -147,39 +106,22 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		return allowRefreshAfterDataChange;
 	}
 
-	public boolean isDataLoaded()
-	{
-		return dataProvider != null && dataProvider.isLoaded();
-	}
-	
 	public boolean isDirty()
 	{
-		return dataProvider != null && dataProvider.isDirty();
+		return getDataProvider() != null && getDataProvider().isDirty();
 	}
 	
 	public void loadData()
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.load();
-		}
-	}
-	
-	@Override
-	public void nextPage()
-	{
-		if(isDataLoaded())
-		{
-			dataProvider.nextPage();
+			getDataProvider().load();
 		}
 	}
 	
 	protected void onTransactionCompleted(boolean commited)
     {
-		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
-		transactionRunning = false;
-		updatePagerState();
-		
+		final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
 		Scheduler.get().scheduleDeferred(new ScheduledCommand()
 		{
 			@Override
@@ -189,25 +131,6 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			}
 		});
     }
-	
-	protected void onTransactionStarted(int startRecord)
-    {
-		transactionRunning = true;
-		updatePagerState();
-		if(isDataLoaded() && pager != null)
-		{
-			pager.prepareTransaction(startRecord);
-		}
-    }
-	
-	@Override
-    public void previousPage()
-    {
-		if(isDataLoaded())
-		{
-			dataProvider.previousPage();
-		}
-    }
 
 	public void refresh()
 	{
@@ -216,8 +139,8 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	
 	protected void refresh(boolean clearPreviousData)
 	{
-		dataProvider.firstOnPage();
-		render(clearPreviousData);
+		getDataProvider().firstOnPage();
+		render(clearPreviousData, null);
 	}
 	
 	protected void refreshPage(int startRecord)
@@ -236,13 +159,13 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	
 	public void remove(int index)
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.remove(index);
+			getDataProvider().remove(index);
 		}
 	}
 
-	protected void render(boolean refresh)
+	protected void render(boolean refresh, RenderCallback callback)
     {
 		if (refresh)
 		{
@@ -252,17 +175,20 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 		for (int i=0; i<rowCount; i++)
 		{
-			dataProvider.read(reader);
-			if (dataProvider.hasNext())
+			getDataProvider().read(reader);
+			if (getDataProvider().hasNext())
 			{
-				dataProvider.next();
+				getDataProvider().next();
 			}
 			else
 			{
 				break;
 			}
 		}
-		updatePager();
+		if (callback != null)
+		{
+			callback.onRendered();
+		}
     }
 
 	public void reset()
@@ -272,16 +198,11 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 	public void reset(boolean reloadData)
 	{
-		if(dataProvider != null)
+		if(getDataProvider() != null)
 		{
-			dataProvider.reset();
+			getDataProvider().reset();
 		}
 
-		if (pager != null)
-		{
-			pager.update(0, true);
-		}
-		
 		if (reloadData)
 		{
 			loadData();
@@ -290,17 +211,17 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 	public void rollback()
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.rollback();
+			getDataProvider().rollback();
 		}
 	}
 
 	public void set(int index, T object)
 	{
-		if (dataProvider != null)
+		if (getDataProvider() != null)
 		{
-			dataProvider.set(index, object);
+			getDataProvider().set(index, object);
 		}
 	}
 	
@@ -314,35 +235,46 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		this.allowRefreshAfterDataChange = allowRefreshAfterDataChange;
 	}
 
-	@SuppressWarnings("unchecked")
-    @Override
-    public void setDataProvider(PagedDataProvider<T> dataProvider, boolean autoLoadData)
-    {
-		this.dataProvider = dataProvider;
-		
-		this.dataProvider.addPageLoadedHandler(new PageLoadedHandler()
+	@Override
+	protected void addDataProviderHandler()
+	{
+		pageLoadedHandler = getDataProvider().addPageLoadedHandler(new PageLoadedHandler() 
 		{
 			@Override
-			public void onPageLoaded(PageLoadedEvent event)
+			public void onPageLoaded(final PageLoadedEvent event)
 			{
 				boolean renewPagePanel = pager == null || !pager.supportsInfiniteScroll();
 				if (renewPagePanel)
 				{
-					initializeAndUpdatePagePanel(event.getCurrentPage() > event.getPreviousPage());
+					final IsWidget pagePanel = (pager != null)?initializePagePanel():null;
+					render((pager == null), new RenderCallback()
+					{
+						@Override
+						public void onRendered()
+						{
+							if (pager != null)
+							{
+								pager.updatePagePanel(pagePanel, event.getCurrentPage() > event.getPreviousPage());
+							}
+						}
+					});
 				}
-				render(false);			
+				else
+				{
+					render(false, null);
+				}
 			}
 		});
-		this.dataProvider.addLoadStoppedHandler(new DataLoadStoppedHandler()
+		loadStoppedHandler = getDataProvider().addLoadStoppedHandler(new DataLoadStoppedHandler()
 		{
 			@Override
 			public void onLoadStopped(DataLoadStoppedEvent event)
 			{
-				render(true);
+				render(true, null);
 			}
 		});
 		
-		this.dataProvider.addTransactionEndHandler(new TransactionEndHandler()
+		transactionEndHandler = getDataProvider().addTransactionEndHandler(new TransactionEndHandler()
 		{
 			@Override
 			public void onTransactionEnd(TransactionEndEvent event)
@@ -350,22 +282,13 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 				onTransactionCompleted(event.isCommited());
 			}
 		});
-		
-		this.dataProvider.addTransactionStartHandler(new TransactionStartHandler()
-		{
-			@Override
-			public void onTransactionStart(TransactionStartEvent event)
-			{
-				onTransactionStarted(event.getStartRecord());				
-			}
-		});
-		
-		this.dataProvider.addDataChangedHandler(new DataChangedHandler()
+				
+		dataChangedHandler = getDataProvider().addDataChangedHandler(new DataChangedHandler()
 		{
 			@Override
 			public void onDataChanged(DataChangedEvent event)
 			{
-				final int pageStartRecordOnTransactionEnd = AbstractPageable.this.dataProvider.getCurrentPageStartRecord();
+				final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
 				if(allowRefreshAfterDataChange)
 				{
 					refreshPage(pageStartRecordOnTransactionEnd);
@@ -373,28 +296,54 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			}
 		});
 		
-		if (this.dataProvider instanceof FilterableProvider<?>)
+		if (getDataProvider() instanceof FilterableProvider<?>)
 		{
-			FilterableProvider<T> filterable = (FilterableProvider<T>) this.dataProvider;
-			filterable.addDataFilterHandler(new DataFilterHandler<T>()
+			@SuppressWarnings("unchecked")
+			FilterableProvider<T> filterable = (FilterableProvider<T>) this.getDataProvider();
+			dataFilterHandler = filterable.addDataFilterHandler(new DataFilterHandler<T>()
 			{
 				@Override
 				public void onFiltered(DataFilterEvent<T> event)
 				{
-					render(true);
+					render(true, null);
 				}
 			});
 		}
-
-		if(autoLoadData)
+	}
+		
+	@Override
+	protected void removeDataProviderHandler()
+	{
+		if (transactionEndHandler != null)
 		{
-			loadData();
+			transactionEndHandler.removeHandler();
+			transactionEndHandler = null;
+		}
+		if (loadStoppedHandler != null)
+		{
+			loadStoppedHandler.removeHandler();
+			loadStoppedHandler = null;
+		}
+		if (dataChangedHandler != null)
+		{
+			dataChangedHandler.removeHandler();
+			dataChangedHandler = null;
+		}
+		if (dataFilterHandler != null)
+		{
+			dataFilterHandler.removeHandler();
+			dataFilterHandler = null;
+		}
+		if (pageLoadedHandler != null)
+		{
+			pageLoadedHandler.removeHandler();
+			pageLoadedHandler = null;
 		}
     }
 	
 	protected void initializeAndUpdatePagePanel(boolean forward)
 	{
-	     Panel pagePanel = initializePagePanel();
+		IsWidget pagePanel = initializePagePanel();
 		if (pager != null)
 	    {
 	     	pager.updatePagePanel(pagePanel, forward);
@@ -406,7 +355,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	* to the component page content panel.
 	* @return
 	*/
-	protected abstract Panel initializePagePanel();
+	protected abstract IsWidget initializePagePanel();
 		
 	@Override
 	public void setHeight(String height) 
@@ -422,47 +371,24 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	}
 	
 	@Override
-    public void setPager(Pager pager)
+    public void setPager(HasPageable<T> pager)
     {
-		Pageable<PagedDataProvider<T>> pagerPageable = pager.getPageable();
-		if (pagerPageable != this)
+		if (getDataProvider() != null)
 		{
-			pager.setPageable(this);
+			pager.setDataProvider(getDataProvider(), false);
 		}
-		else
+		this.pager = pager;
+		pager.initializeContentPanel(getContentPanel());
+		if (pager.supportsInfiniteScroll())
 		{
-			this.pager = pager;
-			pager.initializeContentPanel(getContentPanel());
-			if (pager.supportsInfiniteScroll())
-			{
-				initializeAndUpdatePagePanel(true);
-			}
-			updatePager();
-			updatePagerState();		
+			initializeAndUpdatePagePanel(true);
 		}
     } 
 	
 	protected abstract Panel getContentPanel();
-	
-	public void setPageSize(int pageSize)
-	{
-		assert dataProvider != null : "Data Provider must not be null at this time.";
-		dataProvider.setPageSize(pageSize);
-	}
-	
-	protected void updatePager()
-	{
-		if(isDataLoaded() && pager != null)
-		{
-			pager.update(dataProvider.getCurrentPage(),  !dataProvider.hasNextPage());
-		}
-	}
 
-	protected void updatePagerState()
+	protected static interface RenderCallback
 	{
-		if(isDataLoaded() && pager != null)
-		{
-			pager.setEnabled(!transactionRunning);
-		}
+		void onRendered();
 	}
 }

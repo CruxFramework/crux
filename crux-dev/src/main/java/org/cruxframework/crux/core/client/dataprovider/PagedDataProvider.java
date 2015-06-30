@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public interface PagedDataProvider<E> extends DataProvider<E>
+public interface PagedDataProvider<T> extends DataProvider<T>
 {
 	void firstOnPage();
 
@@ -41,6 +41,6 @@ public interface PagedDataProvider<E> extends DataProvider<E>
 	int getCurrentPageStartRecord();
 	
 	HandlerRegistration addPageLoadedHandler(PageLoadedHandler handler);
-	HandlerRegistration addPageChangeHandler(PageChangeHandler handler);
+	HandlerRegistration addPageRequestedHandler(PageRequestedHandler handler);
 
 }
