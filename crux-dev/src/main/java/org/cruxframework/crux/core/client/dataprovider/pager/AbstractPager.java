@@ -16,23 +16,23 @@
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.AbstractHasPagedDataProvider;
-+import org.cruxframework.crux.core.client.dataprovider.DataChangedEvent;
-+import org.cruxframework.crux.core.client.dataprovider.DataChangedHandler;
-+import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
-+import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
-+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
-+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
-+import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
-+import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
-+import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
-+import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
-+import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
-+import org.cruxframework.crux.core.client.dataprovider.ResetEvent;
-+import org.cruxframework.crux.core.client.dataprovider.ResetHandler;
-+import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
-+import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
-+import org.cruxframework.crux.core.client.dataprovider.TransactionStartEvent;
-+import org.cruxframework.crux.core.client.dataprovider.TransactionStartHandler;
+import org.cruxframework.crux.core.client.dataprovider.DataChangedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataChangedHandler;
+import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
+import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
+import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
+import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
+import org.cruxframework.crux.core.client.dataprovider.ResetEvent;
+import org.cruxframework.crux.core.client.dataprovider.ResetHandler;
+import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
+import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
+import org.cruxframework.crux.core.client.dataprovider.TransactionStartEvent;
+import org.cruxframework.crux.core.client.dataprovider.TransactionStartHandler;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 
