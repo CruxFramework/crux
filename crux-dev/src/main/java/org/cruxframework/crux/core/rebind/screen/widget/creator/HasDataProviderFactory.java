@@ -111,8 +111,10 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 
 	@TagConstraints(tagName="data", description="Inform the collection of data directly")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="collection", required=true, description="the collection of data")
+		@TagAttributeDeclaration(value="collection", required=true, description="the collection of data"),
+		@TagAttributeDeclaration(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request.")
 	})
+	
 	public static class DataProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 	//TODO implementar o acesso direto via data
 	
@@ -124,19 +126,23 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	})
 	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
 	{
-		protected void createDataHandlerObject(SourcePrinter out, String dataObject)
+		protected void createDataHandlerObject(SourcePrinter out, JClassType dataObjectType)
 		{
-			String copierClassName = dataObject + "_Copier";
-			// TODO tentar ler do cache primeiro (tryReuse....)
-			SourcePrinter subTypeWriter = getWidgetCreator().getSubTypeWriter(copierClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null);
+			String dataObject = dataObjectType.getParameterizedQualifiedSourceName();
+			String copierSimpleClassName = dataObjectType.getSimpleSourceName() + "_Data_Copier";
+			String packageName = dataObjectType.getPackage().getName();
+			SourcePrinter subTypeWriter = getWidgetCreator().getSubTypeWriter(packageName,
+				copierSimpleClassName, null, new String[]{BeanCopier.class.getCanonicalName()+"<"+dataObject+", "+dataObject+">"}, null, true);
+//			// TODO tentar ler do cache primeiro (tryReuse....)
 			if (subTypeWriter != null)
 			{
 				subTypeWriter.commit();
 			}
 			
+			String copierClassName = packageName + "." + copierSimpleClassName;
 			out.println("new " + DataProvider.DataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
-			out.println(copierClassName + " copier = GWT.create(" + copierClassName + ");");
-			out.println("public void clone(" + dataObject + " value){");
+			out.println(copierClassName + " copier = GWT.create(" + copierClassName + ".class);");
+			out.println("public " + dataObject + " clone(" + dataObject + " value){");
 			out.println(dataObject + " result = new " + dataObject + "();");
 			out.println("copier.copyTo(value, result);");
 			out.println("return result;");
@@ -148,29 +154,40 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onLoadData", required=true, description="Event called to load the data set into this dataprovider.")
 	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request.")
+	})
 	public static abstract class AbstractEagerDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context, String dataProviderClassName) throws CruxGeneratorException
 		{
 			String onLoadData = context.readChildProperty("onLoadData");
 
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+			JClassType dataObjectType = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
 																context.getWidgetId(), 
-																context.getChildElement()).getParameterizedQualifiedSourceName();
+																context.getChildElement());
+			String dataObjectClassName = dataObjectType.getParameterizedQualifiedSourceName();
 			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
 			String dataLoaderClassName = EagerDataLoader.class.getCanonicalName();
 			String dataEventClassName =  EagerLoadEvent.class.getCanonicalName();
 			
-			out.print(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
-			createDataHandlerObject(out, dataObject);
+			out.print(dataProviderClassName+"<"+dataObjectClassName+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObjectClassName+">(");
+			createDataHandlerObject(out, dataObjectType);
 			out.println(");");
-			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
-			out.println("public void onLoadData("+dataEventClassName+"<"+dataObject+"> event){");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObjectClassName+">(){");
+			out.println("public void onLoadData("+dataEventClassName+"<"+dataObjectClassName+"> event){");
 
 			EvtProcessor.printEvtCall(out, onLoadData, "onLoadData", dataEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
 			out.println("});");
+
+			//TODO criar um readInt
+			String pageSize = context.readChildProperty("pageSize");
+			if (pageSize != null && pageSize.length() > 0)
+			{
+				out.println(dataProviderVariable+".setPageSize(" + pageSize + ");");
+			}
 			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
 						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}
@@ -203,6 +220,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		@TagEventDeclaration(value="onMeasureData", required=true, description="Event called when the data provider is initialized. Use this to set the data set size."),
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request.")
+	})
 	public static class LazyDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
@@ -210,32 +230,39 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 			String onMeasureData = context.readChildProperty("onMeasureData");
 			String onFetchData = context.readChildProperty("onFetchData");
 
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+			JClassType dataObjectType = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
 					context.getWidgetId(), 
-					context.getChildElement()).getParameterizedQualifiedSourceName();
+					context.getChildElement());
+			String dataObjectClassName = dataObjectType.getParameterizedQualifiedSourceName();
 			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
 			String dataProviderClassName = LazyDataProvider.class.getCanonicalName();
 			String dataLoaderClassName = LazyDataLoader.class.getCanonicalName();
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			String dataMeasureEventClassName = MeasureDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
-			createDataHandlerObject(out, dataObject);
+			out.println(dataProviderClassName+"<"+dataObjectClassName+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObjectClassName+">(");
+			createDataHandlerObject(out, dataObjectType);
 			out.println(");");
 
-			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
-			out.println("public void onMeasureData("+dataMeasureEventClassName+"<"+dataObject+"> event){");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObjectClassName+">(){");
+			out.println("public void onMeasureData("+dataMeasureEventClassName+"<"+dataObjectClassName+"> event){");
 
 			EvtProcessor.printEvtCall(out, onMeasureData, "onMeasureData", dataMeasureEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
 
-			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
+			out.println("public void onFetchData("+dataEventClassName+"<"+dataObjectClassName+"> event){");
 
 			EvtProcessor.printEvtCall(out, onFetchData, "onFetchData", dataEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
 			out.println("});");
+			//TODO criar um readInt
+			String pageSize = context.readChildProperty("pageSize");
+			if (pageSize != null && pageSize.length() > 0)
+			{
+				out.println(dataProviderVariable+".setPageSize(" + pageSize + ");");
+			}
 			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
 						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}
@@ -245,30 +272,40 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request.")
+	})
 	public static class StreamingDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
 			String onFetchData = context.readChildProperty("onFetchData");
 
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+			JClassType dataObjectType = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
 					context.getWidgetId(), 
-					context.getChildElement()).getParameterizedQualifiedSourceName();
+					context.getChildElement());
+			String dataObjectClassName = dataObjectType.getParameterizedQualifiedSourceName();
 			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
 			String dataProviderClassName = StreamingDataProvider.class.getCanonicalName();
 			String dataLoaderClassName = StreamingDataLoader.class.getCanonicalName();
 			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			
-			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">(");
-			createDataHandlerObject(out, dataObject);
+			out.println(dataProviderClassName+"<"+dataObjectClassName+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObjectClassName+">(");
+			createDataHandlerObject(out, dataObjectType);
 			out.println(");");
-			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
-			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObjectClassName+">(){");
+			out.println("public void onFetchData("+dataEventClassName+"<"+dataObjectClassName+"> event){");
 
 			EvtProcessor.printEvtCall(out, onFetchData, "onFetchData", dataEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
 			out.println("});");
+			//TODO criar um readInt
+			String pageSize = context.readChildProperty("pageSize");
+			if (pageSize != null && pageSize.length() > 0)
+			{
+				out.println(dataProviderVariable+".setPageSize(" + pageSize + ");");
+			}
 			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
 						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}

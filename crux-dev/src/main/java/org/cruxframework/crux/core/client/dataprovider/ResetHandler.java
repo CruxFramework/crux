@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,31 +15,12 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-
-
 /**
- * A {@link DataProvider} that supports pagination
  * 
  * @author Thiago da Rosa de Bustamante
+ *
  */
-public interface PagedDataProvider<T> extends DataProvider<T>
+public interface ResetHandler
 {
-	void firstOnPage();
-
-	boolean hasNextPage();
-	boolean nextPage();
-	
-	boolean hasPreviousPage();
-	boolean previousPage();
-
-	int getPageSize();
-	void setPageSize(int pageSize);
-
-	int getCurrentPageSize();
-	int getCurrentPage();
-	int getCurrentPageStartRecord();
-	
-	HandlerRegistration addPageLoadedHandler(PageLoadedHandler handler);
-	HandlerRegistration addPageRequestedHandler(PageRequestedHandler handler);
+	void onReset(ResetEvent event);	
 }

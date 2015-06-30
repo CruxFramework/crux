@@ -34,7 +34,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected int currentPage = 0;
 	protected int previousPage = -1;
 	protected Array<PageLoadedHandler> pageFetchHandlers;
-	protected Array<PageChangeHandler> pageChangeHandlers;
+	protected Array<PageRequestedHandler> pageRequestedHandlers;
 	protected StreamingDataLoader<T> dataLoader;
 
     public StreamingDataProvider(DataProvider.DataHandler<T> handler)
@@ -47,7 +47,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		super(handler);
 		this.dataLoader = dataLoader;
     }
-	
+
 	@Override
     public void setDataLoader(StreamingDataLoader<T> dataLoader)
     {
@@ -183,23 +183,23 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	}
 
 	@Override
-	public HandlerRegistration addPageChangeHandler(final PageChangeHandler handler)
+	public HandlerRegistration addPageRequestedHandler(final PageRequestedHandler handler)
 	{
-		if (pageChangeHandlers == null)
+		if (pageRequestedHandlers == null)
 		{
-			pageChangeHandlers = CollectionFactory.createArray();
+			pageRequestedHandlers = CollectionFactory.createArray();
 		}
 		
-		pageChangeHandlers.add(handler);
+		pageRequestedHandlers.add(handler);
 		return new HandlerRegistration()
 		{
 			@Override
 			public void removeHandler()
 			{
-				int index = pageChangeHandlers.indexOf(handler);
+				int index = pageRequestedHandlers.indexOf(handler);
 				if (index >= 0)
 				{
-					pageChangeHandlers.remove(index);
+					pageRequestedHandlers.remove(index);
 				}
 			}
 		};
@@ -354,6 +354,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 				setLoaded();
 			}
 			updateCurrentRecord();
+			firePageRequestedEvent(currentPage);
 			fetchCurrentPage();
 			return true;
 		}
@@ -370,6 +371,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			previousPage = currentPage;
 			currentPage--;
 			updateCurrentRecord();
+			firePageRequestedEvent(currentPage);
 			fetchCurrentPage();
 			return true;
 		}
@@ -403,8 +405,9 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		
 		if(loaded)
 		{
-			fetchCurrentPage();
 			updateCurrentRecord();
+			fetchCurrentPage();
+			firePageRequestedEvent(currentPage);
 		}
 	}
 	
@@ -636,7 +639,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
-		firePageChangeEvent(currentPage);
 	}
 	
 	protected void fetchCurrentPage()
@@ -666,14 +668,14 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
     }
 	
-	protected void firePageChangeEvent(int pageNumber)
+	protected void firePageRequestedEvent(int pageNumber)
     {
-		if (pageChangeHandlers != null)
+		if (pageRequestedHandlers != null)
 		{
-			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
-			for (int i = 0; i< pageChangeHandlers.size(); i++)
+			PageRequestedEvent event = new PageRequestedEvent(this, pageNumber);
+			for (int i = 0; i< pageRequestedHandlers.size(); i++)
 			{
-				pageChangeHandlers.get(i).onPageChanged(event);
+				pageRequestedHandlers.get(i).onPageRequested(event);
 			}
 		}
     }

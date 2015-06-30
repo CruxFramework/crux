@@ -51,7 +51,7 @@ class StreamingDataProviderOperations<T>
 		record.set(object);
 		this.dataProvider.data.insert(index, record);
 		newRecords.add(record);
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 	
@@ -80,7 +80,7 @@ class StreamingDataProviderOperations<T>
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
 		updateState(record, previousState);
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 	
@@ -98,7 +98,7 @@ class StreamingDataProviderOperations<T>
 			}
 			record.set(object);
 		}
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
+		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
 	}
 	
