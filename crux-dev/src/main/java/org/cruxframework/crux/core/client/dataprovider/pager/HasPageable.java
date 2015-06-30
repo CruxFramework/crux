@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -37,7 +38,7 @@ public interface HasPageable<T> extends Pager<T>
 	 * @param pagePanel page panel.
 	 * @param forward true if the next page index is bigger than the previous page index.
 	 */
-	void updatePagePanel(Panel pagePanel, boolean forward);
+	void updatePagePanel(IsWidget pagePanel, boolean forward);
 	
 	/**
 	 * Initialize the panel that will contain the pages

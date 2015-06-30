@@ -32,6 +32,7 @@ import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -245,8 +246,8 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 				boolean renewPagePanel = pager == null || !pager.supportsInfiniteScroll();
 				if (renewPagePanel)
 				{
-					final Panel pagePanel = initializePagePanel();
-					render(false, new RenderCallback()
+					final IsWidget pagePanel = (pager != null)?initializePagePanel():null;
+					render((pager == null), new RenderCallback()
 					{
 						@Override
 						public void onRendered()
@@ -342,7 +343,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	
 	protected void initializeAndUpdatePagePanel(boolean forward)
 	{
-	     Panel pagePanel = initializePagePanel();
+		IsWidget pagePanel = initializePagePanel();
 		if (pager != null)
 	    {
 	     	pager.updatePagePanel(pagePanel, forward);
@@ -354,7 +355,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	* to the component page content panel.
 	* @return
 	*/
-	protected abstract Panel initializePagePanel();
+	protected abstract IsWidget initializePagePanel();
 		
 	@Override
 	public void setHeight(String height) 
