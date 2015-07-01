@@ -23,10 +23,11 @@ import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
-import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
-import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
+import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
+import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.ResetEvent;
 import org.cruxframework.crux.core.client.dataprovider.ResetHandler;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
@@ -76,6 +77,16 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		setInteractionEnabled(enabled);
 	}
 
+	@Override
+	public void setDataProvider(PagedDataProvider<T> dataProvider, boolean autoLoadData)
+	{
+	    super.setDataProvider(dataProvider, autoLoadData);
+	    if (!autoLoadData && dataProvider != null && dataProvider.isLoaded())
+	    {
+	    	onUpdate();
+	    }
+	}
+		
 	@Override
 	protected void addDataProviderHandler()	
 	{
