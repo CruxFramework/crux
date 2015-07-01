@@ -247,6 +247,11 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 				if (renewPagePanel)
 				{
 			        final IsWidget pagePanel = (pager != null)?initializePagePanel():null;
+			        if (getPagePanel() == null)
+			        {
+			        	IsWidget panel = initializePagePanel();
+			        	getContentPanel().add(panel);
+			        }
 					render((pager == null), new RenderCallback()
 					{
 						@Override
@@ -351,11 +356,16 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
     }
 
 	/**
-	 * Creates the panel that will contain all the page data and assign it 
-	 * to the component page content panel.
+	 * Creates the panel that will contain all the page data.
 	 * @return
 	 */
 	protected abstract IsWidget initializePagePanel();
+
+	/**
+	 * Retrieve the panel that will contain all the page data.
+	 * @return
+	 */
+	protected abstract IsWidget getPagePanel();
 
 	@Override
 	public void setHeight(String height) 
@@ -373,15 +383,22 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	@Override
     public void setPager(HasPageable<T> pager)
     {
-		if (getDataProvider() != null)
-		{
-			pager.setDataProvider(getDataProvider(), false);
-		}
 		this.pager = pager;
-		pager.initializeContentPanel(getContentPanel());
-		if (pager.supportsInfiniteScroll())
+		if (pager != null)
 		{
-			initializeAndUpdatePagePanel(true);
+			if (getDataProvider() != null)
+			{
+				pager.setDataProvider(getDataProvider(), false);
+			}
+			pager.initializeContentPanel(getContentPanel());
+			if (pager.supportsInfiniteScroll())
+			{
+				initializeAndUpdatePagePanel(true);
+			}
+			else if (getPagePanel() != null)
+			{
+				pager.updatePagePanel(getPagePanel(), true);
+			}
 		}
     } 
 	
