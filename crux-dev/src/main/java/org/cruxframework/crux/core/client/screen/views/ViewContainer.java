@@ -18,8 +18,9 @@ package org.cruxframework.crux.core.client.screen.views;
 import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.Crux;
-import org.cruxframework.crux.core.client.collection.FastList;
-import org.cruxframework.crux.core.client.collection.FastMap;
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.collection.Map;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.views.View.RenderCallback;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
@@ -31,6 +32,7 @@ import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -43,13 +45,18 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class ViewContainer extends Composite
+public abstract class ViewContainer extends Composite implements HasViewActivateHandlers, HasViewLoadHandlers
 {
 	private static ViewFactory viewFactory;	
 	private final boolean clearPanelsForDeactivatedViews;
 	
 	protected static Logger logger = Logger.getLogger(ViewContainer.class.getName());
-	protected FastMap<View> views = new FastMap<View>();
+	protected Map<View> views = CollectionFactory.createMap();
+	protected Array<ViewLoadHandler> loadHandlers = null;
+	protected Array<ViewUnloadHandler> unloadHandlers = null;
+	protected Array<ViewActivateHandler> attachHandlers = null;
+	protected Array<ViewDeactivateHandler> detachHandlers = null;
+
 	private final Widget mainWidget;
 
 	/**
@@ -92,6 +99,155 @@ public abstract class ViewContainer extends Composite
 		this.clearPanelsForDeactivatedViews = clearPanelsForDeactivatedViews;
 		ViewHandlers.initializeWindowContainers();
     }
+	
+	@Override
+	public HandlerRegistration addViewActivateHandler(final ViewActivateHandler handler)
+	{
+		if (attachHandlers == null)
+		{
+			attachHandlers = CollectionFactory.createArray();
+		}
+		attachHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = attachHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					attachHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
+	@Override
+	public HandlerRegistration addViewDeactivateHandler(final ViewDeactivateHandler handler)
+	{
+		if (detachHandlers == null)
+		{
+			detachHandlers = CollectionFactory.createArray();
+		}
+		detachHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = detachHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					detachHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public HandlerRegistration addViewLoadHandler(final ViewLoadHandler handler)
+	{
+		if (loadHandlers == null)
+		{
+			loadHandlers = CollectionFactory.createArray();
+		}
+		loadHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = loadHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					loadHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public HandlerRegistration addViewUnloadHandler(final ViewUnloadHandler handler)
+	{
+		if (unloadHandlers == null)
+		{
+			unloadHandlers = CollectionFactory.createArray();
+		}
+		unloadHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = unloadHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					unloadHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Fires the unload event.
+	 * @return true if the view can be unloaded. If any event handler cancel the event, 
+	 * the view is not unloaded
+	 */
+	protected boolean fireUnloadEvent(ViewUnloadEvent event)
+	{
+		boolean canceled = false;
+		for (int i = 0; i < unloadHandlers.size(); i++)
+        {
+			ViewUnloadHandler handler = unloadHandlers.get(i);
+			handler.onUnload(event);
+			if (event.isCanceled())
+			{
+				canceled = true;
+			}
+        }
+		
+		return !canceled;
+	}
+
+	/**
+	 * Fire the activate event
+	 * @param event
+	 */
+	protected void fireActivateEvent(ViewActivateEvent event)
+    {
+		for (int i = 0; i < attachHandlers.size(); i++)
+        {
+			ViewActivateHandler handler = attachHandlers.get(i);
+			handler.onActivate(event);
+        }
+    }
+	
+	/**
+	 * Fire the deactivate event
+	 * @param event
+	 */
+	protected void fireDeactivateEvent(ViewDeactivateEvent event)
+    {
+		for (int i = 0; i < detachHandlers.size(); i++)
+        {
+			ViewDeactivateHandler handler = detachHandlers.get(i);
+			handler.onDeactivate(event);
+        }
+    }
+	
+	
+	/**
+	 * Fires the load event
+	 */
+	protected void fireLoadEvent(View view, Object parameter)
+	{
+		ViewLoadEvent event = new ViewLoadEvent(view, parameter); 
+		for (int i = 0; i < loadHandlers.size(); i++)
+        {
+			ViewLoadHandler handler = loadHandlers.get(i);
+			handler.onLoad(event);
+        }
+	}
 	
 	/**
 	 * Loads a new view into the container
@@ -147,7 +303,7 @@ public abstract class ViewContainer extends Composite
 	 */
 	public void clear()
 	{
-		FastList<String> keys = views.keys();
+		Array<String> keys = views.keys();
 		for (int i=0; i< keys.size(); i++)
 		{
 			remove(getView(keys.get(i)), true);
@@ -422,7 +578,10 @@ public abstract class ViewContainer extends Composite
 	{
 		if (!view.isLoaded())
 		{
-			view.load(parameter);
+			if (view.load(parameter))
+			{
+				fireLoadEvent(view, parameter);
+			}
 		}
 		view.render(containerPanel, new RenderCallback()
 		{
@@ -474,7 +633,10 @@ public abstract class ViewContainer extends Composite
 			views.put(view.getId(), view);
 			if (!lazy)
 			{
-				view.load(parameter);
+				if (view.load(parameter))
+				{
+					fireLoadEvent(view, parameter);
+				}
 			}
 			return true;
 		}

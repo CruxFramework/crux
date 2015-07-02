@@ -31,9 +31,9 @@ import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
+import org.cruxframework.crux.core.client.screen.binding.BindableContainer;
 import org.cruxframework.crux.core.client.screen.binding.DataBindingHandler;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
-import org.cruxframework.crux.core.client.screen.binding.BindableContainer;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.Scheduler;
@@ -782,7 +782,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	/**
 	 * Fires the load event
 	 */
-	protected void fireLoadEvent(Object paramenter)
+	protected ViewLoadEvent fireLoadEvent(Object paramenter)
 	{
 		ViewLoadEvent event = new ViewLoadEvent(this, paramenter);
 		for (int i = 0; i < loadHandlers.size(); i++)
@@ -790,6 +790,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			ViewLoadHandler handler = loadHandlers.get(i);
 			handler.onLoad(event);
         }
+		return event;
 	}
 
 	/**
@@ -836,6 +837,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
         }
 		
+		viewContainer.fireUnloadEvent(event);
 		return !canceled;
 	}
 	
@@ -973,8 +975,9 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * Called by the {@link ViewContainer} when the view is added to the container. 
 	 * This method creates the view widgets
 	 * @param parameter parameter sent to view and accessible through ViewLoadEvent event
+	 * @return true if loaded
 	 */
-	protected void load(Object paramenter)
+	protected boolean load(Object paramenter)
 	{
 		if (!loaded)
 		{
@@ -985,6 +988,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			loaded = true;
 			fireLoadEvent(paramenter);
 		}
+		return loaded;
 	}
 
 	protected void prepareViewObjects()
@@ -1045,6 +1049,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 						ViewActivateHandler handler = handlers.get(i);
 						handler.onActivate(event);
 					}
+					viewContainer.fireActivateEvent(event);
 				}
 			});
 		}
@@ -1075,6 +1080,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 					ViewDeactivateHandler handler = detachHandlers.get(i);
 					handler.onDeactivate(event);
 				}
+				viewContainer.fireDeactivateEvent(event);
 				active = event.isCanceled();
 				return !active;
 			}
