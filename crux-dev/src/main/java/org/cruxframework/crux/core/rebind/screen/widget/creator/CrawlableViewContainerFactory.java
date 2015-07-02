@@ -28,6 +28,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 	@TagAttribute(value="historyControlPrefix", required=true, description="Define the prefix that will be used on history tokens created by this container. It will be visible on URL hashbang token."), 
 	@TagAttribute(value="historyControlEnabled", type=Boolean.class, defaultValue="true", description="Enable or disable the history control provided by this container. If enabled, every time a view is rendered by the container, a new history state is saved, to enable back/forward buttons to work properly.")
 })
-public interface CrawlableViewContainerFactory<C extends WidgetCreatorContext>
+public interface CrawlableViewContainerFactory<C extends WidgetCreatorContext> extends HasViewHandlersFactory<C>
 {
 }
