@@ -143,7 +143,7 @@ public class WidgetCreatorContext
 		return widgetConsumer;
 	}
 	
-	void registerObjectDataBinding(PropertyBindInfo propertyBindInfo)
+	public void registerObjectDataBinding(PropertyBindInfo propertyBindInfo)
 	{
 		ObjectDataBinding objectDataBinding = getObjectDataBinding(propertyBindInfo.getDataObject());
 		if (objectDataBinding == null)
@@ -154,7 +154,7 @@ public class WidgetCreatorContext
 		objectDataBinding.addPropertyBinding(propertyBindInfo);
 	}
 	
-	void registerExpressionDataBinding(ExpressionDataBinding expressionDataBinding)
+	public void registerExpressionDataBinding(ExpressionDataBinding expressionDataBinding)
 	{
 		expressionDataBindings.add(expressionDataBinding);
 	}
