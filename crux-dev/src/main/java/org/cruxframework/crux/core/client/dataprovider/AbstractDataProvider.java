@@ -32,6 +32,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected Array<ResetHandler> resetHandlers;
 	protected DataProvider.DataHandler<T> dataHandler;
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
+	protected Array<DataSortedHandler> dataSortedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
 	protected boolean loaded = false;
 	protected Array<TransactionEndHandler> transactionEndHandlers;
@@ -87,6 +88,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		};
 	}	
+
 	@Override
 	public HandlerRegistration addDataLoadedHandler(final DataLoadedHandler handler)
 	{
@@ -105,6 +107,29 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 				if (index >= 0)
 				{
 					dataLoadedHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public HandlerRegistration addDataSortedHandler(final DataSortedHandler handler)
+	{
+		if (dataSortedHandlers == null)
+		{
+			dataSortedHandlers = CollectionFactory.createArray();
+		}
+		
+		dataSortedHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = dataSortedHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					dataSortedHandlers.remove(index);
 				}
 			}
 		};
@@ -319,6 +344,18 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		}
     }
+	
+	protected void fireSortedEvent(boolean pageChanged)
+	{
+		if (dataSortedHandlers != null)
+		{
+			DataSortedEvent event = new DataSortedEvent(this, pageChanged);
+			for (int i = 0; i< dataSortedHandlers.size(); i++)
+			{
+				dataSortedHandlers.get(i).onSorted(event);
+			}
+		}
+	}
 	
 	protected void fireStopLoadEvent()
     {

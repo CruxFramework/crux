@@ -65,6 +65,13 @@ public interface DataProvider<T>
 	HandlerRegistration addDataLoadedHandler(DataLoadedHandler callback);
 
 	/**
+	 * Add a callback to be notified about DataProvider sort events
+	 * @param callback to be called when DataProvider is sorted
+	 * @return a registration that allow handler to be removed 
+	 */
+	HandlerRegistration addDataSortedHandler(DataSortedHandler callback);
+
+	/**
 	 * Add a callback to be notified about DataProvider loading stop events
 	 * @param callback to be called when DataProvider loading is aborted
 	 * @return a registration that allow handler to be removed 
@@ -279,7 +286,7 @@ public interface DataProvider<T>
 	
 	
 	/**
-	 * Sort DataProvider records, based on column informed
+	 * Sort DataProvider records, using the given comparator
 	 * @param comparator Comparator used for sorting.
 	 */
 	void sort(Comparator<T> comparator);
