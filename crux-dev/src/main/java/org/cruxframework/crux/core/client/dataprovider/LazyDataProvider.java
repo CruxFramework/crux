@@ -183,8 +183,9 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			{
 				pageData.set(i, data.get(i+startPageRecord));
 			}
-			sortArray(pageData, comparator);
+			sortArray(pageData, comparator, true);
 			updateRecords(startPageRecord, endPageRecord, pageData);
+			fireSortedEvent(false);
 		}
 	}	
 

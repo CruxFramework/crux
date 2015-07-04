@@ -489,6 +489,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			}
 			sortArray(pageData, comparator);
 			updatePageRecords(startPageRecord, endPageRecord, pageData);
+			fireSortedEvent(false);
 		}
 	}
 	
