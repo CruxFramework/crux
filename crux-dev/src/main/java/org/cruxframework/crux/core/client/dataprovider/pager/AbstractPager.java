@@ -43,7 +43,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> implements Pager<T>
 {
-	protected static final String DISABLED = "disabled";
+	protected static final String DISABLED = "-Disabled";
+	
 	protected boolean enabled = true;
 	protected boolean transactionRunning;
 	protected HandlerRegistration transactionEndHandler;
