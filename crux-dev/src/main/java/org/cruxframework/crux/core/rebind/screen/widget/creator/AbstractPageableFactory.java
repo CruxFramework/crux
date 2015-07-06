@@ -20,7 +20,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.Event;
@@ -60,7 +59,7 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		{
 			out.println("new " + widgetFactoryClassName + "(){");
 			String bindingContextVariable = "_context";
-		    generateBindingContextDeclaration(out, bindingContextVariable);
+		    generateBindingContextDeclaration(out, bindingContextVariable, getViewVariable());
 			Set<String> converterDeclarations = generateWidgetCreationForCellByTemplate(out, context, child, dataObject, bindingContextVariable);
 		    for (String converterDeclaration : converterDeclarations)
 	        {
@@ -110,13 +109,6 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    out.println("}");
 	    
 	    return bindingProcessor.getConverterDeclarations();
-    }
-
-	protected void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable)
-    {
-	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
-		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
-					getViewVariable() + ", 0);");
     }
 
 	protected void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject)

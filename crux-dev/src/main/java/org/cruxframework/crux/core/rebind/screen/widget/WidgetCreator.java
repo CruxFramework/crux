@@ -16,9 +16,11 @@
 package org.cruxframework.crux.core.rebind.screen.widget;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.utils.StyleUtils;
@@ -407,8 +409,50 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
 	}
-    
-    
+
+	/**
+	 * 
+	 * @param out
+	 * @param bindingContextVariable
+	 * @param bindableContainerVariable
+	 */
+	public void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable, String bindableContainerVariable)
+    {
+	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
+		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
+			bindableContainerVariable + ", 0);");
+    }
+
+	public String getDataBindingReadExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations)
+	{
+		String expression = null;
+		PropertyBindInfo binding = getObjectDataBinding(propertyValue, null, true);
+		if (binding != null)
+		{
+			expression = binding.getDataObjectReadExpression(dataObjectVariable);
+			String converterDeclaration = binding.getConverterDeclaration();
+			if (converterDeclaration != null)
+			{
+				converterDeclarations.add(converterDeclaration);
+			}
+		}
+		else
+		{
+			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, null);
+			if (expressionBinding != null)
+			{
+				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
+				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
+			}
+			else
+			{
+				expression = getDeclaredMessage(propertyValue);
+			}
+		}
+		return expression;
+	}
+	
     /**
 	 * 
 	 * @param property

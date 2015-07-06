@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import java.util.Comparator;
+
 import org.cruxframework.crux.core.client.collection.Array;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -83,6 +85,28 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 		return false;
 	}
 	
+	/**
+	 * Sort DataProvider records, using the given comparator
+	 * @param comparator Comparator used for sorting.
+	 * @param restart if true, change the current position to the first dataProvider record.
+	 * If false, the dataProvider will be positioned on the first current page record.
+	 */
+	public void sort(Comparator<T> comparator, boolean restart) 
+	{
+		ensureLoaded();
+		if (data != null)
+		{
+			sortArray(data, comparator, !restart);
+			boolean pageChanded = false;
+			if (restart)
+			{
+				pageChanded = hasPreviousPage();
+				first();
+			}
+			fireSortedEvent(pageChanded);
+		}
+	}
+		
 	@Override
 	public FilterRegistration<T> addFilter(final DataFilter<T> filter)
 	{

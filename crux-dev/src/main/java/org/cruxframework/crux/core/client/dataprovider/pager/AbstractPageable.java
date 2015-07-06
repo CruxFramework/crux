@@ -23,6 +23,8 @@ import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+import org.cruxframework.crux.core.client.dataprovider.DataSortedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataSortedHandler;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
@@ -49,6 +51,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	protected HandlerRegistration transactionEndHandler;
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
+	protected HandlerRegistration dataSortedHandler;
 	
 	public void add(T object)
 	{
@@ -137,10 +140,17 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 		refresh(true);
 	}
 	
-	protected void refresh(boolean clearPreviousData)
+	protected void refresh(boolean goToFirstPage)
 	{
-		getDataProvider().firstOnPage();
-		render(clearPreviousData, null);
+		if (goToFirstPage)
+		{
+			getDataProvider().first();
+		}
+		else
+		{
+			getDataProvider().firstOnPage();
+		}
+		render(goToFirstPage, null);		
 	}
 	
 	protected void refreshPage(int startRecord)
@@ -300,7 +310,23 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 				}
 			}
 		});
-		
+
+		dataSortedHandler = getDataProvider().addDataSortedHandler(new DataSortedHandler()
+		{
+			@Override
+			public void onSorted(DataSortedEvent event)
+			{
+				if (!event.isPageChanged())
+				{
+					final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
+					if(allowRefreshAfterDataChange)
+					{
+						refreshPage(pageStartRecordOnTransactionEnd);
+					}
+				}
+			}
+		});
+				
 		if (getDataProvider() instanceof FilterableProvider<?>)
 		{
 			@SuppressWarnings("unchecked")
@@ -344,7 +370,12 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			pageLoadedHandler.removeHandler();
 			pageLoadedHandler = null;
 		}
-    }
+		if (dataSortedHandler != null)
+		{
+			dataSortedHandler.removeHandler();
+			dataSortedHandler = null;
+		}
+	}
 	
 	protected void initializeAndUpdatePagePanel(boolean forward)
 	{

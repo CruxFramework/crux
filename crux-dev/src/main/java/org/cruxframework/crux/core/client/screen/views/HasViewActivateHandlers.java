@@ -26,5 +26,4 @@ public interface HasViewActivateHandlers
 {
 	HandlerRegistration addViewActivateHandler(ViewActivateHandler handler);
 	HandlerRegistration addViewDeactivateHandler(ViewDeactivateHandler handler);
-	boolean isActive();
 }
