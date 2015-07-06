@@ -259,7 +259,8 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		ensureLoaded();
 		if (data != null)
 		{
-			sortArray(data, comparator);
+			sortArray(data, comparator, true);
+			fireSortedEvent(false);			
 		}
 	}
 
@@ -305,7 +306,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		next();
 	}
 	
-	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
+	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator, boolean changePosition)
 	{
 		array.sort(new Comparator<DataProviderRecord<T>>(){
 			public int compare(DataProviderRecord<T> o1, DataProviderRecord<T> o2)
@@ -313,7 +314,10 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 				return comparator.compare(o1.getRecordObject(), o2.getRecordObject());
 			}
 		});
-		changePositionAfterSorting();
+		if (changePosition)
+		{
+			changePositionAfterSorting();
+		}
 	}
 	
 	protected abstract void update(Array<DataProviderRecord<T>> records);
