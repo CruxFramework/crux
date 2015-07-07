@@ -367,7 +367,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	protected void setFirstPosition(boolean fireEvents)
 	{
-		if (hasPreviousPage())
+		if (currentPage == 0 || hasPreviousPage())
 		{
 			setCurrentPage(1, fireEvents);
 		}
