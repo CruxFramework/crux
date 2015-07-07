@@ -127,7 +127,7 @@ public class JClassUtils
         }
     }
 
-	private static JType buildGetExpressionForParameterizedProperty(String prop, JClassType baseClassType, StringBuilder getExpression) throws NotFoundException
+	private static JType buildGetExpressionForParameterizedProperty(String prop, JClassType baseClassType, StringBuilder getExpression)
 	{
 		int openIndex = prop.indexOf('(');
 		int closeIndex = prop.lastIndexOf(')');
@@ -138,14 +138,65 @@ public class JClassUtils
 		}
 		
 		String parameter = prop.substring(openIndex+1, closeIndex);
-		JType parameterType = null;
-		if (parameter.startsWith("\""))
+		String propertyName = prop.substring(0, openIndex);
+
+		JMethod method = getParameterizedGetterMethod(baseClassType, propertyName, parameter);
+		if (method == null)
 		{
-			parameterType = baseClassType.getOracle().getType(String.class.getName());
+			return null;
 		}
-		
-		
+		baseClassType = method.getEnclosingType();
+		getExpression.append("."+method.getName()+"("+parameter+")");
+		return method.getReturnType();
 	}
+
+	private static JMethod getParameterizedGetterMethod(JClassType baseClassType, String propertyName, String parameter)
+    {
+		
+		String getterMethodName = getGetterMethodName(propertyName); 
+	    if (parameter.startsWith("\""))
+	    {
+	    	try
+	    	{
+	    		JClassType stringType = baseClassType.getOracle().getType(String.class.getCanonicalName());
+	    		return getMethod(baseClassType, getterMethodName, new JType[]{stringType});
+	    	}
+	    	catch (NotFoundException e)
+	    	{
+	    		return null;
+	    	}
+		}
+
+	    boolean parameterIsNumeric; 
+	    try
+	    {	
+	    	Integer.parseInt(parameter);
+	    	parameterIsNumeric = true;
+	    }
+	    catch(Exception e)
+	    {
+	    	parameterIsNumeric = false;
+	    }
+	    if (parameterIsNumeric)
+	    {
+	    	JMethod method = getMethod(baseClassType, getterMethodName, new JType[]{JPrimitiveType.INT});
+	    	if (method == null)
+	    	{
+		    	try
+		    	{
+		    		JType boxedType = baseClassType.getOracle().getType(JPrimitiveType.INT.getQualifiedBoxedSourceName());
+		    		method = getMethod(baseClassType, getterMethodName, new JType[]{boxedType});
+		    	}
+		    	catch (NotFoundException e)
+		    	{
+		    		return null;
+		    	}
+	    	}
+	    	return method;
+	    }
+	    
+	    return null;
+    }
 	
 	private static JType buildGetExpression(String prop, JClassType baseClassType, StringBuilder getExpression)
 	{
@@ -161,11 +212,8 @@ public class JClassUtils
     			{
 					return null;
     			} 
-				else
-    			{
-    				getterMethod = method.getName();
-    				baseClassType = method.getEnclosingType();
-    			}
+				getterMethod = method.getName();
+				baseClassType = method.getEnclosingType();
 			}
 			else
 			{
@@ -275,11 +323,7 @@ public class JClassUtils
 		{
 			return null;
 		}
-		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
-		if (propertyName.length() > 1)
-		{
-			result += propertyName.substring(1);
-		}
+		String result = getGetterMethodName(propertyName);
 		
 		JMethod[] methods = findMethods(baseClass, "get"+result);
 		if (methods.length == 0)
@@ -299,6 +343,16 @@ public class JClassUtils
 		
 		return null;
 	}
+
+	public static String getGetterMethodName(String propertyName)
+    {
+	    String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
+		if (propertyName.length() > 1)
+		{
+			result += propertyName.substring(1);
+		}
+	    return result;
+    }
 
 	/**
 	 * 
