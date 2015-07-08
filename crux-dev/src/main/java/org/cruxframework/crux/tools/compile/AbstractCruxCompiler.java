@@ -390,7 +390,8 @@ public abstract class AbstractCruxCompiler
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
-		parameter = new ConsoleParameter("-optimize", "Sets the optimization level used by the compiler. 0=none 9=maximum..", false, false);
+		parameter = new ConsoleParameter("-optimize", "Sets the optimization level used by the compiler. 0=none 9=maximum..", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("optimize", "Optimization level"));
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parameter = new ConsoleParameter("classpathDir", "The classpath folder.", false, true);
