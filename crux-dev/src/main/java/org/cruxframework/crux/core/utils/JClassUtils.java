@@ -94,30 +94,11 @@ public class JClassUtils
         			checkNullExpression.append(getExpression.toString()+"==null ");
         		}
         		
-        		String getterMethod = JClassUtils.getGetterMethod(prop, baseClassType);
-        		if (getterMethod == null)
-        		{
-        			JMethod method = getMethod(baseClassType, prop, new JType[]{});
-        			if (method == null)
-        			{
-        				method = getMethodOverInterfaces(baseClassType, prop, new JType[]{});	
-        			
-        				if (method == null)
-            			{
-        					throw new NoSuchFieldException(propertyPath);
-            			} else
-            			{
-            				getterMethod = method.getName();
-            				baseClassType = method.getEnclosingType();
-            			}
-        			}
-        			else
-        			{
-        				getterMethod = prop;
-        			}
-        		}
-        		getExpression.append("."+getterMethod+"()");
-        		baseType = JClassUtils.getReturnTypeFromMethodClass(baseClassType, getterMethod, new JType[]{});
+       			baseType = buildGetExpression(prop, baseClassType, getExpression);
+				if (baseType == null)
+    			{
+					throw new NoSuchFieldException(propertyPath);
+    			} 
         		baseClassType = baseType.isClassOrInterface();
         	}
         	if (finishCommand)
@@ -139,6 +120,32 @@ public class JClassUtils
         }
     }
 
+	private static JType buildGetExpression(String prop, JClassType baseClassType, StringBuilder getExpression)
+	{
+		String getterMethod = JClassUtils.getGetterMethod(prop, baseClassType);
+		if (getterMethod == null)
+		{
+			JMethod method = getMethod(baseClassType, prop, new JType[]{});
+			if (method == null)
+			{
+				method = getMethodOverInterfaces(baseClassType, prop, new JType[]{});	
+			
+				if (method == null)
+    			{
+					return null;
+    			} 
+				getterMethod = method.getName();
+				baseClassType = method.getEnclosingType();
+			}
+			else
+			{
+				getterMethod = prop;
+			}
+		}
+		getExpression.append("."+getterMethod+"()");
+		return JClassUtils.getReturnTypeFromMethodClass(baseClassType, getterMethod, new JType[]{});
+	}
+	
 	public static JClassType getType(TypeOracle typeOracle, String className) throws NotFoundException
 	{
 		return getType(typeOracle, className, null);
@@ -238,11 +245,7 @@ public class JClassUtils
 		{
 			return null;
 		}
-		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
-		if (propertyName.length() > 1)
-		{
-			result += propertyName.substring(1);
-		}
+		String result = getGetterMethodName(propertyName);
 		
 		JMethod[] methods = findMethods(baseClass, "get"+result);
 		if (methods.length == 0)
@@ -262,6 +265,16 @@ public class JClassUtils
 		
 		return null;
 	}
+
+	public static String getGetterMethodName(String propertyName)
+    {
+	    String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
+		if (propertyName.length() > 1)
+		{
+			result += propertyName.substring(1);
+		}
+	    return result;
+    }
 
 	/**
 	 * 

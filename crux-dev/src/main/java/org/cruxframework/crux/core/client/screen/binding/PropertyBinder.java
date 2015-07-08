@@ -24,6 +24,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Interface for data binding between dataObjects and widgets in this view.
@@ -76,8 +77,12 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 						@Override
 						public void onLoaded(MutationObserver mo)
 						{
-							mutationObserver = mo;					
-							mutationObserver.observe(widget.asWidget().getElement(), true, true, true);
+							UIObject uiObject = getUiObject();
+							if (uiObject != null)
+							{
+								mutationObserver = mo;					
+								mutationObserver.observe(uiObject.getElement(), true, true, true);
+							}
 						}
 						
 						@Override
@@ -98,7 +103,11 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 
 	protected void observeChangeEvents()
 	{
-		observeChangeEvents(widget.asWidget().getElement(), this);
+		UIObject uiObject = getUiObject();
+		if (uiObject != null)
+		{
+			observeChangeEvents(uiObject.getElement(), this);
+		}
 	}
 
 	protected native void observeChangeEvents(Element el, PropertyBinder<T, W> binder)/*-{
@@ -155,4 +164,14 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 	 * @param dataObject
 	 */
 	public abstract void copyFrom(T dataObject);
+	
+	/**
+	 * Retrieve the target {@link UIObject} that is associated to this binding. 
+	 * Default to the bound widget
+	 * @return the UIObject
+	 */
+	public UIObject getUiObject()
+	{
+		return widget!=null?widget.asWidget():null;
+	}
 }

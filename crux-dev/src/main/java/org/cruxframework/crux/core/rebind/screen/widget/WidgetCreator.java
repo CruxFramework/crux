@@ -374,9 +374,24 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
 	{
-		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null);
 	}
 	
+	/**
+	 * 
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @param uiObjectClassName
+	 * @param getUiObjectExpression
+	 * @return
+	 */
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+							String uiObjectClassName, String getUiObjectExpression)
+	{
+		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
+	}
+
 	/**
 	 * @return
 	 */
@@ -407,9 +422,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute)
 	{
-		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
+		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null);
 	}
 
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
+												String uiObjectClassName, String getUiObjectExpression)
+	{
+		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
+												getUiObjectExpression);
+	}
+	
 	/**
 	 * 
 	 * @param out
