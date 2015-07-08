@@ -389,6 +389,10 @@ public abstract class AbstractCruxCompiler
 		parameter = new ConsoleParameter("webDir", "The application web root folder.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("-optimize", "Sets the optimization level used by the compiler. 0=none 9=maximum..", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("optimize", "Optimization level"));
+		parametersProcessor.addSupportedParameter(parameter);
 
 		parameter = new ConsoleParameter("classpathDir", "The classpath folder.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("classpathDir", "Classpath dir"));
@@ -673,7 +677,8 @@ public abstract class AbstractCruxCompiler
 			if (parameterName.equals("-gen")                 || 
 				parameterName.equals("-style")               || 
 				parameterName.equals("-extra")               || 
-				parameterName.equals("-localWorkers")        || 
+				parameterName.equals("-localWorkers")        ||
+				parameterName.equals("-optimize")        ||
 				parameterName.equals("-logLevel")            ||
 				parameterName.equals("-XfragmentCount"))
 	        {
