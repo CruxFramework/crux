@@ -193,16 +193,14 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param propertyValue
 	 * @param widgetClassName
 	 * @param widgetPropertyPath
+	 * @param uiObjectClassName
+	 * @param getUiObjectExpression
 	 * @return
 	 */
-	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+														String uiObjectClassName, String getUiObjectExpression)
     {
-		JType widgetPropertyType = JClassUtils.getPropertyType(context.getGeneratorContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
-		if (widgetPropertyType == null)
-		{
-			throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");
-		}
-		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, widgetPropertyType);
+		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
     }
 
 	/**
@@ -211,12 +209,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param widgetClassName
 	 * @param widgetPropertyPath
 	 * @param boundToAttribute
+	 * @param uiObjectClassName
+	 * @param getUiObjectExpression
 	 * @return
 	 */
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-			boolean boundToAttribute)
+			boolean boundToAttribute, String uiObjectClassName, String getUiObjectExpression)
     {
-	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
+	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, 
+	    										uiObjectClassName, getUiObjectExpression);
     }
 
 	/**

@@ -44,15 +44,20 @@ public class ExpressionDataBinding
 	private String widgetClassName;
 	private String widgetPropertyPath;
 	private JClassType widgetType;
+	private JClassType uiObjectType;
+	private String getUiObjectExpression;
 
-	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath)
+	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath, 
+								 JClassType uiObjectType, String getUiObjectExpression)
     {
 		this.context = context;
 		this.widgetType = widgetType;
 		this.widgetPropertyPath = widgetPropertyPath;
+		this.uiObjectType = uiObjectType==null?widgetType:uiObjectType;
+		this.getUiObjectExpression = getUiObjectExpression;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
     }
-	
+
 	public void addLogicalBinding(List<ExpressionPart> expressionParts, LogicalOperation logicalOperation, boolean negate)
 	{
 		assert (expression.length() == 0):"Invalid Expression. Can not add logical binnding on a multi expression binding";
@@ -183,7 +188,7 @@ public class ExpressionDataBinding
 	{
 		StringBuilder writeExpression = new StringBuilder();
 
-		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, widgetVar, expression.toString());
+		JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, getUIObjectVar(widgetVar), expression.toString());
 
 		for (String dataObject : dataObjects)
         {
@@ -212,6 +217,15 @@ public class ExpressionDataBinding
 		return dataObjects.iterator();
 	}
 
+	private String getUIObjectVar(String widgetVar)
+	{
+		if (StringUtils.isEmpty(getUiObjectExpression))
+		{
+			return widgetVar;
+		}
+		return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
+	}
+	
 	private void addLogicalBindingForEmptyOperation(ExpressionPart expressionPart, String readExpression)
     {
 	    JType type = expressionPart.getType();

@@ -32,17 +32,21 @@ public class PropertyBindInfo extends BindInfo
 	protected String writeExpression;
 	protected String readExpression;
 	protected boolean boundToAttribute;
+	protected String getUiObjectExpression;
 
 	public PropertyBindInfo(String widgetPropertyPath, boolean boundToAttribute, String bindPath, JClassType widgetType, JClassType dataObjectType, 
-							JClassType converterType, String dataObject, String converterParams) throws NoSuchFieldException
+							JClassType converterType, String dataObject, String converterParams,
+							JClassType uiObjectType, String getUiObjectExpression) throws NoSuchFieldException
     {
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
 		this.boundToAttribute = boundToAttribute;
+		uiObjectType = uiObjectType==null?widgetType:uiObjectType;
+		this.getUiObjectExpression = getUiObjectExpression;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
 		if (!StringUtils.isEmpty(widgetPropertyPath))
 		{
-			this.readExpression = getReadExpression(widgetPropertyPath, widgetType, dataObjectType, bindPath);
-			this.writeExpression = getWriteExpression(widgetPropertyPath, widgetType);
+			this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
+			this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
 		}
     }
 
@@ -71,6 +75,11 @@ public class PropertyBindInfo extends BindInfo
 	    return boundToAttribute;
     }
 	
+	public String getUiObjectExpression()
+	{
+		return getUiObjectExpression;
+	}
+	
 	/**
 	 * Expression to read FROM widget and write TO dataObject
 	 * @param widgetPropertyPath
@@ -84,8 +93,11 @@ public class PropertyBindInfo extends BindInfo
 				String bindPath) throws NoSuchFieldException
     {
 		StringBuilder getExpression = new StringBuilder();
-		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, WIDGET_VAR_REF, false);
-		return getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString());
+		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF, false);
+		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false);
+		return "if ("+uiObjectVar + " != null){\n" 
+				+getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString())
+				+"}";
     }
 
 	/**
@@ -99,7 +111,20 @@ public class PropertyBindInfo extends BindInfo
 	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
-		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, WIDGET_VAR_REF, getDataObjectReadExpression());
+		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, getUIObjectVar(WIDGET_VAR_REF, true), getDataObjectReadExpression());
 		return writeExpression.toString();
+	}
+	
+	protected String getUIObjectVar(String widgetVar, boolean addNullTeste)
+	{
+		if (StringUtils.isEmpty(getUiObjectExpression))
+		{
+			return widgetVar;
+		}
+		if (addNullTeste)
+		{
+			return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
+		}
+		return widgetVar + "." + getUiObjectExpression;
 	}
 }

@@ -94,14 +94,7 @@ public class JClassUtils
         			checkNullExpression.append(getExpression.toString()+"==null ");
         		}
         		
-        		if (prop.indexOf('(') > 0)
-        		{
-        			baseType = buildGetExpressionForParameterizedProperty(prop, baseClassType, getExpression);
-        		}
-        		else
-        		{
-        			baseType = buildGetExpression(prop, baseClassType, getExpression);
-        		}
+       			baseType = buildGetExpression(prop, baseClassType, getExpression);
 				if (baseType == null)
     			{
 					throw new NoSuchFieldException(propertyPath);
@@ -127,77 +120,6 @@ public class JClassUtils
         }
     }
 
-	private static JType buildGetExpressionForParameterizedProperty(String prop, JClassType baseClassType, StringBuilder getExpression)
-	{
-		int openIndex = prop.indexOf('(');
-		int closeIndex = prop.lastIndexOf(')');
-		
-		if (openIndex < 0 || closeIndex < 0)
-		{
-			return null;
-		}
-		
-		String parameter = prop.substring(openIndex+1, closeIndex);
-		String propertyName = prop.substring(0, openIndex);
-
-		JMethod method = getParameterizedGetterMethod(baseClassType, propertyName, parameter);
-		if (method == null)
-		{
-			return null;
-		}
-		baseClassType = method.getEnclosingType();
-		getExpression.append("."+method.getName()+"("+parameter+")");
-		return method.getReturnType();
-	}
-
-	private static JMethod getParameterizedGetterMethod(JClassType baseClassType, String propertyName, String parameter)
-    {
-		
-		String getterMethodName = getGetterMethodName(propertyName); 
-	    if (parameter.startsWith("\""))
-	    {
-	    	try
-	    	{
-	    		JClassType stringType = baseClassType.getOracle().getType(String.class.getCanonicalName());
-	    		return getMethod(baseClassType, getterMethodName, new JType[]{stringType});
-	    	}
-	    	catch (NotFoundException e)
-	    	{
-	    		return null;
-	    	}
-		}
-
-	    boolean parameterIsNumeric; 
-	    try
-	    {	
-	    	Integer.parseInt(parameter);
-	    	parameterIsNumeric = true;
-	    }
-	    catch(Exception e)
-	    {
-	    	parameterIsNumeric = false;
-	    }
-	    if (parameterIsNumeric)
-	    {
-	    	JMethod method = getMethod(baseClassType, getterMethodName, new JType[]{JPrimitiveType.INT});
-	    	if (method == null)
-	    	{
-		    	try
-		    	{
-		    		JType boxedType = baseClassType.getOracle().getType(JPrimitiveType.INT.getQualifiedBoxedSourceName());
-		    		method = getMethod(baseClassType, getterMethodName, new JType[]{boxedType});
-		    	}
-		    	catch (NotFoundException e)
-		    	{
-		    		return null;
-		    	}
-	    	}
-	    	return method;
-	    }
-	    
-	    return null;
-    }
-	
 	private static JType buildGetExpression(String prop, JClassType baseClassType, StringBuilder getExpression)
 	{
 		String getterMethod = JClassUtils.getGetterMethod(prop, baseClassType);
