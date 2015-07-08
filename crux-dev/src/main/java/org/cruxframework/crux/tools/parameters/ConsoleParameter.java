@@ -29,7 +29,7 @@ public class ConsoleParameter implements Cloneable
 	private String[] values;
 	private String description;
 	private boolean required;
-	private boolean flagParameter;
+	private boolean hasValuesParameter;
 
 	private List<ConsoleParameterOption> parameterOptions = new ArrayList<ConsoleParameterOption>(); 
 	
@@ -46,7 +46,7 @@ public class ConsoleParameter implements Cloneable
 	 * @param name
 	 * @param description
 	 */
-	public ConsoleParameter(String name, String description, boolean required, boolean flagParameter)
+	public ConsoleParameter(String name, String description, boolean required, boolean hasValuesParameter)
 	{
 		if (name == null)
 		{
@@ -55,7 +55,7 @@ public class ConsoleParameter implements Cloneable
 		this.name = name;
 		this.description = description;
 		this.required = required;
-		this.flagParameter = flagParameter;
+		this.hasValuesParameter = hasValuesParameter;
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public class ConsoleParameter implements Cloneable
 	 */
 	public boolean isFlagParameter()
 	{
-		return flagParameter;
+		return hasValuesParameter;
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class ConsoleParameter implements Cloneable
 	 */
 	public void setFlagParameter(boolean flagParameter)
 	{
-		this.flagParameter = flagParameter;
+		this.hasValuesParameter = flagParameter;
 	}
 
 	/**
