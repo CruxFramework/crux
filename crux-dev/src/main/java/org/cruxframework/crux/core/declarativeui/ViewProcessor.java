@@ -31,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.declarativeui.conditional.IfDevicePreProcessor;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.server.Environment;
@@ -71,6 +72,7 @@ public class ViewProcessor
 		if (viewProvider != null)
 		{
 			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateLoader()));
+			preProcessors.add(new IfDevicePreProcessor());
 		}
 		String xmlPreProcessors = ConfigurationFactory.getConfigurations().cruxXmlPreProcessors();
 		

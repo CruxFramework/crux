@@ -37,6 +37,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplateParser;
 import org.cruxframework.crux.core.i18n.MessagesFactory;
@@ -735,6 +737,68 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	    generateCoreWidgetsType(out, templateLibraries);	
 	    generateCoreCrossDevWidgetsType(out, templateLibraries);
 	    generateCoreTypesSupportingBinding(out);
+	    generateCoreIfDeviceElement(out);
+    }
+
+	protected void generateCoreIfDeviceElement(PrintStream out)
+    {
+		out.println("<xs:element name=\"ifDevice\" type=\"IfDevice\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+"A rendering condition that allows developers to switch the implementation according to the device."+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"IfDevice\">");
+		out.println("<xs:sequence>");
+		out.println("<xs:element name=\"excludes\" type=\"IfDeviceExclusions\" minOccurs=\"0\" maxOccurs=\"1\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+"Exclude any devices that will no make apart of the rule declared above."+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		out.println("<xs:group ref=\"widgets\" minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>Accepts any valid widget</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:group>");
+		out.println("</xs:sequence>");
+		out.println("<xs:attribute name=\"input\" type=\"Input\" />");
+		out.println("<xs:attribute name=\"size\" type=\"Size\" />");
+		out.println("</xs:complexType>");
+		
+		out.println("<xs:complexType name=\"IfDeviceExclusions\">");
+		out.println("<xs:sequence minOccurs=\"1\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element name=\"exclude\" type=\"IfDeviceExclusion\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>A exclusion to indicate that this device will not accept the above property.</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		out.println("</xs:sequence>");
+		out.println("</xs:complexType>");
+		
+		out.println("<xs:complexType name=\"IfDeviceExclusion\">");
+		out.println("<xs:attribute name=\"input\" type=\"Input\" />");
+		out.println("<xs:attribute name=\"size\" type=\"Size\" />");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:simpleType name=\"Input\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		Input[] inputs = Input.values();
+		for (Input input : inputs)
+		{
+			out.println("<xs:enumeration value=\""+input.toString()+"\" />");
+		}
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+
+		out.println("<xs:simpleType name=\"Size\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		Size[] sizes = Size.values();
+		for (Size size : sizes)
+		{
+			out.println("<xs:enumeration value=\""+size.toString()+"\" />");
+		}
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
     }
 
 	/**
@@ -881,6 +945,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		if (supportCrossDevice)
 		{
 			out.println("<xs:element ref=\"crossDevice\" />");
+			out.println("<xs:element ref=\"ifDevice\" />");
 		}
 		out.println("</xs:choice>");
 		out.println("</xs:group>");
