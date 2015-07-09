@@ -27,10 +27,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTypeResolverBuilder;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -128,7 +128,18 @@ public class JsonUtil
 		return defaultMapper;
     }
 
-	private static boolean hasJsonSubTypes(Type type, Class<?> clazz, Set<Class<?>> searched)
+	public static boolean hasJsonSubTypes(Class<?> clazz)
+    {
+		JsonSubTypes jsonSubTypes = clazz.getAnnotation(JsonSubTypes.class);
+		if (jsonSubTypes != null && jsonSubTypes.value() != null)
+		{
+			return (jsonSubTypes.value().length > 0);
+		}
+		
+	    return false;
+    }
+	
+	public static boolean hasJsonSubTypes(Type type, Class<?> clazz, Set<Class<?>> searched)
     {
 		while (ClassUtils.isCollection(clazz))
 		{
@@ -143,13 +154,9 @@ public class JsonUtil
 		if (!searched.contains(clazz))
 		{
 			searched.add(clazz);
-			JsonSubTypes jsonSubTypes = clazz.getAnnotation(JsonSubTypes.class);
-			if (jsonSubTypes != null && jsonSubTypes.value() != null)
+			if(hasJsonSubTypes(clazz))
 			{
-				if (jsonSubTypes.value().length > 0)
-				{
-					return true;
-				}
+				return true;
 			}
 			
 			PropertyInfo[] propertiesInfo = ClassUtils.extractBeanPropertiesInfo(type);
@@ -168,6 +175,33 @@ public class JsonUtil
 		return false;
     }
 	
+	
+	public static Class<?> getJsonSubTypesSuperClass(Type type, Class<?> clazz)
+	{
+		if(clazz == null || type == null)
+		{
+			return null;
+		}
+		
+		if(hasJsonSubTypes(clazz))
+		{
+			JsonSubTypes jsonSubTypes = clazz.getAnnotation(JsonSubTypes.class);
+			for(JsonSubTypes.Type jsonSubType : jsonSubTypes.value())
+			{
+				if(jsonSubType != null 
+						&& 
+						jsonSubType.value() != null
+						&&
+						jsonSubType.value().equals(type))
+				{
+					return clazz;
+				}
+			}
+		}
+		
+		return getJsonSubTypesSuperClass(type, clazz.getSuperclass());
+	}
+	
 	private static class SubTypeResolverBuilder extends DefaultTypeResolverBuilder
 	{
 		public SubTypeResolverBuilder()
@@ -178,13 +212,7 @@ public class JsonUtil
 		@Override
 		public boolean useForType(JavaType t)
 		{
-			JsonSubTypes jsonSubTypes = t.getRawClass().getAnnotation(JsonSubTypes.class);
-			if (jsonSubTypes != null && jsonSubTypes.value() != null)
-			{
-				return (jsonSubTypes.value().length > 0);
-			}
-			
-		    return false;
+		    return hasJsonSubTypes(t.getRawClass());
 		}
 	}
 	
