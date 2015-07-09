@@ -299,37 +299,49 @@ public class ResourceMethod
 
 	private String getExceptionId(Exception e)
 	{
-		String name = e.getClass().getCanonicalName();
-		String exceptionId = exceptionIds.get(name);
+		Class<?> clazz = e.getClass();
+		String className = clazz.getCanonicalName();
+		String exceptionId = exceptionIds.get(className);
 		if (exceptionId == null)
 		{
-			initializeExceptionObjects(e, name);
+			initializeExceptionObjects(clazz, className);
 		}
-		return exceptionIds.get(name);
+		return exceptionIds.get(className);
 	}
 
 	private ObjectWriter getExceptionWriter(Exception e)
 	{
-		String name = e.getClass().getCanonicalName();
-		ObjectWriter objectWriter = exceptionWriters.get(name);
+		Class<?> clazz = e.getClass();
+		String className = clazz.getCanonicalName();
+		ObjectWriter objectWriter = exceptionWriters.get(className);
 		if (objectWriter == null)
 		{
-			initializeExceptionObjects(e, name);
+			initializeExceptionObjects(clazz, className);
 		}
-		return exceptionWriters.get(name);
+		return exceptionWriters.get(className);
 	}
 
-	private void initializeExceptionObjects(Exception e, String name)
+	private void initializeExceptionObjects(Class<?> clazz, String className)
     {
 	    exceptionlock.lock();
 	    try
 	    {
-	    	ObjectWriter objectWriter = exceptionWriters.get(name);
+	    	ObjectWriter objectWriter = exceptionWriters.get(className);
 	    	if (objectWriter == null)
 	    	{
-	    		objectWriter = JsonUtil.createWriter(e.getClass());
-	    		exceptionWriters.put(name, objectWriter);
-	    		exceptionIds.put(name, hash(name));
+	    		Class<?> jsonSubTypesSuperClass = JsonUtil.getJsonSubTypesSuperClass(clazz, clazz);
+	    		if(jsonSubTypesSuperClass == null)
+	    		{
+	    			objectWriter = JsonUtil.createWriter(clazz);
+	    			exceptionWriters.put(className, objectWriter);
+	    			exceptionIds.put(className, hash(className));
+	    		} 
+	    		else
+	    		{
+	    			objectWriter = JsonUtil.createWriter(jsonSubTypesSuperClass);
+	    			exceptionWriters.put(className, objectWriter);
+	    			exceptionIds.put(className, hash(jsonSubTypesSuperClass.getCanonicalName()));
+	    		}
 	    	}
 	    }
 	    finally
