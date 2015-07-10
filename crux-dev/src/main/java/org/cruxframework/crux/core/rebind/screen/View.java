@@ -57,9 +57,9 @@ public class View
 	protected String title;
 	protected List<String> views = new ArrayList<String>();
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
+	protected Map<String, DataProvider> dataProviders = new HashMap<String, DataProvider>();
 	protected Set<String> widgetTypes = new HashSet<String>();
 	protected String width;
-	private final JSONArray elements;
 
 	private final String html;
 	private long lastModified;
@@ -67,10 +67,9 @@ public class View
 	private final boolean rootView;
 	private JSONObject viewElement;
 	
-	public View(String id, JSONArray elements, JSONObject lazyDependencies, String html, boolean rootView) 
+	public View(String id, JSONObject lazyDependencies, String html, boolean rootView) 
 	{
 		this.id = id;
-		this.elements = elements;
 		this.lazyDependencies = lazyDependencies;
 		this.html = html;
 		this.rootView = rootView;
@@ -89,15 +88,6 @@ public class View
     	return dataObject;
     }
 
-	/**
-	 * Return the elements metadata
-	 * @return
-	 */
-	public JSONArray getElements()
-    {
-    	return elements;
-    }
-	
 	/**
 	 * Return a event associated with the given id
 	 * @param evtId
@@ -207,6 +197,12 @@ public class View
 		return widgets.get(widgetId);
 	}
 	
+	public DataProvider getDataProvider(String id)
+	{
+		if (id == null) return null;
+		return dataProviders.get(id);
+	}
+	
 	/**
 	 * Return a Set containing all types of widgets found on this view
 	 * @return
@@ -313,6 +309,11 @@ public class View
 	public Iterator<Widget> iterateWidgets() 
 	{
 		return widgets.values().iterator();
+	}
+	
+	public Iterator<DataProvider> iterateDataProviders()
+	{
+		return dataProviders.values().iterator();
 	}
 	
 	/**
@@ -479,6 +480,14 @@ public class View
 			{
 				widgetTypes.add(widget.getType());
 			}
+		}
+	}
+	
+	protected void addDataProvider(DataProvider dataProvider)
+	{
+		if (dataProvider != null)
+		{
+			dataProviders.put(dataProvider.getId(), dataProvider);
 		}
 	}
 	

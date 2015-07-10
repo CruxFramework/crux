@@ -21,10 +21,12 @@ import java.util.logging.Logger;
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.collection.Map;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
@@ -72,6 +74,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	protected boolean active = false;
 	protected FastList<ViewActivateHandler> attachHandlers = null;
 	protected DataBindingHandler dataBindingHandler = null;
+	protected Map<DataProvider<?>> dataProviders = null;
 	protected FastList<ViewDeactivateHandler> detachHandlers = null;
 	protected String height;
 	protected FastList<ValueChangeHandler<String>> historyHandlers = null;
@@ -87,7 +90,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	protected FastList<ClosingHandler> windowClosingHandlers = null;
 	private String id;
 	private String prefix;
-	
 	
 	private String title;
 	private ViewContainer viewContainer;
@@ -107,6 +109,32 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     {
     	dataBindingHandler.addDataObjectBinder(dataObjectBinder, dataObjectAlias);
     }
+	
+	/**
+	 * Add the given {@link DataProvider} to this View.
+	 * @param id an identifier for the {@link DataProvider}.
+	 * @param dataProvider the {@link DataProvider}.
+	 */
+	public void addDataProvider(String id, DataProvider<?> dataProvider)
+	{
+		if (dataProviders == null)
+		{
+			dataProviders = CollectionFactory.createMap();
+		}
+		dataProviders.put(id, dataProvider);
+	}
+	
+	/**
+	 * Remove the given {@link DataProvider} from this View.
+	 * @param id the {@link DataProvider} identifier.
+	 */
+	public void removeDataProvider(String id)
+	{
+		if (dataProviders == null)
+		{
+			dataProviders.remove(id);
+		}
+	}
 	
 	/**
 	 * 
@@ -197,7 +225,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -265,6 +293,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
+
 	/**
 	 * 
 	 * @param handler
@@ -290,7 +319,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-
 	/**
 	 * 
 	 * @param handler
@@ -316,7 +344,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-	
+
 	@Override
 	@PartialSupport
 	public HandlerRegistration addWindowOrientationChangeHandler(final OrientationChangeHandler handler)
@@ -345,7 +373,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-
+	
 	/**
 	 * Verify if the view contains an widget associated with the given identifier
 	 * @param id widget identifier
@@ -355,20 +383,20 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		return widgets.containsKey(id);
 	}
-	
+
 	@Override
     public void copyTo(Object dataObject)
     {
 		dataBindingHandler.copyTo(dataObject);
-    }		
-
+    }
+	
 	/**
 	 * Create a new DataSource instance
 	 * @param dataSource dataSource name, declared with <code>@DataSource</code> annotation
 	 * @return new dataSource instance
 	 */
-	public abstract DataSource<?> createDataSource(String dataSource);
-	
+	public abstract DataSource<?> createDataSource(String dataSource);		
+
 	/**
 	 * Retrieve the container that holds this view 
 	 * @return Parent container or null if this view does not belong to any container.
@@ -377,7 +405,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		return viewContainer;
 	}
-
+	
 	/**
 	 * Retrieve the requested controller from this view
 	 * @param <T> Controller type 
@@ -388,19 +416,34 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		return getRegisteredControllers().getController(controller);
 	}
-	
 
 	@Override
     public <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
     {
     	return dataBindingHandler.getDataObjectBinder(dataObjectClass);
     }
+	
 
 	@Override
     public <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
     {
     	return dataBindingHandler.getDataObjectBinder(dataObjectAlias);
     }
+
+	/**
+	 * Retrieve a {@link DataProvider} contained on this View
+	 * @param id the {@link DataProvider} identifier.
+	 * @return the {@link DataProvider}
+	 */
+	@SuppressWarnings("unchecked")
+    public <T extends DataProvider<?>> T getDataProvider(String id)
+	{
+		if (dataProviders == null)
+		{
+			return null;
+		}
+		return (T) dataProviders.get(id);
+	}
 	
 	/**
 	 * Retrieve the view height;

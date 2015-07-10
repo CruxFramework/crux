@@ -29,6 +29,7 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.ViewFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.AttachEvtBind;
@@ -312,13 +313,26 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 
 	/**
 	 * 
+	 * @param out
+	 * @param bindingContextVariable
+	 * @param bindableContainerVariable
+	 */
+	public void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable, String bindableContainerVariable)
+    {
+	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
+		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
+			bindableContainerVariable + ", 0);");
+    }		
+	
+	/**
+	 * 
 	 * @param metaElem
 	 * @return
 	 */
 	public Class<?> getChildWidgetClass(JSONObject metaElem)
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).getWidgetClass();
-	}		
+	}
 	
 	/**
 	 * @param metaElem
@@ -336,6 +350,41 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getContext();
 	}
+
+	public String getDataBindingReadExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations)
+	{
+		String expression = null;
+		PropertyBindInfo binding = getObjectDataBinding(propertyValue, null, true);
+		if (binding != null)
+		{
+			expression = binding.getDataObjectReadExpression(dataObjectVariable);
+			String converterDeclaration = binding.getConverterDeclaration();
+			if (converterDeclaration != null)
+			{
+				converterDeclarations.add(converterDeclaration);
+			}
+		}
+		else
+		{
+			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, null);
+			if (expressionBinding != null)
+			{
+				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
+				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
+			}
+			else
+			{
+				expression = getDeclaredMessage(propertyValue);
+			}
+		}
+		return expression;
+	}
+	
+	public JClassType getDataObjectFromProvider(String dataProviderId)
+	{
+		return viewFactory.getDataObjectFromProvider(dataProviderId);
+	}
 	
 	/**
 	 * @param property
@@ -345,7 +394,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getDeclaredMessage(property);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -353,7 +402,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return (viewFactory.getDevice() == null?null:Device.valueOf(viewFactory.getDevice()));
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -364,7 +413,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath);
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -399,7 +448,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getLogger();
 	}
-
+	
 	/**
 	 * 
 	 * @param propertyValue
@@ -411,7 +460,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, boundToAttribute);
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -424,58 +473,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null);
 	}
-
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
+	
+    public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
 												String uiObjectClassName, String getUiObjectExpression)
 	{
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
 												getUiObjectExpression);
 	}
 	
-	/**
-	 * 
-	 * @param out
-	 * @param bindingContextVariable
-	 * @param bindableContainerVariable
-	 */
-	public void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable, String bindableContainerVariable)
-    {
-	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
-		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
-			bindableContainerVariable + ", 0);");
-    }
-
-	public String getDataBindingReadExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, 
-		String propertyValue, Set<String> converterDeclarations)
-	{
-		String expression = null;
-		PropertyBindInfo binding = getObjectDataBinding(propertyValue, null, true);
-		if (binding != null)
-		{
-			expression = binding.getDataObjectReadExpression(dataObjectVariable);
-			String converterDeclaration = binding.getConverterDeclaration();
-			if (converterDeclaration != null)
-			{
-				converterDeclarations.add(converterDeclaration);
-			}
-		}
-		else
-		{
-			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, null);
-			if (expressionBinding != null)
-			{
-				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
-				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
-			}
-			else
-			{
-				expression = getDeclaredMessage(propertyValue);
-			}
-		}
-		return expression;
-	}
 	
-    /**
+	/**
 	 * 
 	 * @param property
 	 * @return
@@ -484,7 +491,6 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getResourceAccessExpression(property);
 	}
-	
 	
 	/**
 	 * Create a new printer for a subType.  That subType will be declared on the package name informed in the first parameter
@@ -501,7 +507,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
     	return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
     }
-	
+
 	/**
 	 * @param subType
 	 * @param superClass
@@ -541,8 +547,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public Class<?> getWidgetClass()
     {
 	    return widgetClass;
-    }
-
+    }	
+	
+	
 	/**
 	 * @return
 	 */
@@ -554,9 +561,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			throw new CruxGeneratorException("No widget registered for declaration ["+widgetDeclaration+"]."); 
 		}
 		return widgetCreator.getWidgetClass();
-    }	
-	
-	
+    }
+
 	/**
 	 * @return
 	 */
@@ -564,7 +570,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
 	    return getWidgetClass().getCanonicalName();
     }
-
+	
 	/**
 	 * 
 	 * @return
@@ -573,7 +579,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
 	    return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
     }
-	
+
 	/**
 	 * @return
 	 */
@@ -586,7 +592,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		throw new CruxGeneratorException("Error reading viewFactory declaration."); 
 	}
-
+	
 	/**
 	 * @param metaElem
 	 * @return
@@ -595,7 +601,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).hasPartialSupport();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -629,7 +635,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			out.println("final "+className + " " + context.getWidget()+" = GWT.create("+className+".class);");
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param property
@@ -647,7 +653,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
     public boolean isWidget(JSONObject metaElem)
 	{
-		return viewFactory.isValidWidget(metaElem);
+		return ViewFactory.isValidWidget(metaElem);
 	}
 	
 	/**
@@ -659,7 +665,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void postProcess(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
+
 	/**
 	 * Process widget attributes
 	 * @param out 
@@ -669,7 +675,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processAttributes(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-
+	
 	/**
 	 * Process element children
 	 * @param out 
@@ -680,6 +686,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 	}
 	
+	
 	/**
 	 * Process widget events
 	 * @param out 
@@ -689,7 +696,6 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processEvents(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
 	
 	/**
 	 * Close the current postProcessing scope and schedule the execution of all scope commands.
@@ -733,7 +739,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.createPostProcessingScope();
 	}
-	
+
 	/**
 	 * Retrieve the object responsible for print controller access expressions on client JS
 	 * @return
@@ -747,7 +753,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getDeclaredMessages();
 	}
-
+	
 	protected String getLoggerVariable()
 	{
 		return viewFactory.getLoggerVariable();
@@ -757,7 +763,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return ViewFactoryCreator.getViewVariable();
 	}
-
+	
 	/**
 	 * 
 	 * @param supported

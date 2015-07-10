@@ -733,6 +733,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	    generateCoreSchemasImport(templateLibraries, out);
 	    generateCoreSplashScreenElement(out);
 	    generateCoreScreenElement(out);
+	    generateCoreDataProviderElements(out);
 	    generateCoreCrossDeviceElement(out);
 	    generateCoreWidgetsType(out, templateLibraries);	
 	    generateCoreCrossDevWidgetsType(out, templateLibraries);
@@ -846,6 +847,55 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"disableRefresh\" type=\"xs:boolean\" default=\"false\" />");
 		out.println("</xs:complexType>");
 	}	
+
+	/**
+	 * 
+	 * @param out
+	 */
+	protected void generateCoreDataProviderElements(PrintStream out)
+	{
+		out.println("<xs:element name=\"dataProvider\" type=\"DataProvider\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.dataProviderDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"DataProvider\">");
+		generateCoreDataProviderCommonAttributes(out);
+		out.println("<xs:attribute name=\"onLoadData\" type=\"xs:string\" use=\"required\" />");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:element name=\"lazyDataProvider\" type=\"LazyDataProvider\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.lazyDataProviderDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"LazyDataProvider\">");
+		generateCoreDataProviderCommonAttributes(out);
+		out.println("<xs:attribute name=\"onMeasureData\" type=\"xs:string\" use=\"required\" />");
+		out.println("<xs:attribute name=\"onFetchData\" type=\"xs:string\" use=\"required\" />");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:element name=\"streamingDataProvider\" type=\"StreamingDataProvider\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.streamingDataProviderDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"StreamingDataProvider\">");
+		out.println("<xs:attribute name=\"onFetchData\" type=\"xs:string\" use=\"required\" />");
+		generateCoreDataProviderCommonAttributes(out);
+		out.println("</xs:complexType>");
+}
+
+	private void generateCoreDataProviderCommonAttributes(PrintStream out)
+    {
+		out.println("<xs:attribute name=\"id\" type=\"xs:string\" use=\"required\" />");
+		out.println("<xs:attribute name=\"dataObject\" type=\"xs:string\" use=\"required\" />");
+	    out.println("<xs:attribute name=\"pageSize\" type=\"xs:integer\" />");
+		out.println("<xs:attribute name=\"autoLoadData\" type=\"xs:boolean\" default=\"false\" />");
+    }	
 
 	/**
 	 * 
@@ -1689,6 +1739,9 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			out.println("</xs:element>");
 			out.println("<xs:complexType name=\"View\">");
 			out.println("<xs:choice maxOccurs=\"unbounded\">");
+			out.println("<xs:element ref=\"c:dataProvider\" />");
+			out.println("<xs:element ref=\"c:lazyDataProvider\" />");
+			out.println("<xs:element ref=\"c:streamingDataProvider\" />");
 			out.println("<xs:group ref=\"c:widgets\" >");
 			out.println("<xs:annotation>");
 			out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.anyWidgetsDescription())+"</xs:documentation>");
