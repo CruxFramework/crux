@@ -79,4 +79,13 @@ public interface SchemaMessages
 
 	@DefaultServerMessage("Image")
 	String illustrationDescription();
+
+	@DefaultServerMessage("A paged dataProvider that loads all its data in one single step.")
+	String dataProviderDescription();
+
+	@DefaultServerMessage("A paged dataProvider that loads its data step by step when each page becomes necessary. This kind of dataProvider needs to know its size.")
+	String lazyDataProviderDescription();
+
+	@DefaultServerMessage("A paged dataProvider that loads its data step by step when each page becomes necessary. This kind of dataProvider does not know its size.")
+	String streamingDataProviderDescription();
 }
