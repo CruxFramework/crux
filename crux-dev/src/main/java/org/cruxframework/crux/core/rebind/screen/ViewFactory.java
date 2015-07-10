@@ -26,9 +26,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.dataprovider.DataProviderType;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONArray;
@@ -167,7 +169,7 @@ public class ViewFactory
         catch (JSONException e)
         {
 			throw new CruxGeneratorException("The id attribute is required for CRUX Widgets. " +
-					"On view ["+view.getId()+"], there is an widget of type ["+elem.optString("_type")+"] without id.");
+					"On view ["+view.getId()+"], there is an widget of type ["+elem.optString("_type")+"] without a valid id.");
         }
 		Widget widget = view.getWidget(widgetId);
 		if (widget != null)
@@ -216,6 +218,10 @@ public class ViewFactory
 	            		{
 	    					parseViewElement(view,childElem);
 	            		}
+	            		else if (isDataProviderDefinition(childElem))
+	            		{
+	    					parseDataProviderElement(view, childElem);
+	            		}
 	            	}
 	            }
             }
@@ -232,12 +238,22 @@ public class ViewFactory
 	 * @return
 	 * @throws JSONException 
 	 */
-	private boolean isScreenDefinition(JSONObject cruxObject) throws JSONException
+	private static boolean isScreenDefinition(JSONObject cruxObject) throws JSONException
 	{
 		if (cruxObject.has("_type"))
 		{
 			String type = cruxObject.getString("_type");
-			return (type != null && "screen".equals(type));
+			return (type != null && ViewParser.SCREEN_TYPE.equals(type));
+		}
+		return false;
+	}
+	
+	private static boolean isDataProviderDefinition(JSONObject cruxObject) throws JSONException
+	{
+		if (cruxObject.has("_type"))
+		{
+			String type = cruxObject.getString("_type");
+			return DataProviderType.isDataProviderType(type);
 		}
 		return false;
 	}
@@ -281,7 +297,7 @@ public class ViewFactory
 			JSONObject lazyDependencies = metaData.getJSONObject("lazyDeps");
 			String html = metaData.getString("_html");
 			
-			View view = new View(id, elementsMetadata, lazyDependencies, html, rootView);
+			View view = new View(id, lazyDependencies, html, rootView);
 
 			int length = elementsMetadata.length();
 			for (int i = 0; i < length; i++) 
@@ -291,6 +307,10 @@ public class ViewFactory
 				if (isScreenDefinition(compCandidate))
 				{
 					parseViewElement(view,compCandidate);
+				}
+				else if (isDataProviderDefinition(compCandidate))
+				{
+					parseDataProviderElement(view,compCandidate);
 				}
 				else if (isValidWidget(compCandidate))
 				{
@@ -312,6 +332,28 @@ public class ViewFactory
 		}
 	}
 
+	private void parseDataProviderElement(View view, JSONObject elem) throws ScreenConfigException
+	{
+		if (!elem.has("id"))
+		{
+			throw new CruxGeneratorException("The id attribute is required for CRUX DataProviders. " +
+					"On view ["+view.getId()+"], there is a dataProvider of type ["+elem.optString("_type")+"] without id.");
+		}
+		String id;
+        try
+        {
+        	id = elem.getString("id");
+        }
+        catch (JSONException e)
+        {
+			throw new CruxGeneratorException("The id attribute is required for CRUX DataProviders. " +
+				"On view ["+view.getId()+"], there is a dataProvider of type ["+elem.optString("_type")+"] without a valid id.");
+        }
+		DataProviderType type = DataProviderType.fromType(elem.optString("_type"));
+		DataProvider dataProvider = new DataProvider(elem, id, type);
+		view.addDataProvider(dataProvider);
+	}
+	
 	/**
 	 * Parse view element
 	 * @param view
@@ -598,14 +640,13 @@ public class ViewFactory
 	 * Test if a target json object represents a widget definition for Crux.
 	 * @param cruxObject
 	 * @return
-	 * @throws JSONException
 	 */
-	public static boolean isValidWidget(JSONObject cruxObject) throws JSONException
+	public static boolean isValidWidget(JSONObject cruxObject) 
 	{
 		if (cruxObject.has("_type"))
 		{
-			String type = cruxObject.getString("_type");
-			return (type != null && !"screen".equals(type));
+			String type = cruxObject.optString("_type");
+			return (type != null && !ViewParser.SCREEN_TYPE.equals(type) && !DataProviderType.isDataProviderType(type));
 		}
 		return false;
 	}

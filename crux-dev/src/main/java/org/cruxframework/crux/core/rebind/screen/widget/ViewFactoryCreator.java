@@ -60,6 +60,7 @@ import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyC
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
 import org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersProxyCreator;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
+import org.cruxframework.crux.core.rebind.screen.DataProvider;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
@@ -126,6 +127,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
 	private String viewPanelVariable;
+	private DataProviderHelper dataProviderHelper;
 
 	/**
 	 * Constructor
@@ -148,6 +150,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.viewPanelVariable = createVariableName("viewPanel");
 		this.widgetConsumer = new ViewWidgetConsumer(this);
 		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
+		this.dataProviderHelper = new DataProviderHelper(this);
 		this.rootPanelChildren = new HashSet<String>();
 		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable, context.getControllers());
 		this.bindHandler = new ViewBindHandler(context, view, this);
@@ -775,22 +778,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return false;
 	}
 
-	/**
-	 * Check if the given metaElement refers to a valid widget
-	 *
-	 * @param element
-	 * @return
-	 */
-    protected boolean isValidWidget(JSONObject metaElem)
-	{
-		String type =  metaElem.optString("_type");
-		if (type != null && type.length() > 0 && !"screen".equals(type))
-		{
-			return true;
-		}
-		return false;
-	}
-
     /**
 	 * Creates a new widget based on its meta-data element.
 	 *
@@ -1021,7 +1008,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("return this.registeredDataSources.getDataSource(dataSource);");
     	printer.println("}");
     }
-
+	
 	/**
 	 * @param printer
 	 */
@@ -1030,37 +1017,59 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    createPostProcessingScope();
 		printer.println("protected void createWidgets(){");
 
-		JSONArray elementsMetaData = this.view.getElements();
 		processViewEvents(printer);
 		processViewDimensions(printer);
-		for (int i = 0; i < elementsMetaData.length(); i++)
-		{
-			JSONObject metaElement = elementsMetaData.optJSONObject(i);
-
-			if (!metaElement.has("_type"))
-			{
-				throw new CruxGeneratorException("Crux Meta Data contains an invalid meta element (without type attribute). View ID["+view.getId()+"]. "
-						+ "Validate your view file.");
-			}
-			if (isValidWidget(metaElement))
-			{
-				try
-				{
-					String type = getMetaElementType(metaElement);
-					createWidget(printer, metaElement, type);
-				}
-				catch (Throwable e)
-				{
-					throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
-				}
-			}
-		}
+		
+		generateDataProvidersCreationBlock(printer);
+		generateWidgetsCreationBlock(printer);
 
 		printer.println("if ("+LogConfiguration.class.getCanonicalName()+".loggingIsEnabled()){");
 		printer.println(loggerVariable+".info(Crux.getMessages().viewContainerViewCreated(getId()));");
 		printer.println("}");
 
 		printer.println("}");
+    }
+
+	public JClassType getDataObjectFromProvider(String dataProviderId)
+	{
+		return dataProviderHelper.getDataObjectFromProvider(dataProviderId);
+	}
+	
+	private void generateDataProvidersCreationBlock(SourcePrinter printer)
+    {
+	    Iterator<DataProvider> dataProviders = view.iterateDataProviders();
+		while (dataProviders.hasNext())
+		{
+			DataProvider dataProvider = dataProviders.next();
+			try
+			{
+				String dataProviderVariable = dataProviderHelper.createDataProvider(printer, dataProvider);
+				printer.println("addDataProvider("+EscapeUtils.quote(dataProvider.getId())+", "+dataProviderVariable+");");
+			}
+			catch (Exception e)
+			{
+				throw new CruxGeneratorException("Error Creating dataProvider. See Log for more detail.", e);
+			}
+		}
+    }
+	
+	private void generateWidgetsCreationBlock(SourcePrinter printer)
+    {
+	    Iterator<org.cruxframework.crux.core.rebind.screen.Widget> widgets = view.iterateWidgets();
+		while (widgets.hasNext())
+		{
+			org.cruxframework.crux.core.rebind.screen.Widget widget = widgets.next();
+			JSONObject metaElement = widget.getMetadata();
+			try
+			{
+				String type = getMetaElementType(metaElement);
+				createWidget(printer, metaElement, type);
+			}
+			catch (Exception e)
+			{
+				throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
+			}
+		}
     }
 
 	/**

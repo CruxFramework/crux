@@ -34,11 +34,13 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
+import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.rebind.dataprovider.DataProviderType;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetLibraries;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetLibraries;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -67,9 +69,9 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 public class ViewParser
 {
 	public static final String CRUX_VIEW_PREFIX = "_crux_view_prefix_";
+	public static final String SCREEN_TYPE = "screen";
 	private static Set<String> attachableWidgets;
 	private static final String CRUX_CORE_NAMESPACE= "http://www.cruxframework.org/crux";
-	private static final String CRUX_CORE_SCREEN = "screen";
 	private static final String CRUX_CORE_SPLASH_SCREEN = "splashScreen";
 	private static DocumentBuilder documentBuilder;
 	private static XPathExpression findCruxPagesBodyExpression;
@@ -82,7 +84,7 @@ public class ViewParser
 	private static final String WIDGETS_NAMESPACE_PREFIX= "http://www.cruxframework.org/crux/";
 	private static Set<String> widgetsSubTags;
 	private static final String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
-	
+
 	static 
 	{
 		try
@@ -108,6 +110,7 @@ public class ViewParser
 	}
 	
 	private Document cruxPageDocument;
+	
 	private String cruxTagName;
 	private final boolean escapeXML;
 	private Document htmlDocument;
@@ -115,7 +118,6 @@ public class ViewParser
 	private int jsIndentationLvl;
 	private final String viewId;
 	private final boolean xhtmlInput;
-
 	/**
 	 * Constructor.
 	 * 
@@ -132,7 +134,7 @@ public class ViewParser
 		this.indentOutput = indentOutput;
 		this.xhtmlInput = xhtmlInput;
     }
-	
+
 	/**Extract the view metadata form the current document
 	 * @param element
 	 */
@@ -171,7 +173,7 @@ public class ViewParser
 			throw new ViewParserException("Error extracting Crux Metadata from view.", e);
 		}
     }
-
+	
 	/**
 	 * Generates the HTML page from the given .crux.xml page.
 	 *
@@ -198,7 +200,7 @@ public class ViewParser
         	throw new ViewParserException(e.getMessage(), e);
         }
 	}
-	
+
 	/**
 	 * @param tagName
 	 * @return
@@ -215,7 +217,7 @@ public class ViewParser
 	{
 		cruxTagName = "";
 	}
-
+	
 	/**
 	 * @param cruxPageDocument
 	 * @return
@@ -337,9 +339,13 @@ public class ViewParser
 					{
 						cruxArrayMetaData.append(",");
 					}
-					if (nodeName.equals(CRUX_CORE_SCREEN))
+					if (nodeName.equals(SCREEN_TYPE))
 					{
 						generateCruxScreenMetaData((Element)child, cruxArrayMetaData);
+					}
+					else if (isDataProviderElement(nodeName))
+					{
+						generateCruxDataProviderMetaData((Element)child, cruxArrayMetaData);
 					}
 					needsComma = true;
 				}
@@ -374,6 +380,23 @@ public class ViewParser
     }
 
 	/**
+	 * Verify if the given nodeName refers to a dataProvider element
+	 * @param nodeName node name
+	 * @return true if it is a dataProvider element
+	 */
+	private boolean isDataProviderElement(String nodeName)
+	{
+		for (DataProviderType dataProviderType : DataProviderType.values())
+        {
+	        if (dataProviderType.name().equals(nodeName))
+	        {
+	        	return true;
+	        }
+        }
+		return false;
+	}
+	
+	/**
 	 * @param cruxPageMetaData
 	 * @param cruxArrayMetaData
 	 */
@@ -402,7 +425,7 @@ public class ViewParser
 			}
 		}
 	}
-	
+
 	/**
 	 * @param htmlHeadElement
 	 * @throws ViewParserException 
@@ -439,7 +462,7 @@ public class ViewParser
 			throw new ViewParserException(e.getMessage(), e);
 		}
     }
-
+	
 	/**
 	 * 
 	 * @param htmlElement
@@ -449,7 +472,20 @@ public class ViewParser
 	private void generateCruxMetadataForView(Element htmlElement, StringBuilder elementsMetadata) throws ViewParserException
     {
 		generateCruxMetadataForView(htmlElement, elementsMetadata, !xhtmlInput);		
-    }	
+    }
+
+	private void generateCruxDataProviderMetaData(Element dataProviderElement, StringBuilder cruxArrayMetaData) throws ViewParserException
+    {
+		DataProviderType providerType = DataProviderType.valueOf(dataProviderElement.getLocalName());
+		
+	    writeIndentationSpaces(cruxArrayMetaData);
+		cruxArrayMetaData.append("{");
+		cruxArrayMetaData.append("\"_type\":"+EscapeUtils.quote(providerType.getType()));
+		
+		generateCruxMetaDataAttributes(dataProviderElement, cruxArrayMetaData);
+		
+		cruxArrayMetaData.append("}");
+    }
 	
 	/**
 	 * 
@@ -481,8 +517,8 @@ public class ViewParser
 			}
 			cruxArrayMetaData.append(childrenMetaData);
 		}
-    }
-
+    }	
+	
 	/**
 	 * 
 	 * @param htmlBodyElement
@@ -498,7 +534,7 @@ public class ViewParser
 		Node htmlChild = htmlDocument.importNode(child, false);
 		htmlBodyElement.appendChild(htmlChild);
     }
-	
+
 	/**
 	 * @param cruxPageScreen
 	 * @param cruxArrayMetaData
@@ -508,7 +544,7 @@ public class ViewParser
     {
 		generateCruxMetadataForView(cruxPageScreen, cruxArrayMetaData, xhtmlInput);		
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -547,7 +583,7 @@ public class ViewParser
 			throw new ViewParserException(e.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * @param node
 	 * @return
@@ -586,7 +622,7 @@ public class ViewParser
         	throw new ViewParserException(e.getMessage(), e);
         }
 	}
-
+	
 	/**
 	 * @param htmlDocument
 	 * @return
@@ -625,7 +661,7 @@ public class ViewParser
     {
 	    return referenceWidgetsList.get(tagName);
     }
-	
+
 	/**
 	 * 
 	 * @param source
@@ -678,7 +714,7 @@ public class ViewParser
 		
 		return HTMLUtils.escapeJavascriptString(text.toString().trim(), escapeXML);
 	}
-
+	
 	/**
 	 * 
 	 * @throws ViewParserException
@@ -734,7 +770,7 @@ public class ViewParser
 	{
 	    return attachableWidgets.contains(libraryName+"_"+localName);
 	}
-	
+
 	/**
 	 * 
 	 * @param node
@@ -751,8 +787,8 @@ public class ViewParser
 			return (namespaceURI == null || namespaceURI.equals(XHTML_NAMESPACE)) && tagName.equalsIgnoreCase("script") && (src != null && src.endsWith(".nocache.js"));
 		}
 		return false;
-	} 
-
+	}
+	
 	/**
 	 * Check if the target node is child from a rootDocument element or from a native XHTML element.
 	 * 
@@ -775,14 +811,14 @@ public class ViewParser
 		{
 			return true;
 		}
-		if (parentNode instanceof Element && namespaceURI != null && namespaceURI.equals(CRUX_CORE_NAMESPACE) && parentNode.getLocalName().equals(CRUX_CORE_SCREEN))
+		if (parentNode instanceof Element && namespaceURI != null && namespaceURI.equals(CRUX_CORE_NAMESPACE) && parentNode.getLocalName().equals(SCREEN_TYPE))
 		{
 			return isHTMLChild(parentNode);
 		}
 		
 		return false;
-	}
-	
+	} 
+
 	/**
 	 * @param node
 	 * @return
@@ -837,7 +873,7 @@ public class ViewParser
 		}
 		return widgetsSubTags.contains(cruxTagName);
     }
-
+	
 	/**
 	 * 
 	 */
@@ -845,8 +881,7 @@ public class ViewParser
 	{
 		jsIndentationLvl--;
 	}
-	
-	
+
 	/**
 	 * @param cruxTagName
 	 */
@@ -854,7 +889,8 @@ public class ViewParser
 	{
 		this.cruxTagName = cruxTagName;
 	}
-
+	
+	
 	/**
 	 * @param cruxPageElement
 	 * @param htmlElement
@@ -862,13 +898,13 @@ public class ViewParser
 	private void translateCruxCoreElements(Element cruxPageElement, Element htmlElement, Document htmlDocument)
     {
 	    String nodeName = cruxPageElement.getLocalName();
-	    if (nodeName.equals(CRUX_CORE_SCREEN))
+	    if (nodeName.equals(SCREEN_TYPE))
 	    {
 	    	translateDocument(cruxPageElement, htmlElement, true);
 	    }
     	// else IGNORE
     }
-	
+
 	/**
 	 * @param cruxPageElement
 	 * @param htmlElement
@@ -928,7 +964,7 @@ public class ViewParser
 			}
 		}
     }
-
+	
 	/**
 	 * @param viewId 
 	 * @throws ViewParserException 
@@ -947,7 +983,7 @@ public class ViewParser
 		generateCruxModuleElement(htmlBodyElement);
 		handleCruxSplashScreen();
     }
-	
+
 	/**
 	 * @param cruxPageNode
 	 * @param htmlNode
@@ -1012,7 +1048,7 @@ public class ViewParser
 		}
 	    HTMLUtils.write(htmlDocument.getDocumentElement(), out, indentOutput);
 	}
-
+	
 	/**
 	 * @param cruxArrayMetaData
 	 */
@@ -1027,7 +1063,7 @@ public class ViewParser
 			}
 	    }
     }
-	
+
 	/**
 	 * Some widgets can define tags with custom names that has its type as other widget. It can be handled properly
 	 * and those situations are mapped by this method. 
@@ -1061,7 +1097,7 @@ public class ViewParser
 			}
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param widgetList 
@@ -1121,7 +1157,7 @@ public class ViewParser
 			}
 		}				
 	}
-	
+
 	/**
 	 * That method maps all widgets that needs special handling from Crux.
 	 * Panels that can contain HTML mixed with widgets as contents (like {@link HTMLPanel}) and widgets 
@@ -1161,5 +1197,5 @@ public class ViewParser
 				}
 			}
 		}
-	}	
+	}
 }
