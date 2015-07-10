@@ -43,15 +43,15 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T> implements Pageable<T>
 {
-	protected HasPageable<T> pager;
-	protected DataProvider.DataReader<T> reader = getDataReader();
 	protected boolean allowRefreshAfterDataChange = true;
-	protected HandlerRegistration pageLoadedHandler;
-	protected HandlerRegistration loadStoppedHandler;
-	protected HandlerRegistration transactionEndHandler;
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
 	protected HandlerRegistration dataSortedHandler;
+	protected HasPageable<T> hasPageable;
+	protected HandlerRegistration loadStoppedHandler;
+	protected HandlerRegistration pageLoadedHandler;
+	protected DataProvider.DataReader<T> reader = getDataReader();
+	protected HandlerRegistration transactionEndHandler;
 	
 	public void add(T object)
 	{
@@ -61,10 +61,6 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 		}
 	}
 
-	protected abstract void clear();
-
-	protected abstract void clearRange(int startRecord);
-
 	public void commit()
 	{
 		if (getDataProvider() != null)
@@ -73,23 +69,6 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 		}
 	}
 
-	protected abstract DataProvider.DataReader<T> getDataReader();
-
-	private int getRowsToBeRendered()
-	{
-		if(isDataLoaded())
-		{
-			if(getDataProvider().getCurrentPage() == 0)
-			{
-				getDataProvider().nextPage();
-			}
-
-			return getDataProvider().getCurrentPageSize();
-		}
-
-		return 0;
-	}
-	
 	public int indexOf(T object)
 	{
 		if (getDataProvider() != null)
@@ -98,22 +77,12 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 		}
 		return -1;
 	}
-	
-	/**
-	 * @return true if is allowed to refresh the page after the data 
-	 * provider changes some of their values. This generally happens after
-	 * a commit.
-	 */
-	protected boolean isAllowRefreshAfterDataChange() 
-	{
-		return allowRefreshAfterDataChange;
-	}
 
 	public boolean isDirty()
 	{
 		return getDataProvider() != null && getDataProvider().isDirty();
 	}
-	
+
 	public void loadData()
 	{
 		if (getDataProvider() != null)
@@ -121,51 +90,11 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			getDataProvider().load();
 		}
 	}
-	
-	protected void onTransactionCompleted(boolean commited)
-    {
-		final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
-		Scheduler.get().scheduleDeferred(new ScheduledCommand()
-		{
-			@Override
-			public void execute()
-			{
-				refreshPage(pageStartRecordOnTransactionEnd);
-			}
-		});
-    }
 
 	public void refresh()
 	{
 		refresh(true);
 	}
-	
-	protected void refresh(boolean goToFirstPage)
-	{
-		if (goToFirstPage)
-		{
-			getDataProvider().first();
-		}
-		else
-		{
-			getDataProvider().firstOnPage();
-		}
-		render(goToFirstPage, null);		
-	}
-	
-	protected void refreshPage(int startRecord)
-    {
-		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
-	    if (refreshAll)
-	    {
-	    	clear();
-	    }
-	    else
-	    {
-	    	clearRange(startRecord);
-	    }
-	    refresh(false);
-    }
 	
 	public void remove(int index)
 	{
@@ -174,33 +103,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			getDataProvider().remove(index);
 		}
 	}
-
-	protected void render(boolean refresh, RenderCallback callback)
-    {
-		if (refresh)
-		{
-			clear();
-		}
-		int rowCount = getRowsToBeRendered();
-
-		for (int i=0; i<rowCount; i++)
-		{
-			getDataProvider().read(reader);
-			if (getDataProvider().hasNext())
-			{
-				getDataProvider().next();
-			}
-			else
-			{
-				break;
-			}
-		}
-		if (callback != null)
-		{
-			callback.onRendered();
-		}
-    }
-
+	
 	public void reset()
 	{
 		reset(false);
@@ -218,7 +121,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			loadData();
 		}
 	}
-
+	
 	public void rollback()
 	{
 		if (getDataProvider() != null)
@@ -226,7 +129,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			getDataProvider().rollback();
 		}
 	}
-
+	
 	public void set(int index, T object)
 	{
 		if (getDataProvider() != null)
@@ -234,17 +137,42 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			getDataProvider().set(index, object);
 		}
 	}
-	
-	/**
-	 * @param allowRefreshAfterDataChange indicate if is allowed to 
-	 * refresh the page after the data provider changes some of their values. 
-	 * This generally happens after a commit. 
-	 */
-	protected void setAllowRefreshAfterDataChange(boolean allowRefreshAfterDataChange) 
+
+	@Override
+	public void setHeight(String height) 
 	{
-		this.allowRefreshAfterDataChange = allowRefreshAfterDataChange;
+		if(hasPageable != null && hasPageable.supportsInfiniteScroll())
+		{
+			hasPageable.asWidget().setHeight(height);
+		} 
+		else
+		{
+			super.setHeight(height);
+		}
 	}
 
+	@Override
+    public void setPager(HasPageable<T> pager)
+    {
+		this.hasPageable = pager;
+		if (pager != null)
+ 		{
+			if (getDataProvider() != null)
+			{
+				pager.setDataProvider(getDataProvider(), false);
+			}
+			pager.initializeContentPanel(getContentPanel());
+			if (pager.supportsInfiniteScroll())
+			{
+				initializeAndUpdatePagePanel(true);
+			}
+			else if (getPagePanel() != null)
+			{
+				pager.updatePagePanel(getPagePanel(), true);
+			}			
+ 		}
+    }
+	
 	@Override
 	protected void addDataProviderHandler()
 	{
@@ -253,23 +181,23 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			@Override
 			public void onPageLoaded(final PageLoadedEvent event)
 			{
-				boolean renewPagePanel = pager == null || !pager.supportsInfiniteScroll();
+				boolean renewPagePanel = hasPageable == null || !hasPageable.supportsInfiniteScroll();
 				if (renewPagePanel)
 				{
-					final IsWidget pagePanel = (pager != null)?initializePagePanel():null;
+					final IsWidget pagePanel = (hasPageable != null)?initializePagePanel():null;
 					if (getPagePanel() == null)
 					{
 						IsWidget panel = initializePagePanel();
 						getContentPanel().add(panel);
 					}
-					render((pager == null), new RenderCallback()
+					render((hasPageable == null), new RenderCallback()
 					{
 						@Override
 						public void onRendered()
 						{
-							if (pager != null)
+							if (hasPageable != null)
 							{
-								pager.updatePagePanel(pagePanel, event.getCurrentPage() > event.getPreviousPage());
+								hasPageable.updatePagePanel(pagePanel, event.getCurrentPage() > event.getPreviousPage());
 							}
 						}
 					});
@@ -341,6 +269,97 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			});
 		}
 	}
+	
+	protected abstract void clear();
+	
+	protected abstract void clearRange(int startRecord);
+
+	protected abstract Panel getContentPanel();
+
+	protected abstract DataProvider.DataReader<T> getDataReader();
+
+	/**
+	* Retrieve the panel that will contain all the page data.
+	* @return
+	*/
+	protected abstract IsWidget getPagePanel();
+
+	protected void initializeAndUpdatePagePanel(boolean forward)
+	{
+		IsWidget pagePanel = initializePagePanel();
+		if (hasPageable != null)
+	    {
+	     	hasPageable.updatePagePanel(pagePanel, forward);
+		}
+	}
+
+	/**
+	* Creates the panel that will contain all the page data.
+	* @return
+	*/
+	protected abstract IsWidget initializePagePanel();
+	
+	/**
+	 * @return true if is allowed to refresh the page after the data 
+	 * provider changes some of their values. This generally happens after
+	 * a commit.
+	 */
+	protected boolean isAllowRefreshAfterDataChange() 
+	{
+		return allowRefreshAfterDataChange;
+	}
+
+	@Override
+	protected void onDataProviderSet()
+	{
+		if (getPagePanel() == null)
+		{
+			IsWidget panel = initializePagePanel();
+			getContentPanel().add(panel);
+		}
+		getDataProvider().first();
+		render(true, null);		
+	}
+		
+	protected void onTransactionCompleted(boolean commited)
+    {
+		final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		{
+			@Override
+			public void execute()
+			{
+				refreshPage(pageStartRecordOnTransactionEnd);
+			}
+		});
+    }
+	
+	protected void refresh(boolean goToFirstPage)
+	{
+		if (goToFirstPage)
+		{
+			getDataProvider().first();
+		}
+		else
+		{
+			getDataProvider().firstOnPage();
+		}
+		render(goToFirstPage, null);		
+	}
+	
+	protected void refreshPage(int startRecord)
+    {
+		boolean refreshAll = hasPageable == null || !hasPageable.supportsInfiniteScroll();
+	    if (refreshAll)
+	    {
+	    	clear();
+	    }
+	    else
+	    {
+	    	clearRange(startRecord);
+	    }
+	    refresh(false);
+    }
 		
 	@Override
 	protected void removeDataProviderHandler()
@@ -376,64 +395,57 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 			dataSortedHandler = null;
 		}
 	}
-	
-	protected void initializeAndUpdatePagePanel(boolean forward)
-	{
-		IsWidget pagePanel = initializePagePanel();
-		if (pager != null)
-	    {
-	     	pager.updatePagePanel(pagePanel, forward);
-		}
-	}
-	
-	/**
-	* Creates the panel that will contain all the page data.
-	* @return
-	*/
-	protected abstract IsWidget initializePagePanel();
 		
-	/**
-	* Retrieve the panel that will contain all the page data.
-	* @return
-	*/
-	protected abstract IsWidget getPagePanel();
-		
-	@Override
-	public void setHeight(String height) 
-	{
-		if(pager != null && pager.supportsInfiniteScroll())
-		{
-			pager.asWidget().setHeight(height);
-		} 
-		else
-		{
-			super.setHeight(height);
-		}
-	}
-	
-	@Override
-    public void setPager(HasPageable<T> pager)
+	protected void render(boolean refresh, RenderCallback callback)
     {
-		this.pager = pager;
-		if (pager != null)
- 		{
-			if (getDataProvider() != null)
+		if (refresh)
+		{
+			clear();
+		}
+		int rowCount = getRowsToBeRendered();
+
+		for (int i=0; i<rowCount; i++)
+		{
+			getDataProvider().read(reader);
+			if (getDataProvider().hasNext())
 			{
-				pager.setDataProvider(getDataProvider(), false);
+				getDataProvider().next();
 			}
-			pager.initializeContentPanel(getContentPanel());
-			if (pager.supportsInfiniteScroll())
+			else
 			{
-				initializeAndUpdatePagePanel(true);
+				break;
 			}
-			else if (getPagePanel() != null)
-			{
-				pager.updatePagePanel(getPagePanel(), true);
-			}			
- 		}
-    } 
+		}
+		if (callback != null)
+		{
+			callback.onRendered();
+		}
+    }
 	
-	protected abstract Panel getContentPanel();
+	/**
+	 * @param allowRefreshAfterDataChange indicate if is allowed to 
+	 * refresh the page after the data provider changes some of their values. 
+	 * This generally happens after a commit. 
+	 */
+	protected void setAllowRefreshAfterDataChange(boolean allowRefreshAfterDataChange) 
+	{
+		this.allowRefreshAfterDataChange = allowRefreshAfterDataChange;
+	} 
+	
+	private int getRowsToBeRendered()
+	{
+		if(isDataLoaded())
+		{
+			if(getDataProvider().getCurrentPage() == 0)
+			{
+				getDataProvider().nextPage();
+			}
+
+			return getDataProvider().getCurrentPageSize();
+		}
+
+		return 0;
+	}
 
 	protected static interface RenderCallback
 	{

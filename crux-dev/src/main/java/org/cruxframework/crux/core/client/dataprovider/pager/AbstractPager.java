@@ -27,7 +27,6 @@ import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PageRequestedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageRequestedHandler;
-import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.ResetEvent;
 import org.cruxframework.crux.core.client.dataprovider.ResetHandler;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
@@ -45,16 +44,16 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 {
 	protected static final String DISABLED = "-Disabled";
 	
-	protected boolean enabled = true;
-	protected boolean transactionRunning;
-	protected HandlerRegistration transactionEndHandler;
-	protected HandlerRegistration transactionStartHandler;
-	protected HandlerRegistration loadStoppedHandler;
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
+	protected boolean enabled = true;
+	protected HandlerRegistration loadStoppedHandler;
 	protected HandlerRegistration pageLoadedHandler;
 	protected HandlerRegistration pageRequestedHandler;
 	protected HandlerRegistration resetHandler;
+	protected HandlerRegistration transactionEndHandler;
+	protected boolean transactionRunning;
+	protected HandlerRegistration transactionStartHandler;
 	
 	public HandlerRegistration addPageHandler(PageHandler handler)
 	{
@@ -78,16 +77,6 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		setInteractionEnabled(enabled);
 	}
 
-	@Override
-	public void setDataProvider(PagedDataProvider<T> dataProvider, boolean autoLoadData)
-	{
-	    super.setDataProvider(dataProvider, autoLoadData);
-	    if (!autoLoadData && dataProvider != null && dataProvider.isLoaded())
-	    {
-	    	onUpdate();
-	    }
-	}
-		
 	@Override
 	protected void addDataProviderHandler()	
 	{
@@ -168,6 +157,39 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		});
 	}
 	
+	/**
+	 * Hides the loading information
+	 */
+	protected abstract void hideLoading();
+	
+	protected boolean isInteractionEnabled()
+	{
+		return isEnabled() && !transactionRunning;
+	}
+	
+	@Override
+	protected void onDataProviderSet()
+	{
+    	onUpdate();
+	}
+	
+	protected void onTransactionCompleted(boolean commited)
+    {
+		transactionRunning = false;
+		setInteractionEnabled(enabled);
+    }
+
+	protected void onTransactionStarted(int startRecord)
+    {
+		transactionRunning = true;
+		setInteractionEnabled(false);
+    }
+	
+	/**
+	 * Refreshes the pager
+	 */
+	protected abstract void onUpdate();
+
 	@Override
 	protected void removeDataProviderHandler()
 	{
@@ -213,23 +235,6 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		}
 	}
 	
-	protected boolean isInteractionEnabled()
-	{
-		return isEnabled() && !transactionRunning;
-	}
-	
-	protected void onTransactionCompleted(boolean commited)
-    {
-		transactionRunning = false;
-		setInteractionEnabled(enabled);
-    }
-
-	protected void onTransactionStarted(int startRecord)
-    {
-		transactionRunning = true;
-		setInteractionEnabled(false);
-    }
-	
 	protected void setInteractionEnabled(boolean enabled)
     {
 	    if (enabled)
@@ -241,19 +246,9 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 			addStyleDependentName(DISABLED);
 		}
     }
-
+	
 	/**
 	 * Shows some information to tell user that operation is in progress
 	 */
 	protected abstract void showLoading();
-	
-	/**
-	 * Hides the loading information
-	 */
-	protected abstract void hideLoading();
-	
-	/**
-	 * Refreshes the pager
-	 */
-	protected abstract void onUpdate();
 }

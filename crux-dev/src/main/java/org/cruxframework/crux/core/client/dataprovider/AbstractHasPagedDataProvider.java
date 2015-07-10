@@ -48,9 +48,15 @@ public abstract class AbstractHasPagedDataProvider<T> extends Composite implemen
 				{
 					dataProvider.load();
 				}
+				if (!autoLoadData && dataProvider.isLoaded())
+				{
+					onDataProviderSet();
+				}
 			}
 		}
 	}
+
+	protected abstract void onDataProviderSet();
 
 	@Override
 	public boolean isDataLoaded()
