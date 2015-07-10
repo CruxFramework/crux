@@ -22,8 +22,11 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.event.PageEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
@@ -34,6 +37,9 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  */
 @TagAttributes({
 	@TagAttribute(value="dataProvider", processor=HasPagedDataProviderFactory.DataProviderProcessor.class, required=true)
+})
+@TagEvents({
+	@TagEvent(PageEvtBind.class)
 })
 public abstract class HasPagedDataProviderFactory<C extends WidgetCreatorContext> extends WidgetCreator<C>
 {
