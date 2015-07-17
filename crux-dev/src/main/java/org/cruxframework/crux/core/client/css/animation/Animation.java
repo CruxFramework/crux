@@ -76,26 +76,7 @@ public abstract class Animation <T extends CssResource>
 	 */
 	public void animate(final Element el, final Callback callback)
 	{
-		DOMUtils.addOneTimeHandler(el, getBrowserImpl().getAnimationEndFunctioName(), new DOMUtils.EvtHandler()
-		{
-			@Override
-			public void onEvent(NativeEvent evt)
-			{
-				if (callback != null)
-				{
-					try
-					{
-						callback.onAnimationCompleted();
-					}
-					catch(Exception e)
-					{
-						Crux.getErrorHandler().handleError(e);
-					}
-				}
-				el.removeClassName(getAnimationCssTrigger()+" "+getAnimationName());
-			}
-		});
-		el.addClassName(getAnimationCssTrigger()+" "+getAnimationName());
+		getBrowserImpl().animate(el, callback, getAnimationCssTrigger(), getAnimationName());
 	}
 	
 	/**
@@ -143,6 +124,30 @@ public abstract class Animation <T extends CssResource>
 	
 	static class BrowserImpl
 	{
+		public void animate(final Element el, final Callback callback, final String animationCssTrigger, final String animationName)
+		{
+			DOMUtils.addOneTimeHandler(el, getAnimationEndFunctioName(), new DOMUtils.EvtHandler()
+			{
+				@Override
+				public void onEvent(NativeEvent evt)
+				{
+					if (callback != null)
+					{
+						try
+						{
+							callback.onAnimationCompleted();
+						}
+						catch(Exception e)
+						{
+							Crux.getErrorHandler().handleError(e);
+						}
+					}
+					el.removeClassName(animationCssTrigger+" "+animationName);
+				}
+			});
+			el.addClassName(animationCssTrigger+" "+animationName);
+		}
+		
 		public String getAnimationEndFunctioName()
 		{
 			return "animationend";
@@ -158,12 +163,27 @@ public abstract class Animation <T extends CssResource>
         }
 	}
 	
-//	static class MSBrowserImpl extends BrowserImpl
-//	{
-//		@Override
-//        public String getAnimationEndFunctioName()
-//        {
-//	        return "MSAnimationEnd";
-//        }
-//	}
+	static class MSIE9BrowserImpl extends BrowserImpl
+	{
+		@Override
+		public void animate(final Element el, final Callback callback, final String animationCssTrigger, final String animationName)
+		{
+			if (callback != null)
+			{
+				try
+				{
+					callback.onAnimationCompleted();
+				} catch(Exception e)
+				{
+					Crux.getErrorHandler().handleError(e);
+				}
+			}
+		}
+		
+		@Override
+        public String getAnimationEndFunctioName()
+        {
+	        return null;
+        }
+	}
 }

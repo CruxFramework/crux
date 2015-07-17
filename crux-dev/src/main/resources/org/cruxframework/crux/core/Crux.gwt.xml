@@ -242,14 +242,13 @@
       		<when-property-is name="user.agent" value="safari" />
     	</any>
     </replace-with>
-<!--     <replace-with -->
-<!--     	class="org.cruxframework.crux.core.client.css.animation.Animation.MSBrowserImpl"> -->
-<!--     	<when-type-is class="org.cruxframework.crux.core.client.css.animation.Animation.BrowserImpl" /> -->
-<!--     	<any> -->
-<!--       		<when-property-is name="user.agent" value="ie9" /> -->
-<!-- 			<when-property-is name="user.agent" value="ie10" /> -->
-<!--     	</any> -->
-<!--     </replace-with> -->
+    <replace-with
+    	class="org.cruxframework.crux.core.client.css.animation.Animation.MSIE9BrowserImpl">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.animation.Animation.BrowserImpl" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie9" />
+    	</any>
+    </replace-with>
     <!-- SelectHandler  -->
     <replace-with class="org.cruxframework.crux.core.client.select.SelectEventsHandlerNoTouchImpl">
         <when-type-assignable class="org.cruxframework.crux.core.client.select.SelectEventsHandler" />
