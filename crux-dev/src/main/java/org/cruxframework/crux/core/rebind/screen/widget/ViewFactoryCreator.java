@@ -280,6 +280,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	generateInitializeLazyDependenciesMethod(printer);
 	    	generateGetIocContainerMethod(printer);
 	    	generateRegisterDataObjectBindersMethod(printer);
+	    	generateGetViewPanelMethod(printer);
 	    	if (isBindableView())
 	    	{
 	    		generateCreateDataObjectMethod(printer);
@@ -287,7 +288,14 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	}
     }
 
-    protected void generateRegisterDataObjectBindersMethod(SourcePrinter printer)
+    protected void generateGetViewPanelMethod(SourcePrinter printer)
+    {
+    	printer.println("public "+HTMLPanel.class.getCanonicalName()+" getViewPanel(){");
+    	printer.println("return "+viewPanelVariable + ";");
+    	printer.println("}");
+    }
+
+	protected void generateRegisterDataObjectBindersMethod(SourcePrinter printer)
     {
     	printer.println("protected void registerDataObjectBinders(){");
 
