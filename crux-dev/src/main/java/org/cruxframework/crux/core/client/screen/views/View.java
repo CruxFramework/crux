@@ -47,6 +47,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -1270,6 +1271,12 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     {
     	return dataBindingHandler.read(dataObjectAlias);
     }
+    
+    /**
+     * Retrieve the main panel that contains all the components described into this view.
+     * @return the viewPanel
+     */
+    public abstract HTMLPanel getViewPanel();
     
     protected void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
     {

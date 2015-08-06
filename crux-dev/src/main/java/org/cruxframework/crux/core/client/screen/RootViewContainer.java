@@ -38,6 +38,13 @@ class RootViewContainer extends SingleViewContainer
 		bindToDOM();
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
+	public com.google.gwt.user.client.Element getElement()
+	{
+	    return containerPanel.getElement();
+	}
+	
 	public View getView()
 	{
 		return rootView;
