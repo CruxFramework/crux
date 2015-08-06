@@ -106,17 +106,18 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class ViewFactoryCreator extends AbstractProxyCreator
 {
+	private static Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
 	private static NameFactory nameFactory = new NameFactory();
-	private static String viewVariable = "__view";
 
+	private static String viewVariable = "__view";
 	protected ViewBindHandler bindHandler;
 	protected ControllerAccessHandler controllerAccessHandler;
 	protected String iocContainerClassName;
 	protected View view;
 	protected WidgetConsumer widgetConsumer;
 	private Map<String, Boolean> attachToDOMFactories = new HashMap<String, Boolean>();
-	private static Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
 	private ViewDataBindingsProcessor dataBindingProcessor;
+	private DataProviderHelper dataProviderHelper;
 	private Map<String, String> declaredMessages = new HashMap<String, String>();
 	private String device;
 	private final LazyPanelFactory lazyFactory;
@@ -127,7 +128,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
 	private String viewPanelVariable;
-	private DataProviderHelper dataProviderHelper;
 
 	/**
 	 * Constructor
@@ -156,30 +156,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.bindHandler = new ViewBindHandler(context, view, this);
     }
 	
-	@Override
-	protected boolean findCacheableImplementationAndMarkForReuseIfAvailable()
-	{
-		CachedGeneratorResult lastResult = context.getGeneratorContext().getCachedGeneratorResult();
-		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
-		{
-			return false;
-		}
-
-		String proxyName = getProxyQualifiedName();
-
-		// check that it is available for reuse
-		if (!lastResult.isTypeCached(proxyName))
-		{
-			return false;
-		}
-
-		if (!viewChanged)
-		{
-			return context.getGeneratorContext().tryReuseTypeFromCache(proxyName);
-		}
-		return false;
-	}
-
 	/**
 	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
 	 * @param dataObjectAlias
@@ -189,6 +165,11 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	public String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
 	{
 		return bindHandler.getDataObjectBinderVariable(dataObjectAlias, out);
+	}
+
+	public JClassType getDataObjectFromProvider(String dataProviderId)
+	{
+		return dataProviderHelper.getDataObjectFromProvider(dataProviderId);
 	}
 
 	/**
@@ -287,6 +268,30 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.postProcessingCode.add(new PostProcessingPrinter());
 	}
 
+	@Override
+	protected boolean findCacheableImplementationAndMarkForReuseIfAvailable()
+	{
+		CachedGeneratorResult lastResult = context.getGeneratorContext().getCachedGeneratorResult();
+		if (lastResult == null || !context.getGeneratorContext().isGeneratorResultCachingEnabled())
+		{
+			return false;
+		}
+
+		String proxyName = getProxyQualifiedName();
+
+		// check that it is available for reuse
+		if (!lastResult.isTypeCached(proxyName))
+		{
+			return false;
+		}
+
+		if (!viewChanged)
+		{
+			return context.getGeneratorContext().tryReuseTypeFromCache(proxyName);
+		}
+		return false;
+	}
+
 	protected void generateCreateDataObjectMethod(SourcePrinter printer)
     {
     	String dataObjectClass = context.getDataObjects().getDataObject(view.getDataObject());
@@ -295,7 +300,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("}");
     }
 
-	protected void generateGetIocContainerMethod(SourcePrinter printer)
+    protected void generateGetIocContainerMethod(SourcePrinter printer)
     {
     	printer.println("public "+ IocContainer.class.getCanonicalName() +" getIocContainer(){");
     	printer.println("return iocContainer;");
@@ -305,8 +310,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("return iocContainer;");
     	printer.println("}");
     }
+    
+    protected void generateGetViewPanelMethod(SourcePrinter printer)
+    {
+    	printer.println("public "+HTMLPanel.class.getCanonicalName()+" getViewPanel(){");
+    	printer.println("return "+viewPanelVariable + ";");
+    	printer.println("}");
+    }
 
-    /**
+	/**
 	 * Generate the View Constructor
 	 */
 	@Override
@@ -350,8 +362,9 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    		Logger.class.getCanonicalName()+".getLogger("+getProxySimpleName()+".class.getName());");
 		printer.println("private "+HTMLPanel.class.getCanonicalName()+" "+viewPanelVariable+" = null;");
     }
+    
 
-	/**
+    /**
 	 * Generate the View methods.
 	 *
      * @param printer
@@ -370,6 +383,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	generateInitializeLazyDependenciesMethod(printer);
 	    	generateGetIocContainerMethod(printer);
 	    	generateRegisterDataObjectBindersMethod(printer);
+	    	generateGetViewPanelMethod(printer);
 	    	if (isBindableView())
 	    	{
 	    		generateCreateDataObjectMethod(printer);
@@ -377,7 +391,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	}
     }
 
-    protected void generateRegisterDataObjectBindersMethod(SourcePrinter printer)
+	protected void generateRegisterDataObjectBindersMethod(SourcePrinter printer)
     {
     	printer.println("protected void registerDataObjectBinders(){");
 
@@ -505,8 +519,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	{
 		return context.getLogger();
 	}
-
-	/**
+	
+    /**
 	 * Retrieves the logger variable name
 	 * @return
 	 */
@@ -514,8 +528,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	{
 		return loggerVariable;
 	}
-	
-    /**
+
+	/**
 	 * Return the type of a given crux meta tag. This type could be {@code "screen"} 
 	 *  or another string referencing a registered {@code WidgetFactory}.
 	 *
@@ -675,7 +689,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
-
+	
 	/**
 	 * Create a new printer for a subType. That subType will be declared on the same package of the
 	 * {@code ViewFactory}.
@@ -714,8 +728,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	{
 		return this.view;
 	}
-	
-	/**
+
+    /**
 	 * Returns the creator of the widgets of the given type.
 	 * @param widgetType
 	 * @return the creator of the widgets of the given type.
@@ -753,7 +767,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return !StringUtils.isEmpty(view.getDataObject());
 	}
 
-    /**
+	/**
      * Returns <code>true</code> if the given text is an internationalization key.
 	 * @param text
 	 * @return <code>true</code> if the given text is an internationalization key.
@@ -763,7 +777,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return text!= null && RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text).matches(); 
 	}
 
-	/**
+    /**
      * Returns <code>true</code> if the given text is a reference to a resource.
 	 * @param text
 	 * @return <code>true</code> if the given text is a reference to a resource.
@@ -778,7 +792,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return false;
 	}
 
-    /**
+	/**
 	 * Creates a new widget based on its meta-data element.
 	 *
 	 * @param printer
@@ -792,7 +806,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return newWidget(printer, metaElem, widgetId, widgetType, this.widgetConsumer, this.dataBindingProcessor);
 	}
 
-	/**
+    /**
 	 * Creates a new widget based on its meta-data element.
 	 *
 	 * @param printer
@@ -837,7 +851,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		return widget;
 	}
-
+    
     /**
 	 * @param context
 	 * @param changed 
@@ -877,8 +891,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	{
 		this.postProcessingCode.getLast().println(s);
 	}
-    
-    /**
+
+	/**
 	 * Generate the code for the View events creation
 	 *
 	 * @param printer
@@ -998,7 +1012,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		return widget;
 	}
-
+	
 	/**
 	 * @param printer
 	 */
@@ -1008,7 +1022,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("return this.registeredDataSources.getDataSource(dataSource);");
     	printer.println("}");
     }
-	
+
 	/**
 	 * @param printer
 	 */
@@ -1029,11 +1043,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("}");
     }
-
-	public JClassType getDataObjectFromProvider(String dataProviderId)
-	{
-		return dataProviderHelper.getDataObjectFromProvider(dataProviderId);
-	}
 	
 	private void generateDataProvidersCreationBlock(SourcePrinter printer)
     {
@@ -1053,25 +1062,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
     }
 	
-	private void generateWidgetsCreationBlock(SourcePrinter printer)
-    {
-	    Iterator<org.cruxframework.crux.core.rebind.screen.Widget> widgets = view.iterateWidgets();
-		while (widgets.hasNext())
-		{
-			org.cruxframework.crux.core.rebind.screen.Widget widget = widgets.next();
-			JSONObject metaElement = widget.getMetadata();
-			try
-			{
-				String type = getMetaElementType(metaElement);
-				createWidget(printer, metaElement, type);
-			}
-			catch (Exception e)
-			{
-				throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
-			}
-		}
-    }
-
 	/**
 	 * @param printer
 	 */
@@ -1201,6 +1191,25 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("this."+viewPanelVariable+".setWidth(width);");
 		printer.println("}");
 		printer.println("}");
+    }
+
+	private void generateWidgetsCreationBlock(SourcePrinter printer)
+    {
+	    Iterator<org.cruxframework.crux.core.rebind.screen.Widget> widgets = view.iterateWidgets();
+		while (widgets.hasNext())
+		{
+			org.cruxframework.crux.core.rebind.screen.Widget widget = widgets.next();
+			JSONObject metaElement = widget.getMetadata();
+			try
+			{
+				String type = getMetaElementType(metaElement);
+				createWidget(printer, metaElement, type);
+			}
+			catch (Exception e)
+			{
+				throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
+			}
+		}
     }
 
 	/**

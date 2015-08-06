@@ -48,6 +48,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.user.client.History;
@@ -109,7 +110,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     {
     	dataBindingHandler.addDataObjectBinder(dataObjectBinder, dataObjectAlias);
     }
-	
+    	
 	/**
 	 * Add the given {@link DataProvider} to this View.
 	 * @param id an identifier for the {@link DataProvider}.
@@ -122,18 +123,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			dataProviders = CollectionFactory.createMap();
 		}
 		dataProviders.put(id, dataProvider);
-	}
-	
-	/**
-	 * Remove the given {@link DataProvider} from this View.
-	 * @param id the {@link DataProvider} identifier.
-	 */
-	public void removeDataProvider(String id)
-	{
-		if (dataProviders == null)
-		{
-			dataProviders.remove(id);
-		}
 	}
 	
 	/**
@@ -246,7 +235,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-
+	
 	/**
 	 * Add a new widget into this view
 	 * @param id widget identifier
@@ -256,7 +245,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		widgets.put(id, widget.asWidget());
 	}
-
+	
 	/**
 	 * Add a new widget into this view
 	 * @param id widget identifier
@@ -319,6 +308,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
+
 	/**
 	 * 
 	 * @param handler
@@ -373,7 +363,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			}
 		};
 	}
-	
 	/**
 	 * Verify if the view contains an widget associated with the given identifier
 	 * @param id widget identifier
@@ -395,7 +384,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * @param dataSource dataSource name, declared with <code>@DataSource</code> annotation
 	 * @return new dataSource instance
 	 */
-	public abstract DataSource<?> createDataSource(String dataSource);		
+	public abstract DataSource<?> createDataSource(String dataSource);
 
 	/**
 	 * Retrieve the container that holds this view 
@@ -415,7 +404,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	public <T> T getController(String controller)
 	{
 		return getRegisteredControllers().getController(controller);
-	}
+	}		
 
 	@Override
     public <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
@@ -423,7 +412,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     	return dataBindingHandler.getDataObjectBinder(dataObjectClass);
     }
 	
-
 	@Override
     public <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
     {
@@ -445,6 +433,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		return (T) dataProviders.get(id);
 	}
 	
+
 	/**
 	 * Retrieve the view height;
 	 * @return
@@ -474,20 +463,20 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 	    return getWidget(id, false);
 	}
-
+	
 	/**
 	 * Retrieve the list of controllers registered into this view
 	 * @return
 	 */
-	public abstract RegisteredControllers getRegisteredControllers();		
-	
+	public abstract RegisteredControllers getRegisteredControllers();
+
 	/**
 	 * Retrieve the list of formatters registered into this view
 	 * @return
 	 */
 	@Deprecated
 	@Legacy
-	public abstract RegisteredClientFormatters getRegisteredFormatters();		
+	public abstract RegisteredClientFormatters getRegisteredFormatters();
 
 	/**
 	 * Retrieve the view title
@@ -496,8 +485,14 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	public String getTitle()
     {
     	return title;
-    }
+    }		
 	
+	/**
+     * Retrieve the main panel that contains all the components described into this view.
+     * @return the viewPanel
+     */
+    public abstract HTMLPanel getViewPanel();		
+
 	/**
 	 * Retrieve a widget contained on this view. If the the requested widget does not exists, we check if
 	 * a request for a lazy creation of this widget was previously done. If so, we initialize the wrapper 
@@ -623,18 +618,30 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		return widgets.keys();
 	}
-
+	
 	@Override
     public <T> T read(Class<T> dataObjectClass)
     {
     	return dataBindingHandler.read(dataObjectClass);
     }
-	
+
 	@Override
     public <T> T read(String dataObjectAlias)
     {
     	return dataBindingHandler.read(dataObjectAlias);
     }
+	
+	/**
+	 * Remove the given {@link DataProvider} from this View.
+	 * @param id the {@link DataProvider} identifier.
+	 */
+	public void removeDataProvider(String id)
+	{
+		if (dataProviders == null)
+		{
+			dataProviders.remove(id);
+		}
+	}
 	
 	/**
 	 * Remove the current view from its container, if the view is loaded into a container
