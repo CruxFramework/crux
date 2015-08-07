@@ -98,7 +98,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 				@Override
 				public void execute() 
 				{
-					select();
+					selectableWidget.select();
 				}
 			});
 		}

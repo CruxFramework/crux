@@ -15,8 +15,6 @@
  */
 package org.cruxframework.crux.core.client.select;
 
-import org.cruxframework.crux.core.client.event.SelectEvent;
-
 import com.google.gwt.user.client.ui.HasEnabled;
 
 /**
@@ -49,11 +47,6 @@ public abstract class SelectEventsHandler implements HasEnabled
 		this.selectableWidget = selectableWidget;
 	}
 	
-	public void select()
-	{
-		SelectEvent.fire(selectableWidget);
-	}
-
 	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
 	{
 		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
