@@ -20,7 +20,11 @@ import com.google.gwt.dom.client.Element;
 /**
  * @author Thiago da Rosa de Bustamante
  */
-public interface PasteEventSourceRegister
+public class PasteEventSourceRegister
 {
-	void registerPasteEventSource(HasPasteHandlers handler, Element element);
+	public static native void registerPasteEventSource(HasPasteHandlers source, Element element)/*-{
+		element.addEventListener('input', function(e) {
+			@org.cruxframework.crux.core.client.event.paste.PasteEvent::fire(Lorg/cruxframework/crux/core/client/event/paste/HasPasteHandlers;)(source);
+		}, false);
+	}-*/;
 }
