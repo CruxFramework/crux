@@ -15,12 +15,21 @@
  */
 package org.cruxframework.crux.core.client.event.paste;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.dom.client.Element;
 
 /**
  * @author Thiago da Rosa de Bustamante
  */
-public interface PasteEventSourceRegister
+/* Remove this as long as https://github.com/gwtproject/gwt/issues/4549 will be closed*/
+@Deprecated
+@Legacy
+public class PasteEventSourceRegister
 {
-	void registerPasteEventSource(HasPasteHandlers handler, Element element);
+	public static native void registerPasteEventSource(HasPasteHandlers source, Element element)/*-{
+		element.addEventListener('input', function(e) {
+			@org.cruxframework.crux.core.client.event.paste.PasteEvent::fire(Lorg/cruxframework/crux/core/client/event/paste/HasPasteHandlers;)(source);
+		}, false);
+	}-*/;
 }
