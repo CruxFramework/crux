@@ -110,6 +110,35 @@ public class ClassUtils
 		return hasStringConstructor(rawType);
 	}
 	
+	public static boolean isAnnotationPresent(Class<?> targetClass, Class<? extends Annotation> annotationClass)
+	{
+		if (targetClass.isAnnotationPresent(annotationClass))
+		{
+			return true;
+		}
+		
+		Class<?>[] interfaces = targetClass.getInterfaces();
+		if (interfaces != null)
+		{
+			for (Class<?> intf : interfaces) 
+			{
+				if (isAnnotationPresent(intf, annotationClass))
+				{
+					return true;
+				}
+			}
+		}
+		
+		Class<?> superclass = targetClass.getSuperclass();
+		
+		if (superclass != null && isAnnotationPresent(superclass, annotationClass))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * 
 	 * @param type
