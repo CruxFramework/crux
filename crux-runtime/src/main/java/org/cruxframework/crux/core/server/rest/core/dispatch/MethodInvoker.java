@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.cruxframework.crux.core.server.rest.core.RequestPreprocessors;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.server.rest.core.RequestProcessors;
 import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
@@ -44,11 +46,13 @@ import org.cruxframework.crux.core.utils.ClassUtils;
 public class MethodInvoker
 {
 	protected static enum RestParameterType{query, header, form, cookie, path, body}
+	private static final Log logger = LogFactory.getLog(MethodInvoker.class);
 
 	protected Method method;
 	protected Class<?> rootClass;
 	protected ValueInjector[] params;
 	protected List<RequestPreprocessor> preprocessors;
+	protected List<RequestPostprocessor> postprocessors;
 	private RestErrorHandler restErrorHandler; 
 
 	public MethodInvoker(Class<?> root, Method method, String httpMethod)
@@ -66,6 +70,7 @@ public class MethodInvoker
 		}
 		validateParamExtractors(httpMethod);
 		initializePreprocessors();
+		initializePostprocessors();
 	}
 
 	public ValueInjector[] getParams()
@@ -146,7 +151,29 @@ public class MethodInvoker
 			msg += " )";
 			throw new InternalServerErrorException(msg, "Can not execute requested service", e);
 		}
+		finally
+		{
+			postprocess(request);
+		}
 	}
+
+	protected void initializePostprocessors() throws RequestProcessorException
+    {
+		RequestProcessorContext context = new RequestProcessorContext();
+		context.setTargetMethod(method);
+		context.setTargetClass(rootClass);
+		
+	    postprocessors = new ArrayList<RequestPostprocessor>();
+	    Iterator<RequestPostprocessor> iterator = RequestProcessors.iteratePostprocessors();
+	    while (iterator.hasNext())
+        {
+	    	RequestPostprocessor processor = iterator.next().createProcessor(context);
+	    	if (processor != null)
+	    	{
+	    		postprocessors.add(processor);
+	    	}
+        }
+    }
 
 	protected void initializePreprocessors() throws RequestProcessorException
     {
@@ -155,7 +182,7 @@ public class MethodInvoker
 		context.setTargetClass(rootClass);
 		
 	    preprocessors = new ArrayList<RequestPreprocessor>();
-	    Iterator<RequestPreprocessor> iterator = RequestPreprocessors.iteratePreprocessors();
+	    Iterator<RequestPreprocessor> iterator = RequestProcessors.iteratePreprocessors();
 	    while (iterator.hasNext())
         {
 	    	RequestPreprocessor processor = iterator.next().createProcessor(context);
@@ -163,6 +190,21 @@ public class MethodInvoker
 	    	{
 	    		preprocessors.add(processor);
 	    	}
+        }
+    }
+
+	protected void postprocess(HttpRequest request) throws RestFailure
+    {
+		for (RequestPostprocessor postprocessor : postprocessors)
+        {
+			try
+			{
+				postprocessor.postprocess(request);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error running processor ["+postprocessor.getClass().getCanonicalName()+"]", e);
+			}
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,18 +16,17 @@
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
-import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class RequestPreprocessor extends RequestProcessor
+public abstract class RequestPostprocessor extends RequestProcessor
 {
 	/**
 	 * 
 	 * @param request
-	 * @throws RestFailure
 	 */
-	public abstract void preprocess(HttpRequest request) throws RestFailure;
+	public abstract void postprocess(HttpRequest request);
+
 }
