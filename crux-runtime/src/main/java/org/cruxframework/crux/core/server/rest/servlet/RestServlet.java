@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.i18n.LocaleResolver;
 import org.cruxframework.crux.core.i18n.LocaleResolverInitializer;
 import org.cruxframework.crux.core.server.rest.core.HttpHeaders;
-import org.cruxframework.crux.core.server.rest.core.RequestPreprocessors;
+import org.cruxframework.crux.core.server.rest.core.RequestProcessors;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.core.dispatch.RestDispatcher;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
@@ -218,8 +218,24 @@ public class RestServlet extends HttpServlet
             {
 	            try
                 {
-					RequestPreprocessors.registerPreprocessor(proc.trim());
+					RequestProcessors.registerPreprocessor(proc.trim());
                 }
+                catch (Exception e)
+                {
+	                logger.error(e.getMessage(), e);
+                }
+            }
+	    }
+	    processors = config.getInitParameter("postprocessors");
+	    if (processors != null)
+	    {
+	    	String[] processorNames = processors.split(",");
+	    	for (String proc : processorNames)
+            {
+	            try
+                {
+					RequestProcessors.registerPostprocessor(proc.trim());                
+				}
                 catch (Exception e)
                 {
 	                logger.error(e.getMessage(), e);

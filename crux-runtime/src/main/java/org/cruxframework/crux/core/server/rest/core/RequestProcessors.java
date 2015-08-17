@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.cruxframework.crux.core.server.rest.core.dispatch.RequestPostprocessor;
 import org.cruxframework.crux.core.server.rest.core.dispatch.RequestPreprocessor;
 import org.cruxframework.crux.core.server.rest.core.dispatch.RequestProcessorException;
 
@@ -27,25 +28,44 @@ import org.cruxframework.crux.core.server.rest.core.dispatch.RequestProcessorExc
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RequestPreprocessors
+public class RequestProcessors
 {
-	private static Map<String, RequestPreprocessor> processors = Collections.synchronizedMap(new LinkedHashMap<String, RequestPreprocessor>());
+	private static Map<String, RequestPreprocessor> preProcessors = Collections.synchronizedMap(new LinkedHashMap<String, RequestPreprocessor>());
+	private static Map<String, RequestPostprocessor> postProcessors = Collections.synchronizedMap(new LinkedHashMap<String, RequestPostprocessor>());	
 	
 	public static void registerPreprocessor(String processorClassName)
 	{
         try
         {
         	RequestPreprocessor preprocessor = (RequestPreprocessor) Class.forName(processorClassName).newInstance();
-	        processors.put(processorClassName, preprocessor);
+	        preProcessors.put(processorClassName, preprocessor);
         }
         catch (Exception e)
         {
-        	throw new RequestProcessorException("Error creating preprocessor ["+processorClassName+"]", e);
+        	throw new RequestProcessorException("Error registering preprocessor ["+processorClassName+"]", e);
+        }
+	}
+	
+	public static void registerPostprocessor(String processorClassName)
+	{
+        try
+        {
+        	RequestPostprocessor postprocessor = (RequestPostprocessor) Class.forName(processorClassName).newInstance();
+	        postProcessors.put(processorClassName, postprocessor);
+        }
+        catch (Exception e)
+        {
+        	throw new RequestProcessorException("Error registering postprocessor ["+processorClassName+"]", e);
         }
 	}
 	
 	public static Iterator<RequestPreprocessor> iteratePreprocessors()
 	{
-		return processors.values().iterator();
+		return preProcessors.values().iterator();
+	}
+
+	public static Iterator<RequestPostprocessor> iteratePostprocessors()
+	{
+		return postProcessors.values().iterator();
 	}
 }
