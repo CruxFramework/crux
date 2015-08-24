@@ -48,7 +48,7 @@ public class DeviceFeaturesPropertyGenerator implements PropertyProviderGenerato
 		body.println("return 'largeDisplay'+(supportsTouch?'Touch':'Arrows');");
 		body.outdent();
 		body.println("} else if ((ua.indexOf('opera mini') != -1)  || (ua.indexOf('opera mobi') != -1) || (ua.indexOf('mobile') != -1) || "+
-	                     "(ua.indexOf('iphone') != -1) || (ua.indexOf('ipod;') != -1)){");
+	                     "(ua.indexOf('windows phone') != -1) || (ua.indexOf('iphone') != -1) || (ua.indexOf('ipod;') != -1)){");
 		body.indent();
 		body.println("return 'smallDisplay'+(supportsTouch?'Touch':'Arrows');");
 		body.outdent();
