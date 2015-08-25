@@ -17,12 +17,10 @@ package org.cruxframework.crux.core.client.screen;
 
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
-import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.MetaElement;
+import com.google.gwt.core.shared.GWT;
 
 /**
  * Helper Class to configure display for different devices.
@@ -31,7 +29,8 @@ import com.google.gwt.dom.client.MetaElement;
  */
 public class DisplayHandler
 {
-
+	private static AbstractViewPortHandler viewPortHandler = GWT.create(AbstractViewPortHandler.class);
+	
 	/**
 	 * Configure a viewport with a default size.
 	 */
@@ -86,43 +85,10 @@ public class DisplayHandler
 	 */
 	public static void createViewport(String content, JavaScriptObject wnd)
 	{
-		Document document = getWindowDocument(wnd);
-		MetaElement viewport = document.createMetaElement();
-		viewport.setContent(content);
-		viewport.setName("viewport");
-		document.getElementsByTagName("head").getItem(0).appendChild(viewport);
-		JavaScriptObject parentWindow = getParentWindow(wnd);
-		if (parentWindow != null && isCruxWindow(parentWindow))
-		{
-			createViewport(content, parentWindow);
-		}
+		viewPortHandler.createViewport(content, wnd);
 	}
 
-	/**
-	 * Return the parent window from the given window.
-	 * @return
-	 */
-	private static native JavaScriptObject getParentWindow(JavaScriptObject wnd)/*-{
-		return (wnd.parent !== wnd?wnd.parent:null);
-	}-*/;
-	
-	/**
-	 * If the window is a crux frame (used in situations like offline loading), return 
-	 * true.
-	 * @return
-	 */
-	private static native boolean isCruxWindow(JavaScriptObject wnd)/*-{
-		if (wnd && wnd.__Crux_Frame){
-			return true;
-		}
-		return false;
-	}-*/;
-	
 	private static native JavaScriptObject getCurrentWindow()/*-{
 		return $wnd;
-	}-*/;
-	
-	private static native Document getWindowDocument(JavaScriptObject wnd)/*-{
-		return wnd.document;
 	}-*/;
 }

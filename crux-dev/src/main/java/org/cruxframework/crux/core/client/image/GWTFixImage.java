@@ -39,12 +39,12 @@ import com.google.gwt.user.client.ui.Image;
  * (intended to copy all properties) doesn't work here:
  * getElement().setAttribute("style", currentStyle + oldStyle);
  * 
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public abstract class GWTFixImage 
 {
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * This implementation is to avoid ...
 	 */
 	public interface ConditionalImageRenderer
@@ -83,7 +83,7 @@ public abstract class GWTFixImage
 	}
 
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * For IE8.
 	 */
 	public static class IE8ConditionalImageRenderer implements ConditionalImageRenderer
@@ -146,7 +146,7 @@ public abstract class GWTFixImage
 	}
 
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * For all other browsers.
 	 */
 	public static class DefaultConditionalImageRenderer implements ConditionalImageRenderer
