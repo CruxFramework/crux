@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * SelectEventsHanler Implementation for touch devices
  * @author Thiago da Rosa de Bustamante
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
