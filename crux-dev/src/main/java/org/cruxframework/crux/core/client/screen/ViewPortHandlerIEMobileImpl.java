@@ -15,22 +15,28 @@
  */
 package org.cruxframework.crux.core.client.screen;
 
+import org.cruxframework.crux.core.client.utils.DeviceAdaptiveUtils;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.StyleElement;
 
 /**
- * @author Samuel Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class ViewPortHandlerIEMobileImpl extends ViewPortHandlerImpl 
+public class ViewPortHandlerIEMobileImpl extends AbstractViewPortHandler 
 {
-
 	@Override
 	public void createViewport(String content, JavaScriptObject wnd) 
 	{
-		super.createViewport(content, wnd);
+		if(!DeviceAdaptiveUtils.isInternetExplorerMobile())
+		{
+			new ViewPortHandlerImpl().createViewport(content, wnd);
+			return;
+		}
+		
 		Document document = getWindowDocument(wnd);
 		Element header = document.getElementsByTagName("head").getItem(0);
 		StyleElement viewPortStyleElement = document.createStyleElement();
@@ -54,7 +60,7 @@ public class ViewPortHandlerIEMobileImpl extends ViewPortHandlerImpl
 			return "";
 		}
 		
-		return  content.trim().
+		return  content.replaceAll("\\s","").
 				replace("=", ":").
 				replace(",", ";").
 				replace("minimum-scale", "min-zoom").
