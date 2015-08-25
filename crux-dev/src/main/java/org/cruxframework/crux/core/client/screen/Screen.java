@@ -682,16 +682,6 @@ public class Screen
 	 * 
 	 * @return
 	 */
-	public static boolean isInternetExplorerMobile()
-	{
-		String userAgent = Window.Navigator.getUserAgent().toLowerCase();
-		return (userAgent.indexOf("iemobile") > 0);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public static boolean isIos()
 	{
 		String userAgent = Window.Navigator.getUserAgent().toLowerCase();

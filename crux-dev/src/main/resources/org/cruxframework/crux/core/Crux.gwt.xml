@@ -116,10 +116,10 @@
 
 	<!-- Specify Default implementation for ViewPort -->
 	<replace-with class="org.cruxframework.crux.core.client.screen.ViewPortHandlerImpl">
-        <when-type-is class="org.cruxframework.crux.core.client.screen.ViewPortHandler" />
+        <when-type-is class="org.cruxframework.crux.core.client.screen.AbstractViewPortHandler" />
     </replace-with>
 	<replace-with class="org.cruxframework.crux.core.client.screen.ViewPortHandlerIEMobileImpl">
-        <when-type-is class="org.cruxframework.crux.core.client.screen.ViewPortHandler" />
+        <when-type-is class="org.cruxframework.crux.core.client.screen.AbstractViewPortHandler" />
         <any>
       		<when-property-is name="user.agent" value="gecko1_8" />
     	</any>

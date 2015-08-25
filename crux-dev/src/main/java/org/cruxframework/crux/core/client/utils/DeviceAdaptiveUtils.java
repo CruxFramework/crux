@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2013 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,15 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen;
+package org.cruxframework.crux.core.client.utils;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
 
 /**
- * @author Samuel Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public interface ViewPortHandler 
+public class DeviceAdaptiveUtils 
 {
-	public void createViewport(String content, JavaScriptObject wnd);
+	public static boolean isInternetExplorerMobile()
+	{
+		String userAgent = Window.Navigator.getUserAgent().toLowerCase();
+		return (userAgent.indexOf("iemobile") > 0);
+	}
 }

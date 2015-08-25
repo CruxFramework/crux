@@ -29,7 +29,7 @@ import com.google.gwt.core.shared.GWT;
  */
 public class DisplayHandler
 {
-	private static ViewPortHandler viewPortHandler = GWT.create(ViewPortHandler.class);
+	private static AbstractViewPortHandler viewPortHandler = GWT.create(AbstractViewPortHandler.class);
 	
 	/**
 	 * Configure a viewport with a default size.
@@ -85,14 +85,7 @@ public class DisplayHandler
 	 */
 	public static void createViewport(String content, JavaScriptObject wnd)
 	{
-		if(Screen.isInternetExplorerMobile())
-		{
-			viewPortHandler.createViewport(content, wnd);
-		} 
-		else
-		{
-			new ViewPortHandlerImpl().createViewport(content, wnd);			
-		}
+		viewPortHandler.createViewport(content, wnd);
 	}
 
 	private static native JavaScriptObject getCurrentWindow()/*-{
