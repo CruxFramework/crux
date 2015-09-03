@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
+import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
 import org.cruxframework.crux.core.server.rest.spi.UriInfo;
 import org.cruxframework.crux.core.server.rest.state.ETagHandler;
 import org.cruxframework.crux.core.server.rest.state.ResourceStateConfig;
@@ -36,6 +37,7 @@ import org.cruxframework.crux.core.server.rest.util.DateUtil;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.HttpResponseCodes;
 import org.cruxframework.crux.core.shared.rest.annotation.GET;
+import org.cruxframework.crux.core.shared.rest.annotation.HttpMethod;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -50,22 +52,38 @@ public class StateHandler
 	private final ResourceMethod resourceMethod;
 	private String httpMethod;
 	private String key;
+	private HttpResponse response;
 
-	public StateHandler(ResourceMethod resourceMethod, HttpRequest request)
+	public StateHandler(ResourceMethod resourceMethod, HttpRequest request, HttpResponse response)
     {
 		this.resourceMethod = resourceMethod;
 		this.request = request;
+		this.response = response;
 		this.httpMethod = request.getHttpMethod();
 		this.key = request.getUri().getRequestUri().toString();
     }
 	
-	public MethodReturn handledByCache()
+	public MethodReturn handledByCache() throws Exception
 	{
+		MethodReturn ret = null;
 		if (resourceMethod.cacheInfo != null && resourceMethod.cacheInfo.isCacheEnabled())
 		{
-			return handleCacheableOperation();
+			ret = handleCacheableOperation();
 		}
-		return handleUncacheableOperation();
+		else
+		{
+			ret = handleUncacheableOperation();
+		}
+		
+		if (ret == null)
+		{
+			ret = resourceMethod.doInvoke(request, response);
+			if (ret.getCheckedExceptionData() == null)
+			{
+				updateState(request.getUri(), ret);
+			}
+		}
+		return ret;
 	}
 
 	public void updateState(UriInfo uriInfo, MethodReturn ret)
@@ -114,10 +132,11 @@ public class StateHandler
 	 * Handle Cacheable GETS
 	 * @return
 	 */
-	private MethodReturn handleCacheableOperation()
+	private MethodReturn handleCacheableOperation() throws Exception
 	{
 		ResourceStateHandler resourceStateHandler = ResourceStateConfig.getResourceStateHandler();
 		ResourceState resourceState = resourceStateHandler.get(key);
+		MethodReturn ret = null;
 		if (resourceState == null)
 		{
 			return null;
@@ -126,7 +145,16 @@ public class StateHandler
 		{
 			if (resourceState.isExpired())
 			{
-				return null;
+				ret = resourceMethod.doInvoke(request, response);
+				if (ret.getCheckedExceptionData() == null)
+				{
+					updateState(request.getUri(), ret);
+					resourceState = resourceStateHandler.get(key);
+				}
+				else
+				{
+					resourceStateHandler.remove(key);
+				}
 			}
 			ConditionalResponse conditionalResponse = evaluatePreconditions(resourceState);
 			if (conditionalResponse != null)
@@ -134,21 +162,38 @@ public class StateHandler
 				return new MethodReturn(resourceMethod.hasReturnType, null, null, resourceMethod.cacheInfo, conditionalResponse, resourceMethod.isEtagGenerationEnabled());
 			}
 		}
-		return null;
+		return ret;
 	}
 
 	/**
 	 * Handle PUT/POST/DELETE/uncacheable GETs
 	 * @return
 	 */
-	private MethodReturn handleUncacheableOperation()
+	private MethodReturn handleUncacheableOperation() throws Exception
 	{
 		ResourceStateHandler resourceStateHandler = ResourceStateConfig.getResourceStateHandler();
 		ResourceState resourceState = resourceStateHandler.get(key);
-		ConditionalResponse conditionalResponse = evaluatePreconditions(resourceState == null || resourceState.isExpired()?null:resourceState);
+		
+		MethodReturn ret = null;
+		if (resourceMethod.getHttpMethod().equals(HttpMethod.GET) && resourceState != null && resourceState.isExpired())
+		{
+			ret = resourceMethod.doInvoke(request, response);
+			if (ret.getCheckedExceptionData() == null)
+			{
+				updateState(request.getUri(), ret);
+				resourceState = resourceStateHandler.get(key);
+			}
+			else
+			{
+				resourceStateHandler.remove(key);
+				resourceState = null;
+			}
+		}
+		
+		ConditionalResponse conditionalResponse = evaluatePreconditions(resourceState);
 		if (conditionalResponse == null)
 		{
-			return null;
+			return ret;
 		}
 		return new MethodReturn(resourceMethod.hasReturnType, null, null, resourceMethod.cacheInfo, conditionalResponse, resourceMethod.isEtagGenerationEnabled());
 	}

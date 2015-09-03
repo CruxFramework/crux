@@ -161,17 +161,8 @@ public class ResourceMethod
 		{
 			if (ResourceStateConfig.isResourceStateCacheEnabled())
 			{
-				StateHandler stateHandler = new StateHandler(this, request);
+				StateHandler stateHandler = new StateHandler(this, request, response);
 				MethodReturn ret = stateHandler.handledByCache();
-				if (ret == null)
-				{
-					Object target = createTarget(request, response);
-					ret = invoke(request, target);
-					if (ret.getCheckedExceptionData() == null)
-					{
-						stateHandler.updateState(request.getUri(), ret);
-					}
-				}
 				return ret;
 			}
 			else
@@ -238,6 +229,14 @@ public class ResourceMethod
 			}
 		}
 		return allowed;
+    }
+
+	protected MethodReturn doInvoke(HttpRequest request, HttpResponse response) throws InstantiationException, IllegalAccessException
+    {
+	    MethodReturn ret;
+	    Object target = createTarget(request, response);
+	    ret = invoke(request, target);
+	    return ret;
     }
 
 	private Object createTarget(HttpRequest request, HttpResponse response) throws InstantiationException, IllegalAccessException

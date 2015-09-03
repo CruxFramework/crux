@@ -81,7 +81,7 @@ public class ClusteredResourceStateHandler implements ResourceStateHandler
 		@Override
 		public boolean isExpired()
 		{
-			return System.currentTimeMillis() - dateModifiedMilis >= expires;
+			return System.currentTimeMillis() >= expires;
 		}
 	}
 
