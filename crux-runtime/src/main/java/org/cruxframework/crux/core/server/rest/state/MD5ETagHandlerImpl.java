@@ -15,22 +15,23 @@
  */
 package org.cruxframework.crux.core.server.rest.state;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.rest.spi.UriInfo;
-import org.cruxframework.crux.core.server.rest.util.Crc32c;
 
 /**
- * Generate a default eTag based in the content.
+ * Generate an eTag based in the content, using MD5.
  * 
  * @author @author Thiago da Rosa de Bustamante
  */
-public class ETagHandlerImpl implements ETagHandler
+public class MD5ETagHandlerImpl implements ETagHandler
 {
-	private static final Log logger = LogFactory.getLog(ETagHandlerImpl.class);
+	private static final Log logger = LogFactory.getLog(MD5ETagHandlerImpl.class);
 
-	
 	@Override
     public String generateEtag(UriInfo uri, String content)
     {
@@ -39,17 +40,18 @@ public class ETagHandlerImpl implements ETagHandler
 			return null;
 		}
 		
-        try
+		try
         {
-        	Crc32c hash = new Crc32c();
-        	byte[] bytes = content.getBytes("UTF-8");
-        	hash.update(bytes, 0, bytes.length);
-        	String hexString = Long.toHexString(hash.getValue());
-        	return hexString;
+			byte[] bytes = content.getBytes("UTF-8");
+	        MessageDigest digest = MessageDigest.getInstance("MD5");
+	        byte[] hashBytes = digest.digest(bytes);
+	        BigInteger bigInt = new BigInteger(1, hashBytes);
+	        String hashtext = bigInt.toString(16);
+			return hashtext;
         }
         catch (Exception e)
         {
-        	logger.error("Error generating etag with CRC32c algorithm. Ignoring Etag for this resource ["+uri.getPath()+"]...", e);
+        	logger.error("Error generating etag with MD5 algorithm. Ignoring Etag for this resource ["+uri.getPath()+"]...", e);
         }
 		return null;
     }
