@@ -16,22 +16,40 @@
 package org.cruxframework.crux.core.server.rest.state;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.rest.spi.UriInfo;
 
 /**
  * Generate a default eTag based in the content.
  * 
- * @author @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ * @author @author Thiago da Rosa de Bustamante
  */
 public class ETagHandlerImpl implements ETagHandler
 {
+	private static final Log logger = LogFactory.getLog(ETagHandlerImpl.class);
+
+	
 	@Override
     public String generateEtag(UriInfo uri, String content)
     {
 		if (StringUtils.isEmpty(content))
 		{
 			return null;
-		} 
-		return Long.toHexString(System.currentTimeMillis()) + Integer.toHexString(content.hashCode());
+		}
+		
+        try
+        {
+        	Crc32c hash = new Crc32c();
+        	byte[] bytes = content.getBytes("UTF-8");
+        	hash.update(bytes, 0, bytes.length);
+        	String hexString = Long.toHexString(hash.getValue());
+        	return hexString;
+        }
+        catch (Exception e)
+        {
+        	logger.error("Error generating etag with CRC32c algorithm. Ignoring Etag for this resource ["+uri.getPath()+"]...", e);
+        }
+		return null;
     }
 }
