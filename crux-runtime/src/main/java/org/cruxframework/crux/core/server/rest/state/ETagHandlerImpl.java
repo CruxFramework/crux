@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.rest.spi.UriInfo;
+import org.cruxframework.crux.core.server.rest.util.Crc32c;
 
 /**
  * Generate a default eTag based in the content.
