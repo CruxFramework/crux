@@ -196,15 +196,18 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	protected boolean fireUnloadEvent(ViewUnloadEvent event)
 	{
 		boolean canceled = false;
-		for (int i = 0; i < unloadHandlers.size(); i++)
-        {
-			ViewUnloadHandler handler = unloadHandlers.get(i);
-			handler.onUnload(event);
-			if (event.isCanceled())
+		if (unloadHandlers != null)
+		{
+			for (int i = 0; i < unloadHandlers.size(); i++)
 			{
-				canceled = true;
+				ViewUnloadHandler handler = unloadHandlers.get(i);
+				handler.onUnload(event);
+				if (event.isCanceled())
+				{
+					canceled = true;
+				}
 			}
-        }
+		}
 		
 		return !canceled;
 	}
@@ -215,11 +218,14 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	 */
 	protected void fireActivateEvent(ViewActivateEvent event)
     {
-		for (int i = 0; i < attachHandlers.size(); i++)
-        {
-			ViewActivateHandler handler = attachHandlers.get(i);
-			handler.onActivate(event);
-        }
+		if (attachHandlers != null)
+		{
+			for (int i = 0; i < attachHandlers.size(); i++)
+			{
+				ViewActivateHandler handler = attachHandlers.get(i);
+				handler.onActivate(event);
+			}
+		}
     }
 	
 	/**
@@ -228,11 +234,14 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	 */
 	protected void fireDeactivateEvent(ViewDeactivateEvent event)
     {
-		for (int i = 0; i < detachHandlers.size(); i++)
-        {
-			ViewDeactivateHandler handler = detachHandlers.get(i);
-			handler.onDeactivate(event);
-        }
+		if (detachHandlers != null)
+		{
+			for (int i = 0; i < detachHandlers.size(); i++)
+			{
+				ViewDeactivateHandler handler = detachHandlers.get(i);
+				handler.onDeactivate(event);
+			}
+		}
     }
 	
 	
@@ -241,12 +250,15 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	 */
 	protected void fireLoadEvent(View view, Object parameter)
 	{
-		ViewLoadEvent event = new ViewLoadEvent(view, parameter); 
-		for (int i = 0; i < loadHandlers.size(); i++)
-        {
-			ViewLoadHandler handler = loadHandlers.get(i);
-			handler.onLoad(event);
-        }
+		if (loadHandlers != null)
+		{
+			ViewLoadEvent event = new ViewLoadEvent(view, parameter); 
+			for (int i = 0; i < loadHandlers.size(); i++)
+			{
+				ViewLoadHandler handler = loadHandlers.get(i);
+				handler.onLoad(event);
+			}
+		}
 	}
 	
 	/**
