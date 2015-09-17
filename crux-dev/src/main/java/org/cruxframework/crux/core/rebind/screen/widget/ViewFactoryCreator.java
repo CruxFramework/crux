@@ -67,7 +67,6 @@ import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxy
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.core.client.GWT;
@@ -740,7 +739,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
         {
 	        if (!creators.containsKey(widgetType))
 	        {
-	        	String creatorClassName = WidgetScanner.getClientClass(widgetType);
+	        	String creatorClassName = WidgetLibraries.getInstance().getFactoryClass(widgetType);
 	        	Class<?> widgetCreator = Class.forName(creatorClassName);
 	        	WidgetCreator<?> factory = (WidgetCreator<?>) widgetCreator.newInstance();
 	        	creators.put(widgetType, factory);

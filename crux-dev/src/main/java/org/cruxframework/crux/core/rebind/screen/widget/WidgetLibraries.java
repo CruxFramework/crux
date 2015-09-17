@@ -23,8 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * @author thiago
- *
+ * Builds a map of all widget libraries  
+ * @author Thiago da Rosa de Bustamante
  */
 public class WidgetLibraries
 {
@@ -44,10 +44,10 @@ public class WidgetLibraries
 	 * @param id
 	 * @return
 	 */
-	public String getClientClass(String id)
+	public String getFactoryClass(String id)
 	{
 		initialize();
-		return strategy.getClientClass(id);
+		return strategy.getFactoryClass(id);
 	}
 	
 	/**
@@ -56,10 +56,10 @@ public class WidgetLibraries
 	 * @param id
 	 * @return
 	 */
-	public String getClientClass(String library, String id)
+	public String getFactoryClass(String library, String id)
 	{
 		initialize();
-		return strategy.getClientClass(library+"_"+id);
+		return strategy.getFactoryClass(library+"_"+id);
 	}
 	
 	public String getWidgetType(Class<? extends IsWidget> widgetClass)
@@ -126,37 +126,32 @@ public class WidgetLibraries
 	private static class MapStrategy implements ScanningStrategy
 	{
 
-		public String getClientClass(String id)
+		public String getFactoryClass(String id)
 		{
-			return null;
-//			return WidgetCreatorsMap.getService(id);
+			return WidgetLibraryMap.getInstance().getFactoryClass(id);
 		}
 
 		@Override
         public String getWidgetType(Class<? extends IsWidget> widgetClass)
         {
-			return null;
-//	        return WidgetCreatorsMap.getWidgetType(widgetClass);
+	        return WidgetLibraryMap.getInstance().getWidgetType(widgetClass);
         }
 		
 		public boolean initialize()
 		{
-			return false;
-//			return WidgetCreatorsMap.initialize();
+			return WidgetLibraryMap.getInstance().initialize(null);
 		}
 
 		@Override
 		public Iterator<String> iterateRegisteredLibraries()
 		{
-			return null;
-//		    return WidgetCreatorsMap.getRegisteredLibraries().iterator();
+		    return WidgetLibraryMap.getInstance().getRegisteredLibraries().iterator();
 		}
 
 		@Override
         public Iterator<String> iterateRegisteredLibraryWidgetCreators(String library)
         {
-			return null;
-//	        return WidgetCreatorsMap.getRegisteredLibraryFactories(library).iterator();
+	        return WidgetLibraryMap.getInstance().getRegisteredLibraryFactories(library).iterator();
         }
 	}
 
@@ -168,9 +163,9 @@ public class WidgetLibraries
 	 */
 	private static class RuntimeStrategy implements ScanningStrategy
 	{
-		public String getClientClass(String id)
+		public String getFactoryClass(String id)
 		{
-			return WidgetScanner.getClientClass(id);
+			return WidgetScanner.getFactoryClass(id);
 		}
 
 		@Override
@@ -212,7 +207,7 @@ public class WidgetLibraries
 	 */
 	private static interface ScanningStrategy
 	{
-		String getClientClass(String id);
+		String getFactoryClass(String id);
 		String getWidgetType(Class<? extends IsWidget> widgetClass);
 		boolean initialize();
 		Iterator<String> iterateRegisteredLibraries();

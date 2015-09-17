@@ -106,7 +106,7 @@ public class LazyWidgets
 	 */
 	private static void initializeLazyChecker(String type) throws ClassNotFoundException
 	{
-		String widgetFactoryClass = WidgetLibraries.getInstance().getClientClass(type);
+		String widgetFactoryClass = WidgetLibraries.getInstance().getFactoryClass(type);
 		Class<?> factoryType = Class.forName(widgetFactoryClass);
 		
 		final List<WidgetLazyChecker> declaredCheckers = new ArrayList<WidgetLazyChecker>();

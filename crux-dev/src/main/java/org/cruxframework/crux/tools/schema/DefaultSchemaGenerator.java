@@ -1391,7 +1391,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			{
 				String id = factories.next();
 				Class<? extends WidgetCreator<?>> widgetFactory = (Class<? extends WidgetCreator<?>>) 
-						Class.forName(WidgetLibraries.getInstance().getClientClass(library, id));
+						Class.forName(WidgetLibraries.getInstance().getFactoryClass(library, id));
 				generateTypeForFactory(out, widgetFactory, library);
 			}
 

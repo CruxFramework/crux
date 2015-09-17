@@ -158,6 +158,7 @@ public class ServiceMapperTask extends Task
 			{
 				throw new ServiceMapperException("Invalid <ProjectDir>.", e);
 			}
+			javatask.createArg().setValue("-override");
 		}
 	}
 }
