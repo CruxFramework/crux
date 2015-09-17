@@ -108,7 +108,7 @@ class WidgetScanner
 	 * @param id
 	 * @return
 	 */
-	static String getClientClass(String id)
+	static String getFactoryClass(String id)
 	{
 		if (config == null)
 		{
@@ -123,7 +123,7 @@ class WidgetScanner
 	 * @param id
 	 * @return
 	 */
-	static String getClientClass(String library, String id)
+	static String getFactoryClass(String library, String id)
 	{
 		if (config == null)
 		{
