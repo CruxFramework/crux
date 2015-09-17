@@ -19,18 +19,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.dispatch.Services;
 import org.cruxframework.crux.core.server.rest.annotation.RestService;
 import org.cruxframework.crux.scanner.ClassScanner;
-import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.AbstractMapper;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
-import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -40,80 +39,10 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * implementation classes
  * @author Thiago da Rosa de Bustamante
  */
-public class ServiceMapper
+public class ServiceMapper extends AbstractMapper
 {
-	private File projectDir;
-
-	/**
-	 * 
-	 */
-	public ServiceMapper()
-	{
-		Scanners.setSearchURLs(ClasspathUrlFinder.findClassPaths());
-	}
-	
-	/**
-	 * @return
-	 */
-	public File getProjectDir()
-	{
-		return projectDir;
-	}
-
-	/**
-	 * @param projectDir
-	 */
-	public void setProjectDir(File projectDir)
-	{
-		this.projectDir = projectDir;
-	}
-
-	/**
-	 * Generates Remote Service map
-	 */
-	public void generateServicesMap()
-	{
-		Set<String> searchClassesByInterface = ClassScanner.searchClassesByInterface(RemoteService.class);
-		Properties cruxRemote = new Properties();
+	private static final Log logger = LogFactory.getLog(ServiceMapper.class);
 		
-		try
-		{
-			for (String serviceClass : searchClassesByInterface)
-			{
-				Class<?> clazz = Class.forName(serviceClass);
-				if (clazz.isInterface())
-				{
-					Class<?> service = Services.getService(serviceClass);
-					if (service != null)
-					{
-						cruxRemote.put(serviceClass, service.getCanonicalName());
-					}
-				}
-			}
-			File metaInfFile =new File(projectDir, "META-INF");
-			if (metaInfFile.exists())
-			{
-				if (!metaInfFile.isDirectory())
-				{
-					throw new ServiceMapperException("Can not create a META-INF directory on "+projectDir.getCanonicalPath());
-				}
-			}
-			else 
-			{
-				metaInfFile.mkdirs();
-			}
-			cruxRemote.store(new FileOutputStream(new File(metaInfFile, "crux-remote")), "Crux RemoteServices implementations");
-		}
-		catch (IOException e)
-		{
-			throw new ServiceMapperException("Error creating remote service map", e);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new ServiceMapperException("Error creating remote service map", e);
-		}
-	}
-	
 	/**
 	 * Generates Remote Service map
 	 */
@@ -121,6 +50,14 @@ public class ServiceMapper
 	{
 		try
 		{
+			File metaInfFile = getMetaInfFile();
+			File serviceMapFile = new File(metaInfFile, "crux-rest");
+			if (serviceMapFile.exists() && !isOverride())
+			{
+				logger.info("REST Service map already exists. Skipping generation...");
+				return;
+			}
+			initializeScannerURLs();
 			Set<String> restServices =  ClassScanner.searchClassesByAnnotation(RestService.class);
 			Properties cruxRest = new Properties();
 			if (restServices != null)
@@ -144,19 +81,7 @@ public class ServiceMapper
 				}
 			}
 
-			File metaInfFile =new File(projectDir, "META-INF");
-			if (metaInfFile.exists())
-			{
-				if (!metaInfFile.isDirectory())
-				{
-					throw new ServiceMapperException("Can not create a META-INF directory on "+projectDir.getCanonicalPath());
-				}
-			}
-			else 
-			{
-				metaInfFile.mkdirs();
-			}
-			cruxRest.store(new FileOutputStream(new File(metaInfFile, "crux-rest")), "Crux RestServices implementations");
+			cruxRest.store(new FileOutputStream(serviceMapFile), "Crux RestServices implementations");
 		}
 		catch (IOException e)
 		{
@@ -165,36 +90,57 @@ public class ServiceMapper
 	}
 
 	/**
-	 * Creates the console parameters processor for this program
-	 * @return
+	 * Generates Remote Service map
 	 */
-	protected ConsoleParametersProcessor createParametersProcessor()
+	public void generateServicesMap()
 	{
-		ConsoleParameter parameter;
-		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("serviceMapper");
-
-		parameter = new ConsoleParameter("projectDir", "The crux project folder .", true, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
-		parametersProcessor.addSupportedParameter(parameter);
+		try
+		{
+			File metaInfFile = getMetaInfFile();
+			File serviceMapFile = new File(metaInfFile, "crux-remote");
+			if (serviceMapFile.exists() && !isOverride())
+			{
+				logger.info("Service map already exists. Skipping generation...");
+				return;
+			}
+			initializeScannerURLs();
+			Set<String> searchClassesByInterface = ClassScanner.searchClassesByInterface(RemoteService.class);
+			Properties cruxRemote = new Properties();
 		
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
-		return parametersProcessor;	
-	}	
-	
-	/**
-	 * @param parameters
-	 */
-	protected void processParameters(Collection<ConsoleParameter> parameters)
-	{
-		for (ConsoleParameter parameter : parameters)
-        {
-			if (parameter.getName().equals("projectDir"))
-	        {
-	        	setProjectDir(new File(parameter.getValue()));
-	        }
-        }
-    }		
+			for (String serviceClass : searchClassesByInterface)
+			{
+				Class<?> clazz = Class.forName(serviceClass);
+				if (clazz.isInterface())
+				{
+					Class<?> service = Services.getService(serviceClass);
+					if (service != null)
+					{
+						cruxRemote.put(serviceClass, service.getCanonicalName());
+					}
+				}
+			}
+			if (metaInfFile.exists())
+			{
+				if (!metaInfFile.isDirectory())
+				{
+					throw new ServiceMapperException("Can not create a META-INF directory on "+getProjectDir().getCanonicalPath());
+				}
+			}
+			else 
+			{
+				metaInfFile.mkdirs();
+			}
+			cruxRemote.store(new FileOutputStream(serviceMapFile), "Crux RemoteServices implementations");
+		}
+		catch (IOException e)
+		{
+			throw new ServiceMapperException("Error creating remote service map", e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new ServiceMapperException("Error creating remote service map", e);
+		}
+	}
 	
 	/**
 	 * Starts ServiceMapper program
@@ -204,7 +150,7 @@ public class ServiceMapper
 	public static void main(String[] args) throws MalformedURLException
 	{
 		ServiceMapper serviceMapper = new ServiceMapper();
-		ConsoleParametersProcessor parametersProcessor = serviceMapper.createParametersProcessor();
+		ConsoleParametersProcessor parametersProcessor = serviceMapper.createParametersProcessor("serviceMapper");
 		Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
 		if (parameters.containsKey("-help") || parameters.containsKey("-h"))
 		{
