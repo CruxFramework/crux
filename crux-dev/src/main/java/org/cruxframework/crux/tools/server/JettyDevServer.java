@@ -41,13 +41,43 @@ public class JettyDevServer
 {
 	private static final Log logger = LogFactory.getLog(JettyDevServer.class);
 
+	private boolean addDevelopmentComponents = false;
+	private File appRootDir;
+
 	private String bindAddress = "localhost";
 	private int port = getDefaultPort();
-
-	private File appRootDir;
-	private boolean addDevelopmentComponents = false;
 	
-	public void start() throws Exception 
+	public File getAppRootDir()
+	{
+		return appRootDir;
+	}
+
+	public String getBindAddress()
+	{
+		return bindAddress;
+	}
+
+	public int getPort()
+	{
+		return port;
+	}
+
+	public void setAppRootDir(File appRootDir)
+	{
+		this.appRootDir = appRootDir;
+	}
+
+	public void setBindAddress(String bindAddress)
+	{
+		this.bindAddress = bindAddress;
+	}
+
+	public void setPort(int port)
+	{
+		this.port = port;
+	}
+
+	public void start(boolean join) throws Exception 
 	{
 		SelectChannelConnector connector = new SelectChannelConnector();
 		connector.setHost(bindAddress);
@@ -73,7 +103,10 @@ public class JettyDevServer
 		try 
 		{
 			server.start();
-			server.join();
+			if (join)
+			{
+				server.join();
+			}
 		} 
 		catch (Exception e) 
 		{
@@ -82,11 +115,36 @@ public class JettyDevServer
 		}
 	}
 
+	protected ConsoleParametersProcessor createParametersProcessor()
+	{
+		ConsoleParameter parameter;
+		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("JettyDevServer");
+		
+		parameter = new ConsoleParameter("-appRootDir", "The application web folder.", true, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dir", "root dir"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-bindAddress", "The ip address of the code server. Defaults to 127.0.0.1.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("ip", "Ip address"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-port", "The port where the jetty server will run.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-addDevelopmentComponents", "If informed, Server will add all components required for development on application context.", false, false);
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
+		return parametersProcessor;	
+	}
+	
 	protected int getDefaultPort() 
 	{
 		return 8080;
 	}
-	
+
 	protected void processParameters(Collection<ConsoleParameter> parameters)
     {
 		for (ConsoleParameter parameter : parameters)
@@ -123,32 +181,7 @@ public class JettyDevServer
 	        	port = Integer.parseInt(parameter.getValue());
 	        }
         }
-    }
-
-	protected ConsoleParametersProcessor createParametersProcessor()
-	{
-		ConsoleParameter parameter;
-		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("JettyDevServer");
-		
-		parameter = new ConsoleParameter("-appRootDir", "The application web folder.", true, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dir", "root dir"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-bindAddress", "The ip address of the code server. Defaults to 127.0.0.1.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("ip", "Ip address"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-port", "The port where the jetty server will run.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-addDevelopmentComponents", "If informed, Server will add all components required for development on application context.", false, false);
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
-		return parametersProcessor;	
-	}	
+    }	
 	
 	public static void main(String[] args)
     {
@@ -165,7 +198,7 @@ public class JettyDevServer
 			else
 			{
 				jettyServer.processParameters(parameters.values());
-				jettyServer.start();
+				jettyServer.start(true);
 			}
 		}
 		catch (ConsoleParametersProcessingException e)
