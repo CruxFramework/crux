@@ -858,7 +858,7 @@ public class ViewParser
 	 */
 	private boolean isWidget(String tagName)
     {
-	    return (WidgetLibraries.getInstance().getClientClass(tagName) != null);
+	    return (WidgetLibraries.getInstance().getFactoryClass(tagName) != null);
     }
 	
 	/**
@@ -1086,8 +1086,8 @@ public class ViewParser
 				String widget = factories.next();
 				try
 				{
-					Class<?> clientClass = Class.forName(WidgetLibraries.getInstance().getClientClass(library, widget));
-					generateReferenceWidgetsListFromTagChildren(clientClass.getAnnotation(TagChildren.class), 
+					Class<?> factoryClass = Class.forName(WidgetLibraries.getInstance().getFactoryClass(library, widget));
+					generateReferenceWidgetsListFromTagChildren(factoryClass.getAnnotation(TagChildren.class), 
 																		library, widget, new HashSet<String>());
 				}
 				catch (Exception e)
@@ -1180,8 +1180,8 @@ public class ViewParser
 				String widget = factories.next();
 				try
 				{
-					Class<?> clientClass = Class.forName(WidgetLibraries.getInstance().getClientClass(library, widget));
-					DeclarativeFactory factory = clientClass.getAnnotation(DeclarativeFactory.class);
+					Class<?> factoryClass = Class.forName(WidgetLibraries.getInstance().getFactoryClass(library, widget));
+					DeclarativeFactory factory = factoryClass.getAnnotation(DeclarativeFactory.class);
 					if (factory.htmlContainer())
 					{
 						htmlPanelContainers.add(library+"_"+widget);				
