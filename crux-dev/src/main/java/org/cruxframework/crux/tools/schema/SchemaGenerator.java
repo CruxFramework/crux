@@ -30,8 +30,10 @@ import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
 public class SchemaGenerator
 {
 	/**
-	 *  
-	 * @param args
+	 * 
+	 * @param projectBaseDir
+	 * @param outputDir
+	 * @param webDir
 	 */
 	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir)
 	{
