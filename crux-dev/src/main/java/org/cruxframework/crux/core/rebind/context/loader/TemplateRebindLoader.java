@@ -27,11 +27,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.cruxframework.crux.core.declarativeui.template.TemplateException;
 import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
-import com.google.gwt.core.ext.GeneratorContext;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -40,11 +39,11 @@ import com.google.gwt.core.ext.GeneratorContext;
 public class TemplateRebindLoader implements TemplateLoader
 {
 	private Map<String, Document> cache = new HashMap<String, Document>();
-	private GeneratorContext context;
+	private RebindContext context;
 	private DocumentBuilder documentBuilder;
 	private boolean initialized = false;
 	
-	public TemplateRebindLoader(GeneratorContext context)
+	public TemplateRebindLoader(RebindContext context)
 	{
 		this.context = context;
 	}
@@ -77,7 +76,7 @@ public class TemplateRebindLoader implements TemplateLoader
 			return (Document) cache.get(cacheKey).cloneNode(true);
 		}
 		
-		Set<String> pathNames = context.getResourcesOracle().getPathNames();
+		Set<String> pathNames = context.getGeneratorContext().getResourcesOracle().getPathNames();
 
 		for (String pathName : pathNames)
 		{
@@ -94,7 +93,7 @@ public class TemplateRebindLoader implements TemplateLoader
 
 			if (fileName.equals(id+".template.xml"))
 			{
-				InputStream stream = context.getResourcesOracle().getResourceAsStream(pathName);
+				InputStream stream = context.getGeneratorContext().getResourcesOracle().getResourceAsStream(pathName);
 				try
                 {
 	                Document template = documentBuilder.parse(stream);
