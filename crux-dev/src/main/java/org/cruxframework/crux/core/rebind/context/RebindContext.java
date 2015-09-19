@@ -28,6 +28,7 @@ import org.cruxframework.crux.core.rebind.context.scanner.ResourceScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.dev.cfg.ModuleDef;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -46,6 +47,7 @@ public class RebindContext
 	private TreeLogger logger;
 	private ResourceScanner resourcesScanner;
 	private ScreenLoader screenLoader;
+	private ModuleDef currentModule;
 	
 	public RebindContext(GeneratorContext generatorContext, TreeLogger logger)
     {
@@ -144,8 +146,17 @@ public class RebindContext
 	{
 		if (screenLoader == null)
 		{
-			screenLoader = new ScreenRebindLoader(generatorContext);
+			screenLoader = new ScreenRebindLoader(this);
 		}
 		return screenLoader;
+	}
+	
+	public ModuleDef getCurrentModule()
+	{
+		if (currentModule == null)
+		{
+			currentModule = ContextUtil.getCurrentModule(generatorContext);
+		}
+		return currentModule;
 	}
 }

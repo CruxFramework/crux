@@ -101,6 +101,7 @@ public class SchemaGeneratorTask extends Task
 		}
 		javatask.createArg().setValue(baseDir.getCanonicalPath());
 		javatask.createArg().setValue(outputDir.getCanonicalPath());
+		javatask.createArg().setValue("-generateDoc");
 		addCompilerParameters(javatask);
 
 		for (Path path : this.classpath)

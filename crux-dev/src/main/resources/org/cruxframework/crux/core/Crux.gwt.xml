@@ -14,6 +14,8 @@
 	<add-linker name="screenLinker"/>
 		
 	<define-configuration-property name="view.base.folder" is-multi-valued="true" />
+    <set-configuration-property name="view.base.folder" value="client/view" />
+
 	<define-configuration-property name="ioc.config.class" is-multi-valued="true" />
 		
 	<!-- Cross-dDevice support -->

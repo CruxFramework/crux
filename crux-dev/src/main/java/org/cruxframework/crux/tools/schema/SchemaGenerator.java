@@ -34,22 +34,29 @@ public class SchemaGenerator
 	 * @param projectBaseDir
 	 * @param outputDir
 	 * @param webDir
+	 * @param generateDoc 
 	 */
-	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir)
+	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir, boolean generateDoc)
 	{
 		CruxSchemaGenerator generator = CruxSchemaGeneratorFactory.createSchemaGenerator(projectBaseDir, outputDir, webDir);
 		generator.generateSchemas();
 		generator.generateCatalog();
-		generator.generateDocumentation();
+		if (generateDoc)
+		{
+			generator.generateDocumentation();
+		}
 	}
-	
+
 	/**
 	 * 
-	 * @param args
+	 * @param projectBaseDir
+	 * @param destDir
+	 * @param webDir
+	 * @param generateDoc
 	 */
-	public static void generateSchemas(String projectBaseDir, String destDir, String webDir)
+	public static void generateSchemas(String projectBaseDir, String destDir, String webDir, boolean generateDoc)
 	{
-		generateSchemas(new File(projectBaseDir), new File(destDir), webDir!=null?new File(webDir):null);
+		generateSchemas(new File(projectBaseDir), new File(destDir), webDir!=null?new File(webDir):null, generateDoc);
 	}
 	
 	/**
@@ -78,7 +85,8 @@ public class SchemaGenerator
 					}
 					SchemaGenerator.generateSchemas(parameters.get("projectBaseDir").getValue(), 
 													parameters.get("outputDir").getValue(), 
-													webDir);
+													webDir, 
+													parameters.containsKey("-generateDoc"));
 				}
 				System.exit(0);
 			}
@@ -103,6 +111,7 @@ public class SchemaGenerator
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("projectBaseDir", "The project folder."));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("outputDir", "The folder where the files will be created."));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("webDir", "The project web root folder.", false, false));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-generateDoc", "Generate also an HTML documentation for the libraries.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		return parametersProcessor;

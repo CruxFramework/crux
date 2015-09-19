@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.context.loader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +26,9 @@ import org.cruxframework.crux.core.declarativeui.screen.ScreenException;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.rebind.GeneratorProperties;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
-import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.dev.cfg.ModuleDef;
 import com.google.gwt.dev.resource.Resource;
 
 /**
@@ -35,12 +37,12 @@ import com.google.gwt.dev.resource.Resource;
  */
 public class ScreenRebindLoader implements ScreenLoader
 {
-	private GeneratorContext context;
+	private RebindContext context;
 	private Map<String, String> screens = new HashMap<String, String>();
 	private ViewRebindLoader viewContextLoader;
 	private boolean initialized = false;
 
-	public ScreenRebindLoader(GeneratorContext context)
+	public ScreenRebindLoader(RebindContext context)
     {
 		this.context = context;
 		viewContextLoader = new ViewRebindLoader(context);
@@ -52,7 +54,7 @@ public class ScreenRebindLoader implements ScreenLoader
 		initialize();
 		if (screens.containsKey(id))
 		{
-			return context.getResourcesOracle().getResource(screens.get(id));
+			return context.getGeneratorContext().getResourcesOracle().getResource(screens.get(id));
 		}
 		return null;
     }
@@ -76,8 +78,8 @@ public class ScreenRebindLoader implements ScreenLoader
 	{
 		if (!initialized)
 		{
-			List<String> screenFolders = GeneratorProperties.readConfigurationPropertyValues(context, GeneratorProperties.VIEW_BASE_FOLDER);
-			Set<String> pathNames = context.getResourcesOracle().getPathNames();
+			List<String> screenFolders = getScreenFolders();
+			Set<String> pathNames = context.getGeneratorContext().getResourcesOracle().getPathNames();
 
 			for (String pathName : pathNames)
 			{
@@ -112,4 +114,25 @@ public class ScreenRebindLoader implements ScreenLoader
 			initialized = true;
 		}
 	}
+
+	private List<String> getScreenFolders()
+    {
+		ModuleDef currentModule = context.getCurrentModule();
+		String name = currentModule.getCanonicalName();
+		String moduleBaseFolder = name.substring(0, name.lastIndexOf('.')).replace('.', '/');
+
+		List<String> screenFolders = GeneratorProperties.readConfigurationPropertyValues(context, GeneratorProperties.VIEW_BASE_FOLDER);
+		List<String> result = new ArrayList<String>();
+
+		for (String folder : screenFolders)
+        {
+			if (!folder.startsWith("/"))
+			{
+				folder = "/"+folder;
+			}
+	        result.add(moduleBaseFolder+folder);
+        }
+	    
+	    return result;
+    }
 }
