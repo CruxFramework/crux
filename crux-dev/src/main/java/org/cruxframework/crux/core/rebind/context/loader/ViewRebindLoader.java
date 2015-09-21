@@ -25,7 +25,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewException;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
-import org.cruxframework.crux.core.rebind.GeneratorProperties;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 
@@ -35,16 +34,15 @@ import com.google.gwt.dev.resource.Resource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewRebindLoader implements ViewLoader
+public class ViewRebindLoader extends AbstractViewLoader implements ViewLoader
 {
-	private RebindContext context;
 	private boolean initialized = false;
 	private TemplateRebindLoader templateContextLoader;
 	private Map<String, ViewRef> views = new HashMap<String, ViewRef>();
 	
 	public ViewRebindLoader(RebindContext context)
     {
-		this.context = context;
+		super(context);
 		templateContextLoader = new TemplateRebindLoader(context);
     }
 	
@@ -80,7 +78,7 @@ public class ViewRebindLoader implements ViewLoader
 		}
 		else 
 		{
-			finsViews(viewsLocator, result);
+			findViews(viewsLocator, result);
 		}
 			
 		return result;
@@ -93,7 +91,7 @@ public class ViewRebindLoader implements ViewLoader
 	    return !isViewName(viewsLocator) || !views.containsKey(viewsLocator);
     }
 
-	private void finsViews(String viewsLocator, List<String> result)
+	private void findViews(String viewsLocator, List<String> result)
     {
 		FilePatternHandler filePatternHandler = new FilePatternHandler(viewsLocator, null);
 		
@@ -110,7 +108,7 @@ public class ViewRebindLoader implements ViewLoader
 	{
 		if (!initialized)
 		{
-			List<String> screenFolders = GeneratorProperties.readConfigurationPropertyValues(context, GeneratorProperties.VIEW_BASE_FOLDER);
+			List<String> screenFolders = getViewBaseFolders();
 			Set<String> pathNames = context.getGeneratorContext().getResourcesOracle().getPathNames();
 			
 			for (String pathName : pathNames)
