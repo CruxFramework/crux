@@ -77,7 +77,15 @@ class BodyParameterHandler extends AbstractParameterHelper
 				String serializerName = new JSonSerializerProxyCreator(context, parameters[i].getType()).create();
 				srcWriter.println(builder+".setHeader(\""+HttpHeaderNames.CONTENT_TYPE+"\", \"application/json\");");
 				srcWriter.println("JSONValue serialized = new "+serializerName+"().encode("+parameters[i].getName()+");");
-				srcWriter.println("String requestData = (serialized==null||serialized.isNull()!=null)?null:serialized.toString();");
+				
+				if (parameters[i].getType().getQualifiedSourceName().equals("java.lang.String"))
+				{
+					srcWriter.println("String requestData = (serialized==null||serialized.isNull()!=null)?null:serialized.isString().stringValue();");
+				}
+				else
+				{
+					srcWriter.println("String requestData = (serialized==null||serialized.isNull()!=null)?null:serialized.toString();");
+				}
 			}
 			else
 			{
