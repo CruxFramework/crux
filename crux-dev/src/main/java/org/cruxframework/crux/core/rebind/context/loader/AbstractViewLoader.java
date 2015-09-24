@@ -49,6 +49,7 @@ public abstract class AbstractViewLoader
 
 		for (String folder : screenFolders)
         {
+			folder = folder.replace('\\', '/');
 			if (!folder.startsWith("/"))
 			{
 				folder = "/"+folder;

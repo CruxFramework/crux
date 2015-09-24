@@ -1198,15 +1198,19 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		while (widgets.hasNext())
 		{
 			org.cruxframework.crux.core.rebind.screen.Widget widget = widgets.next();
-			JSONObject metaElement = widget.getMetadata();
-			try
+			
+			if (widget.getParent() == null)
 			{
-				String type = getMetaElementType(metaElement);
-				createWidget(printer, metaElement, type);
-			}
-			catch (Exception e)
-			{
-				throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
+				JSONObject metaElement = widget.getMetadata();
+				try
+				{
+					String type = getMetaElementType(metaElement);
+					createWidget(printer, metaElement, type);
+				}
+				catch (Exception e)
+				{
+					throw new CruxGeneratorException("Error Creating widget. See Log for more detail.", e);
+				}
 			}
 		}
     }
