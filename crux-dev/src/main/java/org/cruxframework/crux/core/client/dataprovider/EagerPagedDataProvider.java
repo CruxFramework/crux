@@ -31,12 +31,16 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 {
 	protected EagerDataLoader<T> dataLoader;
 
-	public EagerPagedDataProvider(DataProvider.DataHandler<T> handler)
+	public EagerPagedDataProvider()
+    {
+    }
+	
+	public EagerPagedDataProvider(DataProvider.EditionDataHandler<T> handler)
 	{
 		super(handler);
 	}
 
-	public EagerPagedDataProvider(DataProvider.DataHandler<T> handler, EagerDataLoader<T> dataLoader)
+	public EagerPagedDataProvider(DataProvider.EditionDataHandler<T> handler, EagerDataLoader<T> dataLoader)
     {
 		super(handler);
 		this.dataLoader = dataLoader;
