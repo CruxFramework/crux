@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Panel;
  * Base implementation for Pageable widgets
  * @author Thiago da Rosa de Bustamante
  */
-public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T> implements Pageable<T>
+public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHasPagedDataProvider<T> implements Pageable<T>
 {
 	protected boolean allowRefreshAfterDataChange = true;
 	protected HandlerRegistration dataChangedHandler;
@@ -52,6 +52,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	protected HandlerRegistration pageLoadedHandler;
 	protected DataProvider.DataReader<T> reader = getDataReader();
 	protected HandlerRegistration transactionEndHandler;
+	private   P pagePanel;
 	
 	public void add(T object)
 	{
@@ -184,12 +185,14 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 				boolean renewPagePanel = hasPageable == null || !hasPageable.supportsInfiniteScroll();
 				if (renewPagePanel)
 				{
-					final IsWidget pagePanel = (hasPageable != null)?initializePagePanel():null;
+					final IsWidget pagePanel = (hasPageable != null)?doInitializePagePanel():null;
+					
 					if (getPagePanel() == null)
 					{
-						IsWidget panel = initializePagePanel();
+						IsWidget panel = doInitializePagePanel();
 						getContentPanel().add(panel);
-					}
+					};
+					
 					render((hasPageable == null), new RenderCallback()
 					{
 						@Override
@@ -282,11 +285,14 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	* Retrieve the panel that will contain all the page data.
 	* @return
 	*/
-	protected abstract IsWidget getPagePanel();
+	protected final P getPagePanel()
+	{
+		return pagePanel;
+	}
 
 	protected void initializeAndUpdatePagePanel(boolean forward)
 	{
-		IsWidget pagePanel = initializePagePanel();
+		IsWidget pagePanel = doInitializePagePanel();
 		if (hasPageable != null)
 	    {
 	     	hasPageable.updatePagePanel(pagePanel, forward);
@@ -297,7 +303,16 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	* Creates the panel that will contain all the page data.
 	* @return
 	*/
-	protected abstract IsWidget initializePagePanel();
+	protected abstract P initializePagePanel();
+	
+	/**
+	 * @return a Page Panel instance. 
+	 */
+	private IsWidget doInitializePagePanel()
+	{
+		pagePanel = initializePagePanel();
+		return pagePanel;
+	}
 	
 	/**
 	 * @return true if is allowed to refresh the page after the data 
@@ -314,7 +329,7 @@ public abstract class AbstractPageable<T> extends AbstractHasPagedDataProvider<T
 	{
 		if (getPagePanel() == null)
 		{
-			IsWidget panel = initializePagePanel();
+			IsWidget panel = doInitializePagePanel();
 			getContentPanel().add(panel);
 		}
 		getDataProvider().first();
