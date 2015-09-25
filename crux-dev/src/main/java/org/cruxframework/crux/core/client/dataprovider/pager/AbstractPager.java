@@ -74,14 +74,7 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-		if (enabled)
-		{
-			removeStyleDependentName(DISABLED);
-		}
-		else
-		{
-			addStyleDependentName(DISABLED);
-		}
+		enableCompositeWidgets(enabled);
 	}
 
 	@Override
@@ -183,14 +176,35 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	protected void onTransactionCompleted(boolean commited)
     {
 		transactionRunning = false;
-		setEnabled(enabled);
+		if(isEnabled())
+		{
+			enableCompositeWidgets(true);
+		}
     }
 
 	protected void onTransactionStarted(int startRecord)
     {
 		transactionRunning = true;
-		setEnabled(false);
+		enableCompositeWidgets(false);
     }
+	
+	/**
+	 * This should be overridden in order to handle
+	 * the children components states. 
+	 * @param enabled true will enable all composite widgets
+	 * and false otherwise. 
+	 */
+	protected void enableCompositeWidgets(boolean enabled)
+	{
+		if (enabled)
+		{
+			removeStyleDependentName(DISABLED);
+		}
+		else
+		{
+			addStyleDependentName(DISABLED);
+		}
+	}
 	
 	/**
 	 * Refreshes the pager
