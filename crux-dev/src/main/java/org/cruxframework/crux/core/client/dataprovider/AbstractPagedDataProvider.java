@@ -290,7 +290,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		int result = (index / pageSize) + (index%pageSize==0?0:1);
 		if (!mayExpand && result > getPageCount())
 		{
-			throw new DataProviderExcpetion("Invalid record. Out of bounds");
+			throw new DataProviderException("Invalid record. Out of bounds");
 		}
 		
 		return result;

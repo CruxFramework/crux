@@ -88,7 +88,7 @@ class DataProviderOperations<T>
 		DataProviderRecordState previousState = record.getCurrentState();
 		if (previousState.isReadOnly())
 		{
-			throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+			throw new DataProviderException("Can not update a read only information");//TODO i18n
 		}
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
@@ -113,7 +113,7 @@ class DataProviderOperations<T>
 		{
 			if (record.isReadOnly())
 			{
-				throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+				throw new DataProviderException("Can not update a read only information");//TODO i18n
 			}
 			record.set(object);
 		}

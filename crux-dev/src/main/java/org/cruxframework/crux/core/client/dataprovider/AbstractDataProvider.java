@@ -340,7 +340,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
     {
 	    if (isDirty())
 		{
-			throw new DataProviderExcpetion("There are uncommited changes on this DataProvider. Commit or rollback it first.");
+			throw new DataProviderException("There are uncommited changes on this DataProvider. Commit or rollback it first.");
 		}
     }
 	
