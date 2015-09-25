@@ -173,7 +173,7 @@ class DataProviderHelper
 			subTypeWriter.commit();
 		}
 		String copierClassName = packageName + "." + copierSimpleClassName;
-		out.println("new " + org.cruxframework.crux.core.client.dataprovider.DataProvider.DataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
+		out.println("new " + org.cruxframework.crux.core.client.dataprovider.DataProvider.EditionDataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
 		out.println(copierClassName + " copier = GWT.create(" + copierClassName + ".class);");
 		out.println("public " + dataObject + " clone(" + dataObject + " value){");
 		out.println(dataObject + " result = new " + dataObject + "();");
