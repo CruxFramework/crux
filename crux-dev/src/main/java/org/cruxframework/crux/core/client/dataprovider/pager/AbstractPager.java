@@ -74,7 +74,14 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-		setInteractionEnabled(enabled);
+		if (enabled)
+		{
+			removeStyleDependentName(DISABLED);
+		}
+		else
+		{
+			addStyleDependentName(DISABLED);
+		}
 	}
 
 	@Override
@@ -176,13 +183,13 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	protected void onTransactionCompleted(boolean commited)
     {
 		transactionRunning = false;
-		setInteractionEnabled(enabled);
+		setEnabled(enabled);
     }
 
 	protected void onTransactionStarted(int startRecord)
     {
 		transactionRunning = true;
-		setInteractionEnabled(false);
+		setEnabled(false);
     }
 	
 	/**
@@ -234,18 +241,6 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 			resetHandler = null;
 		}
 	}
-	
-	protected void setInteractionEnabled(boolean enabled)
-    {
-	    if (enabled)
-		{
-			removeStyleDependentName(DISABLED);
-		}
-		else
-		{
-			addStyleDependentName(DISABLED);
-		}
-    }
 	
 	/**
 	 * Shows some information to tell user that operation is in progress
