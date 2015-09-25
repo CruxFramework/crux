@@ -30,7 +30,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected Array<DataChangedHandler> dataChangedHandlers;
 	protected Array<ResetHandler> resetHandlers;
-	protected DataProvider.DataHandler<T> dataHandler;
+	protected DataProvider.EditionDataHandler<T> dataHandler;
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
 	protected Array<DataSortedHandler> dataSortedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
@@ -38,9 +38,14 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected Array<TransactionEndHandler> transactionEndHandlers;
 	protected Array<TransactionStartHandler> transactionStartHandlers;
 	
-	public AbstractDataProvider(DataHandler<T> handler)
+	public AbstractDataProvider()
     {
-		this.dataHandler = handler;
+	}
+	
+	public AbstractDataProvider(EditionDataHandler<T> dataHandler)
+    {
+		this();
+		setEditionDataHandler(dataHandler);
     }
 	
 	@Override
@@ -208,24 +213,39 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	public T get()
 	{
 		DataProviderRecord<T> record = getRecord();
-		T clonedRecord = null;
-		if(record != null)
+		
+		if (isEditable())
 		{
-			clonedRecord = dataHandler.clone(record.getRecordObject());
+			T clonedRecord = null;
+			if(record != null)
+			{
+				clonedRecord = dataHandler.clone(record.getRecordObject());
+			}
+			return clonedRecord;
 		}
-		return clonedRecord;
+		return record.getRecordObject();
 	}
 	
 	@Override
 	public T get(int index)
 	{
 	    DataProviderRecord<T> record = data.get(index);
-	    T clonedRecord = null;
-		if(record != null)
+		if (isEditable())
 		{
-			clonedRecord = dataHandler.clone(record.getRecordObject());
+		    T clonedRecord = null;
+			if(record != null)
+			{
+				clonedRecord = dataHandler.clone(record.getRecordObject());
+			}
+			return clonedRecord;
 		}
-		return clonedRecord;
+		return record.getRecordObject();
+	}
+	
+	@Override
+	public boolean isEditable()
+	{
+	    return this.dataHandler != null;
 	}
 	
     @Override
@@ -234,6 +254,16 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	    return loaded;
     }
 	
+    @Override
+    public void setEditionDataHandler(EditionDataHandler<T> dataHandler)
+    {
+    	if (isDirty())
+    	{
+    		throw new DataProviderExcpetion("There are uncommited changes on this DataProvider. Commit or rollback it first.");
+    	}
+    	this.dataHandler = dataHandler;        
+    }
+        
 	@Override
 	public void next()
 	{
