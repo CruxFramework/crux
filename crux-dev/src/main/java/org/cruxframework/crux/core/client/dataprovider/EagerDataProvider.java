@@ -28,12 +28,16 @@ public class EagerDataProvider<T> extends AbstractScrollableDataProvider<T>
 {
 	protected EagerDataLoader<T> dataLoader;
 
-	public EagerDataProvider(DataProvider.DataHandler<T> handler)
+	public EagerDataProvider()
+    {
+    }
+	
+	public EagerDataProvider(DataProvider.EditionDataHandler<T> handler)
 	{
 		super(handler);
 	}
 
-	public EagerDataProvider(DataProvider.DataHandler<T> handler, EagerDataLoader<T> dataLoader)
+	public EagerDataProvider(DataProvider.EditionDataHandler<T> handler, EagerDataLoader<T> dataLoader)
     {
 		super(handler);
 		this.dataLoader = dataLoader;

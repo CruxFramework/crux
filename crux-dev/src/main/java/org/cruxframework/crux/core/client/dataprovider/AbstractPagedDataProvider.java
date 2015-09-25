@@ -34,7 +34,11 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	
 	protected int pageSize = 10;
 	
-	public AbstractPagedDataProvider(DataProvider.DataHandler<E> handler)
+	public AbstractPagedDataProvider()
+    {
+    }
+	
+	public AbstractPagedDataProvider(DataProvider.EditionDataHandler<E> handler)
     {
 	    super(handler);
     }

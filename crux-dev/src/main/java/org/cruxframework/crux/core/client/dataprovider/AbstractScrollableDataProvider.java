@@ -29,7 +29,11 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 {
 	protected DataProviderOperations<T> operations = new DataProviderOperations<T>(this);
 
-	public AbstractScrollableDataProvider(DataProvider.DataHandler<T> handler)
+	public AbstractScrollableDataProvider()
+    {
+    }
+	
+	public AbstractScrollableDataProvider(DataProvider.EditionDataHandler<T> handler)
     {
 	    super(handler);
     }

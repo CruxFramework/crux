@@ -65,6 +65,10 @@ public class DataProviderRecord<T> implements Cloneable
 	{
 		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
 		
+		if (!dataProvider.isEditable())
+		{
+			throw new UnsupportedOperationException("This dataProvider ins not Editable. You need to first call setEditionHandler() method.");
+		}
 		record.recordObject = dataProvider.dataHandler.clone(this.recordObject);
 		record.state = getCurrentState();
 		return record;
