@@ -114,6 +114,7 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 	@Override
 	public FilterRegistration<T> addFilter(final DataFilter<T> filter)
 	{
+		ensureNotDirty();
 		return operations.addFilter(filter);
 	}
 	
