@@ -27,12 +27,12 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
                                               implements MeasurablePagedProvider<E>
 {
 	protected int currentPage = 0;
-	protected int previousPage = -1;
+	protected Array<PageLoadedHandler> pageLoadedHandlers;
 
 	protected Array<PageRequestedHandler> pageRequestedHandlers;
-	protected Array<PageLoadedHandler> pageLoadedHandlers;
-	
 	protected int pageSize = 10;
+	
+	protected int previousPage = -1;
 	
 	public AbstractPagedDataProvider()
     {
@@ -51,29 +51,6 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	}
 	
 	@Override
-	public HandlerRegistration addPageRequestedHandler(final PageRequestedHandler handler)
-	{
-		if (pageRequestedHandlers == null)
-		{
-			pageRequestedHandlers = CollectionFactory.createArray();
-		}
-		
-		pageRequestedHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = pageRequestedHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					pageRequestedHandlers.remove(index);
-				}
-			}
-		};
-	}
-
-	@Override
 	public HandlerRegistration addPageLoadedHandler(final PageLoadedHandler handler)
 	{
 		if (pageLoadedHandlers == null)
@@ -91,6 +68,29 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 				if (index >= 0)
 				{
 					pageLoadedHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public HandlerRegistration addPageRequestedHandler(final PageRequestedHandler handler)
+	{
+		if (pageRequestedHandlers == null)
+		{
+			pageRequestedHandlers = CollectionFactory.createArray();
+		}
+		
+		pageRequestedHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = pageRequestedHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					pageRequestedHandlers.remove(index);
 				}
 			}
 		};
@@ -177,6 +177,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public boolean nextPage()
 	{
+		ensureNotDirty();
 		if (hasNextPage())
 		{
 			previousPage = currentPage;
@@ -191,6 +192,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public boolean previousPage()
 	{
+		ensureNotDirty();
 		if (hasPreviousPage())
 		{
 			previousPage = currentPage;
@@ -219,6 +221,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public void setPageSize(int pageSize)
 	{
+		ensureNotDirty();
 		if (pageSize < 1)
 		{
 			pageSize = 1;
@@ -230,25 +233,13 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			firePageRequestedEvent(currentPage);
 		}
 	}
-	
+
 	@Override
 	protected void changePositionAfterSorting()
 	{
 	    firstOnPage();
 	}
 	
-	protected void firePageRequestedEvent(int pageNumber)
-    {
-		if (pageRequestedHandlers != null)
-		{
-			PageRequestedEvent event = new PageRequestedEvent(this, pageNumber);
-			for (int i = 0; i< pageRequestedHandlers.size(); i++)
-			{
-				pageRequestedHandlers.get(i).onPageRequested(event);
-			}
-		}
-    }
-
 	protected void firePageLoadedEvent(int start, int end)
     {
 		if (pageLoadedHandlers != null)
@@ -257,6 +248,18 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			for (int i = 0; i< pageLoadedHandlers.size(); i++)
 			{
 				pageLoadedHandlers.get(i).onPageLoaded(event);
+			}
+		}
+    }
+
+	protected void firePageRequestedEvent(int pageNumber)
+    {
+		if (pageRequestedHandlers != null)
+		{
+			PageRequestedEvent event = new PageRequestedEvent(this, pageNumber);
+			for (int i = 0; i< pageRequestedHandlers.size(); i++)
+			{
+				pageRequestedHandlers.get(i).onPageRequested(event);
 			}
 		}
     }
@@ -287,7 +290,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		int result = (index / pageSize) + (index%pageSize==0?0:1);
 		if (!mayExpand && result > getPageCount())
 		{
-			throw new DataProviderExcpetion("Invalid record. Out of bounds");
+			throw new DataProviderException("Invalid record. Out of bounds");
 		}
 		
 		return result;
@@ -354,6 +357,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
 	{
 		ensureLoaded();
+		ensureNotDirty();
 		if (pageNumber > 0 && pageNumber <= getPageCount())
 		{
 			previousPage = currentPage;

@@ -256,7 +256,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		if (currentPage != 1)
 		{
-			checkChanges();
+			ensureNotDirty();
 		}
 		previousPage = currentPage;
 		currentPage = 1;
@@ -269,7 +269,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		if (currentPage != 1)
 		{
-			checkChanges();
+			ensureNotDirty();
 		}
 		currentRecord = getPageStartRecord();
 		ensureCurrentPageLoaded();
@@ -348,7 +348,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public boolean nextPage()
 	{
-		checkChanges();
+		ensureNotDirty();
 		if (hasNextPage())
 		{
 			previousPage = currentPage;
@@ -369,7 +369,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public boolean previousPage()
 	{
-		checkChanges();
+		ensureNotDirty();
 		if (hasPreviousPage())
 		{
 			previousPage = currentPage;
@@ -578,7 +578,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		boolean loaded = isCurrentPageLoaded();
 		if (!loaded)
 		{
-			throw new DataProviderExcpetion("Error processing requested operation. DataProvider is not loaded yet.");
+			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
 
@@ -757,14 +757,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		return ret;
 	}
 
-	protected void checkChanges()
-	{
-		if (operations.isDirty())
-		{//TODO i18n
-			throw new DataProviderExcpetion("DataProvider has changes on page. You must save or discard them before perform this operation.");
-		}
-	}
-	
 	protected Array<DataProviderRecord<T>> getTransactionRecords()
 	{
 		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();

@@ -277,7 +277,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	{
 		if (!loaded)
 		{
-			throw new DataProviderExcpetion("Error processing requested operation. DataProvider is not loaded yet.");
+			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
 	

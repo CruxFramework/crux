@@ -296,7 +296,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		boolean loaded = isPageLoaded(getPageForRecord(recordNumber, false));
 		if (!loaded)
 		{
-			throw new DataProviderExcpetion("Error processing requested operation. DataProvider is not loaded yet.");
+			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
 	
@@ -367,7 +367,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	{
 		if (operations.isDirty())
 		{//TODO i18n
-			throw new DataProviderExcpetion("DataProvider has changes on page. You must save or discard them before perform this operation.");
+			throw new DataProviderException("DataProvider has changes on page. You must save or discard them before perform this operation.");
 		}
 	}
 	

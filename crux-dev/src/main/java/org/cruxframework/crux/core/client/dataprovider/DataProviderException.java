@@ -16,29 +16,29 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 /**
- * Exception to describe a {@link DataProvider} oepration error
+ * Exception to describe a {@link DataProvider} operation error.
  * @author Thiago da Rosa de Bustamante
  */
-public class DataProviderExcpetion extends RuntimeException
+public class DataProviderException extends RuntimeException
 {
     private static final long serialVersionUID = -579649646989882710L;
 
-	public DataProviderExcpetion()
+	public DataProviderException()
     {
 	    super();
     }
 
-	public DataProviderExcpetion(String message, Throwable t)
+	public DataProviderException(String message, Throwable t)
     {
 	    super(message, t);
     }
 
-	public DataProviderExcpetion(String message)
+	public DataProviderException(String message)
     {
 	    super(message);
     }
 
-	public DataProviderExcpetion(Throwable t)
+	public DataProviderException(Throwable t)
     {
 	    super(t);
     }
