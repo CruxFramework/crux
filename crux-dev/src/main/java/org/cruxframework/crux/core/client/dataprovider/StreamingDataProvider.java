@@ -578,7 +578,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		boolean loaded = isCurrentPageLoaded();
 		if (!loaded)
 		{
-			throw new DataProviderExcpetion("Error processing requested operation. DataProvider is not loaded yet.");
+			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
 

@@ -75,7 +75,7 @@ class StreamingDataProviderOperations<T>
 		DataProviderRecordState previousState = record.getCurrentState();
 		if (previousState.isReadOnly())
 		{
-			throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+			throw new DataProviderException("Can not update a read only information");//TODO i18n
 		}
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
@@ -94,7 +94,7 @@ class StreamingDataProviderOperations<T>
 		{
 			if (record.isReadOnly())
 			{
-				throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+				throw new DataProviderException("Can not update a read only information");//TODO i18n
 			}
 			record.set(object);
 		}
