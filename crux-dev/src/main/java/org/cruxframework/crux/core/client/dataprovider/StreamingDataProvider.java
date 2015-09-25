@@ -67,7 +67,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public boolean isDirty()
 	{
-	    return operations.isDirty();
+	    return operations != null && operations.isDirty();
 	}
 	
 	@Override

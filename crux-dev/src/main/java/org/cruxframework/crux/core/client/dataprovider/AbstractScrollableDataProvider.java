@@ -129,7 +129,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	@Override
 	public boolean isDirty()
 	{
-	    return operations.isDirty();
+	    return operations != null && operations.isDirty();
 	}
 
 	@Override
