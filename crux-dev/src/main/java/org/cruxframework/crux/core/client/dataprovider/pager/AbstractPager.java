@@ -74,7 +74,7 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-		enableCompositeWidgets(enabled);
+		setInteractionEnabled(enabled);
 	}
 
 	@Override
@@ -178,14 +178,14 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		transactionRunning = false;
 		if(isEnabled())
 		{
-			enableCompositeWidgets(true);
+			setInteractionEnabled(true);
 		}
     }
 
 	protected void onTransactionStarted(int startRecord)
     {
 		transactionRunning = true;
-		enableCompositeWidgets(false);
+		setInteractionEnabled(false);
     }
 	
 	/**
@@ -194,7 +194,7 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	 * @param enabled true will enable all composite widgets
 	 * and false otherwise. 
 	 */
-	protected void enableCompositeWidgets(boolean enabled)
+	protected void setInteractionEnabled(boolean enabled)
 	{
 		if (enabled)
 		{
