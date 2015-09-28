@@ -30,5 +30,5 @@ public interface Pageable<T> extends HasPagedDataProvider<PagedDataProvider<T>>,
 	 * Sets the pager
 	 * @param pager
 	 */
-	void setPager(HasPageable<T> pager);
+	void setPager(PageablePager<T> pager);
 }

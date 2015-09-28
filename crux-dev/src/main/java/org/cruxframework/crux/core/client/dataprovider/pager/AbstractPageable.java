@@ -47,7 +47,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
 	protected HandlerRegistration dataSortedHandler;
-	protected HasPageable<T> hasPageable;
+	protected PageablePager<T> pager;
 	protected HandlerRegistration loadStoppedHandler;
 	protected HandlerRegistration pageLoadedHandler;
 	protected DataProvider.DataReader<T> reader = getDataReader();
@@ -142,9 +142,9 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	@Override
 	public void setHeight(String height) 
 	{
-		if(hasPageable != null && hasPageable.supportsInfiniteScroll())
+		if(pager != null && pager.supportsInfiniteScroll())
 		{
-			hasPageable.asWidget().setHeight(height);
+			pager.asWidget().setHeight(height);
 		} 
 		else
 		{
@@ -153,9 +153,9 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	}
 
 	@Override
-    public void setPager(HasPageable<T> pager)
+    public void setPager(PageablePager<T> pager)
     {
-		this.hasPageable = pager;
+		this.pager = pager;
 		if (pager != null)
  		{
 			if (getDataProvider() != null)
@@ -165,7 +165,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			pager.initializeContentPanel(getContentPanel());
 			if (pager.supportsInfiniteScroll())
 			{
-				initializeAndUpdatePagePanel(true);
+				ensurePageAndUpdatePagePanel(true);
 			}
 			else if (getPagePanel() != null)
 			{
@@ -182,10 +182,10 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			@Override
 			public void onPageLoaded(final PageLoadedEvent event)
 			{
-				boolean renewPagePanel = hasPageable == null || !hasPageable.supportsInfiniteScroll();
+				boolean renewPagePanel = pager == null || !pager.supportsInfiniteScroll();
 				if (renewPagePanel)
 				{
-					final IsWidget pagePanel = (hasPageable != null)?doInitializePagePanel():null;
+					final IsWidget pagePanel = (pager != null)?doInitializePagePanel():null;
 					
 					if (getPagePanel() == null)
 					{
@@ -193,14 +193,14 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 						getContentPanel().add(panel);
 					};
 					
-					render((hasPageable == null), new RenderCallback()
+					render((pager == null), new RenderCallback()
 					{
 						@Override
 						public void onRendered()
 						{
-							if (hasPageable != null)
+							if (pager != null)
 							{
-								hasPageable.updatePagePanel(pagePanel, event.getCurrentPage() > event.getPreviousPage());
+								pager.updatePagePanel(pagePanel, event.getCurrentPage() > event.getPreviousPage());
 							}
 						}
 					});
@@ -290,12 +290,12 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		return pagePanel;
 	}
 
-	protected void initializeAndUpdatePagePanel(boolean forward)
+	protected void ensurePageAndUpdatePagePanel(boolean forward)
 	{
-		IsWidget pagePanel = doInitializePagePanel();
-		if (hasPageable != null)
+		IsWidget pagePanel = this.pagePanel!=null?this.pagePanel:doInitializePagePanel();
+		if (pager != null)
 	    {
-	     	hasPageable.updatePagePanel(pagePanel, forward);
+	     	pager.updatePagePanel(pagePanel, forward);
 		}
 	}
 
@@ -364,7 +364,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	
 	protected void refreshPage(int startRecord)
     {
-		boolean refreshAll = hasPageable == null || !hasPageable.supportsInfiniteScroll();
+		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
 	    if (refreshAll)
 	    {
 	    	clear();
