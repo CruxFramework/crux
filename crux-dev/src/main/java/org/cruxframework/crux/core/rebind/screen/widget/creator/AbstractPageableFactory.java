@@ -149,17 +149,21 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    }
 	    catch (JSONException e)
 	    {
-	    	throw new CruxGeneratorException("Missing required attribute [onCreateWidget], on widgetFactoryOnController tag on widget declaration. WidgetID ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
+	    	throw new CruxGeneratorException("Missing required attribute [onCreateWidget], on widgetFactoryOnController "
+	    		+ "tag on widget declaration. WidgetID ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
 	    }
     }
 	
-	@TagConstraints(tagName="widget", description="Describes the widget used by the widgetList. An Widget like this will be created for each object provided by the dataprovider.")
+	@TagConstraints(tagName="widget", 
+		description="Describes the widget used by the widgetList. An Widget like this will be created for each object "
+			+ "provided by the dataprovider.")
 	@TagChildren({
 		@TagChild(value=WidgetFactoryWidgetProcessor.class, autoProcess=false)
 	})
 	public static class WidgetFactoryChildCreator extends WidgetChildProcessor<WidgetCreatorContext>{}
 	
-	@TagConstraints(tagName="widgetFactory", description="Describes the widget factory method to be called on a controller to create widgets for this list. This factory is called to create a widget for each object provided by the dataprovider.")
+	@TagConstraints(tagName="widgetFactory", description="Describes the widget factory method to be called on a controller "
+		+ "to create widgets for this list. This factory is called to create a widget for each object provided by the dataprovider.")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="onCreateWidget", required=true, description="")
 	})

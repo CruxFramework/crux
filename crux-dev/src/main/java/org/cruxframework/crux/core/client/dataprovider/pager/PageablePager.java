@@ -19,22 +19,22 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
- * A HasPageable is a component to navigate on pages of a {@link Pageable} widget.
+ * A PageablePager is a component to navigate on pages of a {@link Pageable} widget.
  * @author Thiago da Rosa de Bustamante
  */
-public interface HasPageable<T> extends Pager<T>
+public interface PageablePager<T> extends Pager<T>
 {
 	/**
 	 * Inform if the pager supports that multiple pages are rendered into
-	 * the pageable widget. If this method returns false, the pageable widget
+	 * the {@link Pageable} widget. If this method returns false, the {@link Pageable} widget
 	 * will first clear its content panel before render any new page data. If 
-	 * it return true, this panel will not be cleared, allowing infinit scrolling.
+	 * it return true, this panel will not be cleared, allowing infinite scrolling.
 	 * @return true if infinite scroll is supported
 	 */
 	boolean supportsInfiniteScroll();
 	
 	/**
-	 * Called to update the pageable content panel assigning to it the given pagePanel.
+	 * Called to update the {@link Pageable} content panel assigning to it the given pagePanel.
 	 * @param pagePanel page panel.
 	 * @param forward true if the next page index is bigger than the previous page index.
 	 */

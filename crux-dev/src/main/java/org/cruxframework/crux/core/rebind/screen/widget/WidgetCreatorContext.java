@@ -97,7 +97,17 @@ public class WidgetCreatorContext
 	{
 		return childElement.optString(propertyName);
 	}
-	
+
+	public int readIntChildProperty(String propertyName, int defaultValue)
+	{
+		String property = readChildProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return Integer.parseInt(property);
+	}
+		
 	public String readChildProperty(String propertyName, String defaultValue)
 	{
 		String property = readChildProperty(propertyName);
