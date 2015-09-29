@@ -99,8 +99,12 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public void firstOnPage()
 	{
-		ensureLoaded();
-		currentRecord = getPageStartRecord();
+		int pageStartRecord = getPageStartRecord();
+		if (pageStartRecord != currentRecord)
+		{
+			ensureLoaded();
+			currentRecord = pageStartRecord;
+		}
 	}
 
 	@Override
