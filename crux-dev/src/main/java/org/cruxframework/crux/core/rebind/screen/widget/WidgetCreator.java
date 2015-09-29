@@ -352,10 +352,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	}
 
 	public String getDataBindingReadExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, 
-		String propertyValue, Set<String> converterDeclarations)
+		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath)
 	{
 		String expression = null;
-		PropertyBindInfo binding = getObjectDataBinding(propertyValue, null, true);
+		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetPropertyPath, true);
 		if (binding != null)
 		{
 			expression = binding.getDataObjectReadExpression(dataObjectVariable);
@@ -367,7 +367,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		else
 		{
-			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, null);
+			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetPropertyPath);
 			if (expressionBinding != null)
 			{
 				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
