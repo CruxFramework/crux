@@ -98,6 +98,7 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 	public void sort(Comparator<T> comparator, boolean restart) 
 	{
 		ensureLoaded();
+		ensureNotDirty();
 		if (data != null)
 		{
 			sortArray(data, comparator, !restart);
