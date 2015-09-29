@@ -267,12 +267,16 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void firstOnPage()
 	{
-		if (currentPage != 1)
+		int pageStartRecord = getPageStartRecord();
+		if (pageStartRecord != currentRecord)
 		{
-			ensureNotDirty();
+			if (currentPage != 1)
+			{
+				ensureNotDirty();
+			}
+			currentRecord = pageStartRecord;
+			ensureCurrentPageLoaded();
 		}
-		currentRecord = getPageStartRecord();
-		ensureCurrentPageLoaded();
 	}
 	
 	@Override
