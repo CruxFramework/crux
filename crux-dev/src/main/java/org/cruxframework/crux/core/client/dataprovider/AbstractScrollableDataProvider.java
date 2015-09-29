@@ -261,6 +261,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	public void sort(Comparator<T> comparator)
 	{
 		ensureLoaded();
+		ensureNotDirty();
 		if (data != null)
 		{
 			sortArray(data, comparator, true);
