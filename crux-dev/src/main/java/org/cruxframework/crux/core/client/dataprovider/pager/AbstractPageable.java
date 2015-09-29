@@ -193,7 +193,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 						getContentPanel().add(panel);
 					};
 					
-					render((pager == null), new RenderCallback()
+					render((pager == null), false, new RenderCallback()
 					{
 						@Override
 						public void onRendered()
@@ -207,7 +207,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 				}
 				else
 				{
-					render(false, null);
+					render(false, true, null);
 				}
 			}
 		});
@@ -216,7 +216,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			@Override
 			public void onLoadStopped(DataLoadStoppedEvent event)
 			{
-				render(true, null);
+				render(true, true, null);
 			}
 		});
 		
@@ -267,7 +267,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 				@Override
 				public void onFiltered(DataFilterEvent<T> event)
 				{
-					render(true, null);
+					render(true, true, null);
 				}
 			});
 		}
@@ -333,7 +333,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			getContentPanel().add(panel);
 		}
 		getDataProvider().first();
-		render(true, null);		
+		render(true, true, null);		
 	}
 		
 	protected void onTransactionCompleted(boolean commited)
@@ -355,11 +355,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		{
 			getDataProvider().first();
 		}
-		else
-		{
-			getDataProvider().firstOnPage();
-		}
-		render(goToFirstPage, null);		
+		render(goToFirstPage, true, null);		
 	}
 	
 	protected void refreshPage(int startRecord)
@@ -373,7 +369,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	    {
 	    	clearRange(startRecord);
 	    }
-	    refresh(false);
+	    render(false, false, null);
     }
 		
 	@Override
@@ -411,7 +407,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 	}
 		
-	protected void render(boolean refresh, RenderCallback callback)
+	protected void render(boolean refresh, boolean clearRange, RenderCallback callback)
     {
 		if (refresh)
 		{
@@ -419,6 +415,12 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 		int rowCount = getRowsToBeRendered();
 
+		getDataProvider().firstOnPage();
+		if (clearRange && !refresh && pager != null && pager.supportsInfiniteScroll())
+		{
+			clearRange(getDataProvider().getCurrentPageStartRecord());
+		}
+		
 		for (int i=0; i<rowCount; i++)
 		{
 			getDataProvider().read(reader);
