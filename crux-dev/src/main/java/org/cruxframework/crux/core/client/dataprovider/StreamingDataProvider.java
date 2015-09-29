@@ -485,6 +485,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void sort(Comparator<T> comparator)
 	{
+		ensureCurrentPageLoaded();
 		if (currentRecord > -1)
 		{
 			Array<DataProviderRecord<T>> pageData = CollectionFactory.createArray(pageSize);
