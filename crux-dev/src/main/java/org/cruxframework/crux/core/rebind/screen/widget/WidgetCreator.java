@@ -99,7 +99,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			String widgetType, WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		WidgetConsumer widgetConsumer = consumer != null ? consumer : context.getWidgetConsumer();
-		return viewFactory.newWidget(out, metaElem, widgetId, widgetType, widgetConsumer, dataBindingProcessor);
+		DataBindingProcessor bindingProcessor = dataBindingProcessor != null ? dataBindingProcessor : context.getDataBindingProcessor();
+		return viewFactory.newWidget(out, metaElem, widgetId, widgetType, widgetConsumer, bindingProcessor);
 	}	
 	
 	/**
@@ -163,7 +164,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor) throws CruxGeneratorException
 	{
 		boolean partialSupport = hasPartialSupport();
-		C context = createContext(out, metaElem, widgetId, consumer);
+		C context = createContext(out, metaElem, widgetId, consumer, dataBindingProcessor);
 		if (partialSupport)
 		{
 			out.println("if ("+getWidgetClassName()+".isSupported()){");
@@ -705,22 +706,26 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.commitPostProcessing(printer);
 	}
-	
+
 	/**
-	 * @param srcWriter 
-	 * @param element
+	 * 
+	 * @param out
+	 * @param metaElem
 	 * @param widgetId
 	 * @param consumer
+	 * @param dataBindingProcessor
 	 * @return
 	 * @throws CruxGeneratorException
 	 */
-	protected C createContext(SourcePrinter out, JSONObject metaElem, String widgetId, WidgetConsumer consumer) throws CruxGeneratorException
+	protected C createContext(SourcePrinter out, JSONObject metaElem, String widgetId, 
+		WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor) throws CruxGeneratorException
 	{
 		C context = instantiateContext();
 		context.setWidgetElement(metaElem);
 		context.setWidgetId(widgetId);
 		context.setChildElement(metaElem);
 		context.setWidgetConsumer(consumer);
+		context.setDataBindingProcessor(dataBindingProcessor);
 		String widgetVariableName = createVariableName("widget");
 		context.setWidget(widgetVariableName);
 
