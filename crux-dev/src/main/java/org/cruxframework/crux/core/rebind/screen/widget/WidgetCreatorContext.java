@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.json.JSONObject;
 
@@ -36,6 +37,7 @@ public class WidgetCreatorContext
 	private String widget;
 	private String widgetId;
 	private WidgetConsumer widgetConsumer;
+	private DataBindingProcessor dataBindingProcessor;
 	private Map<String, ObjectDataBinding> objectDataBindings = new HashMap<String, ObjectDataBinding>();
 	private List<ExpressionDataBinding> expressionDataBindings = new ArrayList<ExpressionDataBinding>();
 	
@@ -153,6 +155,11 @@ public class WidgetCreatorContext
 		return widgetConsumer;
 	}
 	
+	public DataBindingProcessor getDataBindingProcessor()
+	{
+		return dataBindingProcessor;
+	}
+	
 	public void registerObjectDataBinding(PropertyBindInfo propertyBindInfo)
 	{
 		ObjectDataBinding objectDataBinding = getObjectDataBinding(propertyBindInfo.getDataObject());
@@ -193,4 +200,9 @@ public class WidgetCreatorContext
     {
     	this.widgetConsumer = consumer;
     }
+	
+	void setDataBindingProcessor(DataBindingProcessor dataBindingProcessor)
+	{
+		this.dataBindingProcessor = dataBindingProcessor;
+	}
 }
