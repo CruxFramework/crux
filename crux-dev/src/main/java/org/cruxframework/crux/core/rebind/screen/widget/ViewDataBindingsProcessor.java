@@ -42,12 +42,18 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
     }
 	
 	@Override
+    public String getDataObjectAlias(String dataObject)
+    {
+	    return dataObject;
+    }
+	
+	@Override
     public void processBindings(SourcePrinter out, WidgetCreatorContext context)
     {
 		processDataObjectBindings(out, context);
 		processDataExpressionBindings(out, context);
     }
-	
+
 	/**
 	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
 	 * @param dataObjectAlias
@@ -58,55 +64,6 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 	{
 		return viewFactory.getDataObjectBinderVariable(dataObjectAlias, out);
 	}
-
-	/**
-	 * Process any dataObject binding on this widget
-	 * @param out
-	 * @param context
-	 * @return 
-	 */
-	protected void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
-		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
-		
-		while (dataObjects.hasNext())
-		{
-			String dataObjectAlias = dataObjects.next();
-			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
-			
-			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
-			String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
-			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
-			
-			while (propertyBindings.hasNext())
-			{
-				PropertyBindInfo bind = propertyBindings.next(); 
-				out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
-						", new " + PropertyBinder.class.getCanonicalName() + "<" + dataObjectClassName + ", "+ bind.getWidgetClassName() +">(){");
-				String converterDeclaration = bind.getConverterDeclaration();
-				if (converterDeclaration != null)
-				{
-					out.println(converterDeclaration);
-				}
-
-				out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getWriteExpression("dataObject"));
-				out.println("}");
-				
-				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getReadExpression("dataObject"));
-				out.println("}");
-				
-				if (!StringUtils.isEmpty(bind.getUiObjectExpression()))
-				{
-					out.println("public "+UIObject.class.getCanonicalName()+" getUiObject(){");
-					out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF, false) + ";");
-					out.println("}");
-				}
-				out.println("}, "+bind.isBoundToAttribute()+");");
-			}
-		}
-    }
 	
 	/**
 	 * Process any dataObject binding expression on this widget
@@ -154,6 +111,55 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 		catch(NoSuchFieldException e)
 		{
 			throw new CruxGeneratorException("Error processing data binding expression.", e);
+		}
+    }
+
+	/**
+	 * Process any dataObject binding on this widget
+	 * @param out
+	 * @param context
+	 * @return 
+	 */
+	protected void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context)
+    {
+		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
+		
+		while (dataObjects.hasNext())
+		{
+			String dataObjectAlias = dataObjects.next();
+			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
+			
+			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
+			String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
+			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
+			
+			while (propertyBindings.hasNext())
+			{
+				PropertyBindInfo bind = propertyBindings.next(); 
+				out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
+						", new " + PropertyBinder.class.getCanonicalName() + "<" + dataObjectClassName + ", "+ bind.getWidgetClassName() +">(){");
+				String converterDeclaration = bind.getConverterDeclaration();
+				if (converterDeclaration != null)
+				{
+					out.println(converterDeclaration);
+				}
+
+				out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
+				out.println(bind.getWriteExpression("dataObject"));
+				out.println("}");
+				
+				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
+				out.println(bind.getReadExpression("dataObject"));
+				out.println("}");
+				
+				if (!StringUtils.isEmpty(bind.getUiObjectExpression()))
+				{
+					out.println("public "+UIObject.class.getCanonicalName()+" getUiObject(){");
+					out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF, false) + ";");
+					out.println("}");
+				}
+				out.println("}, "+bind.isBoundToAttribute()+");");
+			}
 		}
     }
 }

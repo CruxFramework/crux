@@ -30,6 +30,7 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 
@@ -84,7 +85,7 @@ public class ViewBindHandler
 	}
 	
 	protected ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, 
-			String widgetPropertyPath, String uiObjectClassName, String getUiObjectExpression)
+			String widgetPropertyPath, String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
 	{
 		if (propertyValue == null)
 		{
@@ -101,31 +102,34 @@ public class ViewBindHandler
 		if (RegexpPatterns.REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING.matcher(trimPropertyValue).matches())
 		{
 			return getReadOnlyObjectBindingExpression(widgetPropertyPath, widgetPropertyType, widgetType, 
-														trimPropertyValue, uiObjectType, getUiObjectExpression);
+														trimPropertyValue, uiObjectType, getUiObjectExpression, dataBindingProcessor);
 		}
 		else if (widgetPropertyType == JPrimitiveType.BOOLEAN || Boolean.class.getCanonicalName().equals(widgetPropertyType.getQualifiedSourceName()))
 		{
 			if (RegexpPatterns.REGEXP_CRUX_EXPRESSION_DATA_BINDING.matcher(trimPropertyValue).matches())
 			{
-				return getLogicalBindingExpression(widgetType, widgetPropertyPath, trimPropertyValue, uiObjectType, getUiObjectExpression);
+				return getLogicalBindingExpression(widgetType, widgetPropertyPath, trimPropertyValue, uiObjectType, 
+					getUiObjectExpression, dataBindingProcessor);
 			}
 		}
 		else
 		{
-			return getMultipleBindingsExpression(widgetType, widgetPropertyPath, trimPropertyValue, uiObjectType, getUiObjectExpression);
+			return getMultipleBindingsExpression(widgetType, widgetPropertyPath, trimPropertyValue, uiObjectType, 
+				getUiObjectExpression, dataBindingProcessor);
 		}
 		
 		return null;
 	}
 	
 	protected PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath,
-													boolean boundToAttribute, String uiObjectClassName, String getUiObjectExpression)
+													boolean boundToAttribute, String uiObjectClassName, String getUiObjectExpression, 
+													DataBindingProcessor dataBindingProcessor)
 	{
 		String trimPropertyValue = propertyValue.trim();
 	    if (isObjectDataBinding(trimPropertyValue))
 	    {
 	    	return getPropertyBindInfo(widgetClassName, boundToAttribute, widgetPropertyPath, trimPropertyValue, uiObjectClassName,
-	    							getUiObjectExpression);
+	    							getUiObjectExpression, dataBindingProcessor);
 	    }
 	    else
 	    {
@@ -195,15 +199,19 @@ public class ViewBindHandler
 	}
 	
 	
-	private ExpressionPart getExpressionPart(String bindingDeclaration)
+	private ExpressionPart getExpressionPart(String bindingDeclaration, DataBindingProcessor dataBindingProcessor)
     {
 	    String[] bindParts = getBindingParts(bindingDeclaration, false);
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
+	    String dataObjectAlias = dataBindingProcessor.getDataObjectAlias(dataObject);
+		String dataObjectClassName = context.getDataObjects().getDataObject(dataObjectAlias);
  
-	    addDataObject(dataObject);
+		if (dataObjectAlias.equals(dataObject))
+		{
+			addDataObject(dataObject);
+		}
 	    
 	    JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 	    JClassType converterType = getConverterType(context, converter);
@@ -227,7 +235,7 @@ public class ViewBindHandler
     }
 
 	private ExpressionDataBinding getLogicalBindingExpression(JClassType widgetType, String widgetPropertyPath, 
-			String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression)
+			String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
     {
 	    ExpressionDataBinding result;
 	    trimPropertyValue = trimPropertyValue.substring(2, trimPropertyValue.length()-2);
@@ -239,7 +247,7 @@ public class ViewBindHandler
 	    List<ExpressionPart> expressionParts = new ArrayList<ExpressionPart>();
 	    for (String part : parts)
         {
-	    	ExpressionPart expressionPart = getExpressionPart(part);
+	    	ExpressionPart expressionPart = getExpressionPart(part, dataBindingProcessor);
 	    	expressionParts.add(expressionPart);
         }
 	    
@@ -255,7 +263,7 @@ public class ViewBindHandler
     }
 	
 	private ExpressionDataBinding getMultipleBindingsExpression(JClassType widgetType, String widgetPropertyPath, 
-			String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression)
+			String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
     {
 	    ExpressionDataBinding result;
 	    Matcher matcher = RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(trimPropertyValue);
@@ -274,7 +282,7 @@ public class ViewBindHandler
 	    	
 	    	String group = matcher.group();
 		    group = group.substring(2, group.length()-1);
-			ExpressionPart expressionPart = getExpressionPart(group);
+			ExpressionPart expressionPart = getExpressionPart(group, dataBindingProcessor);
 	    	result.addReadBinding(expressionPart);
 	    }
 	    if (!hasExpression)
@@ -290,13 +298,13 @@ public class ViewBindHandler
     }
 
 	private PropertyBindInfo getPropertyBindInfo(String widgetClassName, boolean boundToAttribute, String widgetPropertyPath, String propertyValue,
-												String uiObjectClassName, String getUiObjectExpression)
+												String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
     {
 	    String[] bindParts = getBindingParts(propertyValue, true);
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataBindingProcessor.getDataObjectAlias(dataObject));
  
 	    addDataObject(dataObject);
 	    
@@ -324,11 +332,12 @@ public class ViewBindHandler
     }
 
 	private ExpressionDataBinding getReadOnlyObjectBindingExpression(String widgetPropertyPath, JType widgetPropertyType, 
-			JClassType widgetType, String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression)
+			JClassType widgetType, String trimPropertyValue, JClassType uiObjectType, String getUiObjectExpression, 
+			DataBindingProcessor dataBindingProcessor)
     {
 	    ExpressionDataBinding result;
 	    trimPropertyValue = trimPropertyValue.substring(3, trimPropertyValue.length()-1);
-	    ExpressionPart expressionPart = getExpressionPart(trimPropertyValue);
+	    ExpressionPart expressionPart = getExpressionPart(trimPropertyValue, dataBindingProcessor);
 	    
 	    result = new ExpressionDataBinding(context, widgetType, widgetPropertyPath, uiObjectType, getUiObjectExpression);
 	    result.addReadBinding(expressionPart);

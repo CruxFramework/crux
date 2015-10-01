@@ -46,8 +46,30 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@TagAttributesDeclaration({
+	@TagAttributeDeclaration(value="itemVar", required=true)
+})
 public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends HasPagedDataProviderFactory<C>
 {
+	protected HasDataProviderDataBindingProcessor createDataBindingProcessor(C context, JClassType dataObject, String bindingContextVariable)
+    {
+	    String itemVar = context.readWidgetProperty("itemVar");
+		String collectionObjectReference = "_value";
+		DataObject dataObjectAnnotation = dataObject.getAnnotation(DataObject.class);
+		if (dataObjectAnnotation == null)
+		{
+			throw new CruxGeneratorException("Invalid dataObject: "+dataObject.getQualifiedSourceName());
+		}
+		String dataObjectAlias = dataObjectAnnotation.value();
+		if (dataObjectAlias == null)
+		{
+			throw new CruxGeneratorException("Invalid itemVariable on widget ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
+		}
+		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(
+			bindingContextVariable, collectionObjectReference, dataObjectAlias, itemVar);
+	    return bindingProcessor;
+    }
+
 	protected boolean generateWidgetCreationForCell(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
@@ -90,20 +112,29 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	 * @return
 	 */
 	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, 
-						JClassType dataObject, String bindingContextVariable)
+		JClassType dataObject, String bindingContextVariable)
+	{
+		HasDataProviderDataBindingProcessor bindingProcessor = createDataBindingProcessor(context, dataObject, bindingContextVariable);
+		
+		return generateWidgetCreationForCellByTemplate(out, context, child, dataObject, bindingContextVariable, bindingProcessor);
+	}
+
+	/**
+	 * Generate the createWidget method and return the set of converter declarations used by the generated method
+	 * @param out
+	 * @param context
+	 * @param child
+	 * @param dataObject
+	 * @param bindingContextVariable
+	 * @return
+	 */
+	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, 
+						JClassType dataObject, String bindingContextVariable, HasDataProviderDataBindingProcessor bindingProcessor)
     {
 		child = ensureFirstChild(child, false, context.getWidgetId());
-		String collectionObjectReference = "_value";
-		DataObject dataObjectAnnotation = dataObject.getAnnotation(DataObject.class);
-		if (dataObjectAnnotation == null)
-		{
-			throw new CruxGeneratorException("Invaid dataObject: "+dataObject.getQualifiedSourceName());
-		}
-		String dataObjectAlias = dataObjectAnnotation.value();
-		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(
-															bindingContextVariable, collectionObjectReference, dataObjectAlias);
+
 		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObject.getParameterizedQualifiedSourceName()
-				    +" "+collectionObjectReference+"){");
+				    +" "+bindingProcessor.getCollectionObjectReference()+"){");
 	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
 	    out.println("return "+childWidget+";");
 	    out.println("}");

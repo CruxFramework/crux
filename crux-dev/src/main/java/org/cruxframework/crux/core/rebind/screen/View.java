@@ -83,6 +83,7 @@ public class View
 	 * DataObject bound to this view.
 	 * @return
 	 */
+	@Deprecated
 	public String getDataObject()
     {
     	return dataObject;

@@ -178,12 +178,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param widgetPropertyPath
 	 * @param uiObjectClassName
 	 * @param getUiObjectExpression
+	 * @param dataBindingProcessor
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-														String uiObjectClassName, String getUiObjectExpression)
+														String uiObjectClassName, String getUiObjectExpression, 
+														DataBindingProcessor dataBindingProcessor)
     {
-		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
+		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, 
+						widgetPropertyPath, uiObjectClassName, getUiObjectExpression, dataBindingProcessor);
     }
 
 	/**
@@ -194,13 +197,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param boundToAttribute
 	 * @param uiObjectClassName
 	 * @param getUiObjectExpression
+	 * @param dataBindingProcessor
 	 * @return
 	 */
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-			boolean boundToAttribute, String uiObjectClassName, String getUiObjectExpression)
+			boolean boundToAttribute, String uiObjectClassName, String getUiObjectExpression, 
+			DataBindingProcessor dataBindingProcessor)
     {
 	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, 
-	    										uiObjectClassName, getUiObjectExpression);
+	    										uiObjectClassName, getUiObjectExpression, dataBindingProcessor);
     }
 
 	/**
@@ -1535,6 +1540,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	public interface DataBindingProcessor
 	{
 		void processBindings(SourcePrinter out, WidgetCreatorContext context);
+		String getDataObjectAlias(String dataObject);
 	}
 
 	/**
