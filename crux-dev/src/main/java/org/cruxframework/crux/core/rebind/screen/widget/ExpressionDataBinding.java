@@ -147,7 +147,7 @@ public class ExpressionDataBinding
 	    return convertersDeclarations;
     }
 	
-	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionDataObject)
+	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionItemVar)
 	{
 		StringBuilder result = new StringBuilder();
 		
@@ -156,7 +156,7 @@ public class ExpressionDataBinding
         {
 	        String dataObjectReference = "${"+dataObject+"}";
 	        int index;
-	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionItemVar.equals(dataObject);
 	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
 	        boolean isReferenced = false;
 	        while ((index = result.indexOf(dataObjectReference)) >= 0)
@@ -184,7 +184,7 @@ public class ExpressionDataBinding
 		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
 	}
 
-	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionDataObject) throws NoSuchFieldException
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionItemVar) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 
@@ -194,7 +194,7 @@ public class ExpressionDataBinding
         {
 	        String dataObjectReference = "${"+dataObject+"}";
 	        int index;
-	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionItemVar.equals(dataObject);
 	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
 	        boolean isReferenced = false;
 	        while ((index = writeExpression.indexOf(dataObjectReference)) >= 0)

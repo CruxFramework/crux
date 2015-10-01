@@ -257,7 +257,8 @@ class AttributesAnnotationScanner
 					
 					if (supportsDataBinding)
 					{
-						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes);
+						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes, 
+																			context.getDataBindingProcessor());
 						if (binding != null)
 						{
 							context.registerObjectDataBinding(binding);
@@ -265,7 +266,8 @@ class AttributesAnnotationScanner
 						}
 						else
 						{
-							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetPropertyPath);
+							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetPropertyPath, 
+																			context.getDataBindingProcessor());
 							if (expressionBinding != null)
 							{
 								context.registerExpressionDataBinding(expressionBinding);

@@ -32,6 +32,7 @@ import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.ViewFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDataProviderDataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.AttachEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.DettachEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.LoadWidgetEvtProcessor;
@@ -352,11 +353,14 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getContext();
 	}
 
-	public String getDataBindingReadExpression(String dataObjectAlias, String dataObjectVariable, String bindingContextVariable, 
-		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath)
+	public String getDataBindingReadExpression(String dataObjectAlias, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath, HasDataProviderDataBindingProcessor dataBindingProcessor)
 	{
 		String expression = null;
-		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetPropertyPath, true);
+		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetPropertyPath, true, dataBindingProcessor);
+		
+		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
+		String collectionItemVariable = dataBindingProcessor.getCollectionItemVariable();
 		if (binding != null)
 		{
 			expression = binding.getDataObjectReadExpression(dataObjectVariable);
@@ -368,10 +372,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		else
 		{
-			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetPropertyPath);
+			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetPropertyPath, dataBindingProcessor);
 			if (expressionBinding != null)
 			{
-				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, dataObjectAlias);
+				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, collectionItemVariable);
 				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
 			}
 			else
@@ -410,9 +414,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param widgetPropertyPath
 	 * @return
 	 */
-	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetPropertyPath)
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetPropertyPath, DataBindingProcessor dataBindingProcessor)
 	{
-		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath);
+		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, dataBindingProcessor);
 	}
 
 	/**
@@ -422,9 +426,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param widgetPropertyPath
 	 * @return
 	 */
-	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+		DataBindingProcessor dataBindingProcessor)
 	{
-		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null);
+		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor);
 	}
 	
 	/**
@@ -437,9 +442,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-							String uiObjectClassName, String getUiObjectExpression)
+							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
 	{
-		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, uiObjectClassName, getUiObjectExpression);
+		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
+			uiObjectClassName, getUiObjectExpression, dataBindingProcessor);
 	}
 
 	/**
@@ -457,9 +463,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param boundToAttribute
 	 * @return
 	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetPropertyPath, boolean boundToAttribute)
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetPropertyPath, boolean boundToAttribute, 
+		DataBindingProcessor dataBindingProcessor)
 	{
-		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, boundToAttribute);
+		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, boundToAttribute, dataBindingProcessor);
 	}
 
 	/**
@@ -470,16 +477,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param boundToAttribute
 	 * @return
 	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute)
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+											boolean boundToAttribute, DataBindingProcessor dataBindingProcessor)
 	{
-		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null);
+		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null, dataBindingProcessor);
 	}
 	
     public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
-												String uiObjectClassName, String getUiObjectExpression)
+												String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
 	{
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
-												getUiObjectExpression);
+												getUiObjectExpression, dataBindingProcessor);
 	}
 	
 	
