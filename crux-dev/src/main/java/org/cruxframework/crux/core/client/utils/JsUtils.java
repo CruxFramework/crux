@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.client.collection.FastList;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONObject;
@@ -48,24 +49,13 @@ public class JsUtils
 	}-*/;
 	
 	/**
-	 * Appends a css class given a css content to the head of the document.  
-	 * @param className the css classname that will be appended.
-	 * @param content the content that will be appended.
-	 */
-	public static native void appendCSSToHead(String className, String content) /*-{
-		var style = document.createElement('style');
-		style.type = 'text/css';
-		style.innerHTML = '.' + className +' { '+ content +' }';
-		$doc.getElementsByTagName('head')[0].appendChild(style);
-	}-*/;
-	
-	/**
 	 * Create a JSONValue Object from a native javascript object
 	 * @param object
 	 * @return
 	 */
 	public static JSONValue toJSONValue(JavaScriptObject object)
 	{
+		StyleInjector.setContents(null, null);
 		if (object == null)
 		{
 			return JSONNull.getInstance();
