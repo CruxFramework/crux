@@ -65,7 +65,7 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		{
 			throw new CruxGeneratorException("Invalid itemVariable on widget ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
 		}
-		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(
+		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(getContext(), 
 			bindingContextVariable, collectionObjectReference, dataObjectAlias, itemVar);
 	    return bindingProcessor;
     }

@@ -147,11 +147,11 @@ public class ExpressionDataBinding
 	    return convertersDeclarations;
     }
 	
-	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionItemVar)
+	public String getExpression(String resultVariable, String contextVariable, String collectionDataObjectRef, String collectionItemVar)
 	{
 		StringBuilder result = new StringBuilder();
 		
-		result.append(expression);
+		result.append(resultVariable + " = " + expression);
 		for (String dataObject : dataObjects)
         {
 	        String dataObjectReference = "${"+dataObject+"}";

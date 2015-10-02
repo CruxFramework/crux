@@ -353,8 +353,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getContext();
 	}
 
-	public String getDataBindingReadExpression(String dataObjectAlias, String bindingContextVariable, 
-		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath, HasDataProviderDataBindingProcessor dataBindingProcessor)
+	public String getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath, 
+		HasDataProviderDataBindingProcessor dataBindingProcessor)
 	{
 		String expression = null;
 		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetPropertyPath, true, dataBindingProcessor);
@@ -363,7 +364,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		String collectionItemVariable = dataBindingProcessor.getCollectionItemVariable();
 		if (binding != null)
 		{
-			expression = binding.getDataObjectReadExpression(dataObjectVariable);
+			expression = binding.getDataObjectReadExpression(bindingContextVariable, resultVariable);
 			String converterDeclaration = binding.getConverterDeclaration();
 			if (converterDeclaration != null)
 			{
@@ -375,7 +376,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetPropertyPath, dataBindingProcessor);
 			if (expressionBinding != null)
 			{
-				expression = expressionBinding.getExpression(bindingContextVariable, dataObjectVariable, collectionItemVariable);
+				expression = expressionBinding.getExpression(resultVariable, bindingContextVariable, dataObjectVariable, collectionItemVariable);
 				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
 			}
 			else
