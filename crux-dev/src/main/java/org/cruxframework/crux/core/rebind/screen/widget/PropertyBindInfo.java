@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
@@ -55,14 +56,33 @@ public class PropertyBindInfo extends BindInfo
 		return getExpression(writeExpression, dataObjectVariable);
 	}
 
+	public String getWriteExpression(String contextVariable, String widgetVar)
+	{
+		String dataObjectVariable = ViewFactoryCreator.createVariableName(dataObject);
+    	String result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
+    					+ "if (" + dataObjectVariable + " != null){\n"
+    					+ getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable)
+    					+ "\n}";
+		
+		return result;
+	}
+
 	public String getReadExpression(String dataObjectVariable)
 	{
 		return getExpression(readExpression, dataObjectVariable);
 	}
 	
-	public String getDataObjectReadExpression(String dataObjectVariable)
+	public String getDataObjectReadExpression(String contextVariable, String resultVariable)
 	{
-		return getExpression(getDataObjectReadExpression(), dataObjectVariable);
+		String dataObjectVariable = ViewFactoryCreator.createVariableName(dataObject);
+    	String result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
+			+ "if (" + dataObjectVariable + " != null){\n"
+			+ resultVariable + " = " + getExpression(getDataObjectReadExpression(), dataObjectVariable) + ";"
+			+ "\n} else {\n"
+    		+ resultVariable + " = null;\n"
+			+ "}";
+
+    	return result;
 	}
 
 	public String getWidgetClassName()
@@ -94,7 +114,7 @@ public class PropertyBindInfo extends BindInfo
     {
 		StringBuilder getExpression = new StringBuilder();
 		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF, false);
-		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false);
+		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false, true);
 		return "if ("+uiObjectVar + " != null){\n" 
 				+getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString())
 				+"}";
