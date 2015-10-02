@@ -29,6 +29,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected int currentRecord = -1;
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected Array<DataChangedHandler> dataChangedHandlers;
+	protected Array<DataSelectionHandler<T>> dataSelectionHandlers;
 	protected DataProvider.EditionDataHandler<T> dataHandler;
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
 	protected Array<DataSortedHandler> dataSortedHandlers;
@@ -47,6 +48,29 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		this();
 		setEditionDataHandler(dataHandler);
     }
+	
+	@Override
+	public HandlerRegistration addDataSelectionHandler(final DataSelectionHandler<T> handler)
+	{
+		if (dataSelectionHandlers == null)
+		{
+			dataSelectionHandlers = CollectionFactory.createArray();
+		}
+		
+		dataSelectionHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = dataSelectionHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					dataSelectionHandlers.remove(index);
+				}
+			}
+		};
+	}
 	
 	@Override
 	public HandlerRegistration addDataChangedHandler(final DataChangedHandler handler)
@@ -239,6 +263,12 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 			return clonedRecord;
 		}
+		
+		if(record == null)
+		{
+			return null;
+		}
+		
 		return record.getRecordObject();
 	}
 	
@@ -356,6 +386,18 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		}
     }
 	
+	protected void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
+    {
+		if (dataSelectionHandlers != null)
+		{
+			DataSelectionEvent<T> event = new DataSelectionEvent<T>(this, changedRecords);
+			for (int i = 0; i< dataSelectionHandlers.size(); i++)
+			{
+				dataSelectionHandlers.get(i).onDataSelection(event);
+			}
+		}
+    }
+	
 	protected void fireLoadedEvent()
     {
 		if (dataLoadedHandlers != null)
@@ -433,7 +475,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		loaded = true;
 		fireLoadedEvent();
 	}
-
+	
 	protected abstract void updateState(DataProviderRecord<T> record, DataProviderRecord.DataProviderRecordState previousState);
 
 }

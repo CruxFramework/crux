@@ -15,6 +15,9 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
+
 /**
  * A record in a {@link DataProvider}.
  * 
@@ -60,7 +63,7 @@ public class DataProviderRecord<T> implements Cloneable
 	{
 		return state.isSelected();
 	}
-
+	
 	public DataProviderRecord<T> clone()
 	{
 		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
@@ -124,7 +127,15 @@ public class DataProviderRecord<T> implements Cloneable
 			DataProviderRecordState previousState = getCurrentState();
 			this.state.setSelected(selected);
 			dataProvider.updateState(this, previousState);
+			fireDataSelectionEvent();
 		}
+	}
+
+	private void fireDataSelectionEvent()
+	{
+		Array<DataProviderRecord<T>> selectedRecords = CollectionFactory.createArray();
+		selectedRecords.add(this);
+		this.dataProvider.fireDataSelectionEvent(selectedRecords);
 	}
 
 	void setCreated(boolean created)
