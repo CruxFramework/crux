@@ -108,7 +108,7 @@ class BindInfo
 	{
 		StringBuilder getExpression = new StringBuilder();
 
-		bindPathType = JClassUtils.buildGetValueExpression(getExpression, dataObjectType, bindPath, DATA_OBJECT_VAR_REF, false);
+		bindPathType = JClassUtils.buildGetValueExpression(getExpression, dataObjectType, bindPath, DATA_OBJECT_VAR_REF, false, true);
 
 		String converterVariable = getConverterVariable();
 		if (converterVariable != null)
@@ -125,7 +125,7 @@ class BindInfo
 
 		//TODO validate conveter type and expression type here
 
-		return getExpression.toString();
+		return "("+getExpression.toString()+")";
 	}
 	
 	protected String getDataObjectWriteExpression(JClassType dataObjectType, String bindPath, String value) throws NoSuchFieldException
