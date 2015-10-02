@@ -46,9 +46,15 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
  */
 public class JClassUtils
 {
+	public static JType buildGetValueExpression(StringBuilder out, JClassType dtoType, String propertyPath, 
+		String objectVariable, boolean finishCommand)
+				throws NoSuchFieldException
+	{
+		return buildGetValueExpression(out, dtoType, propertyPath, objectVariable, finishCommand, false);
+	}
 
 	public static JType buildGetValueExpression(StringBuilder out, JClassType dtoType, String propertyPath, 
-			String objectVariable, boolean finishCommand) 
+			String objectVariable, boolean finishCommand, boolean replaceNullForEmptyOnStringDefault)
 					throws NoSuchFieldException
     {
         if (StringUtils.isEmpty(propertyPath))
@@ -108,7 +114,7 @@ public class JClassUtils
         	
         	if (checkNullExpression.length() > 0)
         	{
-        		out.append(checkNullExpression.toString()+"?null:");
+        		out.append(checkNullExpression.toString()+"?"+getEmptyValueForType(baseType, !replaceNullForEmptyOnStringDefault)+":");
         	}
         	out.append(getExpression.toString());
         	
@@ -1082,6 +1088,11 @@ public class JClassUtils
 	}
 
 	public static String getEmptyValueForType(JType objectType)
+	{
+		return getEmptyValueForType(objectType, true);
+	}
+	
+	public static String getEmptyValueForType(JType objectType, boolean useNullForString)
     {
 		JPrimitiveType primitiveType = objectType.isPrimitive();
 		if (primitiveType != null)
@@ -1106,6 +1117,13 @@ public class JClassUtils
 			else if (primitiveType ==JPrimitiveType.VOID)
 			{
 				return null;
+			}
+		}
+		else if (objectType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			if (!useNullForString)
+			{
+				return "\"\"";
 			}
 		}
 		
