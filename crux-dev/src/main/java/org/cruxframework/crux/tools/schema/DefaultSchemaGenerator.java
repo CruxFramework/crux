@@ -422,6 +422,13 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
+			TagConstraints attributes = ViewUtils.getChildTagConstraintsAnnotation(processorClass);
+			if (attributes != null && attributes.applyDeviceFilters())
+			{
+				out.println("<xs:attribute name=\"input\" type=\"c:Input\" />");
+				out.println("<xs:attribute name=\"size\" type=\"c:Size\" />");
+			}
+
 			generateAttributes(out, library, added, processorClass);
 
 			Class<?> superclass = processorClass.getSuperclass();
