@@ -138,6 +138,16 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			getDataProvider().set(index, object);
 		}
 	}
+	
+	protected void setForEdition(int index, T object)
+	{
+		if (getDataProvider() != null)
+		{
+			allowRefreshAfterDataChange = false;
+			getDataProvider().set(index, object);
+			allowRefreshAfterDataChange = true;
+		}
+	}
 
 	@Override
 	public void setHeight(String height) 
@@ -250,10 +260,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 				if (!event.isPageChanged())
 				{
 					final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
-					if(allowRefreshAfterDataChange)
-					{
-						refreshPage(pageStartRecordOnTransactionEnd);
-					}
+					refreshPage(pageStartRecordOnTransactionEnd);
 				}
 			}
 		});
@@ -314,16 +321,6 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		return pagePanel;
 	}
 	
-	/**
-	 * @return true if is allowed to refresh the page after the data 
-	 * provider changes some of their values. This generally happens after
-	 * a commit.
-	 */
-	protected boolean isAllowRefreshAfterDataChange() 
-	{
-		return allowRefreshAfterDataChange;
-	}
-
 	@Override
 	protected void onDataProviderSet()
 	{
@@ -438,16 +435,6 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			callback.onRendered();
 		}
     }
-	
-	/**
-	 * @param allowRefreshAfterDataChange indicate if is allowed to 
-	 * refresh the page after the data provider changes some of their values. 
-	 * This generally happens after a commit. 
-	 */
-	protected void setAllowRefreshAfterDataChange(boolean allowRefreshAfterDataChange) 
-	{
-		this.allowRefreshAfterDataChange = allowRefreshAfterDataChange;
-	} 
 	
 	private int getRowsToBeRendered()
 	{

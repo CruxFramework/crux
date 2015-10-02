@@ -51,6 +51,12 @@ public interface DataProvider<T>
 	 */
 	HandlerRegistration addResetHandler(ResetHandler callback);
 	
+	/**Add a callback to be notified about any selection on data provider
+	 * @param callback to be called when data provider item is selected or unselected
+	 * @return a registration that allow handler do be removed
+	 */
+	HandlerRegistration addDataSelectionHandler(DataSelectionHandler<T> callback);
+	
 	/**Add a callback to be notified about any changes on data provider
 	 * @param callback to be called when data provider is changed
 	 * @return a registration that allow handler do be removed
