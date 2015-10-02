@@ -23,7 +23,6 @@ import org.cruxframework.crux.core.client.collection.FastList;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONObject;
@@ -55,7 +54,6 @@ public class JsUtils
 	 */
 	public static JSONValue toJSONValue(JavaScriptObject object)
 	{
-		StyleInjector.setContents(null, null);
 		if (object == null)
 		{
 			return JSONNull.getInstance();
