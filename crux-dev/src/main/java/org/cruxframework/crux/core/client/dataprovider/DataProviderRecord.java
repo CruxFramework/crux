@@ -120,14 +120,22 @@ public class DataProviderRecord<T> implements Cloneable
 		}
 	}
 
-	void setSelected(boolean selected)
+	public void setSelected(boolean selected)
+	{
+		setSelected(selected, true);	
+	}
+	
+	public void setSelected(boolean selected, boolean fireEvents)
 	{
 		if (this.state.isSelected() != selected)
 		{
 			DataProviderRecordState previousState = getCurrentState();
 			this.state.setSelected(selected);
 			dataProvider.updateState(this, previousState);
-			fireDataSelectionEvent();
+			if(fireEvents)
+			{
+				fireDataSelectionEvent();
+			}
 		}
 	}
 
