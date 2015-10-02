@@ -38,4 +38,5 @@ public @interface TagConstraints
 	Class<?> type() default Void.class;
 	String widgetProperty() default "";
 	boolean inheritsParentAttributes() default false;
+	boolean applyDeviceFilters() default false;
 }

@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -799,6 +800,31 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return false;
 	}
 	
+	protected boolean isCurrentDeviceSupported(String size, String input)
+    {
+		Device current = Device.valueOf(viewFactory.getDevice());
+		if (current.equals(Device.all))
+		{
+			return true;
+		}
+		if (size != null && size.length() > 0)
+		{
+			if (!current.getSize().toString().equals(size))
+			{
+				return false;
+			}
+		}
+		if (input != null && input.length() > 0)
+		{
+			if (!current.getInput().toString().equals(input))
+			{
+				return false;
+			}
+		}
+		
+	    return true;
+    }
+	
 	/**
 	 * Print code that will be executed after the viewFactory completes the widgets construction
 	 * @param s code string
@@ -826,16 +852,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		
 		return attributes;
-	}
-	
+	}	
+
 	/**
 	 * @return
 	 */
 	ViewFactoryCreator getViewFactory()
 	{
 		return this.viewFactory;
-	}	
-
+	}
+	
 	/**
 	 * @param viewFactory
 	 */
@@ -987,7 +1013,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			}
 		}
 	}
-	
+
 	/**
 	 * @author Thiago da Rosa de Bustamante
 	 *
