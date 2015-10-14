@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
 import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding;
 import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
@@ -42,13 +41,11 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 	private Set<String> converterDeclarations = new HashSet<String>();
 	private String itemVar;
 	private String collectionDataObjectVariable;
-	private RebindContext rebindContext;
 	
-	public HasDataProviderDataBindingProcessor(RebindContext rebindContext, String bindingContextVariable, String collectionObjectReference, 
+	public HasDataProviderDataBindingProcessor(String bindingContextVariable, String collectionObjectReference, 
 												String collectionDataObject, 
 												String itemVar)
     {
-		this.rebindContext = rebindContext;
 		this.collectionDataObjectVariable = ViewFactoryCreator.createVariableName("value");
 		this.bindingContextVariable = bindingContextVariable;
 		this.collectionObjectReference = collectionObjectReference;
@@ -63,12 +60,12 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 		processBindingExpressions(out, context);
     }
 	
-	protected String getCollectionObjectReference()
+	public String getCollectionObjectReference()
 	{
 		return collectionObjectReference;
 	}
 
-	protected Set<String> getConverterDeclarations()
+	public Set<String> getConverterDeclarations()
 	{
 		Set<String> result = new HashSet<String>();
 		result.addAll(converterDeclarations);

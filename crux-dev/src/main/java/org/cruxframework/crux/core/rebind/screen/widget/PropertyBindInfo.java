@@ -43,11 +43,14 @@ public class PropertyBindInfo extends BindInfo
 		this.boundToAttribute = boundToAttribute;
 		uiObjectType = uiObjectType==null?widgetType:uiObjectType;
 		this.getUiObjectExpression = getUiObjectExpression;
-		this.widgetClassName = widgetType.getQualifiedSourceName();
-		if (!StringUtils.isEmpty(widgetPropertyPath))
+		if (widgetType != null)
 		{
-			this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
-			this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
+			this.widgetClassName = widgetType.getQualifiedSourceName();
+			if (!StringUtils.isEmpty(widgetPropertyPath))
+			{
+				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
+				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
+			}
 		}
     }
 
@@ -72,11 +75,16 @@ public class PropertyBindInfo extends BindInfo
 		return getExpression(readExpression, dataObjectVariable);
 	}
 	
-	public String getDataObjectReadExpression(String contextVariable, String resultVariable)
+	public String getDataObjectReadExpression(String contextVariable, String resultVariable, String collectionDataObjectRef, String collectionItemVar)
 	{
-		String dataObjectVariable = ViewFactoryCreator.createVariableName(dataObject);
-    	String result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
-			+ "if (" + dataObjectVariable + " != null){\n"
+        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionItemVar.equals(dataObject);
+        String dataObjectVariable = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
+        String result = "";
+        if (!isCollectionObjectReference)
+    	{
+    		result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n";
+    	}
+        result += "if (" + dataObjectVariable + " != null){\n"
 			+ resultVariable + " = " + getExpression(getDataObjectReadExpression(), dataObjectVariable) + ";"
 			+ "\n} else {\n"
     		+ resultVariable + " = null;\n"
@@ -85,6 +93,11 @@ public class PropertyBindInfo extends BindInfo
     	return result;
 	}
 
+	public String getDataObjectWriteExpression(String dataObjectVar, String newValue)
+	{
+		return getExpression(getDataObjectWriteExpression(newValue), dataObjectVar);
+	}
+	
 	public String getWidgetClassName()
 	{
 		return widgetClassName;

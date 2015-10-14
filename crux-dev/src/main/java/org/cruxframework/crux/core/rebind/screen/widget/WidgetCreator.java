@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -51,6 +50,7 @@ import org.json.JSONObject;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.PartialSupport;
 
@@ -354,38 +354,50 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getContext();
 	}
 
-	public String getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
-		String propertyValue, Set<String> converterDeclarations, String widgetPropertyPath, 
-		HasDataProviderDataBindingProcessor dataBindingProcessor)
+	public JType getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations, String widgetClassName, String widgetPropertyPath, 
+		HasDataProviderDataBindingProcessor dataBindingProcessor, StringBuilder expression)
 	{
-		String expression = null;
-		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetPropertyPath, true, dataBindingProcessor);
+		return getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, 
+				propertyValue, converterDeclarations, widgetClassName, widgetPropertyPath, dataBindingProcessor, expression, true);
+	}
+	
+	public JType getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
+		String propertyValue, Set<String> converterDeclarations, String widgetClassName, String widgetPropertyPath, 
+		HasDataProviderDataBindingProcessor dataBindingProcessor, StringBuilder expression, boolean acceptExpressions)
+	{
+		JType result = null;
+		
+		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, true, dataBindingProcessor);
 		
 		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
 		String collectionItemVariable = dataBindingProcessor.getCollectionItemVariable();
 		if (binding != null)
 		{
-			expression = binding.getDataObjectReadExpression(bindingContextVariable, resultVariable);
+			expression.append(binding.getDataObjectReadExpression(bindingContextVariable, resultVariable, dataObjectVariable, collectionItemVariable));
 			String converterDeclaration = binding.getConverterDeclaration();
 			if (converterDeclaration != null)
 			{
 				converterDeclarations.add(converterDeclaration);
 			}
+			result = binding.getType();
 		}
-		else
+		else if (acceptExpressions)
 		{
-			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetPropertyPath, dataBindingProcessor);
+			ExpressionDataBinding expressionBinding = getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, dataBindingProcessor);
 			if (expressionBinding != null)
 			{
-				expression = expressionBinding.getExpression(resultVariable, bindingContextVariable, dataObjectVariable, collectionItemVariable);
+				expression.append(expressionBinding.getExpression(resultVariable, bindingContextVariable, dataObjectVariable, collectionItemVariable));
 				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
+				result = expressionBinding.getType();
 			}
 			else
 			{
-				expression = getDeclaredMessage(propertyValue);
+				expression.append(getDeclaredMessage(propertyValue));
+				result = getContext().getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 			}
 		}
-		return expression;
+		return result;
 	}
 	
 	public JClassType getDataObjectFromProvider(String dataProviderId)

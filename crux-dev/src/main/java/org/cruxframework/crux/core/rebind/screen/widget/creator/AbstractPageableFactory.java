@@ -65,8 +65,8 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		{
 			throw new CruxGeneratorException("Invalid itemVariable on widget ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
 		}
-		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(getContext(), 
-			bindingContextVariable, collectionObjectReference, dataObjectAlias, itemVar);
+		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(bindingContextVariable, 
+			collectionObjectReference, dataObjectAlias, itemVar);
 	    return bindingProcessor;
     }
 
@@ -206,5 +206,5 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		@TagChild(WidgetFactoryChildCreator.class),
 		@TagChild(WidgetFactoryControllerChildCreator.class)
 	})
-	public static class WidgetListChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
+	public static class WidgetChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
 }
