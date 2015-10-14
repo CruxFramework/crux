@@ -347,7 +347,7 @@ public class ViewBindHandler
 	    result.addReadBinding(expressionPart);
 	    if (!JClassUtils.isCompatibleTypes(widgetPropertyType, expressionPart.getType()))
 	    {
-	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property [" +
+	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property type [" +
 	    			expressionPart.getType() + "] can not be cast to Widget property ["+widgetPropertyPath+"]");
 	    }
 	    return result;
