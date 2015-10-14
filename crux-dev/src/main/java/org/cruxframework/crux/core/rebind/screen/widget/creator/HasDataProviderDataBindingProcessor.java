@@ -141,4 +141,9 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 	{
 		return itemVar;
 	}
+	
+	public String getBindingContextVariable()
+	{
+		return bindingContextVariable;
+	}
 }
