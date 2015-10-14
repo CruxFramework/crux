@@ -28,6 +28,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 class BindInfo
 {
 	protected static String DATA_OBJECT_VAR_REF = "{0}";
+	protected static String DATA_OBJECT_WRITE_VALUE_REF = "{1}";
 	private static String CONVERTER_VARIABLE = "__converter";
 
 	protected JType bindInfoType;
@@ -39,6 +40,7 @@ class BindInfo
 	protected String dataObject;
 	protected String dataObjectClassName;
 	protected String dataObjectReadExpression;
+	protected String dataObjectWriteExpression;
 
 	public BindInfo(String bindPath, JClassType dataObjectType, 
 			JClassType converterType, String dataObject, String converterParams) throws NoSuchFieldException
@@ -49,6 +51,7 @@ class BindInfo
 		this.converterClassName = converterType != null ? converterType.getParameterizedQualifiedSourceName() : null;
 		this.converterParams = converterParams == null ? "": converterParams;
 		this.dataObjectReadExpression = getDataObjectReadExpression(dataObjectType, bindPath);
+		this.dataObjectWriteExpression = getDataObjectWriteExpression(dataObjectType, bindPath, DATA_OBJECT_WRITE_VALUE_REF);
 	}
 	
 	public String getConverterClassName()
@@ -102,6 +105,11 @@ class BindInfo
 	protected String getDataObjectReadExpression() 
 	{
 		return dataObjectReadExpression;
+	}
+	
+	protected String getDataObjectWriteExpression(String newValue)
+	{
+		return dataObjectWriteExpression.replace(DATA_OBJECT_WRITE_VALUE_REF, newValue);
 	}
 	
 	protected String getDataObjectReadExpression(JClassType dataObjectType, String bindPath) throws NoSuchFieldException

@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 
 /**
@@ -41,11 +42,12 @@ public class ExpressionDataBinding
 	private Set<String> convertersDeclarations = new HashSet<String>();
 	private Set<String> dataObjects = new HashSet<String>();
 	private StringBuilder expression = new StringBuilder();
+	private JType expressionType;
+	private String getUiObjectExpression;
+	private JClassType uiObjectType;
 	private String widgetClassName;
 	private String widgetPropertyPath;
 	private JClassType widgetType;
-	private JClassType uiObjectType;
-	private String getUiObjectExpression;
 
 	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath, 
 								 JClassType uiObjectType, String getUiObjectExpression)
@@ -107,7 +109,7 @@ public class ExpressionDataBinding
 		{
 			expression.append(")");
 		}
-
+		expressionType = JPrimitiveType.BOOLEAN;
 	}
 	
 	public void addReadBinding(ExpressionPart expressionPart)
@@ -120,6 +122,30 @@ public class ExpressionDataBinding
 		//expressionParts.add(expressionPart);
 		expression.append(expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}"));
 		appendConverterDeclaration(expressionPart);
+		
+		if (expressionType == null)
+		{
+			expressionType = expressionPart.getType();
+		}
+		else if (!expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			JPrimitiveType primitive = expressionPart.getType().isPrimitive();
+			if (primitive != null)
+			{
+				if (primitive == JPrimitiveType.BOOLEAN || primitive == JPrimitiveType.CHAR)
+				{
+					expressionType = primitive;
+				}
+				else if (primitive == JPrimitiveType.VOID)
+				{
+					expressionType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());;
+				}
+				else
+				{
+					expressionType = JPrimitiveType.DOUBLE;
+				}
+			}
+		}
     }
 	
 	public void addStringConstant(String constant, boolean needsQuote)
@@ -140,6 +166,7 @@ public class ExpressionDataBinding
 		{
 			expression.append(constant);
 		}
+		expressionType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 	}
 	
 	public Set<String> getConverterDeclarations()
@@ -172,6 +199,11 @@ public class ExpressionDataBinding
         }
 
 		return result.toString();
+	}
+	
+	public JType getType()
+	{
+		return expressionType;
 	}
 	
 	public String getWidgetClassName()
@@ -217,15 +249,6 @@ public class ExpressionDataBinding
 		return dataObjects.iterator();
 	}
 
-	private String getUIObjectVar(String widgetVar)
-	{
-		if (StringUtils.isEmpty(getUiObjectExpression))
-		{
-			return widgetVar;
-		}
-		return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
-	}
-	
 	private void addLogicalBindingForEmptyOperation(ExpressionPart expressionPart, String readExpression)
     {
 	    JType type = expressionPart.getType();
@@ -264,7 +287,7 @@ public class ExpressionDataBinding
 		}
 		appendConverterDeclaration(expressionPart);
     }
-
+	
 	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart, String readExpression)
     {
 		JType expressionType = expressionPart.getType();
@@ -317,6 +340,15 @@ public class ExpressionDataBinding
 			convertersDeclarations.add(converterDeclaration);
 		}
     }
+
+	private String getUIObjectVar(String widgetVar)
+	{
+		if (StringUtils.isEmpty(getUiObjectExpression))
+		{
+			return widgetVar;
+		}
+		return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
+	}
 
 	public static enum LogicalOperation{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}
 }

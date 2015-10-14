@@ -126,7 +126,7 @@ public class ViewBindHandler
 													DataBindingProcessor dataBindingProcessor)
 	{
 		String trimPropertyValue = propertyValue.trim();
-	    if (isObjectDataBinding(trimPropertyValue))
+	    if (isObjectDataBinding(trimPropertyValue, dataBindingProcessor))
 	    {
 	    	return getPropertyBindInfo(widgetClassName, boundToAttribute, widgetPropertyPath, trimPropertyValue, uiObjectClassName,
 	    							getUiObjectExpression, dataBindingProcessor);
@@ -304,9 +304,13 @@ public class ViewBindHandler
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = context.getDataObjects().getDataObject(dataBindingProcessor.getDataObjectAlias(dataObject));
+	    String dataObjectAlias = dataBindingProcessor.getDataObjectAlias(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObjectAlias);
  
-	    addDataObject(dataObject);
+		if (dataObjectAlias.equals(dataObject))
+		{
+			addDataObject(dataObject);
+		}
 	    
 	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
 	    JClassType uiObjectType = uiObjectClassName!= null?context.getGeneratorContext().getTypeOracle().findType(uiObjectClassName): widgetType;
@@ -343,7 +347,7 @@ public class ViewBindHandler
 	    result.addReadBinding(expressionPart);
 	    if (!JClassUtils.isCompatibleTypes(widgetPropertyType, expressionPart.getType()))
 	    {
-	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property [" +
+	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property type [" +
 	    			expressionPart.getType() + "] can not be cast to Widget property ["+widgetPropertyPath+"]");
 	    }
 	    return result;
@@ -352,14 +356,17 @@ public class ViewBindHandler
 	/**
      * Returns <code>true</code> if the given text is a binding declaration to a dataObject property.
 	 * @param text
+	 * @param dataBindingProcessor 
 	 * @return <code>true</code> if the given text is a binding declaration.
 	 */
-	private boolean isObjectDataBinding(String text)
+	private boolean isObjectDataBinding(String text, DataBindingProcessor dataBindingProcessor)
 	{
 		if (text!= null &&  RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(text).matches())
 		{
 			String[] parts = getBindingParts(text, true);
-			return (context.getDataObjects().getDataObject(parts[0]) != null);
+			
+			String dataObjectAlias = dataBindingProcessor.getDataObjectAlias(parts[0]);
+			return (context.getDataObjects().getDataObject(dataObjectAlias) != null);
 		}
 		return false;
 	}
