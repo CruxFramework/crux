@@ -27,6 +27,10 @@ public interface Crux
 	@DefaultServerMessage("")
 	String cruxXmlPreProcessors();
 	
+	@DefaultServerMessage("")
+	String rootViewElementId();
+	void setRootViewElementId(String rootViewElementId);
+	
 	@DefaultServerMessage("false")
 	String disableRefreshByDefault();
 		

@@ -53,7 +53,15 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
 		generateEnableCrux2OldInterfacesCompatibility(sourceWriter);
 		generatePreferWebSQLForNativeDB(sourceWriter);
+		generateRootViewElementId(sourceWriter);
     }
+	
+	protected void generateRootViewElementId(SourcePrinter sourceWriter) 
+	{
+		sourceWriter.println("public String rootViewElementId(){");
+		sourceWriter.println("return " + "\"" + ConfigurationFactory.getConfigurations().rootViewElementId() + "\"" + ";");
+		sourceWriter.println("}");
+	}
 
 	protected void generatePreferWebSQLForNativeDB(SourcePrinter sourceWriter)
     {
