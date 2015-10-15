@@ -347,8 +347,8 @@ public class ViewBindHandler
 	    result.addReadBinding(expressionPart);
 	    if (!JClassUtils.isCompatibleTypes(widgetPropertyType, expressionPart.getType()))
 	    {
-	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property type [" +
-	    			trimPropertyValue + "] can not be cast to Widget property ["+widgetPropertyType.getSimpleSourceName()+"]");
+	    	throw new CruxGeneratorException("Invalid binding declaration. DataObject property [" +
+	    			trimPropertyValue + "] can not be cast to type ["+widgetPropertyType.getSimpleSourceName()+"]");
 	    }
 	    return result;
     }	

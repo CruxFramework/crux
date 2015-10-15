@@ -36,27 +36,9 @@ class RootViewContainer extends SingleViewContainer
 	public RootViewContainer()
     {
 		super(null, true);
-		containerPanel = RootPanel.get();
 		handleRootViewElementID();
 		bindToDOM();
     }
-
-	private void handleRootViewElementID()
-	{
-		String rootViewElementId = Crux.getConfig().rootViewElementId();
-		if(!StringUtils.isEmpty(rootViewElementId))
-		{
-			containerPanel = RootPanel.get(rootViewElementId);
-		}
-		else
-		{
-			containerPanel = RootPanel.get();			
-		}
-		if(containerPanel != null)
-		{
-			containerPanel.clear();
-		}
-	}
 
 	@Override
     @SuppressWarnings("deprecation")
@@ -64,7 +46,7 @@ class RootViewContainer extends SingleViewContainer
 	{
 	    return containerPanel.getElement();
 	}
-	
+
 	public View getView()
 	{
 		return rootView;
@@ -95,20 +77,37 @@ class RootViewContainer extends SingleViewContainer
 		return removed;
 	}
 	
+	protected Panel getContainerPanel()
+    {
+	    return containerPanel;
+    }
+	
 	@Override
     protected Panel getContainerPanel(View view)
     {
 	    return getContainerPanel();
     }
 
-    protected Panel getContainerPanel()
-    {
-	    return containerPanel;
-    }
-	
-	@Override
+    @Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
 		Window.setTitle(title);
+	}
+	
+	private void handleRootViewElementID()
+	{
+		String rootViewElementId = Crux.getConfig().rootViewElementId();
+		if(!StringUtils.isEmpty(rootViewElementId))
+		{
+			containerPanel = RootPanel.get(rootViewElementId);
+		}
+		else
+		{
+			containerPanel = RootPanel.get();			
+		}
+		if(containerPanel != null)
+		{
+			containerPanel.clear();
+		}
 	}
 }
