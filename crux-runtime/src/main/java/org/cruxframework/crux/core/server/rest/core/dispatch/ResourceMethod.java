@@ -96,7 +96,7 @@ public class ResourceMethod
 		}
 		this.corsData = CorsData.parseCorsData(corsSupport);
 		JsonPSupport jsonPSupport = method.getAnnotation(JsonPSupport.class);
-		if (corsSupport == null)
+		if (jsonPSupport == null)
 		{
 			jsonPSupport = resourceClass.getAnnotation(JsonPSupport.class);			
 		}
