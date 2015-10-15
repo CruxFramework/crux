@@ -145,7 +145,7 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 		{
 
 			String eventLoadFormat = element.optString("onLoadFormat");
-			if (eventLoadFormat != null)
+			if (!StringUtils.isEmpty(eventLoadFormat))
 			{
 				String className = DateBox.class.getCanonicalName();
 				out.println(Format.class.getCanonicalName()+" "+format+" =("+Format.class.getCanonicalName()+") ");
