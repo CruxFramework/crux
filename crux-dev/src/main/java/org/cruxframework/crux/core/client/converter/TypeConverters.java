@@ -156,4 +156,38 @@ public abstract class TypeConverters
 	        return b;
         }
 	}
+	
+	@TypeConverter.Converter("longString")
+	public static class LongStringConverter implements TypeConverter<Long, String>
+	{
+
+		@Override
+        public String to(Long a)
+        {
+	        return (a!=null?a.toString():null);
+        }
+
+		@Override
+        public Long from(String b)
+        {
+	        return (!StringUtils.isEmpty(b)?Long.parseLong(b):null);
+        }
+	}
+	
+	@TypeConverter.Converter("stringLong")
+	public static class StringLongConverter implements TypeConverter<String, Long>
+	{
+
+		@Override
+        public Long to(String a)
+        {
+	        return (!StringUtils.isEmpty(a)?Long.parseLong(a):null);
+        }
+
+		@Override
+        public String from(Long b)
+        {
+	        return (b!=null?b.toString():null);
+        }
+	}
 }
