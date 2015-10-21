@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.permission;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * A Default UI handler for user lack of permissions scenarios.
@@ -40,4 +41,10 @@ public class DefaultPermissionsUIHandler implements PermissionsUIHandler
     {
 		widget.asWidget().setVisible(false);
     }
+	
+	@Override
+	public void markAsUnauthorizedForViewing(UIObject uiObject)
+	{
+		uiObject.setVisible(false);
+	}
 }

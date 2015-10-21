@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.client.permission;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Check if the current user is authorized to realize the job related with given roles. 
@@ -57,6 +58,15 @@ public class Permissions
 		getPermissionsUIHandler().markAsUnauthorizedForViewing(widget);
 	}
 	
+	/**
+	 * Notify the given uiObject that current user has no role for view its contents
+	 * @param uiObject
+	 */
+	public static void markAsUnauthorizedForViewing(UIObject uiObject)
+	{
+		getPermissionsUIHandler().markAsUnauthorizedForViewing(uiObject);
+	}
+
 	private static RoleManager getRoleManager()
 	{
 		if (roleManager == null)
