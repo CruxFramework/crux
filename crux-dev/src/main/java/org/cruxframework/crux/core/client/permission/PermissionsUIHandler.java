@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.permission;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Handle any interface modifications needed to be done on widgets for 
@@ -36,4 +37,10 @@ public interface PermissionsUIHandler
 	 * @param widget
 	 */
 	void markAsUnauthorizedForViewing(IsWidget widget);
+
+	/**
+	 * Notify the given uiObject that current user has no role for view its contents
+	 * @param uiObject
+	 */
+	void markAsUnauthorizedForViewing(UIObject uiObject);
 }

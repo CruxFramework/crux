@@ -19,6 +19,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 
@@ -182,5 +183,7 @@ public class DOMUtils
 		void onEvent(NativeEvent evt);
 	}
 	
-	
+	public static native NodeList<Element> getElementsByClassName(Element el, String classname)/*-{
+		return el.getElementsByClassName(classname);
+	}-*/;
 }

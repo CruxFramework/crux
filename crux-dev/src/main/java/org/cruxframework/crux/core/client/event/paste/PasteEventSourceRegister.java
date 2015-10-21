@@ -22,8 +22,8 @@ import com.google.gwt.dom.client.Element;
 /**
  * @author Thiago da Rosa de Bustamante
  */
-/* Remove this as long as https://github.com/gwtproject/gwt/issues/4549 will be closed*/
-@Deprecated
+//TODO Remove this as long as https://github.com/gwtproject/gwt/issues/4549 will be closed
+//@Deprecated
 @Legacy
 public class PasteEventSourceRegister
 {
