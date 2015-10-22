@@ -43,6 +43,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> implements Pager<T>
 {
 	protected static final String DISABLED = "-disabled";
+	private static final String STYLE_PAGER_LOADING = "-pagerLoading";
 	
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
@@ -157,6 +158,11 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		});
 	}
 	
+	protected String getLoaderStyleName()
+	{
+		return getStylePrimaryName() + "-" + STYLE_PAGER_LOADING;		
+	}
+	
 	/**
 	 * Hides the loading information
 	 */
@@ -172,7 +178,7 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	{
     	onUpdate();
 	}
-	
+
 	protected void onTransactionCompleted(boolean commited)
     {
 		transactionRunning = false;
@@ -181,30 +187,12 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 			setInteractionEnabled(true);
 		}
     }
-
+	
 	protected void onTransactionStarted(int startRecord)
     {
 		transactionRunning = true;
 		setInteractionEnabled(false);
     }
-	
-	/**
-	 * This should be overridden in order to handle
-	 * the children components states. 
-	 * @param enabled true will enable all composite widgets
-	 * and false otherwise. 
-	 */
-	protected void setInteractionEnabled(boolean enabled)
-	{
-		if (enabled)
-		{
-			removeStyleDependentName(DISABLED);
-		}
-		else
-		{
-			addStyleDependentName(DISABLED);
-		}
-	}
 	
 	/**
 	 * Refreshes the pager
@@ -253,6 +241,24 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 		{
 			resetHandler.removeHandler();
 			resetHandler = null;
+		}
+	}
+	
+	/**
+	 * This should be overridden in order to handle
+	 * the children components states. 
+	 * @param enabled true will enable all composite widgets
+	 * and false otherwise. 
+	 */
+	protected void setInteractionEnabled(boolean enabled)
+	{
+		if (enabled)
+		{
+			removeStyleDependentName(DISABLED);
+		}
+		else
+		{
+			addStyleDependentName(DISABLED);
 		}
 	}
 	
