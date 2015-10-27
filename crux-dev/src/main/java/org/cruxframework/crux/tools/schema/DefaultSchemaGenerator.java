@@ -917,6 +917,9 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("</xs:element>");
 
 		out.println("<xs:complexType name=\"SplashScreen\">");
+		out.println("<xs:sequence minOccurs=\"0\" maxOccurs=\"1\">");
+		out.println("<xs:element type=\"xs:string\" >");
+		out.println("</xs:sequence>");
 		out.println("<xs:attribute name=\"style\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"transactionDelay\" type=\"xs:integer\"/>");
 		out.println("</xs:complexType>");
