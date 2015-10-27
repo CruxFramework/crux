@@ -591,7 +591,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	
 	protected boolean isRecordOnPage(int record)
 	{
-		if (data == null || !isCurrentPageLoaded())
+		if (!isCurrentPageLoaded())
 		{
 			return false;
 		}
@@ -736,7 +736,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 				this.data.add(records.get(ret));
 			}
 		}
-		if (ret < (endRecord - startRecord))
+		if ((endRecord < startRecord)  || (ret < (endRecord - startRecord)))
 		{
 			this.data.add(null);
 		}
