@@ -1004,6 +1004,19 @@ public class ViewParser
 		{
 			splashScreen.setAttribute("transactionDelay", transactionDelay);
 		}
+
+		NodeList childNodes = cruxPageNode.getChildNodes();
+		if (childNodes != null)
+		{
+			for (int i=0; i<childNodes.getLength(); i++)
+			{
+				Node child = childNodes.item(i);
+		
+				Node htmlChild = htmlDocument.importNode(child, false);
+				splashScreen.appendChild(htmlChild);
+			}
+		}
+
 		htmlNode.appendChild(splashScreen);
 	}
 	

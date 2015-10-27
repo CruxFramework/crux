@@ -124,13 +124,16 @@ public class ScreenFactory
 			try
 			{
 				OutputStream stream = context.getGeneratorContext().tryCreateResource(context.getLogger(), screenId+".crux.xml");
-				Resource resource = screenLoader.getScreen(screenId);
-				InputStream inputStream = resource.openContents();
-				Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
-				StreamUtils.safeCloseStream(inputStream);
-				viewFactory.generateHTML(screenId, screenView, stream);
-				StreamUtils.safeCloseStream(stream);
-				context.getGeneratorContext().commitResource(context.getLogger(), stream).setVisibility(Visibility.Private);
+				if (stream != null) // was not already generated during this compilation
+				{
+					Resource resource = screenLoader.getScreen(screenId);
+					InputStream inputStream = resource.openContents();
+					Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
+					StreamUtils.safeCloseStream(inputStream);
+					viewFactory.generateHTML(screenId, screenView, stream);
+					StreamUtils.safeCloseStream(stream);
+					context.getGeneratorContext().commitResource(context.getLogger(), stream).setVisibility(Visibility.Private);
+				}
 			}
 			catch (Exception e)
 			{
