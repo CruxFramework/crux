@@ -247,7 +247,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 			return clonedRecord;
 		}
-		return record.getRecordObject();
+		return record != null ? record.getRecordObject() : null;
 	}
 	
 	@Override

@@ -233,8 +233,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public DataProviderRecord<T> getRecord()
 	{
-		ensureCurrentPageLoaded();		
-		if (currentRecord > -1)
+		if (isCurrentPageLoaded() && currentRecord > -1)
 		{
 			return data.get(currentRecord);
 		}
@@ -247,7 +246,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public boolean hasNext()
 	{
-		ensureCurrentPageLoaded();
 		return isRecordOnPage(currentRecord+1);
 	}
 	
@@ -282,7 +280,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public boolean hasPrevious()
 	{
-		ensureCurrentPageLoaded();
 		return isRecordOnPage(currentRecord-1);
 	}
 
@@ -485,8 +482,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void sort(Comparator<T> comparator)
 	{
-		ensureCurrentPageLoaded();
-		if (currentRecord > -1)
+		if (isCurrentPageLoaded() && currentRecord > -1)
 		{
 			Array<DataProviderRecord<T>> pageData = CollectionFactory.createArray(pageSize);
 			int startPageRecord = getPageStartRecord();
@@ -595,8 +591,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	
 	protected boolean isRecordOnPage(int record)
 	{
-		ensureCurrentPageLoaded();
-		if (data == null)
+		if (data == null || !isCurrentPageLoaded())
 		{
 			return false;
 		}
