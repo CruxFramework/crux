@@ -29,13 +29,14 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected int currentRecord = -1;
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected Array<DataChangedHandler> dataChangedHandlers;
-	protected Array<DataSelectionHandler<T>> dataSelectionHandlers;
 	protected DataProvider.EditionDataHandler<T> dataHandler;
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
+	protected Array<DataSelectionHandler<T>> dataSelectionHandlers;
 	protected Array<DataSortedHandler> dataSortedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
 	protected boolean loaded = false;
 	protected Array<ResetHandler> resetHandlers;
+	protected SelectionMode selectionMode = SelectionMode.multiple;
 	protected Array<TransactionEndHandler> transactionEndHandlers;
 	protected Array<TransactionStartHandler> transactionStartHandlers;
 	
@@ -48,29 +49,6 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		this();
 		setEditionDataHandler(dataHandler);
     }
-	
-	@Override
-	public HandlerRegistration addDataSelectionHandler(final DataSelectionHandler<T> handler)
-	{
-		if (dataSelectionHandlers == null)
-		{
-			dataSelectionHandlers = CollectionFactory.createArray();
-		}
-		
-		dataSelectionHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = dataSelectionHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					dataSelectionHandlers.remove(index);
-				}
-			}
-		};
-	}
 	
 	@Override
 	public HandlerRegistration addDataChangedHandler(final DataChangedHandler handler)
@@ -116,8 +94,31 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 				}
 			}
 		};
-	}	
-
+	}
+	
+	@Override
+	public HandlerRegistration addDataSelectionHandler(final DataSelectionHandler<T> handler)
+	{
+		if (dataSelectionHandlers == null)
+		{
+			dataSelectionHandlers = CollectionFactory.createArray();
+		}
+		
+		dataSelectionHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = dataSelectionHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					dataSelectionHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
 	@Override
 	public HandlerRegistration addDataSortedHandler(final DataSortedHandler handler)
 	{
@@ -140,7 +141,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		};
 	}
-
+	
 	@Override
 	public HandlerRegistration addLoadStoppedHandler(final DataLoadStoppedHandler handler)
 	{
@@ -162,8 +163,8 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 				}
 			}
 		};
-	}
-	
+	}	
+
 	@Override
 	public HandlerRegistration addResetHandler(final ResetHandler handler)
 	{
@@ -209,7 +210,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		};
 	}
-
+	
 	@Override
 	public HandlerRegistration addTransactionStartHandler(final TransactionStartHandler handler)
 	{
@@ -232,7 +233,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		};
 	}
-	
+
 	@Override
 	public T get()
 	{
@@ -249,7 +250,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		}
 		return record != null ? record.getRecordObject() : null;
 	}
-	
+
 	@Override
 	public T get(int index)
 	{
@@ -273,16 +274,33 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	}
 	
 	@Override
+	public SelectionMode getSelectionMode()
+	{
+	    return selectionMode;
+	}
+	
+	@Override
 	public boolean isEditable()
 	{
 	    return this.dataHandler != null;
 	}
 	
-    @Override
+	@Override
     public boolean isLoaded()
     {
 	    return loaded;
     }
+	
+	@Override
+	public boolean isSelected(int index)
+	{
+		if (index >= 0 && index < data.size())
+		{
+			DataProviderRecord<T> record = data.get(index);
+			return record != null && record.isSelected();
+		}
+	    return false;
+	}
 	
     @Override
 	public void next()
@@ -292,8 +310,8 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			currentRecord++;
 		}
 	}
-        
-	@Override
+	
+    @Override
 	public void previous()
 	{
 		if (hasPrevious())
@@ -301,8 +319,8 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			currentRecord--;
 		}
 	}
-    
-    @Override
+        
+	@Override
 	public void read(DataReader<T> reader)
 	{
 		if (reader != null)
@@ -318,8 +336,8 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		}
 	}
-	
-	@Override
+    
+    @Override
 	public void read(int index, DataReader<T> reader)
 	{
 		if (reader != null)
@@ -354,6 +372,19 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
     	ensureNotDirty();
     	this.dataHandler = dataHandler;        
     }
+	
+	@Override
+	public void setSelectionMode(SelectionMode selectionMode)
+	{
+		DataProviderRecord<T>[] records = getSelectedRecords();
+		if ((selectionMode.equals(SelectionMode.multiple) && records != null && records.length > 1) ||
+			(selectionMode.equals(SelectionMode.unselectable) && records != null && records.length > 0))
+		{
+			throw new DataProviderException("Can not change the seletion mode. The provided mode is "
+				+ "incompatible with the dataProvider actual state. It has already selected records.");
+		}
+		this.selectionMode = selectionMode;
+	}
 
 	@Override
 	public void stopLoading()
@@ -477,5 +508,4 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	}
 	
 	protected abstract void updateState(DataProviderRecord<T> record, DataProviderRecord.DataProviderRecordState previousState);
-
 }
