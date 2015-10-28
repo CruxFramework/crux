@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
 
 /**
  * A record in a {@link DataProvider}.
@@ -127,23 +128,37 @@ public class DataProviderRecord<T> implements Cloneable
 	
 	public void setSelected(boolean selected, boolean fireEvents)
 	{
-		if (this.state.isSelected() != selected)
+		if (!dataProvider.getSelectionMode().equals(SelectionMode.unselectable) 
+			&& this.state.isSelected() != selected)
 		{
+			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();;
+			if (selected && dataProvider.getSelectionMode().equals(SelectionMode.single))
+			{
+				DataProviderRecord<T>[] selectedRecords = dataProvider.getSelectedRecords();
+				for (DataProviderRecord<T> record : selectedRecords)
+                {
+					record.setSelected(false, fireEvents);
+					if (fireEvents)
+					{
+						changedRecords.add(record);
+					}
+                }
+			}
+
 			DataProviderRecordState previousState = getCurrentState();
 			this.state.setSelected(selected);
 			dataProvider.updateState(this, previousState);
 			if(fireEvents)
 			{
-				fireDataSelectionEvent();
+				changedRecords.add(this);
+				fireDataSelectionEvent(changedRecords);
 			}
 		}
 	}
 
-	private void fireDataSelectionEvent()
+	private void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
 	{
-		Array<DataProviderRecord<T>> selectedRecords = CollectionFactory.createArray();
-		selectedRecords.add(this);
-		this.dataProvider.fireDataSelectionEvent(selectedRecords);
+		this.dataProvider.fireDataSelectionEvent(changedRecords);
 	}
 
 	void setCreated(boolean created)
