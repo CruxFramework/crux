@@ -29,13 +29,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements StreamingProvider<T>
 {
-	protected StreamingDataProviderOperations<T> operations = new StreamingDataProviderOperations<T>(this);
-	protected int pageSize = 10;
 	protected int currentPage = 0;
-	protected int previousPage = -1;
+	protected StreamingDataLoader<T> dataLoader;
+	protected StreamingDataProviderOperations<T> operations = new StreamingDataProviderOperations<T>(this);
 	protected Array<PageLoadedHandler> pageFetchHandlers;
 	protected Array<PageRequestedHandler> pageRequestedHandlers;
-	protected StreamingDataLoader<T> dataLoader;
+	protected int pageSize = 10;
+	protected int previousPage = -1;
 
 	public StreamingDataProvider()
     {
@@ -53,114 +53,15 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
     }
 	
 	@Override
-    public void setDataLoader(StreamingDataLoader<T> dataLoader)
-    {
-		this.dataLoader = dataLoader;
-    }
-
-	@Override
-    public StreamingDataLoader<T> getDataLoader()
-    {
-	    return dataLoader;
-    }
-
-	@Override
-	public boolean isDirty()
-	{
-	    return operations != null && operations.isDirty();
-	}
-	
-	@Override
 	public DataProviderRecord<T> add(int beforeIndex, T object)
 	{
 		return operations.insertRecord(beforeIndex, object);
 	}
-	
+
 	@Override
 	public DataProviderRecord<T> add(T object)
 	{
 		return operations.insertRecord(object);
-	}
-
-	@Override
-	public DataProviderRecord<T> remove(int index)
-	{
-		return operations.removeRecord(index);
-	}
-
-	@Override
-	public DataProviderRecord<T> set(int index, T object)
-	{
-		return operations.updateRecord(index, object);
-	}
-
-	@Override
-	public void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
-	{
-		operations.updateState(record, previousState);
-	}
-
-	@Override
-	public DataProviderRecord<T>[] getNewRecords()
-	{
-		return operations.getNewRecords();
-	}
-
-	@Override
-	public DataProviderRecord<T>[] getRemovedRecords()
-	{
-		return operations.getRemovedRecords();
-	}
-
-	@Override
-	public DataProviderRecord<T>[] getUpdatedRecords()
-	{
-		return operations.getUpdatedRecords();
-	}
-
-	@Override
-	public DataProviderRecord<T>[] getSelectedRecords()
-	{
-		return operations.getSelectedRecords();
-	}	
-	
-	@Override
-	public void rollback()
-	{
-		this.operations.rollback();
-	}
-
-	@Override
-	public void commit()
-	{
-		this.operations.commit();
-	}
-	
-	@Override
-	public void load()
-	{
-		if(!isLoaded())
-		{
-			nextPage();
-		}
-	}
-	
-	@Override
-	public DataProviderRecord<T> select(T object, boolean selected)
-	{
-		return operations.selectRecord(indexOf(object), selected);
-	}
-	
-	@Override
-	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
-	{
-		return operations.setReadOnly(index, readOnly);
-	}
-
-	@Override
-	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
-	{
-		return operations.setReadOnly(indexOf(object), readOnly);
 	}
 
 	@Override
@@ -185,7 +86,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			}
 		};
 	}
-
+	
 	@Override
 	public HandlerRegistration addPageRequestedHandler(final PageRequestedHandler handler)
 	{
@@ -210,45 +111,36 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	}
 	
 	@Override
-	public int indexOf(T boundObject)
+	public void commit()
 	{
-		return operations.getRecordIndex(boundObject);
-	}
-	
-	@Override
-	public DataProviderRecord<T> select(int index, boolean selected)
-	{
-		return operations.selectRecord(index, selected);
+		this.operations.commit();
 	}
 
 	@Override
-	public void stopLoading()
+	public Array<T> filter(DataFilter<T> filter)
 	{
-		previousPage = currentPage;
-		currentPage--;
-		updateCurrentRecord();
-		super.stopLoading();
-	}
+		Array<T> result = CollectionFactory.createArray();
 
-	@Override
-	public DataProviderRecord<T> getRecord()
-	{
-		if (isCurrentPageLoaded() && currentRecord > -1)
+		if (data != null)
 		{
-			return data.get(currentRecord);
+			int size = data.size();
+			for (int i = 0; i < size; i++)
+			{
+				DataProviderRecord<T> dataProviderRecord = data.get(i);
+				if (dataProviderRecord != null)
+				{
+					T object = dataProviderRecord.getRecordObject();
+					if (filter.accept(object))
+					{
+						result.add(object);
+					}
+				}
+			}
 		}
-		else
-		{
-			return null;
-		}
+
+		return result;
 	}
 
-	@Override
-	public boolean hasNext()
-	{
-		return isRecordOnPage(currentRecord+1);
-	}
-	
 	@Override
 	public void first()
 	{
@@ -276,22 +168,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			ensureCurrentPageLoaded();
 		}
 	}
-	
-	@Override
-	public boolean hasPrevious()
-	{
-		return isRecordOnPage(currentRecord-1);
-	}
-
-	@Override
-	public void reset()
-	{
-		super.reset();
-		previousPage = -1;
-		currentPage = 0;
-		operations.reset();
-		
-	}
 
 	@Override
 	public int getCurrentPage()
@@ -311,11 +187,60 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 	    return getPageStartRecord();
 	}
+
+	@Override
+    public StreamingDataLoader<T> getDataLoader()
+    {
+	    return dataLoader;
+    }	
 	
+	@Override
+	public DataProviderRecord<T>[] getNewRecords()
+	{
+		return operations.getNewRecords();
+	}
+
 	@Override
 	public int getPageSize()
 	{
 		return pageSize;
+	}
+	
+	@Override
+	public DataProviderRecord<T> getRecord()
+	{
+		if (isCurrentPageLoaded() && currentRecord > -1)
+		{
+			return data.get(currentRecord);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	@Override
+	public DataProviderRecord<T>[] getRemovedRecords()
+	{
+		return operations.getRemovedRecords();
+	}
+	
+	@Override
+	public DataProviderRecord<T>[] getSelectedRecords()
+	{
+		return operations.getSelectedRecords();
+	}
+
+	@Override
+	public DataProviderRecord<T>[] getUpdatedRecords()
+	{
+		return operations.getUpdatedRecords();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return isRecordOnPage(currentRecord+1);
 	}
 
 	@Override
@@ -339,13 +264,40 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
 		return false;
 	}
-
+	
+	@Override
+	public boolean hasPrevious()
+	{
+		return isRecordOnPage(currentRecord-1);
+	}
+	
 	@Override
 	public boolean hasPreviousPage()
 	{
 		return (currentPage > 1);
 	}
 
+	@Override
+	public int indexOf(T boundObject)
+	{
+		return operations.getRecordIndex(boundObject);
+	}
+
+	@Override
+	public boolean isDirty()
+	{
+	    return operations != null && operations.isDirty();
+	}
+
+	@Override
+	public void load()
+	{
+		if(!isLoaded())
+		{
+			nextPage();
+		}
+	}
+	
 	@Override
 	public boolean nextPage()
 	{
@@ -383,82 +335,54 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		
 		return false;
 	}
-
-	protected boolean setCurrentPage(int pageNumber)
+	
+	@Override
+	public DataProviderRecord<T> remove(int index)
 	{
-		if (pageNumber < currentPage)
-		{
-			previousPage = currentPage;
-			currentPage = pageNumber;
-			updateCurrentRecord();
-			return true;
-		}
-		return false;
+		return operations.removeRecord(index);
+	}
+
+	@Override
+	public void reset()
+	{
+		super.reset();
+		previousPage = -1;
+		currentPage = 0;
+		operations.reset();
+		
+	}
+
+	@Override
+	public void rollback()
+	{
+		this.operations.rollback();
+	}
+
+	@Override
+	public DataProviderRecord<T> select(int index, boolean selected)
+	{
+		return operations.selectRecord(index, selected);
+	}
+
+	@Override
+	public DataProviderRecord<T> select(T object, boolean selected)
+	{
+		return operations.selectRecord(indexOf(object), selected);
 	}
 	
 	@Override
-	public void setPageSize(int pageSize)
+	public void selectAll(boolean selected)
 	{
-		if (pageSize < 1)
-		{
-			pageSize = 1;
-		}
-		
-		boolean loaded = data.size() > 0;
-		
-		this.pageSize = pageSize;
-		
-		if(loaded)
-		{
-			updateCurrentRecord();
-			fetchCurrentPage();
-			firePageRequestedEvent(currentPage);			
-		}
+		operations.selectAllRecords(selected);
 	}
 	
-    @Override
-	public void setData(T[] data)
+	@Override
+	public DataProviderRecord<T> set(int index, T object)
 	{
-		if (data == null)
-		{
-			Array<DataProviderRecord<T>> array = CollectionFactory.createArray(); 
-			update(array);
-		} 
-		else 
-		{
-			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.length); 
-			for (int i=0; i<data.length; i++)
-			{
-				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data[i]);
-				ret.set(i, record);
-			}
-			update(ret);
-		}
-	}	
-	
-    @Override
-	public void setData(List<T> data)
-	{
-		if (data == null)
-		{
-			Array<DataProviderRecord<T>> array = CollectionFactory.createArray(); 
-			update(array);
-		} 
-		else 
-		{
-			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.size());
-			for (int i=0; i<data.size(); i++)
-			{
-				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data.get(i));
-				ret.set(i, record);
-			}
-			update(ret);
-		}
+		return operations.updateRecord(index, object);
 	}
 
-    @Override
+	@Override
 	public void setData(Array<T> data)
 	{
 		if (data == null)
@@ -480,40 +404,42 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	}
 
 	@Override
-	public void sort(Comparator<T> comparator)
-	{
-		if (isCurrentPageLoaded() && currentRecord > -1)
-		{
-			Array<DataProviderRecord<T>> pageData = CollectionFactory.createArray(pageSize);
-			int startPageRecord = getPageStartRecord();
-			int endPageRecord = getPageEndRecord();
-			int pageSize = endPageRecord - startPageRecord + 1;
-			for (int i = 0; i<pageSize; i++)
-			{
-				pageData.add(data.get(i+startPageRecord));
-			}
-			sortArray(pageData, comparator);
-			updatePageRecords(startPageRecord, endPageRecord, pageData);
-			fireSortedEvent(false);
-		}
-	}
-	
-	@Override
-    public void setData(T[] data, int startRecord)
+    public void setData(Array<T> data, int startRecord)
     {
 		if (data != null)
 		{
-			int dataSize = data.length;
+			int dataSize = data.size();
 			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(dataSize);
 			for (int i = 0; i < dataSize; i++)
 			{
 				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data[i]);
+				record.setRecordObject(data.get(i));
 				ret.set(i, record);
 			}
 			update(ret, startRecord, startRecord+dataSize-1);
 		}
     }
+
+	@Override
+	public void setData(List<T> data)
+	{
+		if (data == null)
+		{
+			Array<DataProviderRecord<T>> array = CollectionFactory.createArray(); 
+			update(array);
+		} 
+		else 
+		{
+			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.size());
+			for (int i=0; i<data.size(); i++)
+			{
+				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
+				record.setRecordObject(data.get(i));
+				ret.set(i, record);
+			}
+			update(ret);
+		}
+	}
 
 	@Override
     public void setData(List<T> data, int startRecord)
@@ -533,47 +459,115 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
     }
 
 	@Override
-    public void setData(Array<T> data, int startRecord)
+	public void setData(T[] data)
+	{
+		if (data == null)
+		{
+			Array<DataProviderRecord<T>> array = CollectionFactory.createArray(); 
+			update(array);
+		} 
+		else 
+		{
+			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(data.length); 
+			for (int i=0; i<data.length; i++)
+			{
+				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
+				record.setRecordObject(data[i]);
+				ret.set(i, record);
+			}
+			update(ret);
+		}
+	}
+	
+	@Override
+    public void setData(T[] data, int startRecord)
     {
 		if (data != null)
 		{
-			int dataSize = data.size();
+			int dataSize = data.length;
 			Array<DataProviderRecord<T>> ret = CollectionFactory.createArray(dataSize);
 			for (int i = 0; i < dataSize; i++)
 			{
 				DataProviderRecord<T> record = new DataProviderRecord<T>(this);
-				record.setRecordObject(data.get(i));
+				record.setRecordObject(data[i]);
 				ret.set(i, record);
 			}
 			update(ret, startRecord, startRecord+dataSize-1);
 		}
     }
+	
+    @Override
+    public void setDataLoader(StreamingDataLoader<T> dataLoader)
+    {
+		this.dataLoader = dataLoader;
+    }	
+	
+    @Override
+	public void setPageSize(int pageSize)
+	{
+		if (pageSize < 1)
+		{
+			pageSize = 1;
+		}
+		
+		boolean loaded = data.size() > 0;
+		
+		this.pageSize = pageSize;
+		
+		if(loaded)
+		{
+			updateCurrentRecord();
+			fetchCurrentPage();
+			firePageRequestedEvent(currentPage);			
+		}
+	}
+
+    @Override
+	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
+	{
+		return operations.setReadOnly(index, readOnly);
+	}
 
 	@Override
-	public Array<T> filter(DataFilter<T> filter)
+	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
 	{
-		Array<T> result = CollectionFactory.createArray();
-
-		if (data != null)
-		{
-			int size = data.size();
-			for (int i = 0; i < size; i++)
-			{
-				DataProviderRecord<T> dataProviderRecord = data.get(i);
-				if (dataProviderRecord != null)
-				{
-					T object = dataProviderRecord.getRecordObject();
-					if (filter.accept(object))
-					{
-						result.add(object);
-					}
-				}
-			}
-		}
-
-		return result;
+		return operations.setReadOnly(indexOf(object), readOnly);
 	}
 	
+	@Override
+	public void sort(Comparator<T> comparator)
+	{
+		if (isCurrentPageLoaded() && currentRecord > -1)
+		{
+			Array<DataProviderRecord<T>> pageData = CollectionFactory.createArray(pageSize);
+			int startPageRecord = getPageStartRecord();
+			int endPageRecord = getPageEndRecord();
+			int pageSize = endPageRecord - startPageRecord + 1;
+			for (int i = 0; i<pageSize; i++)
+			{
+				pageData.add(data.get(i+startPageRecord));
+			}
+			sortArray(pageData, comparator);
+			updatePageRecords(startPageRecord, endPageRecord, pageData);
+			fireSortedEvent(false);
+		}
+	}
+
+	@Override
+	public void stopLoading()
+	{
+		previousPage = currentPage;
+		currentPage--;
+		updateCurrentRecord();
+		super.stopLoading();
+	}
+
+	@Override
+	public void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
+	{
+		operations.updateState(record, previousState);
+	}
+
 	protected void ensureCurrentPageLoaded()
 	{
 		boolean loaded = isCurrentPageLoaded();
@@ -581,69 +575,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		{
 			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
-	}
-
-	protected boolean isCurrentPageLoaded()
-	{
-		int pageStartRecord = getPageStartRecord();
-		return (data.size() > pageStartRecord);
-	}
-	
-	protected boolean isRecordOnPage(int record)
-	{
-		if (!isCurrentPageLoaded())
-		{
-			return false;
-		}
-		int startPageRecord = getPageStartRecord();
-		int endPageRescord = getPageEndRecord();
-		if (endPageRescord >= data.size())
-		{
-			endPageRescord = data.size()-1;
-		}
-		return (record >= startPageRecord) && (record <= endPageRescord) && (data.get(record) != null);
-	}
-	
-	protected int getPageEndRecord()
-	{
-		int pageEndRecord = (currentPage * pageSize) - 1;
-		int pageStartRecord = getPageStartRecord();
-		
-		if (pageEndRecord >= this.data.size())
-		{
-			if (this.data.size() > 0 && this.data.size() > pageStartRecord && this.data.get(this.data.size()-1) == null)
-			{
-				pageEndRecord = this.data.size()-2;
-			}
-		}
-		
-		return pageEndRecord + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
-	}
-
-	protected int getPageStartRecord()
-	{
-		return getPageStartRecord(currentPage);
-	}
-	
-	protected int getPageStartRecord(int page)
-	{
-		return (page - 1) * pageSize;
-	}
-	
-	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
-	{
-		array.sort(new Comparator<DataProviderRecord<T>>(){
-			public int compare(DataProviderRecord<T> o1, DataProviderRecord<T> o2)
-			{
-				return comparator.compare(o1.getRecordObject(), o2.getRecordObject());
-			}
-		});
-		firstOnPage();
-	}
-	
-	protected void updateCurrentRecord()
-	{
-		currentRecord = getPageStartRecord(); 
 	}
 	
 	protected void fetchCurrentPage()
@@ -660,7 +591,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 		}
 	}
-	
+
 	protected void firePageLoadedEvent(int start, int end)
     {
 		if (pageFetchHandlers != null)
@@ -685,6 +616,117 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
     }
 	
+	protected int getPageEndRecord()
+	{
+		int pageEndRecord = (currentPage * pageSize) - 1;
+		int pageStartRecord = getPageStartRecord();
+		
+		if (pageEndRecord >= this.data.size())
+		{
+			if (this.data.size() > 0 && this.data.size() > pageStartRecord && this.data.get(this.data.size()-1) == null)
+			{
+				pageEndRecord = this.data.size()-2;
+			}
+		}
+		
+		return pageEndRecord + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
+	}
+
+	protected int getPageForRecord(int recordNumber)
+	{
+		int pageSize = getPageSize();
+		int index = recordNumber + 1;
+		int result = (index / pageSize) + (index%pageSize==0?0:1);
+		return result;
+	}
+	
+	protected int getPageStartRecord()
+	{
+		return getPageStartRecord(currentPage);
+	}
+	
+	protected int getPageStartRecord(int page)
+	{
+		return (page - 1) * pageSize;
+	}
+	
+	protected Array<DataProviderRecord<T>> getTransactionRecords()
+	{
+		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		for (int i = start; i <= end; i++)
+		{
+			DataProviderRecord<T> record = data.get(i);
+			currentPageRecordsArray.add(record.clone());
+		}
+
+		return currentPageRecordsArray;
+	}
+	
+	protected boolean isCurrentPageLoaded()
+	{
+		int pageStartRecord = getPageStartRecord();
+		return (data.size() > pageStartRecord);
+	}
+	
+	protected boolean isRecordOnPage(int record)
+	{
+		if (!isCurrentPageLoaded())
+		{
+			return false;
+		}
+		int startPageRecord = getPageStartRecord();
+		int endPageRescord = getPageEndRecord();
+		if (endPageRescord >= data.size())
+		{
+			endPageRescord = data.size()-1;
+		}
+		return (record >= startPageRecord) && (record <= endPageRescord) && (data.get(record) != null);
+	}
+	
+	protected int lockRecordForEdition(int recordIndex)
+    {
+		int pageForRecord = getPageForRecord(recordIndex);
+		setCurrentPage(pageForRecord);
+		return getPageStartRecord(pageForRecord);
+    }
+	
+	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
+	{
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		data.remove(start, end-start+1);
+		
+		for (int i=0; i<transactionRecords.size(); i++)
+		{
+			data.insert(start+i, transactionRecords.get(i));
+		}
+	}
+	
+	protected boolean setCurrentPage(int pageNumber)
+	{
+		if (pageNumber < currentPage)
+		{
+			previousPage = currentPage;
+			currentPage = pageNumber;
+			updateCurrentRecord();
+			return true;
+		}
+		return false;
+	}
+
+	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
+	{
+		array.sort(new Comparator<DataProviderRecord<T>>(){
+			public int compare(DataProviderRecord<T> o1, DataProviderRecord<T> o2)
+			{
+				return comparator.compare(o1.getRecordObject(), o2.getRecordObject());
+			}
+		});
+		firstOnPage();
+	}
+
 	protected void update(Array<DataProviderRecord<T>> records)
 	{
 		int recordCount = records!= null?records.size():0;
@@ -700,7 +742,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			nextPage();
 		}
 	}
-	
+
 	protected void update(Array<DataProviderRecord<T>> records, int startRecord, int endRecord)
 	{
 		if (!loaded)
@@ -723,8 +765,27 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		{
 			firePageLoadedEvent(-1, -1);
 		}
+	}	
+	
+	protected void updateCurrentRecord()
+	{
+		currentRecord = getPageStartRecord(); 
 	}
 
+	protected int updatePageRecords(int startRecord, int endRecord, Array<DataProviderRecord<T>> records)
+	{
+		int ret = 0;
+		if (records != null)
+		{
+			int count = Math.min(endRecord - startRecord + 1, records.size());
+			for (ret = 0; ret < count ; ret++)
+			{
+				this.data.set(ret+startRecord, records.get(ret));
+			}
+		}
+		return ret;
+	}
+	
 	protected int updateRecords(int startRecord, int endRecord, Array<DataProviderRecord<T>> records)
 	{
 		int ret = 0;
@@ -741,61 +802,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			this.data.add(null);
 		}
 		return ret;
-	}
-
-	protected int updatePageRecords(int startRecord, int endRecord, Array<DataProviderRecord<T>> records)
-	{
-		int ret = 0;
-		if (records != null)
-		{
-			int count = Math.min(endRecord - startRecord + 1, records.size());
-			for (ret = 0; ret < count ; ret++)
-			{
-				this.data.set(ret+startRecord, records.get(ret));
-			}
-		}
-		return ret;
-	}
-
-	protected Array<DataProviderRecord<T>> getTransactionRecords()
-	{
-		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
-		int start = getPageStartRecord();
-		int end = getPageEndRecord();
-		for (int i = start; i <= end; i++)
-		{
-			DataProviderRecord<T> record = data.get(i);
-			currentPageRecordsArray.add(record.clone());
-		}
-
-		return currentPageRecordsArray;
-	}	
-	
-	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
-	{
-		int start = getPageStartRecord();
-		int end = getPageEndRecord();
-		data.remove(start, end-start+1);
-		
-		for (int i=0; i<transactionRecords.size(); i++)
-		{
-			data.insert(start+i, transactionRecords.get(i));
-		}
-	}
-
-	protected int lockRecordForEdition(int recordIndex)
-    {
-		int pageForRecord = getPageForRecord(recordIndex);
-		setCurrentPage(pageForRecord);
-		return getPageStartRecord(pageForRecord);
-    }
-	
-	protected int getPageForRecord(int recordNumber)
-	{
-		int pageSize = getPageSize();
-		int index = recordNumber + 1;
-		int result = (index / pageSize) + (index%pageSize==0?0:1);
-		return result;
 	}
 	
 }
