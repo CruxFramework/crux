@@ -201,10 +201,17 @@ public interface DataProvider<T>
 	boolean isLoaded();
 
 	/**
+	 * Check if the record on the given position is selected
+	 * @param index record position
+	 * @return true if selected
+	 */
+	boolean isSelected(int index);
+	
+	/**
 	 * Load the DataProvider data.
 	 */
 	void load();
-	
+
 	/**
 	 * Points DataProvider to next record 
 	 */
@@ -214,13 +221,13 @@ public interface DataProvider<T>
 	 * Points DataProvider to previous record 
 	 */
 	void previous();
-
+	
 	/**
 	 * Read the current record object. 
 	 * @param reader the reader used to consume the object retrieved.
 	 */
 	void read(DataReader<T> reader);
-	
+
 	/**
 	 * Read the object referred by the given index
 	 * @param index the object position
@@ -234,12 +241,12 @@ public interface DataProvider<T>
 	 * @return
 	 */
 	DataProviderRecord<T> remove(int record);
-
+	
 	/**
 	 * Reset DataProvider, as if it was never loaded before.
 	 */
 	void reset();
-	
+
 	/**
 	 * Undo all changes 
 	 */
@@ -262,11 +269,10 @@ public interface DataProvider<T>
 	DataProviderRecord<T> select(T object, boolean selected);
 	
 	/**
-	 * Check if the record on the given position is selected
-	 * @param index record position
-	 * @return true if selected
+	 * Mark all dataProvider records as selected
+	 * @param selected true if selected
 	 */
-	boolean isSelected(int index);
+	void selectAll(boolean selected);
 	
 	/**
 	 * Update the DataProvider object at the given index 
@@ -368,5 +374,5 @@ public interface DataProvider<T>
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	enum SelectionMode {unselectable, multiple, single}
+	enum SelectionMode {multiple, single, unselectable}
 }
