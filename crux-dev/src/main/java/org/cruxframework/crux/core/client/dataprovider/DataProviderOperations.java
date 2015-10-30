@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider.FilterRegistration;
 
@@ -224,6 +225,37 @@ class DataProviderOperations<T>
 		record.setSelected(selected);
 		return record;
 	}
+	
+	void selectAllRecords(boolean selected)
+	{
+		if (dataProvider.getSelectionMode().equals(SelectionMode.multiple))
+		{
+			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();;
+			
+			for(int i = 0; i < this.dataProvider.data.size(); i++)
+			{
+				DataProviderRecord<T> record = this.dataProvider.data.get(i);
+				if(record != null && record.isSelected() != selected)
+				{
+					changedRecords.add(record);
+					record.state.setSelected(selected);
+					if (selected)
+					{
+						selectedRecords.add(record);
+					}
+					else
+					{
+						selectedRecords.remove(record);
+					}
+				}
+			}
+			
+			if (changedRecords.size() > 0)
+			{
+				dataProvider.fireDataSelectionEvent(changedRecords);
+			}
+		}
+    }
 	
 	DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
 	{

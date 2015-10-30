@@ -171,6 +171,12 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 	
 	@Override
+	public void selectAll(boolean selected)
+	{
+		operations.selectAllRecords(selected);
+	}
+	
+	@Override
 	public DataProviderRecord<T> set(int index, T object)
 	{
 		return operations.updateRecord(index, object);
