@@ -63,6 +63,11 @@ class DataProviderHelper
 	{
 		DataProvider dataProvider = viewFactory.getView().getDataProvider(dataProviderId);
 		
+		if(dataProvider == null)
+		{
+			throw new CruxGeneratorException("DataProvider ["+dataProviderId+"] on view ["+viewFactory.getView().getId()+"] must inform the dataObject to bind.");	
+		}
+		
 		return getDataObject(dataProviderId, dataProvider.getMetadata());
 	}
 	
