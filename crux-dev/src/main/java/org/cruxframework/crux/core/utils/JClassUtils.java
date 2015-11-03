@@ -50,16 +50,25 @@ public class JClassUtils
 		String objectVariable, boolean finishCommand)
 				throws NoSuchFieldException
 	{
-		return buildGetValueExpression(out, dtoType, propertyPath, objectVariable, finishCommand, false);
+		return buildGetValueExpression(out, dtoType, propertyPath, objectVariable, finishCommand, false, false);
 	}
 
 	public static JType buildGetValueExpression(StringBuilder out, JClassType dtoType, String propertyPath, 
-			String objectVariable, boolean finishCommand, boolean replaceNullForEmptyOnStringDefault)
+			String objectVariable, boolean finishCommand, boolean replaceNullForEmptyOnStringDefault, boolean checkObjectNull)
 					throws NoSuchFieldException
     {
+    	StringBuilder checkNullExpression = new StringBuilder();
+    	if (checkObjectNull)
+    	{
+    		checkNullExpression.append(objectVariable+"==null");
+    	}
         if (StringUtils.isEmpty(propertyPath))
         {
-			out.append(objectVariable);
+        	if (replaceNullForEmptyOnStringDefault)
+        	{
+        		out.append(checkNullExpression.toString()+"?"+getEmptyValueForType(dtoType, !replaceNullForEmptyOnStringDefault)+":");
+        	}
+       		out.append(objectVariable);
         	if (finishCommand)
         	{
         		out.append(";");
@@ -79,7 +88,6 @@ public class JClassUtils
         if (props != null && props.length > 0)
         {
         	StringBuilder getExpression = new StringBuilder();
-        	StringBuilder checkNullExpression = new StringBuilder();
         	
         	getExpression.append(objectVariable);
         	JType baseType = dtoType;
@@ -93,7 +101,7 @@ public class JClassUtils
         		String prop = props[i];
         		if (i>0)
         		{
-        			if (i>1)
+        			if ((i > 1) || checkObjectNull)
         			{
         				checkNullExpression.append(" || ");
         			}

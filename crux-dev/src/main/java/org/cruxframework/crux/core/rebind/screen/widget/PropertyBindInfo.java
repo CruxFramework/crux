@@ -127,7 +127,7 @@ public class PropertyBindInfo extends BindInfo
     {
 		StringBuilder getExpression = new StringBuilder();
 		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF, false);
-		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false, true);
+		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false, true, true);
 		return "if ("+uiObjectVar + " != null){\n" 
 				+getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString())
 				+"}";

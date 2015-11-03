@@ -116,7 +116,7 @@ class BindInfo
 	{
 		StringBuilder getExpression = new StringBuilder();
 
-		bindPathType = JClassUtils.buildGetValueExpression(getExpression, dataObjectType, bindPath, DATA_OBJECT_VAR_REF, false, true);
+		bindPathType = JClassUtils.buildGetValueExpression(getExpression, dataObjectType, bindPath, DATA_OBJECT_VAR_REF, false, true, true);
 
 		String converterVariable = getConverterVariable();
 		if (converterVariable != null)
