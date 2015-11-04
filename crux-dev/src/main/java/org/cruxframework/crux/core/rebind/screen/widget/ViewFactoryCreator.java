@@ -31,6 +31,8 @@ import org.cruxframework.crux.core.client.datasource.RegisteredDataSources;
 import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
@@ -913,6 +915,39 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		processDeactivateEvt(printer);
 	}
 
+	protected boolean targetsDevice(JSONObject child)
+    {
+		Device device = (getDevice() == null?null:Device.valueOf(getDevice()));
+		if (device == null)
+		{
+			return true;
+		}
+		
+		String sizeAttr = child.optString("size");
+		if (!StringUtils.isEmpty(sizeAttr))
+		{
+			Size size = Size.valueOf(sizeAttr);
+			
+			if (!size.equals(device.getSize()))
+			{
+				return false;
+			}
+		}
+		
+		String inputAttr = child.optString("input");
+		if (!StringUtils.isEmpty(inputAttr))
+		{
+			Input input = Input.valueOf(sizeAttr);
+			
+			if (!input.equals(device.getInput()))
+			{
+				return false;
+			}
+		}
+		
+	    return true;
+    }
+
 	/**
 	 * Gets the list of classes used by the ViewFactory.
 	 *
@@ -984,7 +1019,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			}
 		}
 	}
-
+	
 	/**
 	 * Generate the code for a widget creation, based on its metadata.
 	 *
@@ -1016,7 +1051,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		return widget;
 	}
-	
+
 	/**
 	 * @param printer
 	 */
@@ -1026,7 +1061,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("return this.registeredDataSources.getDataSource(dataSource);");
     	printer.println("}");
     }
-
+	
 	/**
 	 * @param printer
 	 */
@@ -1539,8 +1574,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	public interface DataBindingProcessor
 	{
-		void processBindings(SourcePrinter out, WidgetCreatorContext context);
 		String getDataObjectAlias(String dataObject);
+		void processBindings(SourcePrinter out, WidgetCreatorContext context);
 	}
 
 	/**

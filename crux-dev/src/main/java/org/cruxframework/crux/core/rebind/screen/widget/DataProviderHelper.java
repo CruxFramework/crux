@@ -49,13 +49,15 @@ class DataProviderHelper
 	
 	public String createDataProvider(SourcePrinter out, DataProvider dataProvider)
     {
-		switch (dataProvider.getType())
-        {
-			case dataProvider: return createEagerPagedDataProvider(out, dataProvider);
-			case lazyDataProvider: return createLazyDataProvider(out, dataProvider);
-			case streamingDataProvider: return createStreamingDataProvider(out, dataProvider);
+		if (viewFactory.targetsDevice(dataProvider.getMetadata()))
+		{
+			switch (dataProvider.getType())
+			{
+				case dataProvider: return createEagerPagedDataProvider(out, dataProvider);
+				case lazyDataProvider: return createLazyDataProvider(out, dataProvider);
+				case streamingDataProvider: return createStreamingDataProvider(out, dataProvider);
+			}
 		}
-		
 		return null;
     }
 
@@ -224,6 +226,12 @@ class DataProviderHelper
 		if (autoLoadData)
 		{
 			out.println(dataProviderVariable+".load();");
+		}
+		String selectionMode = metadata.optString("selectionMode");
+		if (!StringUtils.isEmpty(selectionMode))
+		{
+			String selectionModeClassName = org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode.class.getCanonicalName();
+			out.println(dataProviderVariable + ".setSelectionMode(" + selectionModeClassName + "." + selectionMode + ");");
 		}
     }
 }

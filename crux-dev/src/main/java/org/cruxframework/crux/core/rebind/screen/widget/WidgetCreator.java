@@ -20,8 +20,6 @@ import java.util.Set;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -850,29 +848,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	
 	protected boolean targetsDevice(JSONObject child)
     {
-		String sizeAttr = child.optString("size");
-		if (!StringUtils.isEmpty(sizeAttr))
-		{
-			Size size = Size.valueOf(sizeAttr);
-			
-			if (!size.equals(getDevice().getSize()))
-			{
-				return false;
-			}
-		}
-		
-		String inputAttr = child.optString("input");
-		if (!StringUtils.isEmpty(inputAttr))
-		{
-			Input input = Input.valueOf(sizeAttr);
-			
-			if (!input.equals(getDevice().getInput()))
-			{
-				return false;
-			}
-		}
-		
-	    return true;
+	    return viewFactory.targetsDevice(child);
     }
 	
 	/**
