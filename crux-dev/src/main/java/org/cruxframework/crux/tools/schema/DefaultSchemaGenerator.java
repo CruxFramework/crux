@@ -36,6 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
@@ -894,7 +895,18 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"onFetchData\" type=\"xs:string\" use=\"required\" />");
 		generateCoreDataProviderCommonAttributes(out);
 		out.println("</xs:complexType>");
-}
+		
+		out.println("<xs:simpleType name=\"SelectionMode\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		DataProvider.SelectionMode[] selectionModes = DataProvider.SelectionMode.values();
+		for (DataProvider.SelectionMode selectionMode : selectionModes)
+		{
+			out.println("<xs:enumeration value=\""+selectionMode.toString()+"\" />");
+		}
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+		
+	}
 
 	private void generateCoreDataProviderCommonAttributes(PrintStream out)
     {
@@ -902,6 +914,9 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"dataObject\" type=\"xs:string\" use=\"required\" />");
 	    out.println("<xs:attribute name=\"pageSize\" type=\"xs:integer\" />");
 		out.println("<xs:attribute name=\"autoLoadData\" type=\"xs:boolean\" default=\"false\" />");
+		out.println("<xs:attribute name=\"selectionMode\" type=\"SelectionMode\" default=\"multiple\" />");
+		out.println("<xs:attribute name=\"input\" type=\"Input\" />");
+		out.println("<xs:attribute name=\"size\" type=\"Size\" />");
     }	
 
 	/**
@@ -918,7 +933,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 		out.println("<xs:complexType name=\"SplashScreen\">");
 		out.println("<xs:sequence minOccurs=\"0\" maxOccurs=\"1\">");
-		out.println("<xs:element type=\"xs:string\" >");
+		out.println("<xs:element type=\"xs:string\" />");
 		out.println("</xs:sequence>");
 		out.println("<xs:attribute name=\"style\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"transactionDelay\" type=\"xs:integer\"/>");
