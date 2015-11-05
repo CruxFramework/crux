@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.utils.FileUtils;
 
 import com.google.gwt.dev.codeserver.CompileDir;
@@ -34,6 +35,8 @@ import com.google.gwt.dev.codeserver.JobEvent;
  * @author Samuel Almeida Cardoso
  *
  */
+@Deprecated
+@Legacy
 public class CodeServerRecompileListener implements JobChangeListener 
 {
 	private static final Log logger = LogFactory.getLog(CodeServerRecompileListener.class);

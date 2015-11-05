@@ -15,12 +15,16 @@
  */
 package org.cruxframework.crux.tools.codeserver.client.common;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
 /**
  * @author Claudio Holanda Junior
  */
+@Deprecated
+@Legacy
 public interface CodeServerResources extends ClientBundle
 {
 	static CodeServerResources INSTANCE = GWT.create(CodeServerResources.class);

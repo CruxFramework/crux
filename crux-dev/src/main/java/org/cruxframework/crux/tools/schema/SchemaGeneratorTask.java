@@ -25,12 +25,15 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Commandline.Argument;
+import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class SchemaGeneratorTask extends Task
 {
 	private List<Path> classpath = new ArrayList<Path>();
