@@ -136,9 +136,9 @@ public class ViewFactory
 		return viewProcessor.getView(stream, id, device);
 	}
 	
-	public List<String> getViews(String viewLocator)
+	public List<String> getViews()
     {
-	    return context.getScreenLoader().getViewLoader().getViews(viewLocator);
+	    return context.getScreenLoader().getViewLoader().getViews();
     }
 	
 	protected void generateHTML(String viewId, Document view, OutputStream out)
@@ -390,7 +390,7 @@ public class ViewFactory
 	        	}
 	        	else if(attrName.equals("useView"))
 	        	{
-	        		parseViewUseViewAttribute(view, elem);
+	        		//Ignore attribute TODO remove this
 	        	}
 	        	else if (attrName.equals("width"))
 				{
@@ -596,41 +596,6 @@ public class ViewFactory
 	    				throw new ScreenConfigException("Resource ["+res+"], declared on view ["+view.getId()+"], not found!");
 	    			}
 	    			view.addResource(res);
-	    		}
-	    	}
-	    }
-    }
-
-	/**
-	 * 
-	 * @param view
-	 * @param elem
-	 * @throws ScreenConfigException
-	 */
-	private void parseViewUseViewAttribute(View view, JSONObject elem) throws ScreenConfigException
-    {
-	    String handlerStr;
-        try
-        {
-	        handlerStr = elem.getString("useView");
-        }
-        catch (JSONException e)
-        {
-        	throw new ScreenConfigException(e);
-        }
-	    if (handlerStr != null)
-	    {
-	    	String[] views = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
-	    	for (String useView : views)
-	    	{
-	    		useView = useView.trim();
-	    		if (!StringUtils.isEmpty(useView))
-	    		{
-	    			if (!context.getScreenLoader().getViewLoader().isValidViewLocator(useView))
-	    			{
-	    				throw new ScreenConfigException("View ["+useView+"], declared on view ["+view.getId()+"], not found!");
-	    			}
-	    			view.addView(useView);
 	    		}
 	    	}
 	    }
