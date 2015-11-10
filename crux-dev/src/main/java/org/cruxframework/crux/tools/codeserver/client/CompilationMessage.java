@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.tools.codeserver.client;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -22,6 +24,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class CompilationMessage extends JavaScriptObject 
 {
 	public static enum CompilerOperation { START, END }

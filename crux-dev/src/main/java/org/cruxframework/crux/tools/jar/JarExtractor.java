@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.cruxframework.crux.core.utils.FileUtils;
@@ -37,6 +38,8 @@ import org.cruxframework.crux.core.utils.FileUtils;
  * @author Thiago da Rosa de Bustamante
  * 
  */
+@Deprecated
+@Legacy
 public class JarExtractor extends FilePatternHandler
 {
 	private final File[] inputFile;

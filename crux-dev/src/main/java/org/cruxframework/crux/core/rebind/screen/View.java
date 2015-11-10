@@ -25,7 +25,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.dev.util.collect.HashSet;
@@ -295,15 +294,6 @@ public class View
 	}
 	
 	/**
-	 * Iterate over screen views
-	 * @return
-	 */
-	public Iterator<String> iterateViews()
-	{
-		return views.iterator();
-	}
-
-	/**
 	 * Iterate over widgets
 	 * @return
 	 */
@@ -453,18 +443,6 @@ public class View
 		if (!StringUtils.isEmpty(serializer))
 		{
 			serializers.add(serializer);
-		}
-	}
-
-	/**
-	 * Import a view into screen
-	 * @param event
-	 */
-	protected void addView(String view)
-	{
-		if (!StringUtils.isEmpty(view))
-		{
-			views.add(view); 
 		}
 	}
 	

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.server.InitializerListener;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -37,6 +38,8 @@ import com.google.gwt.core.ext.UnableToCompleteException;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class JettyDevServer
 {
 	private static final Log logger = LogFactory.getLog(JettyDevServer.class);

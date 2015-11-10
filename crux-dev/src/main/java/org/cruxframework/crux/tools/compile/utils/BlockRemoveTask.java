@@ -23,7 +23,10 @@ import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.cruxframework.crux.core.client.Legacy;
 
+@Deprecated
+@Legacy
 public class BlockRemoveTask extends Task
 {
 	private File file;

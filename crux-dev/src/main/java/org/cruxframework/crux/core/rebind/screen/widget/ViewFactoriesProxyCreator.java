@@ -18,7 +18,6 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.cruxframework.crux.core.rebind.screen.Screen;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.View;
-import org.cruxframework.crux.core.server.Environment;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -330,107 +328,39 @@ public class ViewFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCrea
 		initializeLastCompilationVariables();
 		views = new ArrayList<View>();
 		changedViews = new HashSet<String>();
-		if (!Environment.isProduction())
-		{
-			try
-			{
-				List<String> viewList = screenFactory.getViewFactory().getViews("*");
-				for (String viewName : viewList)
-				{
-					View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
-					if (innerView != null)
-					{
-						views.add(innerView);
-						if (innerView.getLastModified() >= lastCompilationTime)
-						{
-							changedViews.add(innerView.getId());
-						}
-					}
-				}
-			}
-			catch (ScreenConfigException e)
-			{
-				context.getLogger().log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve list of views.",e);
-				throw new CruxGeneratorException();
-			}
-			
-		}
-		else
-		{
-			List<Screen> screens = getScreens();
-			HashSet<String> added = new HashSet<String>();
-			for (Screen screen : screens)
-			{
-				findViews(screen, views, added);
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param screen
-	 * @param views
-	 * @param added
-	 */
-	private void findViews(Screen screen, List<View> views, Set<String> added) 
-	{
-		View rootView = screen.getRootView();
-		if (!added.contains(rootView.getId()))
-		{
-			added.add(rootView.getId());
-			views.add(rootView);
-			if (screen.getLastModified() >= lastCompilationTime)
-			{
-				changedViews.add(rootView.getId());
-			}
-			
-			findViews(rootView, views, added);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param view
-	 * @param views
-	 * @param added
-	 */
-	private void findViews(View view, List<View> views, Set<String> added) 
-	{
 		try
 		{
-			Iterator<String> iterator = view.iterateViews();
-			while (iterator.hasNext())
-			{
-				String viewLocator = iterator.next();
-				if (!added.contains(viewLocator))
+			for (Screen screen : getScreens())
+            {
+				View rootView = screen.getRootView();
+				views.add(rootView);
+				if (screen.getLastModified() >= lastCompilationTime)
 				{
-					added.add(viewLocator);
-					
-					List<String> viewList = screenFactory.getViewFactory().getViews(viewLocator);
-					for (String viewName : viewList)
-                    {
-						View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
-						if (innerView != null)
-						{
-							views.add(innerView);
-							if (innerView.getLastModified() >= lastCompilationTime)
-							{
-								changedViews.add(innerView.getId());
-							}
-							
-							findViews(innerView, views, added);
-						}
-                    }
+					changedViews.add(rootView.getId());
+				}
+            }
+			
+			List<String> viewList = screenFactory.getViewFactory().getViews();
+			for (String viewName : viewList)
+			{
+				View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
+				if (innerView != null)
+				{
+					views.add(innerView);
+					if (innerView.getLastModified() >= lastCompilationTime)
+					{
+						changedViews.add(innerView.getId());
+					}
 				}
 			}
 		}
 		catch (ScreenConfigException e)
 		{
-			context.getLogger().log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve screen's list of views.",e);
+			context.getLogger().log(TreeLogger.ERROR, "Error Generating registered element. Can not retrieve list of views.",e);
 			throw new CruxGeneratorException();
 		}
 	}
-	
+		
 	/**
 	 * @param sourceWriter
 	 * @param view

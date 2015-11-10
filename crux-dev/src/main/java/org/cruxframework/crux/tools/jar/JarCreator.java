@@ -32,6 +32,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.cruxframework.crux.core.utils.FileUtils;
@@ -42,6 +43,8 @@ import org.cruxframework.crux.core.utils.FileUtils;
  * @author Thiago da Rosa de Bustamante
  * 
  */
+@Deprecated
+@Legacy
 public class JarCreator extends FilePatternHandler
 {
 	public static final String MANIFEST_BUILD_TIMESTAMP_PROPERTY = "Build-Timestamp";

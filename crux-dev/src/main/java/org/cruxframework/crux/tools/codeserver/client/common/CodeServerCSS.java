@@ -15,12 +15,16 @@
  */
 package org.cruxframework.crux.tools.codeserver.client.common;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.resources.client.CssResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public interface CodeServerCSS extends CssResource
 {
 	String cruxCodeServerNotifier();

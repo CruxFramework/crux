@@ -23,11 +23,14 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
+import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class TaskClassPathUtils
 {
 	public static URL[] getUrlsFromPaths(List<Path> classpath)
