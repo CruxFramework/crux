@@ -42,6 +42,11 @@ public class DataWidgetConsumer
 		JClassType hasTextType = context.getGeneratorContext().getTypeOracle().findType(HasText.class.getCanonicalName());
 		JClassType typeConverterType = context.getGeneratorContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
 
+		if(dataObjectType == null)
+		{
+			throw new CruxGeneratorException("Invalid Data Object type when trying to bind property ["+bindPath+"].");	
+		}
+		
 		JType propertyType = JClassUtils.getTypeForProperty(bindPath, dataObjectType);
 		String dataObjectClassName = dataObjectType.getParameterizedQualifiedSourceName();
 		String propertyClassName;
