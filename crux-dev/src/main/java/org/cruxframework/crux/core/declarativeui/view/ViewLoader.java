@@ -31,14 +31,11 @@ public interface ViewLoader
 	Resource getView(String id) throws ViewException;
 	
 	/**
-	 * Return a list with resource paths of all views that matches the given locator
-	 * @param viewsLocator
+	 * Return a list with resource paths of all views
 	 * @return
 	 */
-	List<String> getViews(String viewsLocator);
+	List<String> getViews();
 	
-	boolean isValidViewLocator(String useView);
-
 	class SimpleViewLoader implements ViewLoader
 	{
 		@Override
@@ -54,15 +51,9 @@ public interface ViewLoader
         }
 
 		@Override
-        public List<String> getViews(String viewsLocator)
+        public List<String> getViews()
         {
 	        return null;
-        }
-
-		@Override
-        public boolean isValidViewLocator(String useView)
-        {
-	        return true;
         }
 	}
 }
