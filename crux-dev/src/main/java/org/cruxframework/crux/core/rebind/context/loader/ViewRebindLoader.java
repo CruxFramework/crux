@@ -74,7 +74,6 @@ public class ViewRebindLoader extends AbstractViewLoader implements ViewLoader
 	{
 		if (!initialized)
 		{
-			List<String> screenFolders = getViewBaseFolders();
 			Set<String> pathNames = context.getGeneratorContext().getResourcesOracle().getPathNames();
 			
 			for (String pathName : pathNames)
@@ -92,13 +91,7 @@ public class ViewRebindLoader extends AbstractViewLoader implements ViewLoader
 				
 				if (fileName.endsWith(".view.xml"))
 				{
-					for (String baseFolder : screenFolders)
-                    {
-						if (pathName.startsWith(baseFolder))
-						{
-							views.put(fileName.substring(0, fileName.length()-9), pathName);
-						}
-                    }
+					views.put(fileName.substring(0, fileName.length()-9), pathName);
 				}
 			}
 			initialized = true;
