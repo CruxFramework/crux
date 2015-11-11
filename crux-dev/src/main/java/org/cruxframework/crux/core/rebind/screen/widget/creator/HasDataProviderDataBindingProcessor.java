@@ -117,7 +117,8 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 					}
 				}
 
-				out.println(bind.getWriteExpression(bindingContextVariable, context.getWidget()));
+				out.println(bind.getWriteExpression(bindingContextVariable, context.getWidget(),
+					collectionObjectReference, itemVar));
 			}
 		}
     }
