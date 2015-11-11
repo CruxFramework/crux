@@ -59,13 +59,24 @@ public class PropertyBindInfo extends BindInfo
 		return getExpression(writeExpression, dataObjectVariable);
 	}
 
-	public String getWriteExpression(String contextVariable, String widgetVar)
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionObjectReference, String collectionItemVar)
 	{
-		String dataObjectVariable = ViewFactoryCreator.createVariableName(dataObject);
-    	String result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
-    					+ "if (" + dataObjectVariable + " != null){\n"
-    					+ getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable)
-    					+ "\n}";
+		
+        boolean isCollectionObjectReference = collectionObjectReference != null && collectionItemVar.equals(dataObject);
+        String dataObjectVariable = isCollectionObjectReference?collectionObjectReference:ViewFactoryCreator.createVariableName(dataObject);
+        boolean isReferenced = !isCollectionObjectReference;
+        String result;
+        if (isReferenced)
+        {
+        	result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
+        		+ "if (" + dataObjectVariable + " != null){\n"
+        		+ getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable)
+        		+ "\n}";
+        }
+        else
+        {
+        	result = getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable);
+        }
 		
 		return result;
 	}
