@@ -131,7 +131,7 @@ public class DataProviderRecord<T> implements Cloneable
 		if (!dataProvider.getSelectionMode().equals(SelectionMode.unselectable) 
 			&& this.state.isSelected() != selected)
 		{
-			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();;
+			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();
 			if (selected && dataProvider.getSelectionMode().equals(SelectionMode.single))
 			{
 				DataProviderRecord<T>[] selectedRecords = dataProvider.getSelectedRecords();
