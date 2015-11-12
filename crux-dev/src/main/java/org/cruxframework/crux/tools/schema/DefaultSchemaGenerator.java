@@ -949,19 +949,19 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
     {
 		out.println("<xs:simpleType name=\"_bindableInt\">");
 		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+|@\\{.+\\}")+"\"/>");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+|@\\{.+\\}|#\\{.+\\}")+"\"/>");
 		out.println("</xs:restriction>");
 		out.println("</xs:simpleType>");
     
 		out.println("<xs:simpleType name=\"_bindableBoolean\">");
 		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("false|true|@\\{.+\\}")+"\"/>");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("false|true|@\\{.+\\}|#\\{.+\\}")+"\"/>");
 		out.println("</xs:restriction>");
 		out.println("</xs:simpleType>");
 		
 		out.println("<xs:simpleType name=\"_bindableFloat\">");
 		out.println("<xs:restriction base=\"xs:string\">");
-		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+(\\.[0-9]+)?|@\\{.+\\}")+"\"/>");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+(\\.[0-9]+)?|@\\{.+\\}|#\\{.+\\}")+"\"/>");
 		out.println("</xs:restriction>");
 		out.println("</xs:simpleType>");
     }
