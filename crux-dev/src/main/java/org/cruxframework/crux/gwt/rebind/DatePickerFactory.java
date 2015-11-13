@@ -38,7 +38,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="value", type=String.class),
 	@TagAttributeDeclaration(value="currentMonth", type=String.class),
-	@TagAttributeDeclaration(value="datePattern")
+	@TagAttributeDeclaration(value="datePattern", supportsDataBinding=false)
 })
 public class DatePickerFactory extends CompositeFactory<WidgetCreatorContext> 
        implements HasValueChangeHandlersFactory<WidgetCreatorContext>, 

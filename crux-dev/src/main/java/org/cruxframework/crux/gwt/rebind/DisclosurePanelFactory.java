@@ -92,15 +92,6 @@ public class DisclosurePanelFactory extends CompositeFactory<WidgetCreatorContex
 		}
 	}
 	
-	@Override
-	public void processAttributes(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
-	{
-		super.processAttributes(out, context);
-	}
-
-	@Override
-	public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException {}
-
 	@TagConstraints(minOccurs="0", tagName="widgetHeader")
 	@TagChildren({
 		@TagChild(WidgetHeaderProcessor.class)

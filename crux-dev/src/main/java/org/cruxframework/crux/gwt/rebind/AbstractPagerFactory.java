@@ -16,11 +16,11 @@
 package org.cruxframework.crux.gwt.rebind;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
-import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -34,6 +34,9 @@ import com.google.gwt.view.client.HasRows;
  */
 @TagAttributes({
 	@TagAttribute(value="display", processor=AbstractPagerFactory.DisplayAttributeProcessor.class, required=true),
+	@TagAttribute(value="pageSize", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
+	@TagAttribute(value="page", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
+	@TagAttribute(value="pageStart", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
 	@TagAttribute(value="rangeLimited", type=Boolean.class)
 })
 @TagAttributesDeclaration({
@@ -52,25 +55,9 @@ public abstract class AbstractPagerFactory extends WidgetCreator<WidgetCreatorCo
         public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
         {
 			String widget = context.getWidget();
-
 			String widgetClassName = getWidgetCreator().getWidgetClassName();
 			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
 	        printlnPostProcessing(widget+".setDisplay(("+HasRows.class.getCanonicalName()+")"+getViewVariable()+".getWidget("+EscapeUtils.quote(attributeValue)+"));");
-	        String pageSize = context.readChildProperty("pageSize");
-	        if (!StringUtils.isEmpty(pageSize))
-	        {
-	        	printlnPostProcessing(widget+".setPageSize("+Integer.parseInt(pageSize)+");");
-	        }
-	        String page = context.readChildProperty("page");
-	        if (!StringUtils.isEmpty(page))
-	        {
-	        	printlnPostProcessing(widget+".setPage("+Integer.parseInt(page)+");");
-	        }
-	        String pageStart = context.readChildProperty("pageStart");
-	        if (!StringUtils.isEmpty(pageStart))
-	        {
-	        	printlnPostProcessing(widget+".setPageStart("+Integer.parseInt(pageStart)+");");
-	        }    
         }
 	}
 	

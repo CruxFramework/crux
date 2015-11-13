@@ -93,7 +93,7 @@ class CellTableContext extends WidgetCreatorContext
 	@TagAttribute(value="tableLayoutFixed", type=Boolean.class) //TODO RowStyles??
 })
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="dataProviderFactoryMethod", required=true),
+	@TagAttributeDeclaration(value="dataProviderFactoryMethod", required=true, supportsDataBinding=false),
 	@TagAttributeDeclaration(value="autoLoad", type=Boolean.class)
 })
 @TagChildren({
