@@ -122,7 +122,7 @@ public class SQLKeyCursorProxyCreator extends SQLCursorProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLCursor<"+getKeyTypeName()+","+getKeyTypeName(objectStoreKeyPath)+","+getKeyTypeName(objectStoreKeyPath)+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()
