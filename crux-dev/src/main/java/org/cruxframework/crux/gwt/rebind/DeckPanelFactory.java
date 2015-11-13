@@ -15,15 +15,13 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
@@ -39,7 +37,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  */
 @DeclarativeFactory(id="deckPanel", library="gwt", targetWidget= DeckPanel.class)
 @TagAttributes({
-	@TagAttribute(value="visibleWidget", type=Integer.class, processor=DeckPanelFactory.VisibleWidgetAttributeParser.class)
+	@TagAttribute(value="visibleWidget", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView, method="showWidget")
 })
 @TagChildren({
 	@TagChild(DeckPanelFactory.WidgetContentProcessor.class)
@@ -47,28 +45,6 @@ import com.google.gwt.user.client.ui.DeckPanel;
 public class DeckPanelFactory extends ComplexPanelFactory<WidgetCreatorContext>
 					implements HasAnimationFactory<WidgetCreatorContext>
 {
-	
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class VisibleWidgetAttributeParser extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public VisibleWidgetAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-			printlnPostProcessing(widget+".showWidget("+Integer.parseInt(attributeValue)+");");
-        }
-	}
-	
 	@Override
 	public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{

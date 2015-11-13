@@ -273,7 +273,7 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		}
 		composerFactory.addImplementedInterface("KeyRangeFactory<"+getKeyTypeName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

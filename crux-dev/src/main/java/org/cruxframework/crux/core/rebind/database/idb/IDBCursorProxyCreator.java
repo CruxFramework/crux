@@ -176,7 +176,7 @@ public class IDBCursorProxyCreator extends IDBAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("IDXCursor<"+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

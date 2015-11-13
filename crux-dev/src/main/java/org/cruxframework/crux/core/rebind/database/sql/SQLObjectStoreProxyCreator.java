@@ -378,7 +378,7 @@ public class SQLObjectStoreProxyCreator extends SQLAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLAbstractObjectStore<"+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**

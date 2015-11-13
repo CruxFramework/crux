@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.utils.ClassUtils;
@@ -78,7 +79,7 @@ class AttributesAnnotationScanner
 						added.add(attrName);
 						if (isValidName(attrName))
 						{
-							if (AttributeProcessor.NoParser.class.isAssignableFrom(attr.processor()))
+							if (AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()))
 							{
 								attributes.add(createAutomaticAttributeProcessor(factoryClass, attr));
 							}
@@ -130,7 +131,7 @@ class AttributesAnnotationScanner
 	        throw new CruxGeneratorException("Error creating AttibuteProcessor.", e);
         }
 		
-		return doCreateAttributeProcessorWithParser(attrName, method, processor, attr.supportedDevices());
+		return doCreateAttributeProcessorWithParser(attrName, method, processor, attr.processingTime(), attr.supportedDevices());
     }
 
 	/**
@@ -139,7 +140,10 @@ class AttributesAnnotationScanner
 	 * @param processor
 	 * @return
 	 */
-	private AttributeCreator doCreateAttributeProcessorWithParser(final String attrName, final Method method, final AttributeProcessor<?> processor, final Device[] supportedDevices)
+	private AttributeCreator doCreateAttributeProcessorWithParser(final String attrName, final Method method, 
+																  final AttributeProcessor<?> processor, 
+																  final ProcessingTime processingTime,
+																  final Device[] supportedDevices)
     {
 	    return new AttributeCreator()
 		{
@@ -152,7 +156,15 @@ class AttributesAnnotationScanner
 					{
 						try
 						{
-							method.invoke(processor, out, context, attrValue);
+							switch (processingTime)
+	                        {
+								case afterAllWidgetsOnView:
+									method.invoke(processor, widgetCreator.getPostProcessingPrinter(), context, attrValue);
+								break;
+								default:
+									method.invoke(processor, out, context, attrValue);
+								break;
+							}
 						}
 						catch (Exception e)
 						{
@@ -192,23 +204,33 @@ class AttributesAnnotationScanner
 		final String attrName = attr.value();
 		final String setterMethod;
 		boolean nestedProperty = false;
+		boolean expressionDataBindingOnly = false;
 		String widgetPropertyPath = (!StringUtils.isEmpty(attr.property()))?attr.property():attrName;
-		nestedProperty = widgetPropertyPath.contains(".");
-		if (nestedProperty)
+		if (!StringUtils.isEmpty(attr.method()))
 		{
-			String[] properties = RegexpPatterns.REGEXP_DOT.split(widgetPropertyPath);
-			StringBuilder expression = new StringBuilder();
-			for(int i=0; i< properties.length-1;i++)
-			{
-				expression.append(ClassUtils.getGetterMethod(properties[i])+"().");
-			}
-			expression.append(ClassUtils.getSetterMethod(properties[properties.length-1]));
-			setterMethod = expression.toString();
+			setterMethod = attr.method();
+			expressionDataBindingOnly = true;
 		}
 		else
 		{
-			setterMethod = ClassUtils.getSetterMethod(widgetPropertyPath);
+			nestedProperty = widgetPropertyPath.contains(".");
+			if (nestedProperty)
+			{
+				String[] properties = RegexpPatterns.REGEXP_DOT.split(widgetPropertyPath);
+				StringBuilder expression = new StringBuilder();
+				for(int i=0; i< properties.length-1;i++)
+				{
+					expression.append(ClassUtils.getGetterMethod(properties[i])+"().");
+				}
+				expression.append(ClassUtils.getSetterMethod(properties[properties.length-1]));
+				setterMethod = expression.toString();
+			}
+			else
+			{
+				setterMethod = ClassUtils.getSetterMethod(widgetPropertyPath);
+			}
 		}
+		
 		Class<?> type = attr.type();
 		if (type == null ||  !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, type)))
 		{//TODO: implement method check for nested property.
@@ -224,8 +246,10 @@ class AttributesAnnotationScanner
 		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, type.getCanonicalName(), 
 												   isStringExpression, supportsI18N, supportsResources, 
 												   supportsDataBinding, isEnumExpression, 
-												   isPrimitiveExpression, attr.supportedDevices(), 
-												   widgetPropertyPath, dataBindingTargetsAttributes);
+												   isPrimitiveExpression, attr.supportedDevices(),
+												   attr.processingTime(),
+												   widgetPropertyPath, dataBindingTargetsAttributes, 
+												   expressionDataBindingOnly);
     }
 
 	/**
@@ -237,15 +261,18 @@ class AttributesAnnotationScanner
 	 * @param isEnumExpression
 	 * @param isPrimitiveExpression
 	 * @param widgetPropertyPath 
+	 * @param expressionDataBindingOnly 
 	 * @return
 	 */
 	private AttributeCreator doCreateAutomaticAttributeProcessor(final String attrName, final String setterMethod, 
 																 final String typeName, final boolean isStringExpression, 
 																 final boolean supportsI18N, final boolean supportsResources, 
 																 final boolean supportsDataBinding, final boolean isEnumExpression, 
-																 final boolean isPrimitiveExpression, final Device[] supportedDevices, 
+																 final boolean isPrimitiveExpression, final Device[] supportedDevices,
+																 final ProcessingTime processingTime,
 																 final String widgetPropertyPath, 
-																 final boolean dataBindingTargetsAttributes)
+																 final boolean dataBindingTargetsAttributes, 
+																 final boolean expressionDataBindingOnly)
     {
 	    return new AttributeCreator()
 		{
@@ -259,15 +286,16 @@ class AttributesAnnotationScanner
 					{
 						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes, 
 																			context.getDataBindingProcessor());
-						if (binding != null)
+						if (!expressionDataBindingOnly && binding != null)
 						{
 							context.registerObjectDataBinding(binding);
 							return;
 						}
 						else
 						{
-							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetPropertyPath, 
-																			context.getDataBindingProcessor());
+							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetCreator.getWidgetClassName(),
+																			widgetPropertyPath, null, null,
+																			context.getDataBindingProcessor(), setterMethod);
 							if (expressionBinding != null)
 							{
 								context.registerExpressionDataBinding(expressionBinding);
@@ -278,7 +306,15 @@ class AttributesAnnotationScanner
 					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
 					if (expression != null)
 					{
-						out.println(context.getWidget()+"."+setterMethod+"("+expression+");");
+						switch (processingTime)
+                        {
+							case afterAllWidgetsOnView:
+								widgetCreator.printlnPostProcessing(context.getWidget()+"."+setterMethod+"("+expression+");");
+							break;
+							default:
+								out.println(context.getWidget()+"."+setterMethod+"("+expression+");");
+							break;
+						}
 					}
 				}
 			}

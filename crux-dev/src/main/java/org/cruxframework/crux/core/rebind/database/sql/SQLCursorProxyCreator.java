@@ -246,7 +246,7 @@ public class SQLCursorProxyCreator extends SQLAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLCursor<"+getKeyTypeName()+","+getKeyTypeName(objectStoreKeyPath)+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

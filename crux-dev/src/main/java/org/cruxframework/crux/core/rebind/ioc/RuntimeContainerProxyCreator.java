@@ -181,7 +181,7 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 		
 		composerFactory.addImplementedInterface(RuntimeIoCContainer.class.getCanonicalName());
 		
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**

@@ -193,7 +193,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		composerFactory.setSuperclass(controllerClass.getQualifiedSourceName());
 		composerFactory.addImplementedInterface(ViewAware.class.getCanonicalName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**

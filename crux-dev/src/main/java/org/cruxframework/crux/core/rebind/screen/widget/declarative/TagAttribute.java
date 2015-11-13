@@ -36,16 +36,21 @@ public @interface TagAttribute
 	Class<?> type() default String.class;
 	String defaultValue() default "";
 	String property() default "";
+	String method() default "";
 	boolean required() default false;
 	boolean supportsI18N() default false;
 	boolean supportsResources() default false;
 	boolean supportsDataBinding() default true;
 	boolean dataBindingTargetsAttributes() default true;
-	Class<?> processor() default AttributeProcessor.NoParser.class;
+	Class<?> processor() default AttributeProcessor.NoProcessor.class;
 	boolean xsdIgnore() default false;
 	Device[] supportedDevices() default {Device.all};
 	/**
 	 * A description to be used to compose the documentation of the generated library 
 	 */
 	String description() default "";
+	/**
+	 * Define when the attribute will be processed
+	 */
+	ProcessingTime processingTime() default ProcessingTime.afterInstantiation;
 }
