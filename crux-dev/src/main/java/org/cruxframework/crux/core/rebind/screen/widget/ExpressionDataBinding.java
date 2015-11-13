@@ -48,13 +48,15 @@ public class ExpressionDataBinding
 	private String widgetClassName;
 	private String widgetPropertyPath;
 	private JClassType widgetType;
+	private String setterMethod;
 
 	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath, 
-								 JClassType uiObjectType, String getUiObjectExpression)
+								 JClassType uiObjectType, String getUiObjectExpression, String setterMethod)
     {
 		this.context = context;
 		this.widgetType = widgetType;
 		this.widgetPropertyPath = widgetPropertyPath;
+		this.setterMethod = setterMethod;
 		this.uiObjectType = uiObjectType==null?widgetType:uiObjectType;
 		this.getUiObjectExpression = getUiObjectExpression;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
@@ -220,7 +222,16 @@ public class ExpressionDataBinding
 	{
 		StringBuilder writeExpression = new StringBuilder();
 
-		JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, getUIObjectVar(widgetVar), expression.toString());
+		
+		if (!StringUtils.isEmpty(setterMethod))
+		{
+			writeExpression.append(getUIObjectVar(widgetVar)+"."+setterMethod+"("+expression.toString()+");");
+
+		}
+		else
+		{
+			JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, getUIObjectVar(widgetVar), expression.toString());
+		}
 
 		for (String dataObject : dataObjects)
         {
