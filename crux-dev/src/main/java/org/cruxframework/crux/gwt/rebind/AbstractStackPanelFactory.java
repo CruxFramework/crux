@@ -15,15 +15,13 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
@@ -35,30 +33,10 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
  *
  */
 @TagAttributes({
-	@TagAttribute(value="visibleStack", type=Integer.class, processor=AbstractStackPanelFactory.VisibleStackAttributeParser.class)
+	@TagAttribute(value="visibleStack", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView, method="showStack")
 })
 public abstract class AbstractStackPanelFactory extends ComplexPanelFactory<AbstractStackPanelFactoryContext>
 {
-	/**
-	 * @author Gesse Dafe
-	 */
-	public static class VisibleStackAttributeParser extends AttributeProcessor<AbstractStackPanelFactoryContext>
-	{
-		public VisibleStackAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-		public void processAttribute(SourcePrinter out, AbstractStackPanelFactoryContext context, String attributeValue)
-		{
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-			printlnPostProcessing(widget+".showStack("+Integer.parseInt(attributeValue)+");");
-		}		
-	}
-	
 	@TagConstraints(tagName="textTitle", type=String.class)
 	public abstract static class AbstractTitleTextProcessor extends WidgetChildProcessor<AbstractStackPanelFactoryContext>
 	{
