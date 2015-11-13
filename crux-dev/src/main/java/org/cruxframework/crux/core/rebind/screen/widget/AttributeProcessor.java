@@ -34,9 +34,9 @@ public abstract class AttributeProcessor<C extends WidgetCreatorContext> extends
 	    super(widgetCreator);
     }
 
-	public static abstract class NoParser extends AttributeProcessor<WidgetCreatorContext>
+	public static abstract class NoProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
-		public NoParser(WidgetCreator<?> widgetCreator)
+		public NoProcessor(WidgetCreator<?> widgetCreator)
         {
 	        super(widgetCreator);
         }
