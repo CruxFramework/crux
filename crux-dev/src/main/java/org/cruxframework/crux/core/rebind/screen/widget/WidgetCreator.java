@@ -443,7 +443,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 		DataBindingProcessor dataBindingProcessor)
 	{
-		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor);
+		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor, null);
 	}
 
 	/**
@@ -456,10 +456,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
+							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor, 
+							String setterMethod)
 	{
 		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
-			uiObjectClassName, getUiObjectExpression, dataBindingProcessor);
+			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod);
 	}
 	
 	/**
@@ -784,6 +785,15 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	protected String getLoggerVariable()
 	{
 		return viewFactory.getLoggerVariable();
+	}
+	
+	/**
+     * Retrieve the current PostProcessingPrinter
+	 * @return
+	 */
+	protected SourcePrinter getPostProcessingPrinter()
+	{
+		return viewFactory.getPostProcessingPrinter();
 	}
 	
 	protected String getViewVariable()

@@ -384,8 +384,44 @@ public abstract class AbstractProxyCreator
      * 
      * @author Thiago da Rosa de Bustamante
      */
-    public static class SourcePrinter
+    public static interface SourcePrinter
     {
+    	/**
+    	 * Flushes the printed code into a real output (file).
+    	 */
+    	void commit();
+    	
+    	/**
+    	 * Indents the next line to be printed
+    	 */
+    	void indent();
+
+    	/**
+    	 * Outdents the next line to be printed
+    	 */
+    	
+    	void outdent();
+    	
+    	/**
+    	 * Prints an in-line code.
+    	 * @param s
+    	 */
+    	void print(String s);
+    	
+    	/**
+    	 * Prints a line of code into the output. 
+    	 * <li>If the line ends with <code>"{"</code>, indents the next line.</li>
+    	 * <li>If the line ends with <code>"}"</code>, <code>"};"</code> or <code>"});"</code>, outdents the next line.</li>
+    	 * @param s
+    	 */
+    	void println(String s);
+
+		void println();
+    }
+    
+    public static class SourceCodePrinter implements SourcePrinter
+        {
+    	
     	private final TreeLogger logger;
 		private final SourceWriter srcWriter;
 
@@ -394,52 +430,37 @@ public abstract class AbstractProxyCreator
     	 * @param srcWriter
     	 * @param logger
     	 */
-    	public SourcePrinter(SourceWriter srcWriter, TreeLogger logger)
+    	public SourceCodePrinter(SourceWriter srcWriter, TreeLogger logger)
         {
 			this.srcWriter = srcWriter;
 			this.logger = logger;
         }
-    	
-    	
-    	/**
-    	 * Flushes the printed code into a real output (file).
-    	 */
+
+    	@Override
     	public void commit()
     	{
     		srcWriter.commit(logger);
     	}
     	
-    	/**
-    	 * Indents the next line to be printed
-    	 */
+    	@Override
     	public void indent()
     	{
     		srcWriter.indent();
     	}
     	
-    	/**
-    	 * Outdents the next line to be printed
-    	 */
+    	@Override
     	public void outdent()
     	{
     		srcWriter.outdent();
     	}
     	
-    	/**
-    	 * Prints an in-line code.
-    	 * @param s
-    	 */
+    	@Override
     	public void print(String s)
     	{
     		srcWriter.print(s);
     	}
     	
-    	/**
-    	 * Prints a line of code into the output. 
-    	 * <li>If the line ends with <code>"{"</code>, indents the next line.</li>
-    	 * <li>If the line ends with <code>"}"</code>, <code>"};"</code> or <code>"});"</code>, outdents the next line.</li>
-    	 * @param s
-    	 */
+    	@Override
     	public void println(String s)
     	{
     		String line = s.trim();
@@ -457,7 +478,7 @@ public abstract class AbstractProxyCreator
     		}
     	}
 
-
+    	@Override
 		public void println()
         {
 			srcWriter.println();

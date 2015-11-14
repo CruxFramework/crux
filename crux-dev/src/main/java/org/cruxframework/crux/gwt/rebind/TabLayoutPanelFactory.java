@@ -15,12 +15,9 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBeforeSelectionHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasSelectionHandlersFactory;
@@ -29,6 +26,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetC
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -60,7 +58,7 @@ class TabLayoutPanelContext extends WidgetCreatorContext
 	@TagAttributeDeclaration(value="unit", type=Unit.class)
 })
 @TagAttributes({
-	@TagAttribute(value="visibleTab", type=Integer.class, processor=TabLayoutPanelFactory.VisibleTabAttributeParser.class)
+	@TagAttribute(value="visibleTab", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView, method="selectTab")
 })
 @TagChildren({
 	@TagChild(TabLayoutPanelFactory.TabProcessor.class)
@@ -85,26 +83,6 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanelContex
 		}
 	}
 	
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class VisibleTabAttributeParser extends AttributeProcessor<TabLayoutPanelContext>
-	{
-		public VisibleTabAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		public void processAttribute(SourcePrinter out, TabLayoutPanelContext context, final String propertyValue)
-        {
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-			printlnPostProcessing(widget+".selectTab("+Integer.parseInt(propertyValue)+");");
-        }
-	}
-
 	@TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
 	@TagChildren({
 		@TagChild(TabTitleProcessor.class), 

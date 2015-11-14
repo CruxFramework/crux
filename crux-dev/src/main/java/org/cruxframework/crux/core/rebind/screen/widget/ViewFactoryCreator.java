@@ -181,14 +181,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param uiObjectClassName
 	 * @param getUiObjectExpression
 	 * @param dataBindingProcessor
+	 * @param setterMethod
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 														String uiObjectClassName, String getUiObjectExpression, 
-														DataBindingProcessor dataBindingProcessor)
+														DataBindingProcessor dataBindingProcessor, 
+														String setterMethod)
     {
 		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, 
-						widgetPropertyPath, uiObjectClassName, getUiObjectExpression, dataBindingProcessor);
+						widgetPropertyPath, uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod);
     }
 
 	/**
@@ -548,6 +550,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
 	/**
+     * Retrieve the current PostProcessingPrinter
+     * @return
+     */
+    protected SourcePrinter getPostProcessingPrinter()
+    {
+    	return this.postProcessingCode.getLast();
+    }
+
+	/**
      * Gets the code necessary to access a resource property or the own property, if
      * it is not in a resource reference format.
      *
@@ -621,7 +632,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**
@@ -640,7 +651,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     {
     	return getSubTypeWriter(packageName, subType, superClass, interfaces, imports, false);
     }
-
+	
 	/**
 	 * Create a new printer for a subType. That subType will be declared on the package name informed in the first parameter
 	 * if packageName isEmpty, subType will be declared on the same package of the { @code ViewFactory }.
@@ -693,7 +704,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			}
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**
@@ -726,8 +737,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     {
     	return getSubTypeWriter(null, subType, superClass, interfaces, imports, isInterface);
     }
-	
-	/**
+
+    /**
 	 * @return
 	 */
 	protected View getView()
@@ -764,7 +775,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return factory;
 	}
 
-    /**
+	/**
 	 * 
 	 * @return
 	 */
@@ -773,7 +784,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return !StringUtils.isEmpty(view.getDataObject());
 	}
 
-	/**
+    /**
      * Returns <code>true</code> if the given text is an internationalization key.
 	 * @param text
 	 * @return <code>true</code> if the given text is an internationalization key.
@@ -783,7 +794,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return text!= null && RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text).matches(); 
 	}
 
-    /**
+	/**
      * Returns <code>true</code> if the given text is a reference to a resource.
 	 * @param text
 	 * @return <code>true</code> if the given text is a reference to a resource.
@@ -798,7 +809,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return false;
 	}
 
-	/**
+    /**
 	 * Creates a new widget based on its meta-data element.
 	 *
 	 * @param printer
@@ -811,7 +822,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	{
 		return newWidget(printer, metaElem, widgetId, widgetType, this.widgetConsumer, this.dataBindingProcessor);
 	}
-
+    
     /**
 	 * Creates a new widget based on its meta-data element.
 	 *
@@ -1651,31 +1662,25 @@ public class ViewFactoryCreator extends AbstractProxyCreator
      *
      * @author Thiago da Rosa de Bustamante
      */
-    private static class PostProcessingPrinter
+    private static class PostProcessingPrinter implements SourcePrinter
     {
 		private StringBuilder builder = new StringBuilder();
 		private String indentation = "";
 
-    	/**
-    	 * @see java.lang.Object#toString()
-    	 */
-    	public String toString()
-    	{
-    		return builder.toString();
-    	}
+    	@Override
+        public void commit()
+        {
+	        // DO Nothing
+        }
 
-    	/**
-    	 * Indents the next line to be printed
-    	 */
-    	void indent()
+    	@Override
+    	public void indent()
     	{
     		indentation+="\t";
     	}
 
-    	/**
-    	 * Outdents the next line to be printed
-    	 */
-    	void outdent()
+    	@Override
+    	public void outdent()
     	{
     		if (indentation.length() > 0)
     		{
@@ -1683,13 +1688,24 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     		}
     	}
 
-    	/**
-    	 * Prints a line of code into the output.
-    	 * <li>If the line ends with <code>"{"</code>, indents the next line.</li>
-    	 * <li>If the line ends with <code>"}"</code>, <code>"};"</code> or <code>"});"</code>, outdents the next line.</li>
-    	 * @param s
-    	 */
-    	void println(String s)
+    	@Override
+        public void print(String s)
+        {
+    		builder.append(s);
+    		if (s.equals("\n"))
+    		{
+    			builder.append(indentation);
+    		}
+        }
+
+		@Override
+        public void println()
+        {
+			print("\n");
+        }
+
+		@Override
+    	public void println(String s)
     	{
     		String line = s.trim();
 
@@ -1704,6 +1720,12 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     		{
     			indent();
     		}
+    	}
+
+		@Override
+    	public String toString()
+    	{
+    		return builder.toString();
     	}
     }
 }

@@ -114,7 +114,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**

@@ -180,6 +180,6 @@ public class SQLDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 		composerFactory.setSuperclass(WSQLAbstractDatabase.class.getCanonicalName());
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 }

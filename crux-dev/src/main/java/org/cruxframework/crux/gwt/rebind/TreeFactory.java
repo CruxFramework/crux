@@ -115,12 +115,6 @@ public class TreeFactory extends WidgetCreator<TreeContext>
 		}
 	}
 	
-	@Override
-	public void processAttributes(SourcePrinter out, TreeContext context) throws CruxGeneratorException 
-	{
-		super.processAttributes(out, context);
-	}
-
 	/**
 	 * @author Thiago da Rosa de Bustamante
 	 */

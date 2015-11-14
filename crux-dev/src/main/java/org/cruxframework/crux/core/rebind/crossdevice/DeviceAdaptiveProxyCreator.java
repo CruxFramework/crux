@@ -222,7 +222,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 		composerFactory.setSuperclass(Composite.class.getCanonicalName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
+		return new SourceCodePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
     /**
