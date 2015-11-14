@@ -81,7 +81,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
     	printer.println("View.addResource("+EscapeUtils.quote(resourceId)+", "+resourceVariable+");");
 
     	printer.println("if ("+LogConfiguration.class.getCanonicalName()+".loggingIsEnabled()){");
-		printer.println(loggerVariable+".info(Crux.getMessages().resourcesInitialized("+EscapeUtils.quote(resourceId)+"));");
+		printer.println(loggerVariable+".fine(Crux.getMessages().resourcesInitialized("+EscapeUtils.quote(resourceId)+"));");
 		printer.println("}");
     	
 		printer.println("}");
@@ -114,7 +114,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
 	            {
 	    	    	printer.println(resourceVariable+"."+method.getName()+"().ensureInjected();");
 	    	    	printer.println("if ("+LogConfiguration.class.getCanonicalName()+".loggingIsEnabled()){");
-	    			printer.println(loggerVariable+".info(Crux.getMessages().resourceCsssInjected("+EscapeUtils.quote(method.getReturnType().getSimpleSourceName())+"));");
+	    			printer.println(loggerVariable+".fine(Crux.getMessages().resourceCsssInjected("+EscapeUtils.quote(method.getReturnType().getSimpleSourceName())+"));");
 	    			printer.println("}");
 	            }
             }
