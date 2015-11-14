@@ -866,7 +866,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param processorClass
 	 * @return
 	 */
-	TagConstraints getChildtrenAttributesAnnotation(Class<?> processorClass)
+	TagConstraints getTagConstraints(Class<?> processorClass)
 	{
 		TagConstraints attributes = processorClass.getAnnotation(TagConstraints.class);
 		if (attributes == null)
@@ -874,7 +874,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			Class<?> superClass = processorClass.getSuperclass();
 			if (superClass != null && superClass.getSuperclass() != null)
 			{
-				attributes = getChildtrenAttributesAnnotation(superClass);
+				attributes = getTagConstraints(superClass);
 			}
 		}
 		

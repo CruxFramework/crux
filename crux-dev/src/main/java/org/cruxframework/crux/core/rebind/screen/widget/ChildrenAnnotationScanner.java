@@ -117,7 +117,7 @@ class ChildrenAnnotationScanner
             		else
             		{
             			try
-            			{
+            			{   //TODO aqui pode-se adicionar um processamento automatico por filho. Este é o ponto
             				processor.processChildren(out, context);
             			}
             			catch (Exception e)
@@ -194,7 +194,7 @@ class ChildrenAnnotationScanner
 																  Class<?> childProcessorClass, boolean isAgregator,
 																  WidgetChildProcessor<?> processor, Device[] supportedDevices)
     {
-	    TagConstraints processorAttributes = this.widgetCreator.getChildtrenAttributesAnnotation(childProcessorClass);
+	    TagConstraints processorAttributes = this.widgetCreator.getTagConstraints(childProcessorClass);
 	    final String widgetProperty = (processorAttributes!=null?processorAttributes.widgetProperty():"");
 	    String tagName = (processorAttributes!=null?processorAttributes.tagName():"");
 
@@ -227,7 +227,7 @@ class ChildrenAnnotationScanner
 	private ChildrenProcessor createChildProcessorForText(Class<?> processorClass, TagChild child, final boolean acceptNoChildren)
     {
 		Class<?> childProcessor = child.value();
-		TagConstraints processorAttributes = widgetCreator.getChildtrenAttributesAnnotation(childProcessor);
+		TagConstraints processorAttributes = widgetCreator.getTagConstraints(childProcessor);
 		final String widgetProperty = processorAttributes.widgetProperty();
 		final boolean isHasText = HasText.class.isAssignableFrom(widgetCreator.getWidgetClass());
 		
@@ -418,15 +418,15 @@ class ChildrenAnnotationScanner
 	private ChildrenProcessor doCreateChildrenProcessorForSingleChild(Class<?> processorClass, final boolean acceptNoChildren, 
 											WidgetChildProcessor<?> processor, Class<?> childProcessorClass, Device[] supportedDevices)
     {
-		TagConstraints processorAttributes = this.widgetCreator.getChildtrenAttributesAnnotation(childProcessorClass);
-		final String widgetProperty = (processorAttributes!=null?processorAttributes.widgetProperty():"");
-		String tagName = (processorAttributes!=null?processorAttributes.tagName():"");
+		TagConstraints processorConstraints = this.widgetCreator.getTagConstraints(childProcessorClass);
+		final String widgetProperty = (processorConstraints!=null?processorConstraints.widgetProperty():"");
+		String tagName = (processorConstraints!=null?processorConstraints.tagName():"");
 
-	    final boolean applyDeviceFilters = processorAttributes!=null?processorAttributes.applyDeviceFilters():false;
+	    final boolean applyDeviceFilters = processorConstraints!=null?processorConstraints.applyDeviceFilters():false;
 		final boolean isAgregator = isAgregatorProcessor(childProcessorClass);
 		final boolean isAnyWidget = (AnyWidgetChildProcessor.class.isAssignableFrom(childProcessorClass));
-	    final boolean isAnyWidgetType = (processorAttributes!=null && (AnyWidget.class.isAssignableFrom(processorAttributes.type()) ||
-				   WidgetCreator.class.isAssignableFrom(processorAttributes.type())));
+	    final boolean isAnyWidgetType = (processorConstraints!=null && (AnyWidget.class.isAssignableFrom(processorConstraints.type()) ||
+				   WidgetCreator.class.isAssignableFrom(processorConstraints.type())));
 
 		TagChildLazyConditions lazyConditions = childProcessorClass.getAnnotation(TagChildLazyConditions.class);
 		final WidgetLazyChecker lazyChecker = (lazyConditions== null?null:LazyWidgets.initializeLazyChecker(lazyConditions));
@@ -462,9 +462,9 @@ class ChildrenAnnotationScanner
 	 * @param children
 	 * @return
 	 */
-	private AllowedOccurences getAllowedChildrenNumber(TagChildren children)
+	private AllowedOccurrences getAllowedOccurrences(TagChildren children)
 	{
-		AllowedOccurences allowed = new AllowedOccurences();
+		AllowedOccurrences allowed = new AllowedOccurrences();
 		
 		for (TagChild child: children.value())
 		{
@@ -474,7 +474,7 @@ class ChildrenAnnotationScanner
 			}
 			if (child.autoProcess())
 			{
-				AllowedOccurences allowedForChild = getAllowedOccurrencesForChild(child);
+				AllowedOccurrences allowedForChild = getAllowedOccurrencesForChild(child);
 				mergeAllowedOccurrences(allowed, allowedForChild);
 			}
 		}
@@ -486,13 +486,13 @@ class ChildrenAnnotationScanner
 	 * @param child
 	 * @return
 	 */
-	private AllowedOccurences getAllowedOccurrencesForChild(TagChild child)
+	private AllowedOccurrences getAllowedOccurrencesForChild(TagChild child)
 	{
-		AllowedOccurences allowed = new AllowedOccurences();
+		AllowedOccurrences allowed = new AllowedOccurrences();
 		try
 		{
 			Class<?> childProcessorType = child.value();
-			TagConstraints processorAttributes = widgetCreator.getChildtrenAttributesAnnotation(childProcessorType);
+			TagConstraints processorAttributes = widgetCreator.getTagConstraints(childProcessorType);
 
 			if (processorAttributes != null)
 			{
@@ -521,7 +521,7 @@ class ChildrenAnnotationScanner
 				TagChildren tagChildren = childProcessorType.getAnnotation(TagChildren.class);
 				if (tagChildren != null)
 				{
-					AllowedOccurences allowedChildren = getAllowedChildrenNumber(tagChildren);
+					AllowedOccurrences allowedChildren = getAllowedOccurrences(tagChildren);
 					mergeAllowedOccurrences(allowed, allowedChildren);
 				}
 			}
@@ -581,8 +581,8 @@ class ChildrenAnnotationScanner
 	 * @param allowed
 	 * @param allowedForChild
 	 */
-	private void mergeAllowedOccurrences(AllowedOccurences allowed,
-            AllowedOccurences allowedForChild)
+	private void mergeAllowedOccurrences(AllowedOccurrences allowed,
+            AllowedOccurrences allowedForChild)
     {
 	    if (allowedForChild.minOccurs == UNBOUNDED)
 	    {
@@ -631,7 +631,7 @@ class ChildrenAnnotationScanner
 		String processorName = processorClass.getCanonicalName();
 		if (scannedProcessors.containsKey(processorName))
 		{
-			return scannedProcessors.get(processorClass.getCanonicalName());
+			return scannedProcessors.get(processorName);
 		}
 		ChildrenProcessor result = null;
 		
@@ -639,7 +639,7 @@ class ChildrenAnnotationScanner
 		
 		if (children != null && mustGenerateChildrenProcessMethod(children))
 		{
-			AllowedOccurences allowedChildren = getAllowedChildrenNumber(children);
+			AllowedOccurrences allowedChildren = getAllowedOccurrences(children);
 			boolean acceptNoChildren = (allowedChildren.minOccurs == 0);
 			if (allowedChildren.maxOccurs == 1)
 			{
@@ -659,7 +659,7 @@ class ChildrenAnnotationScanner
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	private static class AllowedOccurences
+	private static class AllowedOccurrences
 	{
 		int maxOccurs = 0;
 		int minOccurs = 0;
