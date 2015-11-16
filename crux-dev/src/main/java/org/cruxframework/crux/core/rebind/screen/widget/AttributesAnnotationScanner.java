@@ -59,60 +59,6 @@ class AttributesAnnotationScanner
 	}
 	
 	/**
-	 * @param factoryClass
-	 * @param attributes
-	 * @param added
-	 * @throws CruxGeneratorException
-	 */
-	private void scanAttributes(Class<?> factoryClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
-	{
-		try
-        {
-			TagAttributes attrs = factoryClass.getAnnotation(TagAttributes.class);
-			if (attrs != null)
-			{
-				for (TagAttribute attr : attrs.value())
-				{
-					String attrName = attr.value();
-					if (!added.contains(attrName))
-					{
-						added.add(attrName);
-						if (isValidName(attrName))
-						{
-							if (AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()))
-							{
-								attributes.add(createAutomaticAttributeProcessor(factoryClass, attr));
-							}
-							else
-							{
-								attributes.add(createAttributeProcessorWithParser(attr));
-							}
-						}
-						else
-						{
-							throw new CruxGeneratorException("Error generating widget factory. Invalid attribute name: ["+attrName+"].");
-						}
-					}
-				}
-			}
-	        Class<?> superclass = factoryClass.getSuperclass();
-	        if (superclass!= null && !superclass.equals(Object.class))
-	        {
-	        	scanAttributes(superclass, attributes, added);
-	        }
-	        Class<?>[] interfaces = factoryClass.getInterfaces();
-	        for (Class<?> interfaceClass : interfaces)
-	        {
-	        	scanAttributes(interfaceClass, attributes, added);
-	        }
-        }
-        catch (Exception e)
-        {
-        	throw new CruxGeneratorException(e.getMessage(), e);
-        }
-	}	
-
-	/**
 	 * @param attr
 	 * @return
 	 */
@@ -132,67 +78,7 @@ class AttributesAnnotationScanner
         }
 		
 		return doCreateAttributeProcessorWithParser(attrName, method, processor, attr.processingTime(), attr.supportedDevices());
-    }
-
-	/**
-	 * @param attrName
-	 * @param method
-	 * @param processor
-	 * @return
-	 */
-	private AttributeCreator doCreateAttributeProcessorWithParser(final String attrName, final Method method, 
-																  final AttributeProcessor<?> processor, 
-																  final ProcessingTime processingTime,
-																  final Device[] supportedDevices)
-    {
-	    return new AttributeCreator()
-		{
-			public void createAttribute(SourcePrinter out, WidgetCreatorContext context)
-			{
-				if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
-				{
-					String attrValue = context.readWidgetProperty(attrName);
-					if (!StringUtils.isEmpty(attrValue))
-					{
-						try
-						{
-							switch (processingTime)
-	                        {
-								case afterAllWidgetsOnView:
-									method.invoke(processor, widgetCreator.getPostProcessingPrinter(), context, attrValue);
-								break;
-								default:
-									method.invoke(processor, out, context, attrValue);
-								break;
-							}
-						}
-						catch (Exception e)
-						{
-
-							throw new CruxGeneratorException("Error running attribute processor for attribute ["+attrName+"], " +
-									"from widget ["+context.getWidgetId()+"], on screen ["+widgetCreator.getView().getId()+"].", e);
-						}
-					}
-				}
-			}
-		};
-    }
-
-	/**
-	 * @param processorClass
-	 * @return
-	 */
-	private Method getAtributeProcessorMethod(Class<?> processorClass)
-    {
-	    try 
-	    {
-			return processorClass.getMethod("processAttributeInternal", new Class<?>[]{SourcePrinter.class, WidgetCreatorContext.class, String.class});
-		}
-	    catch (Exception e) 
-		{
-			return null;
-		}
-    }
+    }	
 
 	/**
 	 * @param factoryClass
@@ -254,6 +140,52 @@ class AttributesAnnotationScanner
 
 	/**
 	 * @param attrName
+	 * @param method
+	 * @param processor
+	 * @return
+	 */
+	private AttributeCreator doCreateAttributeProcessorWithParser(final String attrName, final Method method, 
+																  final AttributeProcessor<?> processor, 
+																  final ProcessingTime processingTime,
+																  final Device[] supportedDevices)
+    {
+	    return new AttributeCreator()
+		{
+			public void createAttribute(SourcePrinter out, WidgetCreatorContext context)
+			{
+				if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
+				{
+					String attrValue = context.readWidgetProperty(attrName);
+					if (!StringUtils.isEmpty(attrValue))
+					{
+						try
+						{
+							switch (processingTime)
+	                        {
+								case afterAllWidgetsOnView:
+									maybePrintWidgetDeclaration(context);
+									
+									method.invoke(processor, widgetCreator.getPostProcessingPrinter(), context, attrValue);
+								break;
+								default:
+									method.invoke(processor, out, context, attrValue);
+								break;
+							}
+						}
+						catch (Exception e)
+						{
+
+							throw new CruxGeneratorException("Error running attribute processor for attribute ["+attrName+"], " +
+									"from widget ["+context.getWidgetId()+"], on screen ["+widgetCreator.getView().getId()+"].", e);
+						}
+					}
+				}
+			}
+		};
+    }
+
+	/**
+	 * @param attrName
 	 * @param setterMethod
 	 * @param typeName
 	 * @param isStringExpression
@@ -295,7 +227,7 @@ class AttributesAnnotationScanner
 						{
 							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetCreator.getWidgetClassName(),
 																			widgetPropertyPath, null, null,
-																			context.getDataBindingProcessor(), setterMethod);
+																			context.getDataBindingProcessor(), setterMethod, typeName);
 							if (expressionBinding != null)
 							{
 								context.registerExpressionDataBinding(expressionBinding);
@@ -309,6 +241,8 @@ class AttributesAnnotationScanner
 						switch (processingTime)
                         {
 							case afterAllWidgetsOnView:
+								maybePrintWidgetDeclaration(context);
+								
 								widgetCreator.printlnPostProcessing(context.getWidget()+"."+setterMethod+"("+expression+");");
 							break;
 							default:
@@ -362,6 +296,22 @@ class AttributesAnnotationScanner
     }
 	
 	/**
+	 * @param processorClass
+	 * @return
+	 */
+	private Method getAtributeProcessorMethod(Class<?> processorClass)
+    {
+	    try 
+	    {
+			return processorClass.getMethod("processAttributeInternal", new Class<?>[]{SourcePrinter.class, WidgetCreatorContext.class, String.class});
+		}
+	    catch (Exception e) 
+		{
+			return null;
+		}
+    }
+
+	/**
 	 * 
 	 * @param name
 	 * @return
@@ -370,5 +320,71 @@ class AttributesAnnotationScanner
 	{
 		return name != null && name.length() > 0 && RegexpPatterns.REGEXP_WORD.matcher(name).matches() 
 		                                         && !Character.isDigit(name.charAt(0));
+	}
+
+	private void maybePrintWidgetDeclaration(WidgetCreatorContext context)
+    {
+        if (!widgetCreator.isWidgetRegisteredForPostProcessing(context.getWidgetId()))
+        {
+        	widgetCreator.registerWidgetForPostProcessing(context.getWidgetId());
+        	String widgetClassName = widgetCreator.getWidgetClassName();
+        	String widgetDecl = "final "+widgetClassName+" " + context.getWidget() + " = ("+widgetClassName+")" + 
+        						widgetCreator.getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");";
+        	widgetCreator.printlnPostProcessing(widgetDecl);
+        }
+    }
+	
+	/**
+	 * @param factoryClass
+	 * @param attributes
+	 * @param added
+	 * @throws CruxGeneratorException
+	 */
+	private void scanAttributes(Class<?> factoryClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
+	{
+		try
+        {
+			TagAttributes attrs = factoryClass.getAnnotation(TagAttributes.class);
+			if (attrs != null)
+			{
+				for (TagAttribute attr : attrs.value())
+				{
+					String attrName = attr.value();
+					if (!added.contains(attrName))
+					{
+						added.add(attrName);
+						if (isValidName(attrName))
+						{
+							if (AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()))
+							{
+								attributes.add(createAutomaticAttributeProcessor(factoryClass, attr));
+							}
+							else
+							{
+								attributes.add(createAttributeProcessorWithParser(attr));
+							}
+						}
+						else
+						{
+							throw new CruxGeneratorException("Error generating widget factory. Invalid attribute name: ["+attrName+"].");
+						}
+					}
+				}
+			}
+	        Class<?> superclass = factoryClass.getSuperclass();
+	        if (superclass!= null && !superclass.equals(Object.class))
+	        {
+	        	scanAttributes(superclass, attributes, added);
+	        }
+	        Class<?>[] interfaces = factoryClass.getInterfaces();
+	        for (Class<?> interfaceClass : interfaces)
+	        {
+	        	scanAttributes(interfaceClass, attributes, added);
+	        }
+        }
+        catch (Exception e)
+        {
+        	throw new CruxGeneratorException(e.getMessage(), e);
+        }
 	}	
 }

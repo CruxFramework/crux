@@ -86,7 +86,7 @@ public class ViewBindHandler
 	
 	protected ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, 
 			String widgetPropertyPath, String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor,
-			String setterMethod)
+			String setterMethod, String propertyTypeName)
 	{
 		if (propertyValue == null)
 		{
@@ -94,7 +94,16 @@ public class ViewBindHandler
 		}
 	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
 	    JClassType uiObjectType = (uiObjectClassName!=null?context.getGeneratorContext().getTypeOracle().findType(uiObjectClassName):widgetType);
-	    JType widgetPropertyType = JClassUtils.getPropertyType(uiObjectType, widgetPropertyPath);
+	    JType widgetPropertyType;
+	    
+	    if (!StringUtils.isEmpty(propertyTypeName))
+	    {
+	    	widgetPropertyType = context.getGeneratorContext().getTypeOracle().findType(propertyTypeName);
+	    }
+	    else
+	    {
+	    	widgetPropertyType = JClassUtils.getPropertyType(uiObjectType, widgetPropertyPath);
+	    }
 	    if (widgetPropertyType == null)
 	    {
 	    	throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");

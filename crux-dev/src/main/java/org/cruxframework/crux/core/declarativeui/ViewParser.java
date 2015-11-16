@@ -1206,7 +1206,7 @@ public class ViewParser
 				}
 				catch (Exception e)
 				{
-					throw new ViewParserException("Error creating XSD File: Error generating widgets reference list.", e);
+					throw new ViewParserException("Error initialising view parser: Error generating widgets reference list.", e);
 				}
 			}
 		}
