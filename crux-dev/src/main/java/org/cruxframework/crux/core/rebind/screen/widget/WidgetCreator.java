@@ -850,6 +850,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	    return true;
     }
 	
+	protected boolean isWidgetRegisteredForPostProcessing(String widgetId)
+	{
+		return viewFactory.isWidgetRegisteredForPostProcessing(widgetId);
+	}
+	
 	/**
 	 * Print code that will be executed after the viewFactory completes the widgets construction
 	 * @param s code string
@@ -857,6 +862,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	protected void printlnPostProcessing(String s)
 	{
 		viewFactory.printlnPostProcessing(s);
+	}
+	
+	protected void registerWidgetForPostProcessing(String widgetId)
+	{
+		viewFactory.registerWidgetForPostProcessing(widgetId);
 	}
 	
 	protected boolean targetsDevice(JSONObject child)
