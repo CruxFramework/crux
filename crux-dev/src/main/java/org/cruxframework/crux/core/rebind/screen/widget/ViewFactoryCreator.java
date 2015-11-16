@@ -182,15 +182,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param getUiObjectExpression
 	 * @param dataBindingProcessor
 	 * @param setterMethod
+	 * @param propertyTypeName
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 														String uiObjectClassName, String getUiObjectExpression, 
 														DataBindingProcessor dataBindingProcessor, 
-														String setterMethod)
+														String setterMethod, String propertyTypeName)
     {
 		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, 
-						widgetPropertyPath, uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod);
+						widgetPropertyPath, uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod, propertyTypeName);
     }
 
 	/**
