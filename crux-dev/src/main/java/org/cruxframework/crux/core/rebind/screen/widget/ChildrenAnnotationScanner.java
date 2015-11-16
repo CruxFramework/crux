@@ -231,7 +231,7 @@ class ChildrenAnnotationScanner
 		final String widgetProperty = processorAttributes.widgetProperty();
 		final boolean isHasText = HasText.class.isAssignableFrom(widgetCreator.getWidgetClass());
 		
-	    ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator.getView().getId())
+	    ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator)
 		{
 			public void processChildren(SourcePrinter out, WidgetCreatorContext context)
 			{
@@ -358,7 +358,7 @@ class ChildrenAnnotationScanner
 	private ChildrenProcessor doCreateChildrenProcessorForMultipleChildren(Class<?> processorClass, final boolean acceptNoChildren, 
 																			final boolean isAgregatorChild)
     {
-		ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator.getView().getId())
+		ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator)
 		{
 			public void processChildren(SourcePrinter out, WidgetCreatorContext context)
 			{
@@ -433,7 +433,7 @@ class ChildrenAnnotationScanner
 		
 		final String childName = getChildTagName(tagName, isAgregator, (isAnyWidget || isAnyWidgetType));
 		
-		ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator.getView().getId())
+		ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator)
 		{
 			public void processChildren(SourcePrinter out, WidgetCreatorContext context)
 			{
