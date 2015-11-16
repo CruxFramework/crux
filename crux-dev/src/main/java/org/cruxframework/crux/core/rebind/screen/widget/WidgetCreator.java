@@ -443,7 +443,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 		DataBindingProcessor dataBindingProcessor)
 	{
-		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor, null);
+		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor, null, null);
 	}
 
 	/**
@@ -453,14 +453,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param widgetPropertyPath
 	 * @param uiObjectClassName
 	 * @param getUiObjectExpression
+	 * @param dataBindingProcessor
+	 * @param setterMethod
+	 * @param propertyTypeName
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor, 
-							String setterMethod)
+							String setterMethod, String propertyTypeName)
 	{
 		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
-			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod);
+			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod, propertyTypeName);
 	}
 	
 	/**
