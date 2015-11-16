@@ -295,7 +295,7 @@ class AttributesAnnotationScanner
 						{
 							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetCreator.getWidgetClassName(),
 																			widgetPropertyPath, null, null,
-																			context.getDataBindingProcessor(), setterMethod);
+																			context.getDataBindingProcessor(), setterMethod, typeName);
 							if (expressionBinding != null)
 							{
 								context.registerExpressionDataBinding(expressionBinding);
