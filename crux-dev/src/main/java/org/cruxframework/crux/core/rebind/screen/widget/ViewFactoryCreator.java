@@ -124,7 +124,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private final LazyPanelFactory lazyFactory;
 	private final Set<String> lazyPanels = new HashSet<String>();
 	private String loggerVariable;
-	private final LinkedList<PostProcessingPrinter> postProcessingCode = new LinkedList<PostProcessingPrinter>();
+	private final LinkedList<PostProcessingData> postProcessingCode = new LinkedList<PostProcessingData>();
 	private Set<String> resources;
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
@@ -253,8 +253,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	protected void commitPostProcessing(SourcePrinter printer)
 	{
-		PostProcessingPrinter postProcessingPrinter = this.postProcessingCode.removeLast();
-		String postProcessingCode = postProcessingPrinter.toString();
+		PostProcessingData postProcessingData = this.postProcessingCode.removeLast();
+		String postProcessingCode = postProcessingData.toString();
 		if (!StringUtils.isEmpty(postProcessingCode))
 		{
 			printer.println(Scheduler.class.getCanonicalName()+".get().scheduleDeferred(new "+
@@ -274,7 +274,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	protected void createPostProcessingScope()
 	{
-		this.postProcessingCode.add(new PostProcessingPrinter());
+		this.postProcessingCode.add(new PostProcessingData());
 	}
 
 	@Override
@@ -556,7 +556,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
      */
     protected SourcePrinter getPostProcessingPrinter()
     {
-    	return this.postProcessingCode.getLast();
+    	return this.postProcessingCode.getLast().postProcessingPrinter;
     }
 
 	/**
@@ -811,6 +811,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
     /**
+     * Check if the given widget is available for postProcessing 
+     * @param widgetId widget identifier
+     * @return true if available
+     */
+    protected boolean isWidgetRegisteredForPostProcessing(String widgetId)
+    {
+    	return this.postProcessingCode.getLast().referencedWidgets.contains(widgetId);
+    }
+    
+    /**
 	 * Creates a new widget based on its meta-data element.
 	 *
 	 * @param printer
@@ -897,7 +907,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			this.bindHandler = null;
 		}
 	}
-    
+
     /**
 	 * Print code that will be executed after the viewFactory completes the widgets construction.
 	 * Note that this code will be executed from inside a Command class. Any variable accessed in
@@ -907,10 +917,10 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
     protected void printlnPostProcessing(String s)
 	{
-		this.postProcessingCode.getLast().println(s);
+		this.postProcessingCode.getLast().postProcessingPrinter.println(s);
 	}
-
-	/**
+    
+    /**
 	 * Generate the code for the View events creation
 	 *
 	 * @param printer
@@ -926,6 +936,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		processActivateEvt(printer);
 		processDeactivateEvt(printer);
 	}
+    
+	/**
+     * Inform the factory that the given widget needs to be available for postProcessing
+     * @param widgetId widget identifier
+     */
+    protected void registerWidgetForPostProcessing(String widgetId)
+    {
+    	this.postProcessingCode.getLast().referencedWidgets.add(widgetId);
+    }
 
 	protected boolean targetsDevice(JSONObject child)
     {
@@ -1657,7 +1676,19 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
         }
     }
-
+    
+    private static class PostProcessingData
+    {
+    	PostProcessingPrinter postProcessingPrinter = new PostProcessingPrinter();
+    	Set<String> referencedWidgets = new HashSet<String>();
+    	
+    	@Override
+    	public String toString()
+    	{
+    	    return postProcessingPrinter.toString();
+    	}
+    }
+    
 	/**
      * Printer for code that should be executed after the screen creation.
      *
