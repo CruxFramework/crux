@@ -443,7 +443,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 		DataBindingProcessor dataBindingProcessor)
 	{
-		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor, null);
+		return getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, null, null, dataBindingProcessor, null, null);
 	}
 
 	/**
@@ -453,14 +453,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param widgetPropertyPath
 	 * @param uiObjectClassName
 	 * @param getUiObjectExpression
+	 * @param dataBindingProcessor
+	 * @param setterMethod
+	 * @param propertyTypeName
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
 							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor, 
-							String setterMethod)
+							String setterMethod, String propertyTypeName)
 	{
 		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
-			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod);
+			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod, propertyTypeName);
 	}
 	
 	/**
@@ -847,6 +850,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	    return true;
     }
 	
+	protected boolean isWidgetRegisteredForPostProcessing(String widgetId)
+	{
+		return viewFactory.isWidgetRegisteredForPostProcessing(widgetId);
+	}
+	
 	/**
 	 * Print code that will be executed after the viewFactory completes the widgets construction
 	 * @param s code string
@@ -854,6 +862,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	protected void printlnPostProcessing(String s)
 	{
 		viewFactory.printlnPostProcessing(s);
+	}
+	
+	protected void registerWidgetForPostProcessing(String widgetId)
+	{
+		viewFactory.registerWidgetForPostProcessing(widgetId);
 	}
 	
 	protected boolean targetsDevice(JSONObject child)
@@ -866,7 +879,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param processorClass
 	 * @return
 	 */
-	TagConstraints getChildtrenAttributesAnnotation(Class<?> processorClass)
+	TagConstraints getTagConstraints(Class<?> processorClass)
 	{
 		TagConstraints attributes = processorClass.getAnnotation(TagConstraints.class);
 		if (attributes == null)
@@ -874,7 +887,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			Class<?> superClass = processorClass.getSuperclass();
 			if (superClass != null && superClass.getSuperclass() != null)
 			{
-				attributes = getChildtrenAttributesAnnotation(superClass);
+				attributes = getTagConstraints(superClass);
 			}
 		}
 		

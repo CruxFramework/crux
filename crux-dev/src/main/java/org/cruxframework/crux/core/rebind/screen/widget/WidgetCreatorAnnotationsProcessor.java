@@ -107,13 +107,13 @@ class WidgetCreatorAnnotationsProcessor
 	static abstract class ChildrenProcessor
 	{
 		private Map<String, ChildProcessor> childrenProcessors = new HashMap<String, ChildProcessor>();
-		private String viewName;
+		private WidgetCreator<?> widgetCreator;
 		
 		abstract void processChildren(SourcePrinter out, WidgetCreatorContext context);
 
-		public ChildrenProcessor(String viewName)
+		public ChildrenProcessor(WidgetCreator<?> widgetCreator)
         {
-			this.viewName = viewName;
+			this.widgetCreator = widgetCreator;
         }
 		
 		/**
@@ -125,7 +125,7 @@ class WidgetCreatorAnnotationsProcessor
 		{
 			if (!childrenProcessors.containsKey(childName))
 			{
-				String message = "Invalid tag name. The current view ["+viewName+"] is not valid. "
+				String message = "Invalid tag name. The current view ["+widgetCreator.getView().getId()+"] is not valid. "
 						+ "An error was found processing widget ["+context.getWidgetId()+"]. "
 						+ "Please, verify your file with Crux generated XSDs.";
 				throw new CruxGeneratorException(message);
