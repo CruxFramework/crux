@@ -56,22 +56,19 @@ public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> i
 	protected boolean transactionRunning;
 	protected HandlerRegistration transactionStartHandler;
 	
+	@Override
 	public HandlerRegistration addPageHandler(PageHandler handler)
 	{
 		return addHandler(handler, PageEvent.getType());
 	}
 	
-	/**
-	 * @return the enabled
-	 */
+	@Override
 	public boolean isEnabled()
 	{
 		return enabled;
 	}
-	
-	/**
-	 * @param enabled
-	 */
+
+	@Override
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
