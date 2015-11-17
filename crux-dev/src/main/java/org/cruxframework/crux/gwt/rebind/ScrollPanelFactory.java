@@ -15,23 +15,24 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasScrollHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a ScrollPanelFactory
@@ -42,7 +43,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 	@TagAttribute(value="alwaysShowScrollBars", type=Boolean.class),
 	@TagAttribute(value="verticalScrollPosition", type=ScrollPanelFactory.VerticalScrollPosition.class, processor=ScrollPanelFactory.VerticalScrollPositionAttributeParser.class),
 	@TagAttribute(value="horizontalScrollPosition", type=ScrollPanelFactory.HorizontalScrollPosition.class, processor=ScrollPanelFactory.HorizontalScrollPositionAttributeParser.class),
-	@TagAttribute(value="ensureVisible", processor=ScrollPanelFactory.EnsureVisibleAttributeParser.class)
+	@TagAttribute(value="ensureVisible", type=WidgetReference.class, 
+				  widgetType=Widget.class, method="ensureVisible",  
+				  processingTime=ProcessingTime.afterAllWidgetsOnView)
 })
 @TagChildren({
 	@TagChild(ScrollPanelFactory.WidgetContentProcessor.class)
@@ -106,35 +109,7 @@ public class ScrollPanelFactory extends PanelFactory<WidgetCreatorContext>
 			}
 		}
 	}
-	
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class EnsureVisibleAttributeParser extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public EnsureVisibleAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-		public void processAttribute(SourcePrinter out, final WidgetCreatorContext context, final String propertyValue) 
-		{
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-					
-			String targetWidget = ViewFactoryCreator.createVariableName("c");
-			
-			printlnPostProcessing("Widget "+targetWidget+" = "+getViewVariable()+".getWidget("+EscapeUtils.quote(propertyValue)+");");
-			printlnPostProcessing("if ("+targetWidget+" == null){");
-			String widgetId = context.getWidgetId();
-			printlnPostProcessing("throw new NullPointerException("+EscapeUtils.quote("Error in ScrollPanel ["+widgetId+"]." +
-					"Error ensuring visibility for component ["+propertyValue+"].")+");");
-			printlnPostProcessing("}");
-			printlnPostProcessing(widget+".ensureVisible("+targetWidget+");");
-		}
-	}	
-	
+		
 	@Override
     public WidgetCreatorContext instantiateContext()
     {
