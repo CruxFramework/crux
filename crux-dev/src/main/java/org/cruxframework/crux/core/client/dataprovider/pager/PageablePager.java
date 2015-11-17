@@ -45,4 +45,10 @@ public interface PageablePager<T> extends Pager<T>
 	 * @param contentPanel the main panel, that contains the other pages.
 	 */
 	void initializeContentPanel(Panel contentPanel);
+	
+	/**
+	 * Set the {@link Pageable} component of this pager.
+	 * @param pageable the pageable component
+	 */
+	void setPageable(Pageable<T> pageable);
 }

@@ -33,7 +33,16 @@ import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 public @interface TagAttribute
 {
 	String value();
+	/**
+	 * The type considering the Declarative context
+	 * @return
+	 */
 	Class<?> type() default String.class;
+	/**
+	 * The type considering the target widget property
+	 * @return
+	 */
+	Class<?> widgetType() default SameAsType.class;
 	String defaultValue() default "";
 	String property() default "";
 	String method() default "";
@@ -53,4 +62,18 @@ public @interface TagAttribute
 	 * Define when the attribute will be processed
 	 */
 	ProcessingTime processingTime() default ProcessingTime.afterInstantiation;
+	
+	/**
+	 * A marker type to inform that an attribute of a tag on xml view files makes reference
+	 * to an widget contained on the view
+	 * @author Thiago da Rosa de Bustamante
+	 */
+	public class WidgetReference {}
+	
+	/**
+	 * A marker type to inform that the widgetType is equal to the type
+	 * to an widget contained on the view
+	 * @author Thiago da Rosa de Bustamante
+	 */
+	public class SameAsType {}
 }

@@ -38,6 +38,7 @@ public class View
 {
 	protected List<String> controllers = new ArrayList<String>();
 	protected String dataObject;
+	protected Map<String, DataProvider> dataProviders = new HashMap<String, DataProvider>();
 	@Deprecated
 	@Legacy
 	protected List<String> dataSources = new ArrayList<String>();
@@ -56,7 +57,6 @@ public class View
 	protected String title;
 	protected List<String> views = new ArrayList<String>();
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
-	protected Map<String, DataProvider> dataProviders = new HashMap<String, DataProvider>();
 	protected Set<String> widgetTypes = new HashSet<String>();
 	protected String width;
 
@@ -87,6 +87,12 @@ public class View
     {
     	return dataObject;
     }
+
+	public DataProvider getDataProvider(String id)
+	{
+		if (id == null) return null;
+		return dataProviders.get(id);
+	}
 
 	/**
 	 * Return a event associated with the given id
@@ -133,7 +139,7 @@ public class View
 	{
 		return id;
 	}
-
+	
 	/**
 	 * Viewport for large devices
 	 * 
@@ -157,7 +163,7 @@ public class View
 	{
 		return lazyDependencies;
 	}
-	
+
 	/**
 	 * Viewport for small devices
 	 * 
@@ -167,7 +173,7 @@ public class View
     {
     	return smallViewport;
     }
-
+	
 	/**
 	 * Return the view title
 	 * @return
@@ -176,7 +182,7 @@ public class View
 	{
 		return title;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -185,7 +191,7 @@ public class View
     {
     	return viewElement;
     }
-
+	
 	/**
 	 * Return DeclarativeFactory associated to the given id
 	 * @param widgetId
@@ -195,12 +201,6 @@ public class View
 	{
 		if (widgetId == null) return null;
 		return widgets.get(widgetId);
-	}
-	
-	public DataProvider getDataProvider(String id)
-	{
-		if (id == null) return null;
-		return dataProviders.get(id);
 	}
 	
 	/**
@@ -248,6 +248,11 @@ public class View
 		return controllers.iterator();
 	}
 	
+	public Iterator<DataProvider> iterateDataProviders()
+	{
+		return dataProviders.values().iterator();
+	}
+	
 	/**
 	 * Iterate over view dataSources
 	 * @return
@@ -273,8 +278,8 @@ public class View
 	public Iterator<String> iterateFormatters()
 	{
 		return formatters.iterator();
-	}
-	
+	}	
+
 	/**
 	 * Iterate over view resources
 	 * @return
@@ -282,8 +287,8 @@ public class View
 	public Iterator<String> iterateResources()
 	{
 		return resources.iterator();
-	}	
-
+	}
+	
 	/**
 	 * Iterate over view serializers
 	 * @return
@@ -300,11 +305,6 @@ public class View
 	public Iterator<Widget> iterateWidgets() 
 	{
 		return widgets.values().iterator();
-	}
-	
-	public Iterator<DataProvider> iterateDataProviders()
-	{
-		return dataProviders.values().iterator();
 	}
 	
 	/**
@@ -386,6 +386,14 @@ public class View
 		}
 	}
 
+	protected void addDataProvider(DataProvider dataProvider)
+	{
+		if (dataProvider != null)
+		{
+			dataProviders.put(dataProvider.getId(), dataProvider);
+		}
+	}
+
 	/**
 	 * Import a dataSource into view
 	 * @param event
@@ -433,7 +441,7 @@ public class View
 			resources.add(resource);
 		}
 	}
-
+	
 	/**
 	 * Import a serializer for a CruxSerializable into view
 	 * @param event
@@ -459,14 +467,6 @@ public class View
 			{
 				widgetTypes.add(widget.getType());
 			}
-		}
-	}
-	
-	protected void addDataProvider(DataProvider dataProvider)
-	{
-		if (dataProvider != null)
-		{
-			dataProviders.put(dataProvider.getId(), dataProvider);
 		}
 	}
 	
