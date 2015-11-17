@@ -15,13 +15,11 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
-import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
@@ -33,7 +31,8 @@ import com.google.gwt.view.client.HasRows;
  *
  */
 @TagAttributes({
-	@TagAttribute(value="display", processor=AbstractPagerFactory.DisplayAttributeProcessor.class, required=true),
+	@TagAttribute(value="display", required=true, processingTime=ProcessingTime.afterAllWidgetsOnView, 
+				 type=WidgetReference.class, widgetType=HasRows.class),
 	@TagAttribute(value="pageSize", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
 	@TagAttribute(value="page", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
 	@TagAttribute(value="pageStart", type=Integer.class, processingTime=ProcessingTime.afterAllWidgetsOnView),
@@ -44,23 +43,6 @@ import com.google.gwt.view.client.HasRows;
 })
 public abstract class AbstractPagerFactory extends WidgetCreator<WidgetCreatorContext>  
 {
-	public static class DisplayAttributeProcessor extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public DisplayAttributeProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			String widget = context.getWidget();
-			String widgetClassName = getWidgetCreator().getWidgetClassName();
-			printlnPostProcessing("final "+widgetClassName+" "+widget+" = ("+widgetClassName+")"+ getViewVariable()+".getWidget("+EscapeUtils.quote(context.getWidgetId())+");");
-	        printlnPostProcessing(widget+".setDisplay(("+HasRows.class.getCanonicalName()+")"+getViewVariable()+".getWidget("+EscapeUtils.quote(attributeValue)+"));");
-        }
-	}
-	
 	@Override
     public WidgetCreatorContext instantiateContext()
     {
