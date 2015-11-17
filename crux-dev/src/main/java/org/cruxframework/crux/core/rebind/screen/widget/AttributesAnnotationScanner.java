@@ -30,8 +30,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotations
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.SameAsType;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
+
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -118,24 +122,26 @@ class AttributesAnnotationScanner
 		}
 		
 		Class<?> type = attr.type();
-		if (type == null ||  !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, type)))
+		Class<?> widgetType = attr.widgetType().equals(SameAsType.class)?attr.type():attr.widgetType();
+		if (widgetType == null ||  !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, widgetType)))
 		{//TODO: implement method check for nested property.
 			throw new CruxGeneratorException("Error generating widget factory. Widget does not have a valid setter for attribute: ["+attrName+"].");
 		}
-		final boolean isStringExpression = String.class.isAssignableFrom(type);
+		final boolean isStringExpression = String.class.isAssignableFrom(widgetType);
 		final boolean supportsI18N = isStringExpression && attr.supportsI18N();
 		final boolean supportsDataBinding = attr.supportsDataBinding();
 		final boolean dataBindingTargetsAttributes = attr.dataBindingTargetsAttributes();
-		final boolean isEnumExpression = type.isEnum();
-		final boolean isPrimitiveExpression = type.isPrimitive();
+		final boolean isEnumExpression = widgetType.isEnum();
+		final boolean isPrimitiveExpression = widgetType.isPrimitive();
 		final boolean supportsResources = attr.supportsResources();
-		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, type.getCanonicalName(), 
+		final boolean isWidgetReferencedType = WidgetReference.class.isAssignableFrom(type);
+		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, widgetType.getCanonicalName(), 
 												   isStringExpression, supportsI18N, supportsResources, 
 												   supportsDataBinding, isEnumExpression, 
 												   isPrimitiveExpression, attr.supportedDevices(),
 												   attr.processingTime(),
 												   widgetPropertyPath, dataBindingTargetsAttributes, 
-												   expressionDataBindingOnly);
+												   expressionDataBindingOnly, isWidgetReferencedType);
     }
 
 	/**
@@ -194,6 +200,7 @@ class AttributesAnnotationScanner
 	 * @param isPrimitiveExpression
 	 * @param widgetPropertyPath 
 	 * @param expressionDataBindingOnly 
+	 * @param isWidgetReferencedType 
 	 * @return
 	 */
 	private AttributeCreator doCreateAutomaticAttributeProcessor(final String attrName, final String setterMethod, 
@@ -204,7 +211,7 @@ class AttributesAnnotationScanner
 																 final ProcessingTime processingTime,
 																 final String widgetPropertyPath, 
 																 final boolean dataBindingTargetsAttributes, 
-																 final boolean expressionDataBindingOnly)
+																 final boolean expressionDataBindingOnly, final boolean isWidgetReferencedType)
     {
 	    return new AttributeCreator()
 		{
@@ -214,7 +221,7 @@ class AttributesAnnotationScanner
 				{
 					String attrValue = context.readWidgetProperty(attrName);
 					
-					if (supportsDataBinding)
+					if (supportsDataBinding && !isWidgetReferencedType)
 					{
 						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes, 
 																			context.getDataBindingProcessor());
@@ -235,7 +242,8 @@ class AttributesAnnotationScanner
 							}
 						}	
 					}
-					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
+					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, 
+													  isPrimitiveExpression, isWidgetReferencedType, attrValue);
 					if (expression != null)
 					{
 						switch (processingTime)
@@ -257,13 +265,31 @@ class AttributesAnnotationScanner
 										 String typeName, 
 										 boolean isStringExpression, 
 										 boolean isEnumExpression, boolean isPrimitiveExpression, 
-										 String attrValue)
+										 boolean isWidgetReferencedType, String attrValue)
             {
 				String expression = null;
 
 				if (StringUtils.isEmpty(attrValue))
 				{
 					expression = null;
+				}
+				else if (isWidgetReferencedType)
+				{
+					org.cruxframework.crux.core.rebind.screen.Widget widget = widgetCreator.getView().getWidget(attrValue);
+					if (widget == null)
+					{
+						throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
+														"] on the view ["+widgetCreator.getView().getId()+"]");
+					}
+					
+					if (!typeName.equals(Widget.class.getCanonicalName()))
+					{
+						expression = "(" + typeName + ")" +widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
+					}
+					else
+					{
+						expression = widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
+					}
 				}
 				else if (supportsI18N)
 				{
