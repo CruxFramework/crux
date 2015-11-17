@@ -157,7 +157,7 @@ public abstract class AbstractProxyCreator
 	protected void logDebugMessage(SourcePrinter sourcePrinter, String message)
     {
 	    sourcePrinter.println("if (LogConfiguration.loggingIsEnabled()){");
-		sourcePrinter.println("_logger_.log(Level.FINE, "+message+");");
+		sourcePrinter.println("_logger_.log(Level.INFO, "+message+");");
 		sourcePrinter.println("}");
     }
 	
