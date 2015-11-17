@@ -15,9 +15,6 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
-import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -32,29 +29,10 @@ import com.google.gwt.user.client.ui.Frame;
  */
 @DeclarativeFactory(id="frame", library="gwt", targetWidget=Frame.class)
 @TagAttributes({
-	@TagAttribute(value="url", processor=FrameFactory.URLAttributeParser.class)
+	@TagAttribute("url")
 })
 public class FrameFactory extends WidgetCreator<WidgetCreatorContext>
-{
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class URLAttributeParser extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public URLAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			String widget = context.getWidget();
-			out.println(widget+".setUrl("+EscapeUtils.quote(attributeValue)+");");
-        }
-	}
-	
+{	
 	@Override
     public WidgetCreatorContext instantiateContext()
     {

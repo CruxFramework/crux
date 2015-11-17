@@ -17,7 +17,6 @@ package org.cruxframework.crux.gwt.rebind;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -39,7 +38,7 @@ import com.google.gwt.user.client.ui.NamedFrame;
 	@TagAttributeDeclaration(value="name", required=true)
 })	
 @TagAttributes({
-	@TagAttribute(value="url", processor=NamedFrameFactory.URLAttributeParser.class)
+	@TagAttribute("url")
 })
 public class NamedFrameFactory extends WidgetCreator<WidgetCreatorContext>
 {
@@ -49,27 +48,7 @@ public class NamedFrameFactory extends WidgetCreator<WidgetCreatorContext>
 		String className = NamedFrame.class.getCanonicalName();
 		out.println(className + " " + context.getWidget()+" = new "+className+"("+EscapeUtils.quote(context.readWidgetProperty("name"))+");");
 	}	
-	
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class URLAttributeParser extends AttributeProcessor<WidgetCreatorContext>
-	{
-
-		public URLAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			String widget = context.getWidget();
-			out.println(widget+".setUrl("+EscapeUtils.quote(attributeValue)+");");
-        }
-	}
-	
+		
 	@Override
     public WidgetCreatorContext instantiateContext()
     {
