@@ -85,13 +85,8 @@ public class DataProviderRecord<T> implements Cloneable
 
 	void set(T value)
 	{
-		T previousValue = recordObject;
-		if ((previousValue != null && (value==null || !previousValue.equals(value))) ||
-			(previousValue == null && value != null))
-		{
-			setRecordObject(value);
-			setDirty(true);
-		}
+		setRecordObject(value);
+		setDirty(true);
 	}
 	
 	void setDirty(boolean dirty)
