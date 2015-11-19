@@ -63,7 +63,6 @@ public class Screen
 	protected RootViewContainer rootViewContainer = null;
 	protected FastList<Element> blockingDivs = new FastList<Element>();
 	protected String id;
-	protected URLRewriter urlRewriter = GWT.create(URLRewriter.class);
 	private static HandlerRegistration refreshPreviewHandler;
 
     protected Screen(final String id) 
@@ -278,12 +277,7 @@ public class Screen
 	{
 		return getView().containsWidget(id);
 	}
-	
-	protected String rewriteURL(String url)
-	{
-		return urlRewriter.rewrite(url);
-	}
-		
+			
 	/**
 	 * Creates and shows a DIV over the screen contents
 	 * @param blockingDivStyleName
@@ -416,16 +410,10 @@ public class Screen
 	 * @param url
 	 * @return
 	 */
+	@Deprecated
+	@Legacy
 	public static String rewriteUrl(String url)
 	{
-		try
-		{
-			return Screen.get().rewriteURL(url);
-		}
-		catch(Throwable e)
-		{
-			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
 		return url;
 	}
 
