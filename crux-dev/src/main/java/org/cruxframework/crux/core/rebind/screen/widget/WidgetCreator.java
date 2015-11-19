@@ -500,15 +500,15 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null, dataBindingProcessor);
 	}
-
+	
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
 												String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
 	{
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
 												getUiObjectExpression, dataBindingProcessor);
 	}
-	
-    /**
+
+	/**
 	 * 
 	 * @param property
 	 * @return
@@ -518,8 +518,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getResourceAccessExpression(property);
 	}
 	
-	
-	/**
+    /**
 	 * Create a new printer for a subType.  That subType will be declared on the package name informed in the first parameter
 	 * 
 	 * @param packageName
@@ -535,6 +534,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     	return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
     }
 	
+	
 	/**
 	 * @param subType
 	 * @param superClass
@@ -546,7 +546,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports);
 	}
-
+	
 	/**
 	 * Create a new printer for a subType. That subType will be declared on the same package of the
 	 * {@code ViewFactory}. 
@@ -587,17 +587,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			throw new CruxGeneratorException("No widget registered for declaration ["+widgetDeclaration+"]."); 
 		}
 		return widgetCreator.getWidgetClass();
-    }	
-	
-	
+    }
+
 	/**
 	 * @return
 	 */
 	public String getWidgetClassName()
     {
 	    return getWidgetClass().getCanonicalName();
-    }
-
+    }	
+	
+	
 	/**
 	 * 
 	 * @return
@@ -606,7 +606,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
 	    return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
     }
-	
+
 	/**
 	 * @return
 	 */
@@ -619,7 +619,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		throw new CruxGeneratorException("Error reading viewFactory declaration."); 
 	}
-
+	
 	/**
 	 * @param metaElem
 	 * @return
@@ -628,7 +628,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).hasPartialSupport();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -638,7 +638,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return widgetClassType != null && widgetClassType.getAnnotation(PartialSupport.class) != null 
 	    	   && ClassUtils.hasMethod(getWidgetClass(), "isSupported");
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -672,7 +672,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.isResourceReference(property);
 	}
-	
+
 	/**
 	 * 
 	 * @param metaElem
@@ -702,7 +702,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processAttributes(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-
+	
 	/**
 	 * Process element children
 	 * @param out 
@@ -712,7 +712,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processChildren(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
+
 	/**
 	 * Process widget events
 	 * @param out 
@@ -723,7 +723,6 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 	}
 	
-	
 	/**
 	 * Close the current postProcessing scope and schedule the execution of all scope commands.
 	 * @param printer
@@ -732,6 +731,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.commitPostProcessing(printer);
 	}
+	
 	
 	/**
 	 * 
@@ -762,7 +762,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}			
 		return context;
 	}
-
+	
 	/**
 	 * Create a new post-processing scope
 	 */
@@ -770,7 +770,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.createPostProcessingScope();
 	}
-	
+
 	/**
 	 * Retrieve the object responsible for print controller access expressions on client JS
 	 * @return
@@ -779,7 +779,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getControllerAccessHandler();
 	}
-
+	
 	protected Map<String, String> getDeclaredMessages()
 	{
 		return viewFactory.getDeclaredMessages();
@@ -789,7 +789,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getLoggerVariable();
 	}
-	
+
 	/**
      * Retrieve the current PostProcessingPrinter
 	 * @return
@@ -863,7 +863,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.printlnPostProcessing(s);
 	}
-	
+		
 	protected void registerWidgetForPostProcessing(String widgetId)
 	{
 		viewFactory.registerWidgetForPostProcessing(widgetId);

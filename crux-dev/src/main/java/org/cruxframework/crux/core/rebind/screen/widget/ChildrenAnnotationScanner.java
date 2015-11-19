@@ -92,7 +92,7 @@ class ChildrenAnnotationScanner
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ChildProcessor createChildProcessor(final boolean isAnyWidget, final String widgetProperty, 
+	private ChildProcessor createChildProcessor(final boolean isAnyWidget, final String widgetProperty, final String method,
 												final WidgetLazyChecker lazyChecker, final WidgetChildProcessor processor, 
 												final Device[] supportedDevices, final boolean applyDeviceFilters)
     {
@@ -158,13 +158,17 @@ class ChildrenAnnotationScanner
 					childWidget = childWidget+".asWidget()";
 				}
 				
-				if (StringUtils.isEmpty(widgetProperty))
+				if (!StringUtils.isEmpty(method))
 				{
-					out.println(context.getWidget()+".add("+childWidget+");");
+					out.println(context.getWidget()+"."+method+"("+childWidget+");");
+				}
+				else if (!StringUtils.isEmpty(widgetProperty))
+				{
+					out.println(context.getWidget()+"."+ClassUtils.getSetterMethod(widgetProperty)+"("+childWidget+");");
 				}
 				else
 				{
-					out.println(context.getWidget()+"."+ClassUtils.getSetterMethod(widgetProperty)+"("+childWidget+");");
+					out.println(context.getWidget()+".add("+childWidget+");");
 				}
 				if (childPartialSupport)
 				{
@@ -196,6 +200,7 @@ class ChildrenAnnotationScanner
     {
 	    TagConstraints processorAttributes = this.widgetCreator.getTagConstraints(childProcessorClass);
 	    final String widgetProperty = (processorAttributes!=null?processorAttributes.widgetProperty():"");
+	    final String method = (processorAttributes!=null?processorAttributes.method():"");
 	    String tagName = (processorAttributes!=null?processorAttributes.tagName():"");
 
 	    
@@ -209,7 +214,7 @@ class ChildrenAnnotationScanner
 	    
 	    final String childName = getChildTagName(tagName, isAgregator, (isAnyWidget || isAnyWidgetType));
 
-	    ChildProcessor childProcessor = createChildProcessor(isAnyWidget, widgetProperty, lazyChecker, processor, supportedDevices, applyDeviceFilters);
+	    ChildProcessor childProcessor = createChildProcessor(isAnyWidget, widgetProperty, method, lazyChecker, processor, supportedDevices, applyDeviceFilters);
 	    if (!isAnyWidget && !isAnyWidgetType)
 	    {
 	    	childProcessor.setChildrenProcessor(scanChildren(childProcessorClass, isAgregator));
@@ -420,18 +425,19 @@ class ChildrenAnnotationScanner
     {
 		TagConstraints processorConstraints = this.widgetCreator.getTagConstraints(childProcessorClass);
 		final String widgetProperty = (processorConstraints!=null?processorConstraints.widgetProperty():"");
+		final String method = (processorConstraints!=null?processorConstraints.method():"");
 		String tagName = (processorConstraints!=null?processorConstraints.tagName():"");
 
 	    final boolean applyDeviceFilters = processorConstraints!=null?processorConstraints.applyDeviceFilters():false;
 		final boolean isAgregator = isAgregatorProcessor(childProcessorClass);
-		final boolean isAnyWidget = (AnyWidgetChildProcessor.class.isAssignableFrom(childProcessorClass));
-	    final boolean isAnyWidgetType = (processorConstraints!=null && (AnyWidget.class.isAssignableFrom(processorConstraints.type()) ||
-				   WidgetCreator.class.isAssignableFrom(processorConstraints.type())));
+		final boolean isAnyWidget = (AnyWidgetChildProcessor.class.isAssignableFrom(childProcessorClass)) ||
+	    							(processorConstraints!=null && (AnyWidget.class.isAssignableFrom(processorConstraints.type()) ||
+	    								WidgetCreator.class.isAssignableFrom(processorConstraints.type())));
 
 		TagChildLazyConditions lazyConditions = childProcessorClass.getAnnotation(TagChildLazyConditions.class);
 		final WidgetLazyChecker lazyChecker = (lazyConditions== null?null:LazyWidgets.initializeLazyChecker(lazyConditions));
 		
-		final String childName = getChildTagName(tagName, isAgregator, (isAnyWidget || isAnyWidgetType));
+		final String childName = getChildTagName(tagName, isAgregator, isAnyWidget);
 		
 		ChildrenProcessor childrenProcessor = new ChildrenProcessor(widgetCreator)
 		{
@@ -447,8 +453,8 @@ class ChildrenAnnotationScanner
 		};
 		scannedProcessors.put(processorClass.getCanonicalName(), childrenProcessor);
 		
-		ChildProcessor childProcessor = createChildProcessor(isAnyWidget, widgetProperty, lazyChecker, processor, supportedDevices, applyDeviceFilters);
-		if (!isAnyWidget && !isAnyWidgetType)
+		ChildProcessor childProcessor = createChildProcessor(isAnyWidget, widgetProperty, method, lazyChecker, processor, supportedDevices, applyDeviceFilters);
+		if (!isAnyWidget)
 		{
 			childProcessor.setChildrenProcessor(scanChildren(childProcessorClass, isAgregator));
 		}
