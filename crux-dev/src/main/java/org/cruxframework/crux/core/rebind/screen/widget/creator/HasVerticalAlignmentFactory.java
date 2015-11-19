@@ -21,12 +21,15 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.align.VerticalAl
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="verticalAlignment", type=VerticalAlignment.class, processor=VerticalAlignmentAttributeParser.class)
+	@TagAttribute(value="verticalAlignment", type=VerticalAlignment.class, widgetType=VerticalAlignmentConstant.class, 
+				processor=VerticalAlignmentAttributeParser.class)
 })	
 public interface HasVerticalAlignmentFactory<C extends WidgetCreatorContext>
 {

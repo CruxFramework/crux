@@ -27,7 +27,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributes({
-	@TagAttribute(value="directionEstimator", type=DirectionEstimator.class, defaultValue="defaultAlign", 
+	@TagAttribute(value="directionEstimator", type=DirectionEstimator.class, widgetType=com.google.gwt.i18n.shared.DirectionEstimator.class,
+			defaultValue="defaultAlign", 
 			processor=DirectionEstimatorAttributeParser.class,
 			description="Set the SelectionModel used by this widget. Accepts one value between:"
 				 		+ "<ul>"

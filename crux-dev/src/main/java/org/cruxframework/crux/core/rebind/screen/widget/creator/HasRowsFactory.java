@@ -33,7 +33,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
  */
 @TagAttributes({
 	@TagAttribute(value="rowCount", type=Integer.class),
-	@TagAttribute(value="estimatedRowCount", type=Integer.class, processor=HasRowsFactory.EstimatedRowCountProcessor.class)
+	@TagAttribute(value="estimatedRowCount", type=Integer.class, 
+				  processor=HasRowsFactory.EstimatedRowCountProcessor.class, supportsDataBinding=false)
 })
 @TagEvents({
 	@TagEvent(RangeChangeEvtBind.class), 

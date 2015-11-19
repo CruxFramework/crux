@@ -36,7 +36,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 @TagAttributes({
 	@TagAttribute(value="selectionModel", processor=HasDataFactory.SelectionModelProcessor.class, type=HasDataFactory.SelectionModel.class, required=true,
-				 description="Set the SelectionModel used by this widget. Accepts one value between:"
+				  supportsDataBinding=false, 
+				  description="Set the SelectionModel used by this widget. Accepts one value between:"
 				 		+ "<ul>"
 				 		+ "<li>multiSelection - allows multiple items to be selected</li>"
 				 		+ "<li>noSelection -  does not allow selection, but fires selection change events. Use this model if you want to know when a user selects an item, but do not want the view to update based on the selection</li>"

@@ -21,13 +21,16 @@ import org.cruxframework.crux.core.rebind.screen.widget.creator.align.Horizontal
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+
 /**
  * A helper class to help on HasHorizontalAlignment widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign", 
+	@TagAttribute(value="horizontalAlignment", type=HorizontalAlignment.class, widgetType=HorizontalAlignmentConstant.class, 
+		    defaultValue="defaultAlign", 
 			processor=HorizontalAlignmentAttributeParser.class, 
 			description="Sets the horizontal alignment.Accepts one value between:"
 					+ "<ul>"
