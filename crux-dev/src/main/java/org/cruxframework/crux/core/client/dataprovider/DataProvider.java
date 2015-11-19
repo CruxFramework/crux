@@ -237,10 +237,10 @@ public interface DataProvider<T>
 
 	/**
 	 * Remove an object from DataProvider
-	 * @param record
+	 * @param recordIndex
 	 * @return
 	 */
-	DataProviderRecord<T> remove(int record);
+	DataProviderRecord<T> remove(int recordIndex);
 	
 	/**
 	 * Reset DataProvider, as if it was never loaded before.
