@@ -17,7 +17,6 @@ package org.cruxframework.crux.core.client.permission;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -47,15 +46,6 @@ public class Permissions
 	public static void markAsUnauthorizedForEdition(HasEnabled widget)
 	{
 		getPermissionsUIHandler().markAsUnauthorizedForEdition(widget);
-	}
-	
-	/**
-	 * Notify the given widget that current user has no role for view its contents
-	 * @param widget
-	 */
-	public static void markAsUnauthorizedForViewing(IsWidget widget)
-	{
-		getPermissionsUIHandler().markAsUnauthorizedForViewing(widget);
 	}
 	
 	/**
