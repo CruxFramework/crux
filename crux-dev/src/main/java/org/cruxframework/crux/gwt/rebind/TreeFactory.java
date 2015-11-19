@@ -66,7 +66,8 @@ class TreeContext extends WidgetCreatorContext
 @TagAttributes({
 	@TagAttribute(value="tabIndex", type=Integer.class),
 	@TagAttribute(value="accessKey", type=Character.class),
-	@TagAttribute(value="openSelectedItem", type=Boolean.class, processor=TreeFactory.OpenSelectedItemAttributeParser.class),
+	@TagAttribute(value="openSelectedItem", type=Boolean.class, 
+				  processor=TreeFactory.OpenSelectedItemAttributeParser.class, supportsDataBinding=false),
 	@TagAttribute(value="focus", type=Boolean.class)
 })
 @TagAttributesDeclaration({

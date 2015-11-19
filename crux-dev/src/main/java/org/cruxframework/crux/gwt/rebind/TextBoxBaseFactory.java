@@ -18,16 +18,20 @@ package org.cruxframework.crux.gwt.rebind;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 
+import com.google.gwt.user.client.ui.TextBoxBase.TextAlignConstant;
+
 
 /**
  * Base class for text box based widgets
  * @author Thiago Bustamante
  *
  */
+@SuppressWarnings("deprecation")
 @TagAttributes({
 	@TagAttribute(value="value", dataBindingTargetsAttributes=false),
-	@TagAttribute(value="textAlignment", type=TextBoxBaseFactory.TextAlign.class, processor=TextBoxBaseFactory.TextAlignmentProcessor.class),
-	@TagAttribute(value="placeHolder", type=String.class, processor=TextBoxBaseFactory.PlaceHolderProcessor.class, supportsI18N=true)
+	@TagAttribute(value="textAlignment", type=TextBoxBaseFactory.TextAlign.class,
+				widgetType=TextAlignConstant.class,
+				processor=TextBoxBaseFactory.TextAlignmentProcessor.class)
 })
 public abstract class TextBoxBaseFactory extends ValueBoxBaseFactory
 {	

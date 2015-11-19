@@ -18,11 +18,10 @@ package org.cruxframework.crux.gwt.rebind;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
-import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueChangeHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
@@ -53,12 +52,12 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
 	@TagAttribute(value="tabIndex", type=Integer.class),
 	@TagAttribute(value="enabled", type=Boolean.class),
 	@TagAttribute(value="accessKey", type=Character.class),
-	@TagAttribute(value="focus", type=Boolean.class)
+	@TagAttribute(value="focus", type=Boolean.class),
+	@TagAttribute(value="value", processor=DateBoxFactory.ValueAttributeProcessor.class, dataBindingTargetsAttributes=false),
 })
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration("value"),
 	@TagAttributeDeclaration("pattern"),
-	@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class)
+	@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class, supportsDataBinding=false)
 })
 @TagEventsDeclaration({
 	@TagEventDeclaration("onLoadFormat")
@@ -70,42 +69,27 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
 public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext> 
        implements HasValueChangeHandlersFactory<WidgetCreatorContext>
 {
-	@Override
-	public void processAttributes(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
+	public static class ValueAttributeProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
-		super.processAttributes(out, context);
+		public ValueAttributeProcessor(WidgetCreator<?> widgetCreator)
+        {
+	        super(widgetCreator);
+        }
 
-		String widget = context.getWidget();
-		
-		String value = context.readWidgetProperty("value");
-		if (value != null && value.length() > 0)
-		{
+		@Override
+        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+        {
 			boolean reportError = true;
 			String reportFormatError = context.readWidgetProperty("reportFormatError");
 			if (reportFormatError != null && reportFormatError.length() > 0)
 			{
 				reportError = Boolean.parseBoolean(reportFormatError);
 			}
-			PropertyBindInfo binding = getObjectDataBinding(value, "value", true, context.getDataBindingProcessor());
-			if (binding != null)
-			{
-				context.registerObjectDataBinding(binding);
-				return;
-			}
-			else
-			{
-				ExpressionDataBinding expressionBinding = getExpressionDataBinding(value, "value", context.getDataBindingProcessor());
-				if (expressionBinding != null)
-				{
-					context.registerExpressionDataBinding(expressionBinding);
-					return;
-				}
-			}	
-			
+			String widget = context.getWidget();
+			String value = context.readWidgetProperty("value");
 			out.println(widget+".setValue("+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+"));");
-		}		
+        }
 	}
-	
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context)
 	{
