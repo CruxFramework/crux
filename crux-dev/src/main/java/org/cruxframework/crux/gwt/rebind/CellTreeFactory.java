@@ -38,7 +38,9 @@ import com.google.gwt.user.cellview.client.CellTree.SlideAnimation;
 	@TagAttribute(value="defaultColumnWidth", type=Integer.class), 
 	@TagAttribute(value="minimumColumnWidth", type=Integer.class), 
 	@TagAttribute(value="defaultNodeSize", type=Integer.class), 
-	@TagAttribute(value="animation", type=CellTreeFactory.Animations.class, processor=CellTreeFactory.AnimationAttributeProcessor.class) 
+	@TagAttribute(value="animation", type=CellTreeFactory.Animations.class, 
+				  processor=CellTreeFactory.AnimationAttributeProcessor.class, 
+				  supportsDataBinding=false) 
 })
 public class CellTreeFactory extends AbstractCellTreeFactory implements HasAnimationFactory<WidgetCreatorContext>, 
 													FocusableFactory<WidgetCreatorContext>

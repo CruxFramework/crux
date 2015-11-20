@@ -40,7 +40,8 @@ import com.google.gwt.media.client.Audio;
 	@TagAttribute(value="loop", type=Boolean.class, property="audioElement.loop"),
 	@TagAttribute(value="muted", type=Boolean.class, property="audioElement.muted"),
 	@TagAttribute(value="playbackRate", type=Double.class, property="audioElement.playbackRate"),
-	@TagAttribute(value="preload", type=AudioFactory.PreLoadType.class, processor=AudioFactory.PreLoadAttributeProcessor.class),
+	@TagAttribute(value="preload", type=AudioFactory.PreLoadType.class, 
+				 processor=AudioFactory.PreLoadAttributeProcessor.class, supportsDataBinding=false),
 	@TagAttribute(value="src", type=String.class, property="audioElement.src", supportsResources=true),
 	@TagAttribute(value="volume", type=Double.class, property="audioElement.volume")
 })

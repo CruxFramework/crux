@@ -41,8 +41,10 @@ import com.google.gwt.user.client.ui.Widget;
 @DeclarativeFactory(id="scrollPanel", library="gwt", targetWidget=ScrollPanel.class)
 @TagAttributes({
 	@TagAttribute(value="alwaysShowScrollBars", type=Boolean.class),
-	@TagAttribute(value="verticalScrollPosition", type=ScrollPanelFactory.VerticalScrollPosition.class, processor=ScrollPanelFactory.VerticalScrollPositionAttributeParser.class),
-	@TagAttribute(value="horizontalScrollPosition", type=ScrollPanelFactory.HorizontalScrollPosition.class, processor=ScrollPanelFactory.HorizontalScrollPositionAttributeParser.class),
+	@TagAttribute(value="verticalScrollPosition", type=ScrollPanelFactory.VerticalScrollPosition.class, 
+				  processor=ScrollPanelFactory.VerticalScrollPositionAttributeParser.class, supportsDataBinding=false),
+	@TagAttribute(value="horizontalScrollPosition", type=ScrollPanelFactory.HorizontalScrollPosition.class, 
+				  processor=ScrollPanelFactory.HorizontalScrollPositionAttributeParser.class, supportsDataBinding=false),
 	@TagAttribute(value="ensureVisible", type=WidgetReference.class, 
 				  widgetType=Widget.class, method="ensureVisible",  
 				  processingTime=ProcessingTime.afterAllWidgetsOnView)

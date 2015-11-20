@@ -115,7 +115,7 @@ public abstract class AbstractTabPanelFactory extends CompositeFactory<TabPanelC
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static abstract class AbstractWidgetTitleProcessor extends WidgetChildProcessor<TabPanelContext> 
 	{
 		@Override
@@ -127,7 +127,7 @@ public abstract class AbstractTabPanelFactory extends CompositeFactory<TabPanelC
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static abstract class AbstractWidgetContentProcessor extends WidgetChildProcessor<TabPanelContext> 
 	{
 		@Override

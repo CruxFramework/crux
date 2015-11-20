@@ -102,7 +102,7 @@ public abstract class GWTFixImage
 						@Override
 						public void callHowToImplementInnerSetVisibleRect() 
 						{
-							image.setUrl(Screen.rewriteUrl(url));		
+							image.setUrl(url);		
 						}
 					};
 				}

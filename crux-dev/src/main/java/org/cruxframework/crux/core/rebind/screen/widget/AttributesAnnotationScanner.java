@@ -63,33 +63,11 @@ class AttributesAnnotationScanner
 	}
 	
 	/**
-	 * @param attr
-	 * @return
-	 */
-	private AttributeCreator createAttributeProcessorWithParser(TagAttribute attr)
-    {
-		final String attrName = attr.value();
-		Class<?> processorClass = attr.processor();
-		final Method method = getAtributeProcessorMethod(processorClass);
-		final AttributeProcessor<?> processor;
-        try
-        {
-        	processor = (AttributeProcessor<?>) processorClass.getConstructor(new Class<?>[]{WidgetCreator.class}).newInstance(widgetCreator);
-        }
-        catch (Exception e)
-        {
-	        throw new CruxGeneratorException("Error creating AttibuteProcessor.", e);
-        }
-		
-		return doCreateAttributeProcessorWithParser(attrName, method, processor, attr.processingTime(), attr.supportedDevices());
-    }	
-
-	/**
 	 * @param factoryClass
 	 * @param attr
 	 * @return
 	 */
-	private AttributeCreator createAutomaticAttributeProcessor(Class<?> factoryClass, TagAttribute attr)
+	private AttributeCreator createAttributeProcessor(Class<?> factoryClass, TagAttribute attr)
     {
 		final String attrName = attr.value();
 		final String setterMethod;
@@ -122,211 +100,114 @@ class AttributesAnnotationScanner
 		}
 		
 		Class<?> type = attr.type();
-		Class<?> widgetType = attr.widgetType().equals(SameAsType.class)?attr.type():attr.widgetType();
-		if (widgetType == null ||  !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, widgetType)))
+		Class<?> widgetType = attr.widgetType().equals(SameAsType.class)?type:attr.widgetType();
+
+    	final boolean hasProcessor = !(AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()));
+		if (!hasProcessor && !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, widgetType)))
 		{//TODO: implement method check for nested property.
 			throw new CruxGeneratorException("Error generating widget factory. Widget does not have a valid setter for attribute: ["+attrName+"].");
 		}
-		final boolean isStringExpression = String.class.isAssignableFrom(widgetType);
-		final boolean supportsI18N = isStringExpression && attr.supportsI18N();
-		final boolean supportsDataBinding = attr.supportsDataBinding();
-		final boolean dataBindingTargetsAttributes = attr.dataBindingTargetsAttributes();
-		final boolean isEnumExpression = widgetType.isEnum();
-		final boolean isPrimitiveExpression = widgetType.isPrimitive();
-		final boolean supportsResources = attr.supportsResources();
 		final boolean isWidgetReferencedType = WidgetReference.class.isAssignableFrom(type);
-		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, widgetType.getCanonicalName(), 
-												   isStringExpression, supportsI18N, supportsResources, 
-												   supportsDataBinding, isEnumExpression, 
-												   isPrimitiveExpression, attr.supportedDevices(),
-												   attr.processingTime(),
-												   widgetPropertyPath, dataBindingTargetsAttributes, 
-												   expressionDataBindingOnly, isWidgetReferencedType);
+		return doCreateAttributeProcessor(attrName, setterMethod, widgetType, 
+												   widgetPropertyPath, 
+												   expressionDataBindingOnly, isWidgetReferencedType, attr);
     }
 
 	/**
-	 * @param attrName
-	 * @param method
-	 * @param processor
-	 * @return
-	 */
-	private AttributeCreator doCreateAttributeProcessorWithParser(final String attrName, final Method method, 
-																  final AttributeProcessor<?> processor, 
-																  final ProcessingTime processingTime,
-																  final Device[] supportedDevices)
-    {
-	    return new AttributeCreator()
-		{
-			public void createAttribute(SourcePrinter out, WidgetCreatorContext context)
-			{
-				if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
-				{
-					String attrValue = context.readWidgetProperty(attrName);
-					if (!StringUtils.isEmpty(attrValue))
-					{
-						try
-						{
-							switch (processingTime)
-	                        {
-								case afterAllWidgetsOnView:
-									maybePrintWidgetDeclaration(context);
-									
-									method.invoke(processor, widgetCreator.getPostProcessingPrinter(), context, attrValue);
-								break;
-								default:
-									method.invoke(processor, out, context, attrValue);
-								break;
-							}
-						}
-						catch (Exception e)
-						{
-
-							throw new CruxGeneratorException("Error running attribute processor for attribute ["+attrName+"], " +
-									"from widget ["+context.getWidgetId()+"], on screen ["+widgetCreator.getView().getId()+"].", e);
-						}
-					}
-				}
-			}
-		};
-    }
-
-	/**
+	 * 
 	 * @param attrName
 	 * @param setterMethod
-	 * @param typeName
-	 * @param isStringExpression
-	 * @param supportsI18N
-	 * @param isEnumExpression
-	 * @param isPrimitiveExpression
-	 * @param widgetPropertyPath 
-	 * @param expressionDataBindingOnly 
-	 * @param isWidgetReferencedType 
+	 * @param widgetType
+	 * @param widgetPropertyPath
+	 * @param expressionDataBindingOnly
+	 * @param isWidgetReferencedType
+	 * @param attr
 	 * @return
 	 */
-	private AttributeCreator doCreateAutomaticAttributeProcessor(final String attrName, final String setterMethod, 
-																 final String typeName, final boolean isStringExpression, 
-																 final boolean supportsI18N, final boolean supportsResources, 
-																 final boolean supportsDataBinding, final boolean isEnumExpression, 
-																 final boolean isPrimitiveExpression, final Device[] supportedDevices,
-																 final ProcessingTime processingTime,
+	private AttributeCreator doCreateAttributeProcessor(final String attrName, final String setterMethod, 
+																 Class<?> widgetType, 
 																 final String widgetPropertyPath, 
-																 final boolean dataBindingTargetsAttributes, 
-																 final boolean expressionDataBindingOnly, final boolean isWidgetReferencedType)
+																 final boolean expressionDataBindingOnly, final boolean isWidgetReferencedType, 
+																 TagAttribute attr)
     {
-	    return new AttributeCreator()
-		{
-			public void createAttribute(SourcePrinter out, WidgetCreatorContext context)
-			{
-				if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
-				{
-					String attrValue = context.readWidgetProperty(attrName);
-					
-					if (supportsDataBinding && !isWidgetReferencedType)
-					{
-						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes, 
-																			context.getDataBindingProcessor());
-						if (!expressionDataBindingOnly && binding != null)
-						{
-							context.registerObjectDataBinding(binding);
-							return;
-						}
-						else
-						{
-							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetCreator.getWidgetClassName(),
-																			widgetPropertyPath, null, null,
-																			context.getDataBindingProcessor(), setterMethod, typeName);
-							if (expressionBinding != null)
-							{
-								context.registerExpressionDataBinding(expressionBinding);
-								return;
-							}
-						}	
-					}
-					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, 
-													  isPrimitiveExpression, isWidgetReferencedType, attrValue);
-					if (expression != null)
-					{
-						switch (processingTime)
-                        {
-							case afterAllWidgetsOnView:
-								maybePrintWidgetDeclaration(context);
-								
-								widgetCreator.printlnPostProcessing(context.getWidget()+"."+setterMethod+"("+expression+");");
-							break;
-							default:
-								out.println(context.getWidget()+"."+setterMethod+"("+expression+");");
-							break;
-						}
-					}
-				}
-			}
+        try
+        {
+        	final boolean hasProcessor = !(AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()));
+        	Class<?> processorClass = (hasProcessor?attr.processor():null);
+        	final Method method = getAtributeProcessorMethod(processorClass);
+        	final AttributeProcessor<?> processor = hasProcessor
+        											?(AttributeProcessor<?>) processorClass.getConstructor(new Class<?>[]{WidgetCreator.class}).newInstance(widgetCreator)
+        											:null;
+        		
+    		final boolean supportsDataBinding = attr.supportsDataBinding();
+    		final boolean isStringExpression = String.class.isAssignableFrom(widgetType);
+    		final boolean supportsI18N = isStringExpression && attr.supportsI18N();
+    		final boolean dataBindingTargetsAttributes = attr.dataBindingTargetsAttributes();
+    		final boolean isEnumExpression = widgetType.isEnum();
+    		final boolean isPrimitiveExpression = widgetType.isPrimitive();
+    		final boolean supportsResources = attr.supportsResources();
+    		final String typeName = widgetType.getCanonicalName();
+    		final Device[] supportedDevices = attr.supportedDevices();
+    		final ProcessingTime processingTime = attr.processingTime();
+        	
+        	return new AttributeCreator()
+        	{
+        		public void createAttribute(SourcePrinter out, WidgetCreatorContext context)
+        		{
+        			if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
+        			{
+        				String attrValue = context.readWidgetProperty(attrName);
 
-			private String getExpression(WidgetCreatorContext context, 
-										 String typeName, 
-										 boolean isStringExpression, 
-										 boolean isEnumExpression, boolean isPrimitiveExpression, 
-										 boolean isWidgetReferencedType, String attrValue)
-            {
-				String expression = null;
-
-				if (StringUtils.isEmpty(attrValue))
-				{
-					expression = null;
-				}
-				else if (isWidgetReferencedType)
-				{
-					org.cruxframework.crux.core.rebind.screen.Widget widget = widgetCreator.getView().getWidget(attrValue);
-					if (widget == null)
-					{
-						throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
-														"] on the view ["+widgetCreator.getView().getId()+"]");
-					}
-					
-					if (!typeName.equals(Widget.class.getCanonicalName()))
-					{
-						expression = "(" + typeName + ")" +widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
-					}
-					else
-					{
-						expression = widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
-					}
-				}
-				else if (supportsI18N)
-				{
-					expression = widgetCreator.getDeclaredMessage(attrValue);
-				}
-				else if (supportsResources)
-				{
-					expression = widgetCreator.getResourceAccessExpression(attrValue);
-				}
-				else if (isStringExpression)
-				{
-					expression = EscapeUtils.quote(attrValue);
-				}
-				else if (isEnumExpression)
-				{
-					expression = typeName+".valueOf("+EscapeUtils.quote(attrValue)+")";
-				}
-				else if (isPrimitiveExpression)
-				{
-					expression = "("+typeName+")"+attrValue;
-				}
-				else
-				{
-					expression = attrValue;
-				}
-			    //TODO: checar o tipo da expressao... se for boolean, integer, etc...fazer o parseXxx, para garantir que eh um valor valido... senao o erro gerado eh de dificil compreensao
-				return expression;
-            }
-		};
+        				if (supportsDataBinding && !isWidgetReferencedType)
+        				{
+        					PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes, 
+        						context.getDataBindingProcessor());
+        					if (!expressionDataBindingOnly && binding != null)
+        					{
+        						context.registerObjectDataBinding(binding);
+        						return;
+        					}
+        					else
+        					{
+        						ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetCreator.getWidgetClassName(),
+        							widgetPropertyPath, null, null,
+        							context.getDataBindingProcessor(), setterMethod, typeName);
+        						if (expressionBinding != null)
+        						{
+        							context.registerExpressionDataBinding(expressionBinding);
+        							return;
+        						}
+        					}	
+        				}
+        				if (hasProcessor)
+        				{
+        					invokeAttributeProcessor(attrName, method, processor, processingTime, out, context, attrValue);
+        				}
+        				else
+        				{
+        					printAttributeExpression(setterMethod, isWidgetReferencedType, isStringExpression, supportsI18N, isEnumExpression,
+                                isPrimitiveExpression, supportsResources, typeName, processingTime, out, context, attrValue);
+        				}
+        			}
+        		}
+        	};
+        }
+        catch (Exception e)
+        {
+        	throw new CruxGeneratorException("Error creating AttibuteProcessor.", e);
+        }
     }
-	
+
 	/**
 	 * @param processorClass
 	 * @return
 	 */
 	private Method getAtributeProcessorMethod(Class<?> processorClass)
     {
+		if (processorClass == null)
+		{
+			return null;
+		}
 	    try 
 	    {
 			return processorClass.getMethod("processAttributeInternal", new Class<?>[]{SourcePrinter.class, WidgetCreatorContext.class, String.class});
@@ -334,6 +215,93 @@ class AttributesAnnotationScanner
 	    catch (Exception e) 
 		{
 			return null;
+		}
+    }
+
+	private String getExpression(WidgetCreatorContext context, 
+		String typeName, 
+		boolean isStringExpression, 
+		boolean isEnumExpression, boolean isPrimitiveExpression, 
+		boolean isWidgetReferencedType, String attrValue, 
+		boolean supportsI18N, boolean supportsResources)
+	{
+		String expression = null;
+
+		if (StringUtils.isEmpty(attrValue))
+		{
+			expression = null;
+		}
+		else if (isWidgetReferencedType)
+		{
+			org.cruxframework.crux.core.rebind.screen.Widget widget = widgetCreator.getView().getWidget(attrValue);
+			if (widget == null)
+			{
+				throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
+					"] on the view ["+widgetCreator.getView().getId()+"]");
+			}
+
+			if (!typeName.equals(Widget.class.getCanonicalName()))
+			{
+				expression = "(" + typeName + ")" +widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
+			}
+			else
+			{
+				expression = widgetCreator.getViewVariable() + ".getWidget(" + EscapeUtils.quote(attrValue) + ")";
+			}
+		}
+		else if (supportsI18N)
+		{
+			expression = widgetCreator.getDeclaredMessage(attrValue);
+		}
+		else if (supportsResources)
+		{
+			expression = widgetCreator.getResourceAccessExpression(attrValue);
+		}
+		else if (isStringExpression)
+		{
+			expression = EscapeUtils.quote(attrValue);
+		}
+		else if (isEnumExpression)
+		{
+			expression = typeName+".valueOf("+EscapeUtils.quote(attrValue)+")";
+		}
+		else if (isPrimitiveExpression)
+		{
+			expression = "("+typeName+")"+attrValue;
+		}
+		else
+		{
+			expression = attrValue;
+		}
+		//TODO: checar o tipo da expressao... se for boolean, integer, etc...fazer o parseXxx, para garantir que eh um valor valido... senao o erro gerado eh de dificil compreensao
+		return expression;
+	}
+	
+	private void invokeAttributeProcessor(final String attrName, final Method method, final AttributeProcessor<?> processor,
+        final ProcessingTime processingTime, SourcePrinter out, WidgetCreatorContext context, String attrValue)
+    {
+		if (!StringUtils.isEmpty(attrValue))
+		{
+			try
+			{
+				switch (processingTime)
+				{
+					case afterAllWidgetsOnView:
+						maybePrintWidgetDeclaration(context);
+						
+						method.invoke(processor, widgetCreator.getPostProcessingPrinter(), context, attrValue);
+						break;
+					default:
+						method.invoke(processor, out, context, attrValue);
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				
+				throw new CruxGeneratorException("Error running attribute processor for attribute ["+attrName+"], " +
+					"from widget ["+context.getWidgetId()+"], on screen ["+widgetCreator.getView().getId()+"].", e);
+			}
 		}
     }
 
@@ -359,6 +327,29 @@ class AttributesAnnotationScanner
         	widgetCreator.printlnPostProcessing(widgetDecl);
         }
     }
+
+	private void printAttributeExpression(final String setterMethod, final boolean isWidgetReferencedType, final boolean isStringExpression,
+        final boolean supportsI18N, final boolean isEnumExpression, final boolean isPrimitiveExpression,
+        final boolean supportsResources, final String typeName, final ProcessingTime processingTime, SourcePrinter out,
+        WidgetCreatorContext context, String attrValue)
+    {
+        String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, 
+        	isPrimitiveExpression, isWidgetReferencedType, attrValue, supportsI18N, supportsResources);
+        if (expression != null)
+        {
+        	switch (processingTime)
+        	{
+        		case afterAllWidgetsOnView:
+        			maybePrintWidgetDeclaration(context);
+
+        			widgetCreator.printlnPostProcessing(context.getWidget()+"."+setterMethod+"("+expression+");");
+        			break;
+        		default:
+        			out.println(context.getWidget()+"."+setterMethod+"("+expression+");");
+        			break;
+        	}
+        }
+    }
 	
 	/**
 	 * @param factoryClass
@@ -381,14 +372,7 @@ class AttributesAnnotationScanner
 						added.add(attrName);
 						if (isValidName(attrName))
 						{
-							if (AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()))
-							{
-								attributes.add(createAutomaticAttributeProcessor(factoryClass, attr));
-							}
-							else
-							{
-								attributes.add(createAttributeProcessorWithParser(attr));
-							}
+							attributes.add(createAttributeProcessor(factoryClass, attr));
 						}
 						else
 						{

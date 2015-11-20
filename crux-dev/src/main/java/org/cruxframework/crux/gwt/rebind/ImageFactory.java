@@ -42,9 +42,9 @@ import com.google.gwt.user.client.ui.Image;
  */
 @DeclarativeFactory(id="image", library="gwt", targetWidget=Image.class)
 @TagAttributes({
-	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true),
+	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true, supportsDataBinding=true),
 	@TagAttribute(value="altText"),
-	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class)
+	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class, supportsDataBinding=false)
 })	
 @TagEvents({
 	@TagEvent(LoadEvtBind.class),
@@ -71,11 +71,11 @@ public class ImageFactory extends WidgetCreator<WidgetCreatorContext>
 	        {
 	        	String resource = ViewFactoryCreator.createVariableName("resource");
 	        	out.println(ImageResource.class.getCanonicalName()+" "+resource+" = "+getWidgetCreator().getResourceAccessExpression(property)+";");
-	        	out.println(context.getWidget()+".setUrlAndVisibleRect(Screen.rewriteUrl("+resource+".getSafeUri().asString()), "+resource+".getLeft(), "+resource+".getTop(), "+resource+".getWidth(), "+resource+".getHeight());");
+	        	out.println(context.getWidget()+".setUrlAndVisibleRect("+resource+".getSafeUri().asString(), "+resource+".getLeft(), "+resource+".getTop(), "+resource+".getWidth(), "+resource+".getHeight());");
 	        }
 	        else
 	        {
-	        	out.println(context.getWidget()+".setUrl(Screen.rewriteUrl("+EscapeUtils.quote(property)+"));");
+	        	out.println(context.getWidget()+".setUrl("+EscapeUtils.quote(property)+");");
 	        }
         }
 	}

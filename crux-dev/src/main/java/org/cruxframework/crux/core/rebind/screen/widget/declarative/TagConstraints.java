@@ -37,6 +37,7 @@ public @interface TagConstraints
 	String description() default "";
 	Class<?> type() default Void.class;
 	String widgetProperty() default "";
-	boolean inheritsParentAttributes() default false;
+	String method() default "";
 	boolean applyDeviceFilters() default false;
+	boolean autoProcessingEnabled() default true;
 }

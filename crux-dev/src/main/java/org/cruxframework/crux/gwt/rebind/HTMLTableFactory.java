@@ -189,7 +189,7 @@ public abstract class HTMLTableFactory <C extends HTMLTableFactoryContext> exten
 	@TagConstraints(tagName="widget")
 	public static abstract class CellWidgetProcessor<C extends HTMLTableFactoryContext> extends WidgetChildProcessor<C> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetProcessor<C extends HTMLTableFactoryContext> extends WidgetChildProcessor<C> 
 	{
 		@Override

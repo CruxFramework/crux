@@ -66,7 +66,8 @@ class TreeContext extends WidgetCreatorContext
 @TagAttributes({
 	@TagAttribute(value="tabIndex", type=Integer.class),
 	@TagAttribute(value="accessKey", type=Character.class),
-	@TagAttribute(value="openSelectedItem", type=Boolean.class, processor=TreeFactory.OpenSelectedItemAttributeParser.class),
+	@TagAttribute(value="openSelectedItem", type=Boolean.class, 
+				  processor=TreeFactory.OpenSelectedItemAttributeParser.class, supportsDataBinding=false),
 	@TagAttribute(value="focus", type=Boolean.class)
 })
 @TagAttributesDeclaration({
@@ -189,7 +190,7 @@ public class TreeFactory extends WidgetCreator<TreeContext>
 	})
 	public static class WidgetCaptionProcessor extends WidgetChildProcessor<TreeContext> {}	
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetCaptionWidgetProcessor extends WidgetChildProcessor<TreeContext>
 	{
 		@Override

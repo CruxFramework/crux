@@ -37,7 +37,11 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
  */
 @TagAttributes({
 	@TagAttribute(value="readOnly", type=Boolean.class),
-	@TagAttribute(value="alignment", type=ValueBoxBaseFactory.TextAlign.class, processor=ValueBoxBaseFactory.TextAlignmentProcessor.class)
+	@TagAttribute(value="alignment", type=ValueBoxBaseFactory.TextAlign.class, widgetType=TextAlignment.class,
+				  processor=ValueBoxBaseFactory.TextAlignmentProcessor.class),
+	@TagAttribute(value="placeHolder", type=String.class, 
+				  processor=TextBoxBaseFactory.PlaceHolderProcessor.class, supportsI18N=true, supportsDataBinding=false)
+
 })
 public abstract class ValueBoxBaseFactory extends FocusWidgetFactory<WidgetCreatorContext>
                 implements HasChangeHandlersFactory<WidgetCreatorContext>, HasNameFactory<WidgetCreatorContext>, 

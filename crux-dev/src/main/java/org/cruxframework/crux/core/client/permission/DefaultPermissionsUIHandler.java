@@ -37,12 +37,6 @@ public class DefaultPermissionsUIHandler implements PermissionsUIHandler
     }
 
 	@Override
-    public void markAsUnauthorizedForViewing(IsWidget widget)
-    {
-		widget.asWidget().setVisible(false);
-    }
-	
-	@Override
 	public void markAsUnauthorizedForViewing(UIObject uiObject)
 	{
 		uiObject.setVisible(false);

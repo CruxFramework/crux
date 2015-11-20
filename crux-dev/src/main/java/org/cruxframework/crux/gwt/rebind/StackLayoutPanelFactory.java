@@ -147,7 +147,7 @@ public class StackLayoutPanelFactory extends WidgetCreator<StackLayoutContext>
 		}
 	}
 
-	@TagConstraints(tagName="widget", type=AnyWidget.class)
+	@TagConstraints(tagName="widget", type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class StackHeaderWidgetProcessor extends WidgetChildProcessor<StackLayoutContext>
 	{
 		@Override
@@ -169,7 +169,7 @@ public class StackLayoutPanelFactory extends WidgetCreator<StackLayoutContext>
 	})
 	public static class StackContentProcessor extends WidgetChildProcessor<StackLayoutContext> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class StackContentWidgetProcessor extends WidgetChildProcessor<StackLayoutContext>
 	{
 		@Override

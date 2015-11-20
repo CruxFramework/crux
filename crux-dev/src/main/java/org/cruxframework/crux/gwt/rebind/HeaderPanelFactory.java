@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.screen.RequiresResizeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
@@ -37,7 +36,7 @@ import com.google.gwt.user.client.ui.HeaderPanel;
 	@TagChild(HeaderPanelFactory.ContentProcessor.class),
 	@TagChild(HeaderPanelFactory.FooterProcessor.class)
 })
-public class HeaderPanelFactory extends ComplexPanelFactory<WidgetCreatorContext> implements RequiresResizeFactory
+public class HeaderPanelFactory extends ComplexPanelFactory<WidgetCreatorContext> 
 {
 	@TagConstraints(tagName="header")
 	@TagChildren({

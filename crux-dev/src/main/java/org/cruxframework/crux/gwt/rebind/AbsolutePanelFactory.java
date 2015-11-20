@@ -72,7 +72,7 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanelConte
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class AbsoluteWidgetProcessor extends WidgetChildProcessor<AbsolutePanelContext> 
 	{
 		@Override

@@ -36,7 +36,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  *
  */
 @TagAttributes({
-	@TagAttribute(value="dataProvider", processor=HasPagedDataProviderFactory.DataProviderProcessor.class, required=true)
+	@TagAttribute(value="dataProvider", processor=HasPagedDataProviderFactory.DataProviderProcessor.class, required=true, supportsDataBinding=false)
 })
 @TagEvents({
 	@TagEvent(PageEvtBind.class)

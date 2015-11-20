@@ -115,7 +115,7 @@ public abstract class CellPanelFactory <C extends CellPanelContext> extends Comp
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	static class AbstractCellWidgetProcessor<C extends CellPanelContext> extends WidgetChildProcessor<C> 
 	{
 		@Override
