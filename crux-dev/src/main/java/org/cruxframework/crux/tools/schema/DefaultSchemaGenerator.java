@@ -67,6 +67,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.cruxframework.crux.core.utils.ViewUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
@@ -1883,6 +1884,10 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	protected String getSchemaType(Class<?> type, String library, boolean supportsBinding)
 	{
 		if (String.class.isAssignableFrom(type))
+		{
+			return "xs:string";
+		}
+		else if (WidgetReference.class.isAssignableFrom(type))
 		{
 			return "xs:string";
 		}
