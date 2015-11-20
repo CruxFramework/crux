@@ -81,7 +81,7 @@ public abstract class AbstractDockLayoutPanelFactory<C extends DockLayoutPanelCo
 	}
 	
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class AbstractDockPanelWidgetProcessor<C extends DockLayoutPanelContext> extends WidgetChildProcessor<C> 
 	{
 		@Override

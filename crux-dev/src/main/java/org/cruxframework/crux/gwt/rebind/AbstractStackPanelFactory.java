@@ -59,7 +59,7 @@ public abstract class AbstractStackPanelFactory extends ComplexPanelFactory<Abst
 		}
 	}
 	
-	@TagConstraints(minOccurs="0", type=AnyWidget.class)
+	@TagConstraints(minOccurs="0", type=AnyWidget.class, autoProcessingEnabled=false)
 	public abstract static class AbstractContentWidgetProcessor extends WidgetChildProcessor<AbstractStackPanelFactoryContext> 
 	{
 		@Override

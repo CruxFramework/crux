@@ -100,7 +100,7 @@ public class DockPanelFactory extends CellPanelFactory<DockPanelContext>
 		}
 	}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class DockWidgetProcessor extends AbstractCellWidgetProcessor<DockPanelContext> 
 	{
 		@Override

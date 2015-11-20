@@ -127,7 +127,7 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanelContex
 	})	
 	public static class WidgetTitleTabProcessor extends WidgetChildProcessor<TabLayoutPanelContext> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetTitleProcessor extends WidgetChildProcessor<TabLayoutPanelContext> 
 	{
 		@Override
@@ -148,7 +148,7 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanelContex
 	})	
 	public static class TabWidgetProcessor extends WidgetChildProcessor<TabLayoutPanelContext> {}
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetContentProcessor extends WidgetChildProcessor<TabLayoutPanelContext> 
 	{
 		@Override

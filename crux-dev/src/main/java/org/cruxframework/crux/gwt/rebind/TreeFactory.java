@@ -190,7 +190,7 @@ public class TreeFactory extends WidgetCreator<TreeContext>
 	})
 	public static class WidgetCaptionProcessor extends WidgetChildProcessor<TreeContext> {}	
 
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class WidgetCaptionWidgetProcessor extends WidgetChildProcessor<TreeContext>
 	{
 		@Override

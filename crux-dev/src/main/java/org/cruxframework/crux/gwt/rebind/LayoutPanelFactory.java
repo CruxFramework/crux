@@ -119,7 +119,7 @@ public class LayoutPanelFactory extends AbstractLayoutPanelFactory<LayoutPanelCo
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public static class LayoutPanelWidgetProcessor extends WidgetChildProcessor<LayoutPanelContext> 
 	{
 		@Override

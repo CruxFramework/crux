@@ -101,7 +101,7 @@ public abstract class AbstractTabBarFactory extends CompositeFactory<TabBarConte
 		}
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, autoProcessingEnabled=false)
 	public abstract static class AbstractWidgetProcessor extends AbstractTabTitleProcessor
 	{
 		@Override
