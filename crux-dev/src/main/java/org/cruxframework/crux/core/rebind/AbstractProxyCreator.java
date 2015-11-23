@@ -18,13 +18,9 @@ package org.cruxframework.crux.core.rebind;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cruxframework.crux.core.client.Legacy;
-import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
 
-import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.CachedGeneratorResult;
-import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -193,34 +189,6 @@ public abstract class AbstractProxyCreator
 	 * @return a sourceWriter for the proxy class
 	 */
 	protected abstract SourcePrinter getSourcePrinter();
-	
-	/**
-	 * @return
-	 */
-	@Deprecated
-	@Legacy
-	protected boolean isCrux2OldInterfacesCompatibilityEnabled()
-    {//TODO remover isso
-		String value;
-		try
-        {
-	        ConfigurationProperty property = context.getGeneratorContext().getPropertyOracle().getConfigurationProperty("enableCrux2OldInterfacesCompatibility");
-	        List<String> values = property.getValues();
-	        if (values != null && values.size() > 0)
-	        {
-	        	value = values.get(0);
-	        }
-	        else
-	        {
-	            value = ConfigurationFactory.getConfigurations().enableCrux2OldInterfacesCompatibility();
-	        }
-        }
-        catch (BadPropertyValueException e)
-        {
-            value = ConfigurationFactory.getConfigurations().enableCrux2OldInterfacesCompatibility();
-        }
-        return Boolean.parseBoolean(value);
-    }
 	
 	/**
 	 * @param w

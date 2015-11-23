@@ -18,8 +18,9 @@ package org.cruxframework.crux.core.config;
 import org.cruxframework.crux.core.i18n.DefaultServerMessage;
 
 /**
- * Contains Crux configuration properties
+ * Contains Crux configuration properties.
  * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public interface Crux 
@@ -34,14 +35,6 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String disableRefreshByDefault();
 		
-	//TODO: Vintage Crux: Remove it!
-	@DefaultServerMessage("true")
-	String enableChildrenWindowsDebug();
-	
-	//TODO: Vintage Crux: Remove it!
-	@DefaultServerMessage("false")
-	String enableCrux2OldInterfacesCompatibility();
-	
 	@DefaultServerMessage("true")
 	String enableGenerateHTMLDoctype();
 
@@ -51,7 +44,6 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String enableRestHostPageBaseURL();
 
-	//Add in documentation!
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.state.ETagHandlerImpl")
 	String eTagHandler();
 
@@ -84,10 +76,19 @@ public interface Crux
 
 	@DefaultServerMessage("")
 	String scanIgnoredPackages();
+	
 	@DefaultServerMessage("false")
 	String sendCruxViewNameOnClientRequests();
+	
 	@DefaultServerMessage("org.cruxframework.crux.core.server.dispatch.ServiceFactoryImpl")
 	String serviceFactory();
+	
+	@DefaultServerMessage("false")
+	String useCompileTimeClassScanningForDevelopment();	
+	
+	@DefaultServerMessage("false")
+	String useHTML5XSD();
+	
 	void setDisableRefreshByDefault(String value);
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setEnableCrux2OldInterfacesCompatibility(Boolean value);
@@ -103,12 +104,5 @@ public interface Crux
 	void setScanIgnoredPackages(String value);
 	void setSendCruxViewNameOnClientRequests(Boolean value);
 	void setServiceFactory(String value);
-
 	void setUseCompileTimeClassScanning(Boolean value);
-	@DefaultServerMessage("false")
-	String useCompileTimeClassScanningForDevelopment();	
-	
-	//Add in documentation!
-	@DefaultServerMessage("false")
-	String useHTML5XSD();
 }
