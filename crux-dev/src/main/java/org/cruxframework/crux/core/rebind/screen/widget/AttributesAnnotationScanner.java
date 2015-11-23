@@ -46,7 +46,7 @@ class AttributesAnnotationScanner
 {
 	private final WidgetCreator<?> widgetCreator;
 	
-	AttributesAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
+	AttributesAnnotationScanner(WidgetCreator<?> widgetCreator)
     {
 		this.widgetCreator = widgetCreator;
     }
@@ -58,7 +58,7 @@ class AttributesAnnotationScanner
 	List<AttributeCreator> scanAttributes() throws CruxGeneratorException
 	{
 		ArrayList<AttributeCreator> attributes = new ArrayList<AttributeCreator>();
-		scanAttributes(widgetCreator.getClass(), attributes, new HashSet<String>());
+		scanAttributes(widgetCreator.getClass(), widgetCreator.getWidgetClass(), attributes, new HashSet<String>());
 		return attributes;
 	}
 	
@@ -67,7 +67,7 @@ class AttributesAnnotationScanner
 	 * @param attr
 	 * @return
 	 */
-	private AttributeCreator createAttributeProcessor(Class<?> factoryClass, TagAttribute attr)
+	private AttributeCreator createAttributeProcessor(Class<?> targetUIClass, TagAttribute attr)
     {
 		final String attrName = attr.value();
 		final String setterMethod;
@@ -103,7 +103,7 @@ class AttributesAnnotationScanner
 		Class<?> widgetType = attr.widgetType().equals(SameAsType.class)?type:attr.widgetType();
 
     	final boolean hasProcessor = !(AttributeProcessor.NoProcessor.class.isAssignableFrom(attr.processor()));
-		if (!hasProcessor && !(nestedProperty || ClassUtils.hasValidSetter(widgetCreator.getWidgetClass(), setterMethod, widgetType)))
+		if (!hasProcessor && !(nestedProperty || ClassUtils.hasValidSetter(targetUIClass, setterMethod, widgetType)))
 		{//TODO: implement method check for nested property.
 			throw new CruxGeneratorException("Error generating widget factory. Widget does not have a valid setter for attribute: ["+attrName+"].");
 		}
@@ -357,7 +357,7 @@ class AttributesAnnotationScanner
 	 * @param added
 	 * @throws CruxGeneratorException
 	 */
-	private void scanAttributes(Class<?> factoryClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
+	void scanAttributes(Class<?> factoryClass, Class<?> targetUIClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
 	{
 		try
         {
@@ -372,7 +372,7 @@ class AttributesAnnotationScanner
 						added.add(attrName);
 						if (isValidName(attrName))
 						{
-							attributes.add(createAttributeProcessor(factoryClass, attr));
+							attributes.add(createAttributeProcessor(targetUIClass, attr));
 						}
 						else
 						{
@@ -384,12 +384,12 @@ class AttributesAnnotationScanner
 	        Class<?> superclass = factoryClass.getSuperclass();
 	        if (superclass!= null && !superclass.equals(Object.class))
 	        {
-	        	scanAttributes(superclass, attributes, added);
+	        	scanAttributes(superclass, targetUIClass, attributes, added);
 	        }
 	        Class<?>[] interfaces = factoryClass.getInterfaces();
 	        for (Class<?> interfaceClass : interfaces)
 	        {
-	        	scanAttributes(interfaceClass, attributes, added);
+	        	scanAttributes(interfaceClass, targetUIClass, attributes, added);
 	        }
         }
         catch (Exception e)

@@ -910,7 +910,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		this.viewFactory = factory;
 		if (annotationProcessor == null)
 		{
-			this.annotationProcessor = new WidgetCreatorAnnotationsProcessor(getClass(), this);
+			this.annotationProcessor = new WidgetCreatorAnnotationsProcessor(this);
 		}
 	}
 	

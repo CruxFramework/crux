@@ -67,7 +67,7 @@ class ChildrenAnnotationScanner
 	 * @param widgetCreator
 	 * @param type
 	 */
-	ChildrenAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
+	ChildrenAnnotationScanner(WidgetCreator<?> widgetCreator)
     {
 		this.widgetCreator = widgetCreator;
 		this.lazyFactory = new LazyPanelFactory(widgetCreator.getViewFactory());

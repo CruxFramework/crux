@@ -39,11 +39,11 @@ class WidgetCreatorAnnotationsProcessor
 	 * @param type
 	 * @param widgetCreator
 	 */
-	WidgetCreatorAnnotationsProcessor(Class<?> type, WidgetCreator<?> widgetCreator)
+	WidgetCreatorAnnotationsProcessor(WidgetCreator<?> widgetCreator)
     {
-		this.attributes = new AttributesAnnotationScanner(widgetCreator, type).scanAttributes();
-		this.events = new EventsAnnotationScanner(widgetCreator, type).scanEvents();
-		this.children = new ChildrenAnnotationScanner(widgetCreator, type).scanChildren();
+		this.attributes = new AttributesAnnotationScanner(widgetCreator).scanAttributes();
+		this.events = new EventsAnnotationScanner(widgetCreator).scanEvents();
+		this.children = new ChildrenAnnotationScanner(widgetCreator).scanChildren();
     }
 	
 	/**
