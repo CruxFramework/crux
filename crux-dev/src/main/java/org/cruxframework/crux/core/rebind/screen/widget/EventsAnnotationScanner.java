@@ -38,7 +38,7 @@ class EventsAnnotationScanner
 {
 	private final WidgetCreator<?> widgetCreator;
 
-	EventsAnnotationScanner(WidgetCreator<?> widgetCreator, Class<?> type)
+	EventsAnnotationScanner(WidgetCreator<?> widgetCreator)
     {
 		this.widgetCreator = widgetCreator;
     }
