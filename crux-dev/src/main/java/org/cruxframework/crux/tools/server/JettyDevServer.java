@@ -22,8 +22,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.client.Legacy;
-import org.cruxframework.crux.core.server.InitializerListener;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -38,13 +36,10 @@ import com.google.gwt.core.ext.UnableToCompleteException;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@Deprecated
-@Legacy
 public class JettyDevServer
 {
 	private static final Log logger = LogFactory.getLog(JettyDevServer.class);
 
-	private boolean addDevelopmentComponents = false;
 	private File appRootDir;
 
 	private String bindAddress = "localhost";
@@ -99,10 +94,6 @@ public class JettyDevServer
 		webContext.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 		
 		server.setHandler(webContext);
-		if (addDevelopmentComponents)
-		{
-			webContext.addEventListener(new InitializerListener());
-		}
 		try 
 		{
 			server.start();
@@ -155,10 +146,6 @@ public class JettyDevServer
 	        if (parameter.getName().equals("-appRootDir"))
 	        {
 	        	appRootDir = new File(parameter.getValue());
-	        }
-	        else if (parameter.getName().equals("-addDevelopmentComponents"))
-	        {
-	        	this.addDevelopmentComponents = true;
 	        }
 	        else if (parameter.getName().equals("-bindAddress"))
 	        {
