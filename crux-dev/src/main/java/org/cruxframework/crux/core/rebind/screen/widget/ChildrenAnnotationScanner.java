@@ -118,6 +118,7 @@ class ChildrenAnnotationScanner
             				processAnyWidgetChild(out, context);
             			}
             			//TODO aqui pode-se adicionar um processamento automatico por filho. Este é o ponto
+            			//context.pushWidgetComponent(WidgetComponentClass, variable);
             		}
             		try
             		{   
