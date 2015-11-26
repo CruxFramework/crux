@@ -95,7 +95,6 @@ public abstract class AbstractStackPanelFactory extends ComplexPanelFactory<Abst
     {
 	    return new AbstractStackPanelFactoryContext();
     }
-	
 }
 
 class AbstractStackPanelFactoryContext extends WidgetCreatorContext
