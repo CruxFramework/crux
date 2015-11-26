@@ -173,7 +173,10 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	@Override
 	public void selectAll(boolean selected)
 	{
-		operations.selectAllRecords(selected);
+		if (getSelectionMode().equals(SelectionMode.multiple))
+		{
+			operations.selectAllRecords(selected);
+		}
 	}
 	
 	@Override
@@ -181,7 +184,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	{
 		return operations.updateRecord(index, object);
 	}
-
+	
 	@Override
 	public void setData(Array<T> data)
 	{
@@ -202,7 +205,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 			update(ret);
 		}
 	}
-	
+
 	@Override
 	public void setData(List<T> data)
 	{
@@ -244,24 +247,24 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 			update(ret);
 		}
 	}
-
+	
 	@Override
 	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
 	{
 		return operations.setReadOnly(index, readOnly);
 	}
-	
-    @Override
+
+	@Override
 	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
 	{
 		return operations.setReadOnly(indexOf(object), readOnly);
-	}	
+	}
 	
     @Override
 	public int size()
 	{
 		return (data!=null?data.size():0);
-	}
+	}	
 	
     @Override
 	public void sort(Comparator<T> comparator)
@@ -274,12 +277,12 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 			fireSortedEvent(false);			
 		}
 	}
-
-	protected void changePositionAfterSorting()
+	
+    protected void changePositionAfterSorting()
     {
 	    first();
     }
-    
+
 	protected void ensureLoaded()
 	{
 		if (!loaded)
@@ -287,7 +290,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
-	
+    
 	protected Array<DataProviderRecord<T>> getTransactionRecords()
 	{
 		int size = data.size();
@@ -300,7 +303,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		
 		return transactionRecords;
 	}
-
+	
 	protected int lockRecordForEdition(int recordIndex)
     {
 		return 0;
@@ -310,7 +313,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	{
 		this.data = transactionRecords;
 	}
-	
+
 	protected void setFirstPosition(boolean fireEvents)
 	{
 		currentRecord = -1;
@@ -329,6 +332,11 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		{
 			changePositionAfterSorting();
 		}
+	}
+	
+	protected void unselectAllRecords()
+	{
+		operations.selectAllRecords(false);
 	}
 	
 	protected abstract void update(Array<DataProviderRecord<T>> records);
