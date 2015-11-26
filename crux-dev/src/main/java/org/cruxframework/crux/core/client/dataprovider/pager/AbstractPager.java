@@ -42,6 +42,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public abstract class AbstractPager<T> extends AbstractHasPagedDataProvider<T> implements Pager<T>
 {
+	protected static final String DEFAULT_PAGER_STYLE_NAME = "faces-Pager";
 	protected static final String DISABLED = "-disabled";
 	private static final String STYLE_PAGER_LOADING = "-pagerLoading";
 	

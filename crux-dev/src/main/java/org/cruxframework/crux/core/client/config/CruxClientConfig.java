@@ -29,8 +29,6 @@ package org.cruxframework.crux.core.client.config;
  */
 public interface CruxClientConfig
 {
-	boolean enableDebugForURL(String url);
-	boolean enableCrux2OldInterfacesCompatibility();
 	boolean preferWebSQLForNativeDB();
 	String rootViewElementId();
 }
