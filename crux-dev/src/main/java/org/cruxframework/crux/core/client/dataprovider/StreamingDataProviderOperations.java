@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
-import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 
 /**
@@ -28,12 +27,12 @@ import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataPr
  */
 class StreamingDataProviderOperations<T>
 {
-	protected List<DataProviderRecord<T>> newRecords = new ArrayList<DataProviderRecord<T>>();
-	protected List<DataProviderRecord<T>> removedRecords = new ArrayList<DataProviderRecord<T>>();
 	protected List<DataProviderRecord<T>> changedRecords = new ArrayList<DataProviderRecord<T>>();
-	protected List<DataProviderRecord<T>> selectedRecords = new ArrayList<DataProviderRecord<T>>();	
-
 	protected StreamingDataProvider<T> dataProvider;
+	protected List<DataProviderRecord<T>> newRecords = new ArrayList<DataProviderRecord<T>>();
+	protected List<DataProviderRecord<T>> removedRecords = new ArrayList<DataProviderRecord<T>>();	
+
+	protected List<DataProviderRecord<T>> selectedRecords = new ArrayList<DataProviderRecord<T>>();
 	
 	protected Array<DataProviderRecord<T>> transactionOriginalData = null;
 	
@@ -42,7 +41,112 @@ class StreamingDataProviderOperations<T>
 		this.dataProvider = dataProvider;
 	}
     
-    DataProviderRecord<T> insertRecord(int index, T object)
+    void beginTransaction(int recordIndex)
+	{
+		if(transactionOriginalData == null)
+		{
+			int recordForEdition = dataProvider.lockRecordForEdition(recordIndex);
+			this.transactionOriginalData = dataProvider.getTransactionRecords();
+			dataProvider.fireTransactionStartEvent(recordForEdition);
+		}
+	}
+	
+    void commit()
+    {
+		for(DataProviderRecord<T> newRecord : newRecords)
+		{
+			newRecord.setCreated(false);
+			newRecord.setDirty(false);
+		}
+		
+		for(DataProviderRecord<T> changedRecord : changedRecords)
+		{
+			changedRecord.setCreated(false);
+			changedRecord.setDirty(false);
+		}
+		
+		dataProvider.fireTransactionEndEvent(true);
+		endTransaction();
+    }
+    
+	void endTransaction()
+	{
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear(); 
+
+		this.transactionOriginalData = null;
+	}
+	
+	Array<DataProviderRecord<T>> getCurrentPageRecords(boolean cleanRecordsChanges)
+	{
+		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
+		int start = this.dataProvider.getPageStartRecord();
+		int end = this.dataProvider.getPageEndRecord(); 
+		for (int i = start; i <= end; i++)
+    	{
+    		DataProviderRecord<T> record = dataProvider.data.get(i);
+    		currentPageRecordsArray.add(record);
+    		
+    		if(cleanRecordsChanges)
+    		{
+    			record.setCreated(false);
+				record.setDirty(false);
+    		}
+    	}	
+		
+		return currentPageRecordsArray;
+	}
+	
+
+	@SuppressWarnings("unchecked")
+    DataProviderRecord<T>[] getNewRecords()
+	{
+		return newRecords.toArray(new DataProviderRecord[0]);
+	}
+
+	int getNewRecordsCount()
+	{
+		return newRecords.size();
+	}
+	
+	int getRecordIndex(T boundObject)
+	{
+		for(int i = 0; i < this.dataProvider.data.size(); i++)
+		{
+			if(this.dataProvider.data.get(i).recordObject.equals(boundObject))
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
+	@SuppressWarnings("unchecked")
+    DataProviderRecord<T>[] getRemovedRecords()
+	{
+		return removedRecords.toArray(new DataProviderRecord[0]);
+	}
+	
+	int getRemovedRecordsCount()
+	{
+		return removedRecords.size();
+	}
+
+	@SuppressWarnings("unchecked")
+    DataProviderRecord<T>[] getSelectedRecords()
+	{
+		return selectedRecords.toArray(new DataProviderRecord[0]);
+	}
+
+	@SuppressWarnings("unchecked")
+    DataProviderRecord<T>[] getUpdatedRecords()
+	{
+		return changedRecords.toArray(new DataProviderRecord[0]);
+	}
+	
+	DataProviderRecord<T> insertRecord(int index, T object)
 	{
     	beginTransaction(index);
 		this.dataProvider.ensureCurrentPageLoaded();
@@ -56,7 +160,7 @@ class StreamingDataProviderOperations<T>
 		return record;
 	}
 	
-    DataProviderRecord<T> insertRecord(T object)
+	DataProviderRecord<T> insertRecord(T object)
 	{
 
     	int index = this.dataProvider.data.size()-1;
@@ -66,7 +170,12 @@ class StreamingDataProviderOperations<T>
     	}
     	return insertRecord(index, object);
 	}
-    
+	
+	boolean isDirty()
+	{
+		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
+	}
+	
 	DataProviderRecord<T> removeRecord(int index)
 	{
 		beginTransaction(index);
@@ -83,8 +192,71 @@ class StreamingDataProviderOperations<T>
 		updateState(record, previousState);
 		this.dataProvider.fireDataChangedEvent(record, index);
 		return record;
+	}	
+	
+	void reset()
+	{
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear();
+		selectedRecords.clear();
 	}
 	
+	void rollback()
+    {
+	    if(transactionOriginalData != null)
+	    {
+			dataProvider.fireTransactionEndEvent(false);
+			dataProvider.replaceTransactionData(this.transactionOriginalData);
+			dataProvider.unselectAllRecords();
+	    	endTransaction();
+	    }
+    }
+	
+	void selectAllRecords(boolean selected)
+	{
+		Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();;
+
+		for(int i = 0; i < this.dataProvider.data.size(); i++)
+		{
+			DataProviderRecord<T> record = this.dataProvider.data.get(i);
+			if(record != null && record.isSelected() != selected)
+			{
+				changedRecords.add(record);
+				record.state.setSelected(selected);
+				if (selected)
+				{
+					selectedRecords.add(record);
+				}
+				else
+				{
+					selectedRecords.remove(record);
+				}
+			}
+		}
+
+		if (changedRecords.size() > 0)
+		{
+			dataProvider.fireDataSelectionEvent(changedRecords);
+		}
+    }
+	
+	DataProviderRecord<T> selectRecord(int index, boolean selected)
+	{
+		checkRange(index, false);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
+		record.setSelected(selected);
+		return record;
+	} 
+	
+	DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
+    {
+		checkRange(index, false);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
+		record.setReadOnly(readOnly);
+		return record;
+    }
+
 	DataProviderRecord<T> updateRecord(int index, T object)
 	{
 		beginTransaction(index);
@@ -103,7 +275,6 @@ class StreamingDataProviderOperations<T>
 		return record;
 	}
 	
-
 	void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
 	{
 		this.dataProvider.ensureCurrentPageLoaded();
@@ -139,180 +310,6 @@ class StreamingDataProviderOperations<T>
 			selectedRecords.remove(record);
 		}
 	}
-
-	Array<DataProviderRecord<T>> getCurrentPageRecords(boolean cleanRecordsChanges)
-	{
-		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
-		int start = this.dataProvider.getPageStartRecord();
-		int end = this.dataProvider.getPageEndRecord(); 
-		for (int i = start; i <= end; i++)
-    	{
-    		DataProviderRecord<T> record = dataProvider.data.get(i);
-    		currentPageRecordsArray.add(record);
-    		
-    		if(cleanRecordsChanges)
-    		{
-    			record.setCreated(false);
-				record.setDirty(false);
-    		}
-    	}	
-		
-		return currentPageRecordsArray;
-	}
-	
-	@SuppressWarnings("unchecked")
-    DataProviderRecord<T>[] getNewRecords()
-	{
-		return newRecords.toArray(new DataProviderRecord[0]);
-	}
-
-	@SuppressWarnings("unchecked")
-    DataProviderRecord<T>[] getRemovedRecords()
-	{
-		return removedRecords.toArray(new DataProviderRecord[0]);
-	}
-	
-	int getNewRecordsCount()
-	{
-		return newRecords.size();
-	}
-
-	int getRemovedRecordsCount()
-	{
-		return removedRecords.size();
-	}
-
-	@SuppressWarnings("unchecked")
-    DataProviderRecord<T>[] getUpdatedRecords()
-	{
-		return changedRecords.toArray(new DataProviderRecord[0]);
-	}
-	
-	@SuppressWarnings("unchecked")
-    DataProviderRecord<T>[] getSelectedRecords()
-	{
-		return selectedRecords.toArray(new DataProviderRecord[0]);
-	}
-	
-	int getRecordIndex(T boundObject)
-	{
-		for(int i = 0; i < this.dataProvider.data.size(); i++)
-		{
-			if(this.dataProvider.data.get(i).recordObject.equals(boundObject))
-			{
-				return i;
-			}
-		}
-		
-		return -1;
-	}
-	
-	DataProviderRecord<T> selectRecord(int index, boolean selected)
-	{
-		checkRange(index, false);
-		DataProviderRecord<T> record = this.dataProvider.data.get(index);
-		record.setSelected(selected);
-		return record;
-	}
-	
-	void selectAllRecords(boolean selected)
-	{
-		if (dataProvider.getSelectionMode().equals(SelectionMode.multiple))
-		{
-			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();;
-			
-			for(int i = 0; i < this.dataProvider.data.size(); i++)
-			{
-				DataProviderRecord<T> record = this.dataProvider.data.get(i);
-				if(record != null && record.isSelected() != selected)
-				{
-					changedRecords.add(record);
-					record.state.setSelected(selected);
-					if (selected)
-					{
-						selectedRecords.add(record);
-					}
-					else
-					{
-						selectedRecords.remove(record);
-					}
-				}
-			}
-			
-			if (changedRecords.size() > 0)
-			{
-				dataProvider.fireDataSelectionEvent(changedRecords);
-			}
-		}
-    }	
-	
-	DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
-    {
-		checkRange(index, false);
-		DataProviderRecord<T> record = this.dataProvider.data.get(index);
-		record.setReadOnly(readOnly);
-		return record;
-    }
-	
-	void reset()
-	{
-		newRecords.clear();
-		removedRecords.clear();
-		changedRecords.clear();
-		selectedRecords.clear();
-	}
-	
-	boolean isDirty()
-	{
-		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
-	}
-	
-	void beginTransaction(int recordIndex)
-	{
-		if(transactionOriginalData == null)
-		{
-			int recordForEdition = dataProvider.lockRecordForEdition(recordIndex);
-			this.transactionOriginalData = dataProvider.getTransactionRecords();
-			dataProvider.fireTransactionStartEvent(recordForEdition);
-		}
-	}
-	
-	void endTransaction()
-	{
-		newRecords.clear();
-		removedRecords.clear();
-		changedRecords.clear(); 
-
-		this.transactionOriginalData = null;
-	}
-
-	void rollback()
-    {
-	    if(transactionOriginalData != null)
-	    {
-			dataProvider.fireTransactionEndEvent(false);
-	    	this.dataProvider.replaceTransactionData(this.transactionOriginalData);
-	    	endTransaction();
-	    }
-    }
-	
-	void commit()
-    {
-		for(DataProviderRecord<T> newRecord : newRecords)
-		{
-			newRecord.setCreated(false);
-			newRecord.setDirty(false);
-		}
-		
-		for(DataProviderRecord<T> changedRecord : changedRecords)
-		{
-			changedRecord.setCreated(false);
-			changedRecord.setDirty(false);
-		}
-		
-		dataProvider.fireTransactionEndEvent(true);
-		endTransaction();
-    }
 	
 	private void checkRange(int index, boolean mayExpand)
 	{

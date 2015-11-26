@@ -754,6 +754,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		context.setDataBindingProcessor(dataBindingProcessor);
 		String widgetVariableName = createVariableName("widget");
 		context.setWidget(widgetVariableName);
+		context.pushWidgetComponent(getWidgetClassName(), widgetVariableName);
 
 		instantiateWidget(out, context);
 		if(consumer != null)

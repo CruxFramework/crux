@@ -373,7 +373,10 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void selectAll(boolean selected)
 	{
-		operations.selectAllRecords(selected);
+		if (getSelectionMode().equals(SelectionMode.multiple))
+		{
+			operations.selectAllRecords(selected);
+		}
 	}
 	
 	@Override
@@ -381,7 +384,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		return operations.updateRecord(index, object);
 	}
-
+	
 	@Override
 	public void setData(Array<T> data)
 	{
@@ -478,7 +481,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			update(ret);
 		}
 	}
-	
+
 	@Override
     public void setData(T[] data, int startRecord)
     {
@@ -496,11 +499,11 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
     }
 	
-    @Override
+	@Override
     public void setDataLoader(StreamingDataLoader<T> dataLoader)
     {
 		this.dataLoader = dataLoader;
-    }	
+    }
 	
     @Override
 	public void setPageSize(int pageSize)
@@ -520,20 +523,20 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			fetchCurrentPage();
 			firePageRequestedEvent(currentPage);			
 		}
-	}
-
+	}	
+	
     @Override
 	public DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
 	{
 		return operations.setReadOnly(index, readOnly);
 	}
 
-	@Override
+    @Override
 	public DataProviderRecord<T> setReadOnly(T object, boolean readOnly)
 	{
 		return operations.setReadOnly(indexOf(object), readOnly);
 	}
-	
+
 	@Override
 	public void sort(Comparator<T> comparator)
 	{
@@ -552,7 +555,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			fireSortedEvent(false);
 		}
 	}
-
+	
 	@Override
 	public void stopLoading()
 	{
@@ -576,7 +579,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
-	
+
 	protected void fetchCurrentPage()
 	{
 		if (!isCurrentPageLoaded())
@@ -591,7 +594,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 		}
 	}
-
+	
 	protected void firePageLoadedEvent(int start, int end)
     {
 		if (pageFetchHandlers != null)
@@ -603,7 +606,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			}
 		}
     }
-	
+
 	protected void firePageRequestedEvent(int pageNumber)
     {
 		if (pageRequestedHandlers != null)
@@ -631,7 +634,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		
 		return pageEndRecord + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
 	}
-
+	
 	protected int getPageForRecord(int recordNumber)
 	{
 		int pageSize = getPageSize();
@@ -639,7 +642,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int result = (index / pageSize) + (index%pageSize==0?0:1);
 		return result;
 	}
-	
+
 	protected int getPageStartRecord()
 	{
 		return getPageStartRecord(currentPage);
@@ -715,7 +718,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
 		return false;
 	}
-
+	
 	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
 	{
 		array.sort(new Comparator<DataProviderRecord<T>>(){
@@ -725,6 +728,11 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			}
 		});
 		firstOnPage();
+	}
+
+	protected void unselectAllRecords()
+	{
+		operations.selectAllRecords(false);
 	}
 
 	protected void update(Array<DataProviderRecord<T>> records)
