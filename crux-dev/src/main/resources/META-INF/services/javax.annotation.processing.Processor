@@ -1,0 +1,2 @@
+org.cruxframework.crux.tools.annotation.processor.RestServiceProcessor
+org.cruxframework.crux.tools.annotation.processor.LibraryProcessor
