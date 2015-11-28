@@ -55,7 +55,7 @@ public class LibraryProcessor extends CruxAnnotationProcessor
 			for (Element elem : roundEnv.getElementsAnnotatedWith(DeclarativeFactory.class))
 			{
 				DeclarativeFactory factoryAnnotation = elem.getAnnotation(DeclarativeFactory.class);
-				if (elem.getKind() == ElementKind.CLASS) 
+				if (elem.getKind() == ElementKind.CLASS)
 				{
 					String id = factoryAnnotation.id();
 					String library = factoryAnnotation.library();
@@ -72,7 +72,7 @@ public class LibraryProcessor extends CruxAnnotationProcessor
 			{
 				FileObject cruxWidgetFactoryFile = getResourceFile("META-INF/crux-widgets-factory");
 				cruxWidgetFactoryMap.store(cruxWidgetFactoryFile.openOutputStream(), "Crux Widget Factories mapping");
-				
+
 				FileObject cruxWidgetTypeFile = getResourceFile("META-INF/crux-widgets-type");
 				cruxWidgetTypeMap.store(cruxWidgetTypeFile.openOutputStream(), "Crux Widget Types mapping");
 			}
@@ -84,16 +84,22 @@ public class LibraryProcessor extends CruxAnnotationProcessor
 
 		return true;
 	}
-	
-	private static TypeMirror getTargetWidgetType(DeclarativeFactory factoryAnnotation) {
-	    try
-	    {
-	    	factoryAnnotation.targetWidget(); // this should throw
-	    }
-	    catch( MirroredTypeException mte )
-	    {
-	        return mte.getTypeMirror();
-	    }
-	    return null; // can this ever happen ??
-	}	
+
+	/**
+	 * Hacking to access the TypeMirror from an annotation 
+	 * @param factoryAnnotation
+	 * @return
+	 */
+	private static TypeMirror getTargetWidgetType(DeclarativeFactory factoryAnnotation)
+	{
+		try
+		{
+			factoryAnnotation.targetWidget(); // this should throw
+		}
+		catch (MirroredTypeException mte)
+		{
+			return mte.getTypeMirror();
+		}
+		return null; // can this ever happen ??
+	}
 }
