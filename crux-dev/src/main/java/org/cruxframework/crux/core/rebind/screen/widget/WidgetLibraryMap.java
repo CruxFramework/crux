@@ -16,6 +16,8 @@
 package org.cruxframework.crux.core.rebind.screen.widget;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,11 +25,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.server.dispatch.ServicesCompileMap;
+import org.cruxframework.crux.classpath.URLResourceHandler;
+import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
+import org.cruxframework.crux.scanner.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.URLStreamManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -73,12 +76,12 @@ public class WidgetLibraryMap
 	/**
 	 * @param context
 	 */
-	public boolean initialize(ServletContext context)
+	public boolean initialize()
 	{
 		try
 		{
-			initializeFactoryClass(context);
-			initializeWidgetType(context);
+			initializeFactoryClass();
+			initializeWidgetType();
 			logger.info("Widget Libraries initialized using maps strategy.");
 			return true;
 		}
@@ -89,19 +92,12 @@ public class WidgetLibraryMap
 		return false;
 	}
 
-	private void initializeFactoryClass(ServletContext context) throws IOException
+	private void initializeFactoryClass() throws Exception
     {
 	    factoryClass = new HashMap<String, String>(100);
 		registeredLibraries = new HashMap<String, Set<String>>();
 	    Properties widgets = new Properties();
-	    if (context != null)
-	    {
-	    	widgets.load(context.getResourceAsStream("/META-INF/crux-widgets-factory"));
-	    }
-	    else
-	    {
-	    	widgets.load(ServicesCompileMap.class.getResourceAsStream("/META-INF/crux-widgets-factory"));
-	    }
+	    ClasspathUrlFinder.loadFromConfigFiles(widgets, "META-INF/crux-widgets-factory");
 	    Enumeration<?> widgetTypes = (Enumeration<?>) widgets.propertyNames();
 	    while (widgetTypes.hasMoreElements())
 	    {
@@ -113,18 +109,11 @@ public class WidgetLibraryMap
 	    }
     }
 
-	private void initializeWidgetType(ServletContext context) throws IOException
+	private void initializeWidgetType() throws Exception
     {
 		widgetTypes = new HashMap<String, String>(100);
 	    Properties widgets = new Properties();
-	    if (context != null)
-	    {
-	    	widgets.load(context.getResourceAsStream("/META-INF/crux-widgets-type"));
-	    }
-	    else
-	    {
-	    	widgets.load(ServicesCompileMap.class.getResourceAsStream("/META-INF/crux-widgets-type"));
-	    }
+	    ClasspathUrlFinder.loadFromConfigFiles(widgets, "META-INF/crux-widgets-type");
 	    Enumeration<?> widgetClasses = (Enumeration<?>) widgets.propertyNames();
 	    while (widgetClasses.hasMoreElements())
 	    {

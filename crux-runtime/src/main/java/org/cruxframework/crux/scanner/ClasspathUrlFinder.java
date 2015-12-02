@@ -22,7 +22,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
+
+import org.cruxframework.crux.classpath.URLResourceHandler;
+import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 
 /**
  * Various functions to locate URLs to scan
@@ -200,6 +204,35 @@ public class ClasspathUrlFinder
       return list.toArray(new URL[list.size()]);
    }
 
+	public static void loadFromConfigFiles(Properties propertyFile, String configFileName) throws Exception
+    {
+		URL[] urls = ClasspathUrlFinder.findClassPaths();
+		for (URL url : urls)
+        {
+			String urlString = url.toString();
+			if (url.getProtocol().equals("file"))
+			{
+				if (urlString.endsWith(".jar"))
+				{
+					url = new URL("jar:"+urlString+"!/");
+				}
+				else if (urlString.endsWith(".zip"))
+				{
+					url = new URL("zip:"+urlString+"!/");
+				}
+			}
 
+			URLResourceHandler urlResourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
+			URL childResource = urlResourceHandler.getChildResource(url, configFileName);
+			if (urlResourceHandler.exists(childResource))
+			{
+				URLStreamManager streamManager = new URLStreamManager(childResource);
+				propertyFile.load(streamManager.open());
+				streamManager.close();
+			}
+        }
+    }
+
+   
 }
 

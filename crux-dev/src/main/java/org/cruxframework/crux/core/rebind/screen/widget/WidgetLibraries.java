@@ -139,7 +139,7 @@ public class WidgetLibraries
 		
 		public boolean initialize()
 		{
-			return WidgetLibraryMap.getInstance().initialize(null);
+			return WidgetLibraryMap.getInstance().initialize();
 		}
 
 		@Override

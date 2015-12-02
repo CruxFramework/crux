@@ -16,8 +16,11 @@
 package org.cruxframework.crux.tools.annotation.processor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -29,6 +32,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 
+import org.cruxframework.crux.core.annotation.processor.CruxAnnotationProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 
 /**
@@ -38,13 +42,16 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeF
 @SupportedAnnotationTypes("org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory")
 public class LibraryProcessor extends CruxAnnotationProcessor
 {
-	private Properties cruxWidgetFactoryMap;
-	private Properties cruxWidgetTypeMap;
+	private static final String CRUX_WIDGETS_FACTORY_MAP_FILE = "META-INF/crux-widgets-factory";
+	private static final String CRUX_WIDGETS_TYPE_MAP_FILE = "META-INF/crux-widgets-type";
+	private boolean previousSourcesLoaded = false;
+	private Properties widgetFactoryMap;
+	private Properties widgetTypeMap;
 
 	public LibraryProcessor()
 	{
-		cruxWidgetFactoryMap = new Properties();
-		cruxWidgetTypeMap = new Properties();
+		widgetFactoryMap = new Properties();
+		widgetTypeMap = new Properties();
 	}
 
 	@Override
@@ -52,6 +59,11 @@ public class LibraryProcessor extends CruxAnnotationProcessor
 	{
 		try
 		{
+			boolean incremental = isIncremental();
+			if (incremental && !previousSourcesLoaded)
+			{
+				loadPreviousMapFiles();
+			}
 			for (Element elem : roundEnv.getElementsAnnotatedWith(DeclarativeFactory.class))
 			{
 				DeclarativeFactory factoryAnnotation = elem.getAnnotation(DeclarativeFactory.class);
@@ -63,27 +75,75 @@ public class LibraryProcessor extends CruxAnnotationProcessor
 					String targetWidget = getTargetWidgetType(factoryAnnotation).toString();
 					String widgetFactoryClassName = ((TypeElement) elem).getQualifiedName().toString();
 
-					cruxWidgetFactoryMap.put(widgetType, widgetFactoryClassName);
-					cruxWidgetTypeMap.put(targetWidget, widgetType);
+					removePreviousEntryForCurrentClass(incremental, widgetFactoryClassName);
+					
+					widgetFactoryMap.put(widgetType, widgetFactoryClassName);
+					widgetTypeMap.put(targetWidget, widgetType);
 				}
 			}
 
 			if (roundEnv.processingOver())
 			{
-				FileObject cruxWidgetFactoryFile = getResourceFile("META-INF/crux-widgets-factory");
-				cruxWidgetFactoryMap.store(cruxWidgetFactoryFile.openOutputStream(), "Crux Widget Factories mapping");
+				FileObject cruxWidgetFactoryFile = createResourceFile(CRUX_WIDGETS_FACTORY_MAP_FILE);
+				OutputStream outputStream = cruxWidgetFactoryFile.openOutputStream();
+				widgetFactoryMap.store(outputStream, "Crux Widget Factories mapping");
+				outputStream.close();
 
-				FileObject cruxWidgetTypeFile = getResourceFile("META-INF/crux-widgets-type");
-				cruxWidgetTypeMap.store(cruxWidgetTypeFile.openOutputStream(), "Crux Widget Types mapping");
+				FileObject cruxWidgetTypeFile = createResourceFile(CRUX_WIDGETS_TYPE_MAP_FILE);
+				outputStream = cruxWidgetTypeFile.openOutputStream();
+				widgetTypeMap.store(outputStream, "Crux Widget Types mapping");
+				outputStream.close();
 			}
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage());
 		}
 
 		return true;
 	}
+
+	private void loadPreviousMapFiles() throws IOException
+    {
+	    InputStream inputStream = getResourceFileStream(CRUX_WIDGETS_FACTORY_MAP_FILE);
+	    if (inputStream != null)
+	    {
+	    	widgetFactoryMap.load(inputStream);
+	    	inputStream.close();
+	    }
+
+	    inputStream = getResourceFileStream(CRUX_WIDGETS_TYPE_MAP_FILE);
+	    if (inputStream != null)
+	    {
+	    	widgetTypeMap.load(inputStream);
+	    	inputStream.close();
+	    }
+	    previousSourcesLoaded = true;
+    }
+
+	private void removePreviousEntryForCurrentClass(boolean incremental, String widgetFactoryClassName)
+    {
+	    if (incremental && widgetFactoryMap.containsValue(widgetFactoryClassName))
+	    {
+	    	for (Entry<Object, Object> entry: widgetFactoryMap.entrySet())
+	    	{
+	    		if (entry.getValue().equals(widgetFactoryClassName))
+	    		{
+	    			Object previousWidgetType = entry.getKey();
+	    			widgetFactoryMap.remove(previousWidgetType);
+	    			for (Entry<Object, Object> entryTypes: widgetTypeMap.entrySet())
+	    			{
+	    				if (entryTypes.getValue().equals(previousWidgetType))
+	    				{
+	    					widgetTypeMap.remove(entryTypes.getKey());
+	    					break;
+	    				}
+	    			}
+	    			break;
+	    		}
+	    	}
+	    }
+    }
 
 	/**
 	 * Hacking to access the TypeMirror from an annotation 
