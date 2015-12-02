@@ -134,7 +134,7 @@ public class RestServiceFactoryImpl implements RestServiceFactory
 
 		public boolean initialize(ServletContext context)
 		{
-			return RestServicesCompileMap.initialize(context);
+			return RestServicesCompileMap.initialize();
 		}
 		
 		@Override

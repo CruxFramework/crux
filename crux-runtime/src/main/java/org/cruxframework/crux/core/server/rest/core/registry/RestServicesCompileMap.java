@@ -21,10 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 
 
 /**
@@ -59,19 +58,12 @@ public class RestServicesCompileMap
 	/**
 	 * @param context
 	 */
-	public static boolean initialize(ServletContext context)
+	public static boolean initialize()
 	{
 		Properties properties = new Properties();
 		try
 		{
-			if (context != null)
-			{
-				properties.load(context.getResourceAsStream("/META-INF/crux-rest"));
-			}
-			else
-			{
-				properties.load(RestServicesCompileMap.class.getResourceAsStream("/META-INF/crux-rest"));
-			}
+		    ClasspathUrlFinder.loadFromConfigFiles(properties, "META-INF/crux-rest");
 			Enumeration<?> serviceNames = (Enumeration<?>) properties.propertyNames();
 			while (serviceNames.hasMoreElements())
 			{
