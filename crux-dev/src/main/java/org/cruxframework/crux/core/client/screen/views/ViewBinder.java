@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * A marker interface used to generate value objects bound to widgets on the view. Each "get" method
  * will read the value of a widget, and the "set" methods will write the value into the widget. The name
@@ -22,6 +24,8 @@ package org.cruxframework.crux.core.client.screen.views;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public interface ViewBinder extends ViewBindable
 {
 
