@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -40,6 +41,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeF
  *
  */
 @SupportedAnnotationTypes("org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory")
+@SupportedOptions(CruxAnnotationProcessor.CRUX_APT_INCREMENTAL)
 public class LibraryProcessor extends CruxAnnotationProcessor
 {
 	private static final String CRUX_WIDGETS_FACTORY_MAP_FILE = "META-INF/crux-widgets-factory";
