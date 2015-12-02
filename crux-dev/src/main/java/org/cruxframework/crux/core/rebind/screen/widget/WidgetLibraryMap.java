@@ -15,9 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,10 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.classpath.URLResourceHandler;
-import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.URLStreamManager;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
