@@ -31,6 +31,8 @@ import javax.tools.StandardLocation;
  */
 public abstract class CruxAnnotationProcessor extends AbstractProcessor
 {
+	public static final String CRUX_APT_INCREMENTAL = "Crux.apt.incremental";
+
 	@Override
 	public SourceVersion getSupportedSourceVersion()
 	{
@@ -75,7 +77,7 @@ public abstract class CruxAnnotationProcessor extends AbstractProcessor
 	
 	protected boolean isIncremental()
     {
-		String incremental = processingEnv.getOptions().get("Crux.apt.incremental");
+		String incremental = processingEnv.getOptions().get(CRUX_APT_INCREMENTAL);
 		return Boolean.parseBoolean(incremental);
     }
 }

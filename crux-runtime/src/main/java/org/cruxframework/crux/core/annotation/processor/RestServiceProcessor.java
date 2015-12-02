@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -36,6 +37,7 @@ import org.cruxframework.crux.core.server.rest.annotation.RestService;
  *
  */
 @SupportedAnnotationTypes("org.cruxframework.crux.core.server.rest.annotation.RestService")
+@SupportedOptions(CruxAnnotationProcessor.CRUX_APT_INCREMENTAL)
 public class RestServiceProcessor extends CruxAnnotationProcessor
 {
 	private static final String CRUX_REST_MAP_FILE = "META-INF/crux-rest";
