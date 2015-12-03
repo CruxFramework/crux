@@ -872,6 +872,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:complexType name=\"DataProvider\">");
 		generateCoreDataProviderCommonAttributes(out);
 		out.println("<xs:attribute name=\"onLoadData\" type=\"xs:string\" use=\"required\" />");
+		out.println("<xs:attribute name=\"onDataFiltered\" type=\"String\" />");
 		out.println("</xs:complexType>");
 
 		out.println("<xs:element name=\"lazyDataProvider\" type=\"LazyDataProvider\">");
@@ -906,7 +907,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		out.println("</xs:restriction>");
 		out.println("</xs:simpleType>");
-		
 	}
 
 	private void generateCoreDataProviderCommonAttributes(PrintStream out)
@@ -918,6 +918,15 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"selectionMode\" type=\"SelectionMode\" default=\"multiple\" />");
 		out.println("<xs:attribute name=\"input\" type=\"Input\" />");
 		out.println("<xs:attribute name=\"size\" type=\"Size\" />");
+		
+		out.println("<xs:attribute name=\"onDataChanged\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onDataLoaded\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onDataSelected\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onDataSorted\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onLoadStopped\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onReset\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onTransactionEnd\" type=\"String\" />");
+		out.println("<xs:attribute name=\"onTransactionStart\" type=\"String\" />");
     }	
 
 	/**
