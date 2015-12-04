@@ -27,6 +27,9 @@
 	<modules>
 		<module>crux-runtime</module>
 		<module>crux-dev</module>
+<!-- 		<module>../crux-maven-plugin</module> -->
+		<module>../crux-widgets</module>
+		<module>../crux-smart-faces</module>
 	</modules>
 
 	<build>
