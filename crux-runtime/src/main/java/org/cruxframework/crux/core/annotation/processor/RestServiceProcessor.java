@@ -68,7 +68,7 @@ public class RestServiceProcessor extends CruxAnnotationProcessor
 			for (Element elem : roundEnv.getElementsAnnotatedWith(RestService.class))
 			{
 				RestService restService = elem.getAnnotation(RestService.class);
-				if (elem.getKind() == ElementKind.CLASS) 
+				if (elem.getKind() == ElementKind.CLASS || elem.getKind() == ElementKind.INTERFACE) 
 				{
 					String restServiceAlias = restService.value();
 					String restServiceClassName = ((TypeElement) elem).getQualifiedName().toString();
