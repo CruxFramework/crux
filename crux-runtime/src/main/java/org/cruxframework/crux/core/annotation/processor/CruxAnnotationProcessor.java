@@ -31,6 +31,11 @@ import javax.tools.StandardLocation;
  */
 public abstract class CruxAnnotationProcessor extends AbstractProcessor
 {
+	/**
+	 * Run the Crux Annotation Processor only if this parameter is at the JVM.
+	 * This avoids any unnecessary call when JVM is compiling.
+	 */
+	public static final String CRUX_RUN_APT = "Crux.apt.run";
 	public static final String CRUX_APT_INCREMENTAL = "Crux.apt.incremental";
 
 	@Override
@@ -74,10 +79,15 @@ public abstract class CruxAnnotationProcessor extends AbstractProcessor
         }
 	}
 	
-	
 	protected boolean isIncremental()
     {
 		String incremental = processingEnv.getOptions().get(CRUX_APT_INCREMENTAL);
 		return Boolean.parseBoolean(incremental);
+    }
+	
+	protected boolean runAPT()
+    {
+		String cruxRunAPT = processingEnv.getOptions().get(CRUX_RUN_APT);
+		return Boolean.parseBoolean(cruxRunAPT);
     }
 }

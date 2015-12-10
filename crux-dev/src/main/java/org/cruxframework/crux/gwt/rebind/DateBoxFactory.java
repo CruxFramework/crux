@@ -15,15 +15,20 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
+import java.util.Date;
+
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.FocusableFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueChangeHandlersFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
@@ -41,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.user.datepicker.client.DateBox;
+import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 import com.google.gwt.user.datepicker.client.DateBox.Format;
 
 /**
@@ -49,122 +55,138 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
  */
 @DeclarativeFactory(id="dateBox", library="gwt", targetWidget=DateBox.class)
 @TagAttributes({
-	@TagAttribute(value="tabIndex", type=Integer.class),
-	@TagAttribute(value="enabled", type=Boolean.class),
-	@TagAttribute(value="accessKey", type=Character.class),
-	@TagAttribute(value="focus", type=Boolean.class),
-	@TagAttribute(value="value", processor=DateBoxFactory.ValueAttributeProcessor.class, dataBindingTargetsAttributes=false),
+	@TagAttribute(value="fireNullValues", type=Boolean.class, defaultValue="false"),
+	@TagAttribute(value="value", processor=DateBoxFactory.ValueAttributeProcessor.class)
 })
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("pattern"),
-	@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class, supportsDataBinding=false)
+	@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class)
 })
 @TagEventsDeclaration({
 	@TagEventDeclaration("onLoadFormat")
 })
 @TagChildren({
-	@TagChild(value=DateBoxFactory.DateBoxProcessor.class, autoProcess=false)
+	@TagChild(value=DateBoxFactory.DateSelectorProcessor.class,autoProcess=false)
 })
-
-public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext> 
-       implements HasValueChangeHandlersFactory<WidgetCreatorContext>
+public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
+       implements
+       		HasValueFactory<WidgetCreatorContext>,
+       		HasValueChangeHandlersFactory<WidgetCreatorContext>, 
+       		FocusableFactory<WidgetCreatorContext>, 
+       		HasEnabledFactory<WidgetCreatorContext>
 {
-	public static class ValueAttributeProcessor extends AttributeProcessor<WidgetCreatorContext>
+	
+	public static class ValueAttributeProcessor extends AttributeProcessor<WidgetCreatorContext> 
 	{
 		public ValueAttributeProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
-			boolean reportError = true;
-			String reportFormatError = context.readWidgetProperty("reportFormatError");
-			if (reportFormatError != null && reportFormatError.length() > 0)
-			{
-				reportError = Boolean.parseBoolean(reportFormatError);
-			}
-			String widget = context.getWidget();
-			String value = context.readWidgetProperty("value");
-			out.println(widget+".setValue("+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+"));");
-        }
-	}
-	@Override
-	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context)
-	{
-		String className = DateBox.class.getCanonicalName();
-
-		JSONArray children = ensureChildren(context.getWidgetElement(), true, context.getWidgetId());
-		
-		String format = getFormat(out, context.getWidgetElement(), context.getWidgetId());
-		if (children != null && children.length() > 0)
+		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
 		{
-			int length = children.length();
+			String widget = context.getWidget();
+
+			String value = context.readWidgetProperty("value");
+			if (value != null && value.length() > 0)
+			{
+				boolean reportError = true;
+				String reportFormatError = context.readWidgetProperty("reportFormatError");
+				if (reportFormatError != null && reportFormatError.length() > 0)
+				{
+					reportError = Boolean.parseBoolean(reportFormatError);
+				}
+
+				out.println("try{");
+				String date = ViewFactoryCreator.createVariableName("date");
+				out.println(Date.class.getCanonicalName()+" "+date+" = "+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+");");
+				out.println(widget+".setValue("+date+");");
+				out.println("}catch(ValidateException e){/* do nothing */}");
+			}
+		}
+	}
+	
+	@Override
+	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
+	{
+		JSONArray children = ensureChildren(context.getChildElement(), true, context.getWidgetId());
+		int size = (children==null?0:children.length());
+		String className = getWidgetClassName();
+
+		String format = getFormat(out, context);
+		if (size > 0)
+		{
 			String picker = null;
-			
-			for (int i=0; i<length; i++)
+
+			for (int i = 0; i < size; i++)
 			{
 				JSONObject childElement = children.optJSONObject(i);
-				if (childElement != null)
+
+				if (isWidget(childElement))
 				{
-					if (isWidget(childElement))
-					{
-						picker = createChildWidget(out, childElement, null, null, context);
-					}
+					picker = createChildWidget(out, childElement, context);
 				}
-			}			
-			out.println(className+" "+context.getWidget()+" = new "+className+"("+picker+", null, "+format+");");
+			}
+			out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+picker+", null, "+format+");");
 		}
 		else
 		{
-			out.println(className+" "+context.getWidget()+" = new "+className+"();");
+			out.println("final "+className + " " + context.getWidget()+" = new "+className+"();");
 			out.println(context.getWidget()+".setFormat("+format+");");
-		}		
+		}
 	}
-	
-	@TagConstraints(tagName="datePicker", minOccurs="0", type=DatePickerFactory.class)
-	public static class DateBoxProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
-	
+
 	/**
-	 * @param element
-	 * @param widgetId 
+	 * @author breno.lages
+	 *
+	 */
+	@TagConstraints(tagName="datePicker", minOccurs="0", type=DatePickerFactory.class)
+	public static class DateSelectorProcessor extends WidgetChildProcessor<WidgetCreatorContext>{}
+
+	/**
+	 * @param out
+	 * @param context
 	 * @return
 	 */
-	public String getFormat(SourcePrinter out, JSONObject element, String widgetId)
+	public String getFormat(SourcePrinter out, WidgetCreatorContext context)
 	{
-		
-		String format = ViewFactoryCreator.createVariableName("format");
-		String pattern = element.optString("pattern");
-		
-		if (!StringUtils.isEmpty(pattern))
+		String format = ViewFactoryCreator.createVariableName("date");
+		String pattern = context.readWidgetProperty("pattern");
+
+		if (pattern != null && pattern.trim().length() > 0)
 		{
-			out.println(Format.class.getCanonicalName()+" "+format+" = new "+DateBox.class.getCanonicalName()+
-					".DefaultFormat("+DateFormatUtil.class.getCanonicalName()+".getDateTimeFormat("+EscapeUtils.quote(pattern)+"));");
+			out.println(Format.class.getCanonicalName()+" "+format+"= ("+Format.class.getCanonicalName()+") new "+DefaultFormat.class.getCanonicalName()+
+					"("+DateFormatUtil.class.getCanonicalName()+".getDateTimeFormat("+EscapeUtils.quote(pattern)+"));");
 		}
 		else
 		{
 
-			String eventLoadFormat = element.optString("onLoadFormat");
+			String eventLoadFormat = context.readWidgetProperty("onLoadFormat");
+
 			if (!StringUtils.isEmpty(eventLoadFormat))
 			{
-				String className = DateBox.class.getCanonicalName();
-				out.println(Format.class.getCanonicalName()+" "+format+" =("+Format.class.getCanonicalName()+") ");
-				EvtProcessor.printEvtCall(out, eventLoadFormat, "onLoadFormat", LoadFormatEvent.class.getCanonicalName()+"<"+className+">", 
-					" new "+LoadFormatEvent.class.getCanonicalName()+"<"+className+">("+EscapeUtils.quote(widgetId)+")", this);
+				String loadEvent = createVariableName("evt");
+				String event = createVariableName("evt");
+
+				out.println("final Event "+event+" = Events.getEvent("+EscapeUtils.quote("onLoadImage")+", "+ EscapeUtils.quote(eventLoadFormat)+");");
+				out.println(LoadFormatEvent.class.getCanonicalName()+"<"+getWidgetClassName()+"> "+loadEvent+
+						" = new "+LoadFormatEvent.class.getCanonicalName()+"<"+getWidgetClassName()+">("+EscapeUtils.quote(context.getWidgetId())+");");
+				out.println(Format.class.getCanonicalName()+" "+format+
+						" = ("+Format.class.getCanonicalName()+") Events.callEvent("+event+", "+loadEvent+");");
 			}
-			else 
+			else
 			{
-				out.println(Format.class.getCanonicalName()+" "+format+" = GWT.create("+DateBox.class.getCanonicalName()+".DefaultFormat.class);");
+				out.println(Format.class.getCanonicalName()+" "+format+"=GWT.create("+DefaultFormat.class.getCanonicalName()+".class);");
 			}
 		}
-		
+
 		return format;
 	}
-	
+
 	@Override
-    public WidgetCreatorContext instantiateContext()
-    {
-	    return new WidgetCreatorContext();
-    }
+	public WidgetCreatorContext instantiateContext()
+	{
+		return new WidgetCreatorContext();
+	}
 }
