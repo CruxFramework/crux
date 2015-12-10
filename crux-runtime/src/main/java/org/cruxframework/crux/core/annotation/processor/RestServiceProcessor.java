@@ -37,7 +37,11 @@ import org.cruxframework.crux.core.server.rest.annotation.RestService;
  *
  */
 @SupportedAnnotationTypes("org.cruxframework.crux.core.server.rest.annotation.RestService")
-@SupportedOptions(CruxAnnotationProcessor.CRUX_APT_INCREMENTAL)
+@SupportedOptions(
+	{
+		CruxAnnotationProcessor.CRUX_RUN_APT,
+		CruxAnnotationProcessor.CRUX_APT_INCREMENTAL
+	})
 public class RestServiceProcessor extends CruxAnnotationProcessor
 {
 	private static final String CRUX_REST_MAP_FILE = "META-INF/crux-rest";
@@ -48,10 +52,15 @@ public class RestServiceProcessor extends CruxAnnotationProcessor
 	{
 		restMap = new Properties();
 	}
-
+	
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
 	{
+		if(!runAPT())
+		{
+			return true;
+		}
+		
 		try
 		{
 			boolean incremental = isIncremental();
