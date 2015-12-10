@@ -15,14 +15,19 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
+import java.util.Date;
+
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
+import org.cruxframework.crux.core.rebind.screen.widget.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.FocusableFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueChangeHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -53,7 +58,7 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
 	@TagAttribute(value="enabled", type=Boolean.class),
 	@TagAttribute(value="accessKey", type=Character.class),
 	@TagAttribute(value="focus", type=Boolean.class),
-	@TagAttribute(value="value", processor=DateBoxFactory.ValueAttributeProcessor.class, dataBindingTargetsAttributes=false),
+	@TagAttribute(value="value")
 })
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("pattern"),
@@ -67,29 +72,49 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
 })
 
 public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext> 
-       implements HasValueChangeHandlersFactory<WidgetCreatorContext>
+		implements HasValueChangeHandlersFactory<WidgetCreatorContext>, FocusableFactory<WidgetCreatorContext>, 
+		HasEnabledFactory<WidgetCreatorContext>
 {
-	public static class ValueAttributeProcessor extends AttributeProcessor<WidgetCreatorContext>
+	@Override
+	public void processAttributes(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
-		public ValueAttributeProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		super.processAttributes(out, context);
 
-		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
+		String widget = context.getWidget();
+
+		String value = context.readWidgetProperty("value");
+		if (value != null && value.length() > 0)
+		{
 			boolean reportError = true;
 			String reportFormatError = context.readWidgetProperty("reportFormatError");
 			if (reportFormatError != null && reportFormatError.length() > 0)
 			{
 				reportError = Boolean.parseBoolean(reportFormatError);
 			}
-			String widget = context.getWidget();
-			String value = context.readWidgetProperty("value");
-			out.println(widget+".setValue("+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+"));");
-        }
+
+			PropertyBindInfo binding = getObjectDataBinding(value, "value", true, context.getDataBindingProcessor());
+			if (binding != null)
+			{
+				context.registerObjectDataBinding(binding);
+				return;
+			}
+			else
+			{
+				ExpressionDataBinding expressionBinding = getExpressionDataBinding(value, "value", context.getDataBindingProcessor());
+				if (expressionBinding != null)
+				{
+					context.registerExpressionDataBinding(expressionBinding);
+					return;
+				}
+			}	
+			out.println("try{");
+			String date = ViewFactoryCreator.createVariableName("date");
+			out.println(Date.class.getCanonicalName()+" "+date+" = "+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+");");
+			out.println(widget+".setValue("+date+");");
+			out.println("}catch(ValidateException e){/* do nothing */}");
+		}
 	}
+	
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context)
 	{
