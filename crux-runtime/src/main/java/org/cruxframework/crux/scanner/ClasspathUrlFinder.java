@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.cruxframework.crux.classpath.URLResourceHandler;
-import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
-
 /**
  * Various functions to locate URLs to scan
  *
@@ -159,52 +156,6 @@ public class ClasspathUrlFinder
 	}
 
 	/**
-	 * Uses the java.class.path system property to obtain a list of URLs that represent the CLASSPATH
-	 * <p/>
-	 * paths is used as a filter to only include paths that have the specific relative file within it
-	 *
-	 * @param paths comma list of files that should exist in a particular path
-	 * @return
-	 */
-	public static URL[] findClassPaths(String... paths)
-	{
-		ArrayList<URL> list = new ArrayList<URL>();
-
-		String classpath = System.getProperty("java.class.path");
-		StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
-		for (int i = 0; i < paths.length; i++)
-		{
-			paths[i] = paths[i].trim();
-		}
-
-		while (tokenizer.hasMoreTokens())
-		{
-			String path = tokenizer.nextToken().trim();
-			boolean found = false;
-			for (String wantedPath : paths)
-			{
-				if (path.endsWith(File.separator + wantedPath))
-				{
-					found = true;
-					break;
-				}
-			}
-			if (!found) continue;
-			File fp = new File(path);
-			if (!fp.exists()) throw new RuntimeException("File in java.class.path does not exists: " + fp);
-			try
-			{
-				list.add(fp.toURI().toURL());
-			}
-			catch (MalformedURLException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		return list.toArray(new URL[list.size()]);
-	}
-
-	/**
 	 * Search on every classpath entry the informed config file and loads all of them into the given property file
 	 * @param propertyFile the {@link Properties} File to be loaded
 	 * @param configFileName the name of the .properties file
@@ -212,30 +163,14 @@ public class ClasspathUrlFinder
 	 */
 	public static void loadFromConfigFiles(Properties propertyFile, String configFileName) throws Exception
 	{
-		URL[] urls = ClasspathUrlFinder.findClassPaths();
-		for (URL url : urls)
+		Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(configFileName);
+		
+		while (resources.hasMoreElements())
 		{
-			String urlString = url.toString();
-			if (url.getProtocol().equals("file"))
-			{
-				if (urlString.endsWith(".jar"))
-				{
-					url = new URL("jar:"+urlString+"!/");
-				}
-				else if (urlString.endsWith(".zip"))
-				{
-					url = new URL("zip:"+urlString+"!/");
-				}
-			}
-
-			URLResourceHandler urlResourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
-			URL childResource = urlResourceHandler.getChildResource(url, configFileName);
-			if (urlResourceHandler.exists(childResource))
-			{
-				URLStreamManager streamManager = new URLStreamManager(childResource);
-				propertyFile.load(streamManager.open());
-				streamManager.close();
-			}
+			URL url = resources.nextElement();
+			URLStreamManager streamManager = new URLStreamManager(url);
+			propertyFile.load(streamManager.open());
+			streamManager.close();
 		}
 	}
 }
