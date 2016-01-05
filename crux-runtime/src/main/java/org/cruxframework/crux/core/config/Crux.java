@@ -117,6 +117,10 @@ public interface Crux
 	void setAllowExperimentalFeatures(Boolean value);
 	
 	@DefaultServerMessage("")
+	String rootViewElementId();
+	void setRootViewElementId(String rootViewElementId);
+	
+	@DefaultServerMessage("")
 	String cruxXmlPreProcessors();
 	void setCruxXmlPreProcessors(String value);
 	

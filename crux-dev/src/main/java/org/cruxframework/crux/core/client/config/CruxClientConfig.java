@@ -34,4 +34,5 @@ public interface CruxClientConfig
 	boolean preferWebSQLForNativeDB();
 	String notifierCompilerAddress();
 	String notifierCompilerPort();
+	String rootViewElementId();
 }
