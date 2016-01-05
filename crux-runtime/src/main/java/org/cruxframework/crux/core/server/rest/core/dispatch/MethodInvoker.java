@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.rest.core.RequestProcessors;
 import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
+import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 import org.cruxframework.crux.core.shared.rest.annotation.CookieParam;
@@ -105,7 +106,7 @@ public class MethodInvoker
 		}
 	}
 
-	public Object invoke(HttpRequest request, Object resource) throws RestFailure
+	public Object invoke(HttpRequest request, HttpResponse response, Object resource) throws RestFailure
 	{
 		preprocess(request);
 		
@@ -153,7 +154,7 @@ public class MethodInvoker
 		}
 		finally
 		{
-			postprocess(request);
+			postprocess(request, response);
 		}
 	}
 
@@ -193,13 +194,13 @@ public class MethodInvoker
         }
     }
 
-	protected void postprocess(HttpRequest request) throws RestFailure
+	protected void postprocess(HttpRequest request, HttpResponse response) throws RestFailure
     {
 		for (RequestPostprocessor postprocessor : postprocessors)
         {
 			try
 			{
-				postprocessor.postprocess(request);
+				postprocessor.postprocess(request, response);
 			}
 			catch (Exception e)
 			{

@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
+import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -24,9 +25,8 @@ import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 public abstract class RequestPostprocessor extends RequestProcessor
 {
 	/**
-	 * 
 	 * @param request
+	 * @param reponse
 	 */
-	public abstract void postprocess(HttpRequest request);
-
+	public abstract void postprocess(HttpRequest request, HttpResponse reponse);
 }
