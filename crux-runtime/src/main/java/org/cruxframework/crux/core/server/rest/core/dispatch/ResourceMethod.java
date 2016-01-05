@@ -96,7 +96,7 @@ public class ResourceMethod
 		}
 		this.corsData = CorsData.parseCorsData(corsSupport);
 		JsonPSupport jsonPSupport = method.getAnnotation(JsonPSupport.class);
-		if (corsSupport == null)
+		if (jsonPSupport == null)
 		{
 			jsonPSupport = resourceClass.getAnnotation(JsonPSupport.class);			
 		}
@@ -168,7 +168,7 @@ public class ResourceMethod
 			else
 			{
 				Object target = createTarget(request, response);
-				return invoke(request, target);
+				return invoke(request, response, target);
 			}
 		}
 		catch (RestFailure e)
@@ -235,7 +235,7 @@ public class ResourceMethod
     {
 	    MethodReturn ret;
 	    Object target = createTarget(request, response);
-	    ret = invoke(request, target);
+	    ret = invoke(request, response, target);
 	    return ret;
     }
 
@@ -255,9 +255,9 @@ public class ResourceMethod
 	}
 
 
-	private MethodReturn invoke(HttpRequest request, Object target)
+	private MethodReturn invoke(HttpRequest request, HttpResponse response, Object target)
 	{
-		Object rtn = methodInvoker.invoke(request, target);
+		Object rtn = methodInvoker.invoke(request, response, target);
 		String retVal = null;
 		String exeptionData = null;
 		try
