@@ -57,7 +57,15 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generatePreferWebSQLForNativeDB(sourceWriter);
 		generateNotifierCompilerPort(sourceWriter);
 		generateNotifierCompilerAddress(sourceWriter);
+		generateRootViewElementId(sourceWriter);
     }
+
+	private void generateRootViewElementId(SourcePrinter sourceWriter) 
+	{
+		sourceWriter.println("public String rootViewElementId(){");
+		sourceWriter.println("return " + "\"" + ConfigurationFactory.getConfigurations().rootViewElementId() + "\"" + ";");
+		sourceWriter.println("}");
+	}
 
 	protected void generatePreferWebSQLForNativeDB(SourcePrinter sourceWriter)
     {

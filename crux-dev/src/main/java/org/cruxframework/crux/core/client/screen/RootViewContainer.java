@@ -15,8 +15,10 @@
  */
 package org.cruxframework.crux.core.client.screen;
 
+import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
@@ -34,7 +36,19 @@ class RootViewContainer extends SingleViewContainer
 	public RootViewContainer()
     {
 		super(null, true);
-		containerPanel = RootPanel.get();
+		String rootViewElementId = Crux.getConfig().rootViewElementId();
+		if(!StringUtils.isEmpty(rootViewElementId))
+		{
+			containerPanel = RootPanel.get(rootViewElementId);
+		}
+		else
+		{
+			containerPanel = RootPanel.get();			
+		}
+		if(containerPanel != null)
+		{
+			containerPanel.clear();
+		}
 		bindToDOM();
     }
 
