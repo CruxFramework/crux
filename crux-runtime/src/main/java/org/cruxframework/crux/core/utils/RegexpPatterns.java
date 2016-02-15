@@ -22,20 +22,21 @@ import java.util.regex.Pattern;
  */
 public class RegexpPatterns 
 {
-    public static final Pattern REGEXP_DOT = Pattern.compile("\\.");
-    public static final Pattern REGEXP_SPACE = Pattern.compile(" ");
-    public static final Pattern REGEXP_PIPE = Pattern.compile("\\|");
-    public static final Pattern REGEXP_LINE = Pattern.compile("_");
-    public static final Pattern REGEXP_SLASH = Pattern.compile("/");
     public static final Pattern REGEXP_BACKSLASH = Pattern.compile("\\\\");
     public static final Pattern REGEXP_COMMA = Pattern.compile(",");
-    public static final Pattern REGEXP_INVALID_HTML_CHARS = Pattern.compile("[<>\\&\\\"\\']");
-    public static final Pattern REGEXP_WORD = Pattern.compile("\\w*");
-    public static final Pattern REGEXP_CRUX_MESSAGE = Pattern.compile("\\$\\{\\w+\\.\\w+\\}");
-    public static final Pattern REGEXP_CRUX_RESOURCE = Pattern.compile("\\$\\{\\w[\\.\\w]+\\}");
     public static final Pattern REGEXP_CONTEXT = Pattern.compile("/\\{context\\}");
-    public static final Pattern REGEXP_CRUX_OBJECT_DATA_BINDING = Pattern.compile("\\@\\{\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
-    public static final Pattern REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING = Pattern.compile("\\@\\@\\{\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
+    public static final Pattern REGEXP_CRUX_CONTROLLER_CALL = Pattern.compile("\\{\\w+\\.\\w+\\}");
     public static final Pattern REGEXP_CRUX_EXPRESSION_DATA_BINDING = Pattern.compile(
     "\\@\\{(NOT\\s)?(EMPTY|NULL|FILLED|POSITIVE|NEGATIVE|ZERO|IS)\\s*\\(\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?(\\s+\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?)*\\)\\}");
+    public static final Pattern REGEXP_CRUX_MESSAGE = Pattern.compile("\\$\\{\\w+\\.\\w+\\}");
+    public static final Pattern REGEXP_CRUX_OBJECT_DATA_BINDING = Pattern.compile("\\@\\{\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
+    public static final Pattern REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING = Pattern.compile("\\@\\@\\{\\w+\\.\\w+[\\.\\w]*(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
+    public static final Pattern REGEXP_CRUX_RESOURCE = Pattern.compile("\\$\\{\\w[\\.\\w]+\\}");
+    public static final Pattern REGEXP_DOT = Pattern.compile("\\.");
+    public static final Pattern REGEXP_INVALID_HTML_CHARS = Pattern.compile("[<>\\&\\\"\\']");
+    public static final Pattern REGEXP_LINE = Pattern.compile("_");
+    public static final Pattern REGEXP_PIPE = Pattern.compile("\\|");
+    public static final Pattern REGEXP_SLASH = Pattern.compile("/");
+    public static final Pattern REGEXP_SPACE = Pattern.compile(" ");
+    public static final Pattern REGEXP_WORD = Pattern.compile("\\w*");
 }
