@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
@@ -59,11 +60,16 @@ public class ViewTester extends HttpServlet
     	}
     	else
     	{
-    		processRequest(resp, moduleName);
+    		String device = req.getParameter("device");
+    		if (StringUtils.isEmpty(device))
+    		{
+    			device = Device.largeDisplayMouse.name();
+    		}
+    		processRequest(resp, moduleName, device);
     	}
     }
 
-	protected void processRequest(HttpServletResponse resp, String moduleName) throws IOException, UnsupportedEncodingException
+	protected void processRequest(HttpServletResponse resp, String moduleName, String device) throws IOException, UnsupportedEncodingException
     {
 	    InputStream screenResource = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/cruxViewTester.crux.xml");
 	    String screenContent = StreamUtils.readAsUTF8(screenResource);
@@ -73,6 +79,6 @@ public class ViewTester extends HttpServlet
 	    
 	    ViewProcessor viewProcessor = new ViewProcessor(new ViewLoader.SimpleViewLoader());
 	    Document screen = viewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
-	    viewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
+	    viewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), device, screen, resp.getOutputStream());
     }
 }

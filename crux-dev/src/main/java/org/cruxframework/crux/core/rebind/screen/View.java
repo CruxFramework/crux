@@ -49,6 +49,7 @@ public class View
 	protected String height;
 	protected String id;
 	protected String largeViewport;
+	protected Map<String, String> nativeControllers = new HashMap<String, String>();
 	protected List<String> resources = new ArrayList<String>();
 	@Deprecated
 	@Legacy
@@ -65,7 +66,7 @@ public class View
 	private final JSONObject lazyDependencies;
 	private final boolean rootView;
 	private JSONObject viewElement;
-	
+
 	public View(String id, JSONObject lazyDependencies, String html, boolean rootView) 
 	{
 		this.id = id;
@@ -165,6 +166,16 @@ public class View
 	}
 
 	/**
+	 * Retrieve the controller call bound to given method name
+	 * @param method
+	 * @return
+	 */
+	public String getNativeControllerCall(String method)
+	{
+		return nativeControllers.get(method);
+	}
+	
+	/**
 	 * Viewport for small devices
 	 * 
 	 * @return
@@ -173,7 +184,7 @@ public class View
     {
     	return smallViewport;
     }
-	
+
 	/**
 	 * Return the view title
 	 * @return
@@ -182,7 +193,7 @@ public class View
 	{
 		return title;
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -211,7 +222,7 @@ public class View
 	{
 		return widgetTypes;
 	}
-	
+
 	/**
 	 * Retrieve the view width
 	 * @return
@@ -220,7 +231,7 @@ public class View
     {
     	return width;
     }
-
+	
 	/**
 	 * 
 	 * @return
@@ -269,8 +280,8 @@ public class View
 	public Iterator<Event> iterateEvents()
 	{
 		return events.values().iterator();
-	}
-	
+	}	
+
 	/**
 	 * Iterate over view formatters
 	 * @return
@@ -278,8 +289,17 @@ public class View
 	public Iterator<String> iterateFormatters()
 	{
 		return formatters.iterator();
-	}	
-
+	}
+	
+	/**
+	 * Iterate over native controller method calls
+	 * @return
+	 */
+	public Iterator<String> iterateNativeControllerCalls()
+	{
+		return nativeControllers.keySet().iterator();
+	}
+	
 	/**
 	 * Iterate over view resources
 	 * @return
@@ -306,7 +326,7 @@ public class View
 	{
 		return widgets.values().iterator();
 	}
-	
+
 	/**
 	 * Set the view height
 	 * @param height
@@ -428,6 +448,16 @@ public class View
 		{
 			formatters.add(formatter);
 		}
+	}
+	
+	/**
+	 * Register a native controller call
+	 * @param method
+	 * @param controllerCall
+	 */
+	protected void addNativeControllerCall(String method, String controllerCall)
+	{
+		nativeControllers.put(method, controllerCall);
 	}
 
 	/**

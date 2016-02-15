@@ -129,6 +129,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
 	private String viewPanelVariable;
+	private String nativeControllers;
 
 	/**
 	 * Constructor
@@ -345,6 +346,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("this.registeredFormatters = new "+regsiteredFormattersClass+"();");
 		printer.println("this.registeredDataSources = new "+regsiteredDataSourcesClass+"(this, iocContainer);");
 		generateResources(printer);
+		printer.println("new " + nativeControllers + "(this).init();");
 		printer.println("}");
 	}
     
@@ -441,6 +443,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	String resourceKey = resources.next();
 	    	this.resources.add(new ResourcesHandlerProxyCreator(context, resourceKey, view, device).create());
 	    }
+
+	    nativeControllers = new NativeControllersProxyCreator(this).create();
     }
 
 	/**
@@ -1549,6 +1553,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    
     }
 
+	/**
+	 * Retreive the name of the class responsible for native calls to controller methods.
+	 * @param viewId
+	 * @return
+	 */
+	public static String getViewNativeControllersType(String viewId, String device)
+	{
+		return viewId.replaceAll("\\W", "_") + "_NativeControllers_" + device;
+	}
+	
 	/**
      * Creates a new unique name based off of{@code varName} and adds it to
      * the list of known names.

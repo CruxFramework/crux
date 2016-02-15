@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +104,7 @@ public class ViewFactory
 	/**
 	 * Factory method for views.
 	 * @param id
+	 * @param device
 	 * @param view
 	 * @param rootView
 	 * @return
@@ -112,7 +114,7 @@ public class ViewFactory
 	{
 		try 
 		{
-			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
+			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, device, view, rootView);
 			View result = parseView(id, metadata, rootView);
 			result.setLastModified(lastModified);
 			return result;
@@ -141,9 +143,9 @@ public class ViewFactory
 	    return context.getScreenLoader().getViewLoader().getViews();
     }
 	
-	protected void generateHTML(String viewId, Document view, OutputStream out)
+	protected void generateHTML(String viewId, String device, Document view, OutputStream out)
 	{
-		viewProcessor.generateHTML(viewId, view, out);
+		viewProcessor.generateHTML(viewId, device, view, out);
 	}
 	
 	/**
@@ -289,6 +291,7 @@ public class ViewFactory
 	 * @throws IOException
 	 * @throws ScreenConfigException 
 	 */
+	@SuppressWarnings("unchecked")
 	private View parseView(String id, JSONObject metaData, boolean rootView) throws IOException, ScreenConfigException
 	{
 		try
@@ -296,8 +299,15 @@ public class ViewFactory
 			JSONArray elementsMetadata = metaData.getJSONArray("elements");
 			JSONObject lazyDependencies = metaData.getJSONObject("lazyDeps");
 			String html = metaData.getString("_html");
+			JSONObject nativeControllers = metaData.getJSONObject("nativeControllers");
 			
 			View view = new View(id, lazyDependencies, html, rootView);
+            Iterator<String> keys = nativeControllers.keys();
+			while (keys.hasNext()) 
+			{
+				String nativeControllerMethod = keys.next();
+				view.addNativeControllerCall(nativeControllerMethod, nativeControllers.getString(nativeControllerMethod));
+			}
 
 			int length = elementsMetadata.length();
 			for (int i = 0; i < length; i++) 
