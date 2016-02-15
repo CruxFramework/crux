@@ -96,7 +96,7 @@ public class ViewFactory
 		Document viewDoc = viewProcessor.getView(inputStream, id, device);
 		StreamUtils.safeCloseStream(inputStream);
 		
-		View view = getView(id, viewDoc, resource.getLastModified(), false);
+		View view = getView(id, device, viewDoc, resource.getLastModified(), false);
 		cache.put(cacheKey, view);
 		return view;
 	}
@@ -104,16 +104,17 @@ public class ViewFactory
 	/**
 	 * Factory method for views.
 	 * @param id
+	 * @param device
 	 * @param view
 	 * @param rootView
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public View getView(String id, Document view, long lastModified, boolean rootView) throws ScreenConfigException
+	public View getView(String id, String device, Document view, long lastModified, boolean rootView) throws ScreenConfigException
 	{
 		try 
 		{
-			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
+			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, device, view, rootView);
 			View result = parseView(id, metadata, rootView);
 			result.setLastModified(lastModified);
 			return result;
@@ -142,9 +143,9 @@ public class ViewFactory
 	    return context.getScreenLoader().getViewLoader().getViews();
     }
 	
-	protected void generateHTML(String viewId, Document view, OutputStream out)
+	protected void generateHTML(String viewId, String device, Document view, OutputStream out)
 	{
-		viewProcessor.generateHTML(viewId, view, out);
+		viewProcessor.generateHTML(viewId, device, view, out);
 	}
 	
 	/**

@@ -117,12 +117,14 @@ public class ViewParser
 	private final boolean indentOutput;
 	private int jsIndentationLvl;
 	private final String viewId;
+	private final String device;
 	private final boolean xhtmlInput;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param viewId The view identifier
+	 * @param device the compilation device
 	 * @param device The target device being compiled
 	 * @param escapeXML If true will escape all inner text nodes to ensure that the generated outputs will be parsed correctly by a XML parser.
 	 * @param indentOutput True makes the generated outputs be indented.
@@ -130,9 +132,10 @@ public class ViewParser
 	 * composed by a root tag representing a the view.
 	 * @throws ViewParserException
 	 */
-	public ViewParser(String viewId, boolean escapeXML, boolean indentOutput, boolean xhtmlInput) throws ViewParserException
+	public ViewParser(String viewId, String device, boolean escapeXML, boolean indentOutput, boolean xhtmlInput) throws ViewParserException
     {
 		this.viewId = viewId;
+		this.device = device;
 		this.escapeXML = escapeXML;
 		this.indentOutput = indentOutput;
 		this.xhtmlInput = xhtmlInput;
@@ -590,7 +593,7 @@ public class ViewParser
 					Node child = children.item(i);
 					if (!isCruxModuleImportTag(child))
 					{
-						HTMLUtils.write(nativeControllers, child, innerHTML);
+						HTMLUtils.write(viewId, device, nativeControllers, child, innerHTML);
 					}
 				}
 			}
@@ -1077,7 +1080,7 @@ public class ViewParser
 		{
 			out.write("<!DOCTYPE " + doctype.getName() + ">\n");
 		}
-	    HTMLUtils.write(null, htmlDocument.getDocumentElement(), out, indentOutput);
+	    HTMLUtils.write(viewId, device, null, htmlDocument.getDocumentElement(), out, indentOutput);
 	}
 	
 	/**

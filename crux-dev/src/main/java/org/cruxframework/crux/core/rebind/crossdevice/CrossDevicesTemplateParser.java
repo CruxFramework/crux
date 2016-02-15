@@ -123,7 +123,7 @@ public class CrossDevicesTemplateParser
 	{
 		try
 		{
-			return viewFactory.getView(deviceAdaptive, template, lastModified, false);
+			return viewFactory.getView(deviceAdaptive, device.toString(), template, lastModified, false);
 		}
 		catch (Exception e)
 		{

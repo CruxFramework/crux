@@ -59,31 +59,35 @@ public class HTMLUtils
     }
 
 	/**
+	 * @param viewId
+	 * @param device
 	 * @param nativeControllers 
 	 * @param node
 	 * @param out
 	 * @throws IOException
 	 */
-	public static void write(StringBuilder nativeControllers, Node node, Writer out) throws IOException
+	public static void write(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
 	{
-		write(nativeControllers, node, out, false);
+		write(viewId, device, nativeControllers, node, out, false);
 	}
 
 	/**
+	 * @param viewId
+	 * @param device
 	 * @param nativeControllers 
 	 * @param node
 	 * @param out
 	 * @param indentOutput
 	 * @throws IOException
 	 */
-	public static void write(StringBuilder nativeControllers, Node node, Writer out, boolean indentOutput) throws IOException
+	public static void write(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out, boolean indentOutput) throws IOException
 	{
 		if (node.getNodeType() == Node.ELEMENT_NODE)
 		{
 			String name = ((Element)node).getNodeName().toLowerCase();
 			out.write("<");
 			out.write(name);
-			writeAttributes(nativeControllers, node, out);
+			writeAttributes(viewId, device, nativeControllers, node, out);
 			
 			if (voidElements.contains(name))
 			{
@@ -109,7 +113,7 @@ public class HTMLUtils
 						}
 						else
 						{
-							write(nativeControllers, child, out, indentOutput);
+							write(viewId, device, nativeControllers, child, out, indentOutput);
 						}
 					}
 				}
@@ -164,12 +168,14 @@ public class HTMLUtils
     }
 	
 	/**
+	 * @param viewId
+	 * @param device
 	 * @param nativeControllers 
 	 * @param node
 	 * @param out
 	 * @throws IOException
 	 */
-	public static void writeAttributes(StringBuilder nativeControllers, Node node, Writer out) throws IOException
+	public static void writeAttributes(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
     {
 	    NamedNodeMap attributes = node.getAttributes();
 	    for (int i=0; i<attributes.getLength(); i++)
@@ -184,7 +190,7 @@ public class HTMLUtils
 	    			String controllerCall = attributeValue.trim();
 	    			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
 
-					String methodCall = controllerCall.replace('.', '_');
+					String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerCall.replace('.', '_');
 	    			out.write(" "+name+"=\""+methodCall+"(event)"+"\"");
 	    			
 	    			if (nativeControllers.length() > 1)
