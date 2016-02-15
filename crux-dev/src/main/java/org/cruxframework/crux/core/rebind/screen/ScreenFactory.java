@@ -158,7 +158,7 @@ public class ScreenFactory
 
 		if(screenModule != null)
 		{
-			View rootView = viewFactory.getView(id, device, screenView, lastModified, true);
+			View rootView = viewFactory.getView(id, screenView, lastModified, true);
 
 			screen = new Screen(id, screenModule, rootView);
 		}
