@@ -49,6 +49,19 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
     }
 
 	@Override
+    public String getProxyQualifiedName()
+    {
+	    return ViewFactory.class.getPackage().getName() + "." + getProxySimpleName();
+    }
+	
+	@Override
+    public String getProxySimpleName()
+    {
+		String className = ViewFactoryCreator.getViewNativeControllersType(viewFactoryCreator.getView().getId(), viewFactoryCreator.getDevice());
+		return className;
+    };
+	
+	@Override
 	protected void generateProxyContructor(SourcePrinter printer) throws CruxGeneratorException
 	{
 		printer.println("public " + getProxySimpleName() + "("+org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName()+" view){");
@@ -60,7 +73,8 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
 	{
 		printer.println("private " + org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName() + 
 			" " + ViewFactoryCreator.getViewVariable() + ";");
-	};
+	}
+	
 	
 	@Override
 	protected void generateProxyMethods(SourcePrinter printer) throws CruxGeneratorException
@@ -118,7 +132,7 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
 		printer.println(initMethods.toString());
 		printer.println("}");
 	}
-	
+
 	protected JClassType getControllerMethodParameter(NativeControllerCall nativeControllerCall) 
 	{
 		View view = viewFactoryCreator.getView();
@@ -152,20 +166,6 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
 			throw new CruxGeneratorException("Error creating native HTML controller call for event["+nativeControllerCall.getControllerCall()+"].", e);
 		}
 	}
-	
-	
-	@Override
-    public String getProxyQualifiedName()
-    {
-	    return ViewFactory.class.getPackage().getName() + "." + getProxySimpleName();
-    }
-
-	@Override
-    public String getProxySimpleName()
-    {
-		String className = ViewFactoryCreator.getViewNativeControllersType(viewFactoryCreator.getView().getId(), viewFactoryCreator.getDevice());
-		return className;
-    }
 
 	@Override
     protected SourcePrinter getSourcePrinter()
