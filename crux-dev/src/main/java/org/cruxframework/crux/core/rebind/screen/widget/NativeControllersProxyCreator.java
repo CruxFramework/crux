@@ -34,6 +34,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
 /**
+ * A Helper class to handle calls to crux controllers on native HTML elements
  * @author Thiago da Rosa de Bustamante
  *
  */
