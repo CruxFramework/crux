@@ -15,6 +15,9 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cruxframework.crux.core.client.controller.Expose;
 import org.cruxframework.crux.core.client.controller.Factory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
@@ -33,6 +36,7 @@ import com.google.gwt.core.ext.typeinfo.JGenericType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.dom.client.NativeEvent;
 
 
 
@@ -293,6 +297,91 @@ public abstract class EvtProcessor extends AbstractProcessor
 		}
     }
 
+	/**
+	 * Retrieve a list of possible methods to handle a call to a controller method. This list contains method candidates that 
+	 * receives events preceding methods that has no parameters.
+	 * @param context
+	 * @param eventName
+	 * @param eventValue
+	 * @param view
+	 * @param device
+	 * @return
+	 */
+	public static JMethod[] getControllerDomEventHandlers(RebindContext context, String eventName, String eventValue, View view, Device device)
+	{
+    	Event event = EventFactory.getEvent(eventName, eventValue);
+
+    	if (event == null)
+    	{
+    		throw new CruxGeneratorException("Error parsing controller method declaration on view ["+view.getId()+"]. ["+eventValue+"] is not a valid method declaration.");
+    	}
+    	
+    	if (!view.useController(event.getController()))
+    	{
+    		throw new CruxGeneratorException("Controller ["+event.getController()+"] , used on view ["+view.getId()+"], was not declared on this view. Use the useController attribute to import the controller into this view.");
+    	}
+    	
+    	String controller;
+        try
+        {
+	        controller = context.getControllers().getController(event.getController(), device);
+        }
+        catch (ResourceNotFoundException e)
+        {
+    		throw new CruxGeneratorException("Controller ["+event.getController()+"] , declared on view ["+view.getId()+"], not found.");
+    	}
+
+    	JClassType controllerClass = context.getGeneratorContext().getTypeOracle().findType(controller);
+    	if (controllerClass == null)
+    	{
+    		String message = "Controller class ["+controller+"] , declared on view ["+view.getId()+"], could not be loaded. "
+						   + "\n Possible causes:"
+						   + "\n\t 1. Check if any type or subtype used by controller refers to another module and if this module is inherited in the .gwt.xml file."
+						   + "\n\t 2. Check if your controller or its members belongs to a client package."
+						   + "\n\t 3. Check the versions of all your modules."
+						   ;
+    		throw new CruxGeneratorException(message);
+    	}
+		return getControllerDomEventHandlers(context, event.getMethod(), controllerClass);
+	}
+
+	
+	/**
+	 * 
+	 * @param context 
+	 * @param methodName
+	 * @param controllerClass
+	 * @return
+	 */
+	static JMethod[] getControllerDomEventHandlers(RebindContext context, String methodName, JClassType controllerClass)
+	{
+		List<JMethod> result = new ArrayList<JMethod>();
+    	JClassType nativeEventClass = context.getGeneratorContext().getTypeOracle().findType(NativeEvent.class.getCanonicalName());
+		
+		JMethod[] methods = controllerClass.getInheritableMethods();
+		for (JMethod method : methods)
+        {
+	        if (method.getName().equals(methodName) && method.isAnnotationPresent(Expose.class) && method.getParameterTypes().length <= 1)
+	        {
+	        	JType[] parameterTypes = method.getParameterTypes();
+	        	if (parameterTypes.length == 0)
+	        	{
+	        		result.add(method);
+	        	}
+	        	else
+	        	{
+	        		JClassType parameterClass = parameterTypes[0].isClassOrInterface();
+	        		if (parameterClass != null && parameterClass.isAssignableTo(nativeEventClass))
+	        		{
+		        		result.add(0,method);
+	        		}
+	        	}
+	        }
+        }
+		
+		return result.toArray(new JMethod[result.size()]);
+	}
+	
     /**
      * @param eventValue
      * @param cruxEvent

@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.screen;
  
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,6 @@ import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.json.JSONObject;
-
-import com.google.gwt.dev.util.collect.HashSet;
 
 /**
  * Represents a Crux View at the application's server side. Used for GWT Generators.
@@ -49,7 +48,7 @@ public class View
 	protected String height;
 	protected String id;
 	protected String largeViewport;
-	protected Map<String, String> nativeControllers = new HashMap<String, String>();
+	protected Set<NativeControllerCall> nativeControllers = new HashSet<NativeControllerCall>();
 	protected List<String> resources = new ArrayList<String>();
 	@Deprecated
 	@Legacy
@@ -163,16 +162,6 @@ public class View
 	public JSONObject getLazyDependencies()
 	{
 		return lazyDependencies;
-	}
-
-	/**
-	 * Retrieve the controller call bound to given method name
-	 * @param method
-	 * @return
-	 */
-	public String getNativeControllerCall(String method)
-	{
-		return nativeControllers.get(method);
 	}
 	
 	/**
@@ -295,9 +284,9 @@ public class View
 	 * Iterate over native controller method calls
 	 * @return
 	 */
-	public Iterator<String> iterateNativeControllerCalls()
+	public Iterator<NativeControllerCall> iterateNativeControllerCalls()
 	{
-		return nativeControllers.keySet().iterator();
+		return nativeControllers.iterator();
 	}
 	
 	/**
@@ -457,7 +446,7 @@ public class View
 	 */
 	protected void addNativeControllerCall(String method, String controllerCall)
 	{
-		nativeControllers.put(method, controllerCall);
+		nativeControllers.add(new NativeControllerCall(method, controllerCall));
 	}
 
 	/**
@@ -558,4 +547,31 @@ public class View
     {
     	this.viewElement = viewElement;
     }
+	
+	/**
+	 * Represents a native call to a view controller method
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static class NativeControllerCall
+	{
+		private final String controllerCall;
+		private final String method;
+		
+		public NativeControllerCall(String method, String controllerCall)
+		{
+			this.method = method;
+			this.controllerCall = controllerCall;
+		}
+
+		public String getControllerCall()
+		{
+			return controllerCall;
+		}
+
+		public String getMethod()
+		{
+			return method;
+		}
+	}
 }

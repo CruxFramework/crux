@@ -47,6 +47,7 @@ import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.dev.generator.NameFactory;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.HasText;
@@ -377,9 +378,12 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	        	if (parameters != null && parameters.length == 1)
 	        	{
 	        		JClassType gwtEventType = controllerClass.getOracle().getType(GwtEvent.class.getCanonicalName());
+	        		JClassType nativeEventType = controllerClass.getOracle().getType(NativeEvent.class.getCanonicalName());
 	        		JClassType cruxEventType = controllerClass.getOracle().getType(BaseEvent.class.getCanonicalName());
 	        		JClassType parameterType = parameters[0].getType().isClassOrInterface();
-	        		if (parameterType == null || (!gwtEventType.isAssignableFrom(parameterType) && !cruxEventType.isAssignableFrom(parameterType)))
+	        		if (parameterType == null || (!gwtEventType.isAssignableFrom(parameterType) && 
+	        									  !cruxEventType.isAssignableFrom(parameterType) &&
+	        									  !nativeEventType.isAssignableFrom(parameterType)))
 	        		{
 	        			return false;
 	        		}

@@ -153,7 +153,7 @@ public class ViewParser
 			Element htmlElement = view.getDocumentElement();
 			StringBuilder elementsMetadata = new StringBuilder();
 			StringBuilder nativeControllers = new StringBuilder();
-			nativeControllers.append("{");
+			nativeControllers.append("[");
 			
 			elementsMetadata.append("[");
 			indent();
@@ -173,7 +173,7 @@ public class ViewParser
 			translateDocument(rootElement, viewHtmlElement, true);
 			generateCruxInnerHTMLMetadata(nativeControllers, metadata, viewHtmlElement);
 			
-			nativeControllers.append("}");
+			nativeControllers.append("]");
 			
 			metadata.append(",\"nativeControllers\":"+nativeControllers.toString());
 			

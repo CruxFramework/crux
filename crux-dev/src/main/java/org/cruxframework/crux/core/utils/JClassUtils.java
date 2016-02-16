@@ -134,55 +134,6 @@ public class JClassUtils
         }
     }
 
-	private static JType buildGetExpression(String prop, JClassType baseClassType, StringBuilder getExpression)
-	{
-		String getterMethod = JClassUtils.getGetterMethod(prop, baseClassType);
-		if (getterMethod == null)
-		{
-			JMethod method = getMethod(baseClassType, prop, new JType[]{});
-			if (method == null)
-			{
-				method = getMethodOverInterfaces(baseClassType, prop, new JType[]{});	
-			
-				if (method == null)
-    			{
-					return null;
-    			} 
-				getterMethod = method.getName();
-				baseClassType = method.getEnclosingType();
-			}
-			else
-			{
-				getterMethod = prop;
-			}
-		}
-		getExpression.append("."+getterMethod+"()");
-		return JClassUtils.getReturnTypeFromMethodClass(baseClassType, getterMethod, new JType[]{});
-	}
-	
-	public static JClassType getType(TypeOracle typeOracle, String className) throws NotFoundException
-	{
-		return getType(typeOracle, className, null);
-	}
-	
-	public static JClassType getType(TypeOracle typeOracle, String className, String viewName) throws NotFoundException
-	{
-		try
-		{
-			return typeOracle.getType(className);
-		} 
-		catch (Exception e)
-		{
-			String message = "Class ["+className+"] " + (viewName != null ? ", declared on view ["+viewName+"]," : "") + " could not be loaded. "
-			   + "\n Possible causes:"
-			   + "\n\t 1. Check if any type or subtype used by this class refers to another module and if this module is inherited in the .gwt.xml file."
-			   + "\n\t 2. Check if your class or its members belongs to a client package."
-			   + "\n\t 3. Check the versions of all your modules.";
-			
-			throw new NotFoundException(message, e);
-		}
-	}
-	
 	public static JType buildSetValueExpression(SourcePrinter out, JClassType dtoType, String propertyPath, String objectVariable, String value) 
 			throws NoSuchFieldException
 	{
@@ -245,160 +196,31 @@ public class JClassUtils
         {
 			throw new NoSuchFieldException(propertyPath);
         }
-    }			
-	
-	/**
-	 * 
-	 * @param propertyName
-	 * @param baseClass 
-	 * @return
-	 */
-	public static String getGetterMethod(String propertyName, JClassType baseClass)
-	{
-		if (propertyName == null || propertyName.length() == 0)
-		{
-			return null;
-		}
-		String result = getGetterMethodName(propertyName);
-		
-		JMethod[] methods = findMethods(baseClass, "get"+result);
-		if (methods.length == 0)
-		{
-			methods = findMethods(baseClass, "is"+result);
-		}
-		if (methods.length > 0)
-		{
-			for (int i = 0; i < methods.length; i++)
-			{
-				if (methods[i].getParameters().length == 0)
-				{
-					return methods[i].getName();
-				}
-			}
-		}
-		
-		return null;
-	}
-
-	public static String getGetterMethodName(String propertyName)
-    {
-	    String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
-		if (propertyName.length() > 1)
-		{
-			result += propertyName.substring(1);
-		}
-	    return result;
-    }
-
-	/**
-	 * 
-	 * @param propertyName
-	 * @param baseClass 
-	 * @return
-	 */
-	public static String getSetterMethod(String propertyName, JClassType baseClass, JType propertyType)
-	{
-		if (propertyName == null || propertyName.length() == 0)
-		{
-			return null;
-		}
-		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
-		result += propertyName.substring(1);
-		if (propertyName.length() > 1)
-		{
-			try
-            {
-	            baseClass.getMethod("set"+result, new JType[]{propertyType});
-                result = "set"+result;
-            }
-            catch (Exception e)
-            {
-            	if (baseClass.getSuperclass() == null)
-            	{
-            		result = null;
-            	}
-            	else
-            	{
-            		result = getSetterMethod(propertyName, baseClass.getSuperclass(), propertyType);
-            	}
-            }
-		}
-		return result;
-	}
-
-	/**
-	 * @param methodName
-	 * @return
-	 */
-	public static JType getReturnTypeFromMethodClass(JClassType clazz, String methodName, JType[] params)
-    {
-	    JMethod method = getMethod(clazz, methodName, params);
-		
-		if (method == null)
-		{
-			return null;
-		}
-		JType returnType = method.getReturnType();
-		return returnType;
-    }
-
-	/**
-	 * @param clazz
-	 * @param methodName
-	 * @param params
-	 * @return
-	 */
-	public static JMethod getMethod(JClassType clazz, String methodName, JType[] params)
-    {
-	    JMethod method = null;
-	    JClassType superClass = clazz;
-	    while (method == null && superClass != null)
-	    {
-	    	method = superClass.findMethod(methodName, params);
-	    	superClass = superClass.getSuperclass();
-	    }
-	    return method;
     }
 	
-	/**
-	 * Look for methods over the interfaces.
-	 * @param clazz
-	 * @param methodName
-	 * @param params
-	 * @return
-	 */
-	public static JMethod getMethodOverInterfaces(JClassType clazz, String methodName, JType[] params)
-    {
-		JMethod method = null;
-    	for (JClassType superInterface : clazz.getImplementedInterfaces())
-    	{
-    		method = getMethod(superInterface, methodName, params);
-    		if (method != null)
-    		{
-    			return method;
-    		}
-    	}
-	    return method;
-    }
+	public static PropertyInfo[] extractBeanPropertiesInfo(JClassType type)
+	{
+		List<PropertyInfo> result = new ArrayList<PropertyInfo>();
 
-	/**
-	 * Retrieve a field from class. Searches also into the class hierarchy 
-	 * @param clazz class to search the field
-	 * @param fieldName field name
-	 * @return the field
-	 */
-	public static JField getField(JClassType clazz, String fieldName)
-    {
-	    JField field = null;
-	    JClassType superClass = clazz;
-	    while (field == null && superClass != null)
-	    {
-	    	field = superClass.findField(fieldName);
-	    	superClass = superClass.getSuperclass();
-	    }
-	    return field;
-    }
-
+		List<JMethod> getterMethods = getGetterMethods(type);
+		List<JMethod> setterMethods = getSetterMethods(type);
+		
+		for (JMethod setterMethod : setterMethods)
+        {
+	        String setterProperty = getPropertyForGetterOrSetterMethod(setterMethod);
+	        for (JMethod getterMethod : getterMethods)
+            {
+		        String getterProperty = getPropertyForGetterOrSetterMethod(getterMethod);
+	            if (getterProperty.equals(setterProperty))
+	            {
+					result.add(new PropertyInfo(setterProperty, getterMethod.getReturnType(), getterMethod, setterMethod));
+					break;
+	            }
+            }
+        }
+		return result.toArray(new PropertyInfo[result.size()]);
+	}
+	
 	/**
 	 * 
 	 * @param clazz
@@ -447,10 +269,382 @@ public class JClassUtils
 	        }
         }
 		return result.toArray(new JMethod[result.size()]);
+	}			
+	
+	/**
+	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param valueVariable
+	 * @param sourceWriter
+	 */
+	public static void generateFieldValueSet(JClassType voClass, JField field, String parentVariable,  
+			                           String valueVariable, SourcePrinter sourceWriter, boolean allowProtected)
+	{
+		if (field.isPublic() || (allowProtected && field.isProtected()))
+		{
+			sourceWriter.println(parentVariable+"."+field.getName()+"="+valueVariable+";");
+		}
+		else
+		{
+			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				if (voClass.getMethod(setterMethodName, new JType[]{field.getType()}) != null)
+				{
+					sourceWriter.println(parentVariable+"."+setterMethodName+"("+valueVariable+");");
+				}
+			}
+			catch (Exception e)
+			{
+				throw new CruxGeneratorException("Property ["+field.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
+			}
+		}
+	}
+
+	public static JClassType[] getActualParameterTypes(JClassType baseType, JClassType desiredInterfaceType)
+	{
+		Set<? extends JClassType> interfaces = baseType.getFlattenedSupertypeHierarchy();
+		for (JClassType intf : interfaces)
+		{
+			JParameterizedType parameterized = intf.isParameterized();
+			if (parameterized != null)
+			{
+				if (parameterized.getBaseType().getQualifiedSourceName().equals(desiredInterfaceType.getQualifiedSourceName()))
+				{
+					return parameterized.getTypeArgs();
+				}
+			}
+		}
+		throw new RuntimeException("Desired interface ["+desiredInterfaceType.getQualifiedSourceName()+"] is nor parameterized or baseIntef does not extends that interface.");
+	}
+
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return
+	 */
+	public static JField getDeclaredField(JClassType clazz, String name) throws NoSuchFieldException
+	{
+		JField field = clazz.getField(name);
+		if (field == null)
+		{
+			if (clazz.getSuperclass() == null)
+			{
+				throw new NoSuchFieldException(name);
+			}
+			field = getDeclaredField(clazz.getSuperclass(), name);
+		}
+
+		return field;
+	}
+
+	/**
+	 * @param clazz
+	 * @return
+	 */
+	public static JField[] getDeclaredFields(JClassType clazz)
+	{
+		if (clazz.getSuperclass() == null)
+		{
+			return new JField[0];
+		}
+		Set<JField> result = new HashSet<JField>();
+		JField[] declaredFields = clazz.getFields();
+		for (JField field : declaredFields)
+		{
+			result.add(field);
+		}
+		clazz = clazz.getSuperclass();
+		while (clazz.getSuperclass() != null)
+		{
+			declaredFields = clazz.getFields();
+			for (JField field : declaredFields)
+			{
+				if (!result.contains(field))
+				{
+					result.add(field);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		
+		return result.toArray(new JField[result.size()]);
+	}
+
+	public static String getEmptyValueForType(JType objectType)
+	{
+		return getEmptyValueForType(objectType, true);
+	}
+	
+	public static String getEmptyValueForType(JType objectType, boolean useNullForString)
+    {
+		JPrimitiveType primitiveType = objectType.isPrimitive();
+		if (primitiveType != null)
+		{
+			if ((primitiveType == JPrimitiveType.INT)
+					||(primitiveType == JPrimitiveType.SHORT)
+					||(primitiveType == JPrimitiveType.LONG)
+					||(primitiveType == JPrimitiveType.BYTE)
+					||(primitiveType == JPrimitiveType.FLOAT)
+					||(primitiveType == JPrimitiveType.DOUBLE))
+					{
+				return "0";
+					}
+			else if (primitiveType == JPrimitiveType.BOOLEAN)
+			{
+				return "false";
+			}
+			else if (primitiveType == JPrimitiveType.CHAR)
+			{
+				return "' '";
+			}
+			else if (primitiveType ==JPrimitiveType.VOID)
+			{
+				return null;
+			}
+		}
+		else if (objectType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			if (!useNullForString)
+			{
+				return "\"\"";
+			}
+		}
+		
+		return "null";
+    }
+
+	/**
+	 * Retrieve a field from class. Searches also into the class hierarchy 
+	 * @param clazz class to search the field
+	 * @param fieldName field name
+	 * @return the field
+	 */
+	public static JField getField(JClassType clazz, String fieldName)
+    {
+	    JField field = null;
+	    JClassType superClass = clazz;
+	    while (field == null && superClass != null)
+	    {
+	    	field = superClass.findField(fieldName);
+	    	superClass = superClass.getSuperclass();
+	    }
+	    return field;
+    }
+
+	/**
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param allowProtected
+	 * @deprecated Use getFieldValueGet(JClassType, String, String boolean) instead.
+	 */
+	@Deprecated
+	@Legacy
+	public static String getFieldValueGet(JClassType voClass, JField field, String parentVariable, boolean allowProtected)
+	{
+		return getFieldValueGet(voClass, field.getName(), parentVariable, allowProtected);
+	}
+	
+	/**
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * @param clazz class where the property will be searched.
+	 * @param propertyName property name
+	 * @param parentVariable the name of the parent variable to use in generated expression
+	 * @param allowProtected if this expression allow protected fields and methods access
+	 * @return an expression in the form {@code <parentVar>.<propertyAccessor>}
+	 */
+	public static String getFieldValueGet(JClassType clazz, String propertyName, String parentVariable, boolean allowProtected)
+	{
+		JMethod jMethod = JClassUtils.getMethod(clazz, JClassUtils.getGetterMethod(propertyName, clazz), new JType[]{});
+		if (jMethod != null && (jMethod.isPublic() || (allowProtected && jMethod.isProtected())))
+		{
+			return (parentVariable+"."+jMethod.getName()+"()");
+		}
+		JField field = getField(clazz, propertyName);
+
+		if (field.isPublic() || (allowProtected && field.isProtected()))
+		{
+			return parentVariable+"."+field.getName();
+		}
+
+		throw new CruxGeneratorException("Property ["+propertyName+"] could not be created. It is not visible neither has a getter/setter method.");
 	}
 	
 
 	
+	
+	/**
+	 * Returns a string to be used in generic code block, according with the given type 
+	 * @param type
+	 * @return
+	 */
+	public static String getGenericDeclForType(JType type)
+	{
+		if (type.isPrimitive() != null)
+		{
+			JPrimitiveType jPrimitiveType = type.isPrimitive();
+			return jPrimitiveType.getQualifiedBoxedSourceName();
+		}
+		else
+		{
+			return type.getParameterizedQualifiedSourceName();
+		}
+	}
+
+	/**
+	 * 
+	 * @param propertyName
+	 * @param baseClass 
+	 * @return
+	 */
+	public static String getGetterMethod(String propertyName, JClassType baseClass)
+	{
+		if (propertyName == null || propertyName.length() == 0)
+		{
+			return null;
+		}
+		String result = getGetterMethodName(propertyName);
+		
+		JMethod[] methods = findMethods(baseClass, "get"+result);
+		if (methods.length == 0)
+		{
+			methods = findMethods(baseClass, "is"+result);
+		}
+		if (methods.length > 0)
+		{
+			for (int i = 0; i < methods.length; i++)
+			{
+				if (methods[i].getParameters().length == 0)
+				{
+					return methods[i].getName();
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String getGetterMethodName(String propertyName)
+    {
+	    String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
+		if (propertyName.length() > 1)
+		{
+			result += propertyName.substring(1);
+		}
+	    return result;
+    }
+	
+	public static List<JMethod> getGetterMethods(JClassType objectType)
+    {
+		List<JMethod> result = new ArrayList<JMethod>();
+	    JMethod[] methods = objectType.getInheritableMethods();
+	    
+	    for (JMethod jMethod : methods)
+        {
+	        if (isValidGetterMethod(jMethod))
+	        {
+	        	result.add(jMethod);
+	        }
+        }
+	    
+	    return result;
+    }
+	
+	/**
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 */
+	public static JMethod getMethod(JClassType clazz, String methodName, JType[] params)
+    {
+	    JMethod method = null;
+	    JClassType superClass = clazz;
+	    while (method == null && superClass != null)
+	    {
+	    	method = superClass.findMethod(methodName, params);
+	    	superClass = superClass.getSuperclass();
+	    }
+	    return method;
+    }
+	
+	/**
+	 * @param method
+	 * @return
+	 */
+	public static String getMethodDescription(JMethod method)
+	{
+		StringBuilder str = new StringBuilder();
+		
+		str.append(method.getEnclosingType().getQualifiedSourceName());
+		str.append(".");
+		str.append(method.getName());
+		str.append("(");
+		boolean needsComma = false;
+		
+		for (JParameter parameter: method.getParameters())
+		{
+			if (needsComma)
+			{
+				str.append(",");
+			}
+			needsComma = true;
+			str.append(parameter.getType().getParameterizedQualifiedSourceName());
+		}
+		str.append(")");
+		
+		return str.toString();
+	}
+	
+	/**
+	 * Look for methods over the interfaces.
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 */
+	public static JMethod getMethodOverInterfaces(JClassType clazz, String methodName, JType[] params)
+    {
+		JMethod method = null;
+    	for (JClassType superInterface : clazz.getImplementedInterfaces())
+    	{
+    		method = getMethod(superInterface, methodName, params);
+    		if (method != null)
+    		{
+    			return method;
+    		}
+    	}
+	    return method;
+    }
+	
+	public static String getNullSafeExpression(String widgetExpression, JType propertyType, String widgetVariable)
+	{
+		String getExpression = null;
+		JPrimitiveType primitiveType = propertyType.isPrimitive();
+		if (primitiveType == null)
+		{
+			getExpression = "(" + widgetVariable + "==null?null:" + widgetExpression + ")";
+		}
+		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
+		{
+			getExpression = "(" + widgetVariable + "==null?false:" + widgetExpression + "==null?false:" + widgetExpression + ")";
+		}
+		else if (primitiveType.equals(JPrimitiveType.CHAR))
+		{
+			getExpression = "(" + widgetVariable + "==null?' ':" + widgetExpression + "==null?' ':" + widgetExpression + ")";
+		}
+		else if (!primitiveType.equals(JPrimitiveType.VOID))
+		{
+			getExpression = "(" + widgetVariable + "==null?0:" + widgetExpression + "==null?0:" + widgetExpression + ")";
+		}
+		return getExpression;
+	}	
 	
 	/**
 	 * 
@@ -527,303 +721,22 @@ public class JClassUtils
 
 		return null;
 	}
-
-	/**
-	 * @param clazz
-	 * @param name
-	 * @return
-	 */
-	public static JField getDeclaredField(JClassType clazz, String name) throws NoSuchFieldException
-	{
-		JField field = clazz.getField(name);
-		if (field == null)
-		{
-			if (clazz.getSuperclass() == null)
-			{
-				throw new NoSuchFieldException(name);
-			}
-			field = getDeclaredField(clazz.getSuperclass(), name);
-		}
-
-		return field;
-	}
 	
-	/**
-	 * @param clazz
-	 * @return
-	 */
-	public static JField[] getDeclaredFields(JClassType clazz)
-	{
-		if (clazz.getSuperclass() == null)
+	public static String getPropertyForGetterOrSetterMethod(JMethod method)
+    {
+		String name = method.getName();
+		if (name.startsWith("get") || name.startsWith("set"))
 		{
-			return new JField[0];
+			name = name.substring(3);
 		}
-		Set<JField> result = new HashSet<JField>();
-		JField[] declaredFields = clazz.getFields();
-		for (JField field : declaredFields)
+		else if (name.startsWith("is"))
 		{
-			result.add(field);
+			name = name.substring(2);
 		}
-		clazz = clazz.getSuperclass();
-		while (clazz.getSuperclass() != null)
-		{
-			declaredFields = clazz.getFields();
-			for (JField field : declaredFields)
-			{
-				if (!result.contains(field))
-				{
-					result.add(field);
-				}
-			}
-			clazz = clazz.getSuperclass();
-		}
+		name = Character.toLowerCase(name.charAt(0))+ name.substring(1);
 		
-		return result.toArray(new JField[result.size()]);
-	}
-	
-	/**
-	 * @param method
-	 * @return
-	 */
-	public static String getMethodDescription(JMethod method)
-	{
-		StringBuilder str = new StringBuilder();
-		
-		str.append(method.getEnclosingType().getQualifiedSourceName());
-		str.append(".");
-		str.append(method.getName());
-		str.append("(");
-		boolean needsComma = false;
-		
-		for (JParameter parameter: method.getParameters())
-		{
-			if (needsComma)
-			{
-				str.append(",");
-			}
-			needsComma = true;
-			str.append(parameter.getType().getParameterizedQualifiedSourceName());
-		}
-		str.append(")");
-		
-		return str.toString();
-	}
-	
-	/**
-	 * Returns a string to be used in generic code block, according with the given type 
-	 * @param type
-	 * @return
-	 */
-	public static String getGenericDeclForType(JType type)
-	{
-		if (type.isPrimitive() != null)
-		{
-			JPrimitiveType jPrimitiveType = type.isPrimitive();
-			return jPrimitiveType.getQualifiedBoxedSourceName();
-		}
-		else
-		{
-			return type.getParameterizedQualifiedSourceName();
-		}
-	}
-	
-	/**
-	 * @param type
-	 * @return
-	 */
-	public static boolean isSimpleType(JType type)
-	{
-		if (type instanceof JPrimitiveType)
-		{
-			return true;
-		}
-		else
-		{
-			try
-            {
-	            JClassType classType = (JClassType)type;
-
-	            JClassType charSequenceType = classType.getOracle().getType(CharSequence.class.getCanonicalName());
-	            JClassType dateType = classType.getOracle().getType(Date.class.getCanonicalName());
-	            JClassType sqlDateType = classType.getOracle().getType(java.sql.Date.class.getCanonicalName());
-	            JClassType numberType = classType.getOracle().getType(Number.class.getCanonicalName());
-	            JClassType booleanType = classType.getOracle().getType(Boolean.class.getCanonicalName());
-	            JClassType characterType = classType.getOracle().getType(Character.class.getCanonicalName());
-	            JClassType bigIntegerType = classType.getOracle().getType(BigInteger.class.getCanonicalName());
-	            JClassType bigDecimalType = classType.getOracle().getType(BigDecimal.class.getCanonicalName());
-
-	            return (classType.isPrimitive() != null)       ||
-	            (numberType.isAssignableFrom(classType))       ||
-	            (booleanType.isAssignableFrom(classType))      ||
-	            (characterType.isAssignableFrom(classType))    ||
-	            (charSequenceType.isAssignableFrom(classType)) ||
-	            (charSequenceType.isAssignableFrom(classType)) ||
-	            (dateType.isAssignableFrom(classType)) 		   ||
-	            (sqlDateType.isAssignableFrom(classType))      ||
-	            (bigIntegerType.isAssignableFrom(classType))   ||
-	            (bigDecimalType.isAssignableFrom(classType))   ||
-	            (classType.isEnum() != null);
-            }
-            catch (NotFoundException e)
-            {
-            	throw new CruxGeneratorException(e.getMessage(), e);
-            }		
-		}
-	}
-	
-	/**
-	 * Returns <code>true</code> is the given field has both a "get" and a "set" methods.
-	 * @param clazz
-	 * @param field
-	 * @return
-	 */
-	public static boolean hasGetAndSetMethods(JField field, JClassType clazz)
-	{
-		return hasGetMethod(field, clazz) && hasSetMethod(field, clazz);
-	}
-	
-	/**
-	 * Returns <code>true</code> is the given field has an associated public "get" method.
-	 * @param clazz
-	 * @param field
-	 * @return
-	 */
-	public static boolean hasGetMethod(JField field, JClassType clazz)
-	{
-		String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-		try
-		{
-			return (clazz.getMethod(getterMethodName, new JType[]{}) != null);
-		}
-		catch (Exception e)
-		{
-			try
-			{
-				getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-				return (clazz.getMethod(getterMethodName, new JType[]{}) != null);
-			}
-			catch (Exception e1)
-			{
-				if (clazz.getSuperclass() == null)
-				{
-					return false;
-				}
-				else
-				{
-					return hasGetMethod(field, clazz.getSuperclass());
-				}
-			}
-		}
-	}	
-	
-	/**
-	 * Returns <code>true</code> is the given field has an associated public "set" method.
-	 * @param field
-	 * @param clazz
-	 * @return
-	 */
-	public static boolean hasSetMethod(JField field, JClassType clazz)
-	{
-		String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-		try
-		{
-			return (clazz.getMethod(setterMethodName, new JType[]{field.getType()}) != null);
-		}
-		catch (Exception e)
-		{
-			if (clazz.getSuperclass() == null)
-			{
-				return false;
-			}
-			else
-			{
-				return hasSetMethod(field, clazz.getSuperclass());
-			}
-		}
-	}
-	
-	/**
-	 * Verify if the given field is fully accessible.
-	 * @param field
-	 * @param clazz
-	 * @return <code>true</code> if the field is public or has associated "get" and "set" methods.
-	 */
-	public static boolean isFullAccessibleField(JField field, JClassType clazz)
-	{
-		return field.isPublic() || hasGetAndSetMethods(field, clazz);
-	}	
-	
-	/**
-	 * Verify if the given field is a visible property
-	 * @param voClass
-	 * @param field
-	 * @param allowProtected
-	 * @return
-	 */
-	public static boolean isPropertyVisibleToRead(JClassType voClass, JField field, boolean allowProtected)
-	{
-		if (field.isPublic() || (allowProtected && field.isProtected()))
-		{
-			return true;
-		}
-		else
-		{
-			return hasGetMethod(field, voClass);
-		}
-	}
-	
-	/**
-	 * Verify if the given field is a visible property
-	 * @param voClass
-	 * @param field
-	 * @param allowProtected
-	 * @return
-	 */
-	public static boolean isPropertyVisibleToWrite(JClassType voClass, JField field, boolean allowProtected)
-	{
-		if ((field.isPublic() || (allowProtected && field.isProtected())) && !field.isFinal())
-		{
-			return true;
-		}
-		else
-		{
-			return hasSetMethod(field, voClass);
-		}
-	}
-
-	/**
-	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
-	 * 
-	 * @param logger
-	 * @param voClass
-	 * @param field
-	 * @param parentVariable
-	 * @param valueVariable
-	 * @param sourceWriter
-	 */
-	public static void generateFieldValueSet(JClassType voClass, JField field, String parentVariable,  
-			                           String valueVariable, SourcePrinter sourceWriter, boolean allowProtected)
-	{
-		if (field.isPublic() || (allowProtected && field.isProtected()))
-		{
-			sourceWriter.println(parentVariable+"."+field.getName()+"="+valueVariable+";");
-		}
-		else
-		{
-			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				if (voClass.getMethod(setterMethodName, new JType[]{field.getType()}) != null)
-				{
-					sourceWriter.println(parentVariable+"."+setterMethodName+"("+valueVariable+");");
-				}
-			}
-			catch (Exception e)
-			{
-				throw new CruxGeneratorException("Property ["+field.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
-			}
-		}
-	}
+		return name;
+    }	
 	
 	/**
 	 * Retrieve the property type on the given class
@@ -884,78 +797,59 @@ public class JClassUtils
 	    	return null;
 	    }
 	    return propertyType;
-    }	
-	
-	/**
-	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
-	 * @param clazz class where the property will be searched.
-	 * @param propertyName property name
-	 * @param parentVariable the name of the parent variable to use in generated expression
-	 * @param allowProtected if this expression allow protected fields and methods access
-	 * @return an expression in the form {@code <parentVar>.<propertyAccessor>}
-	 */
-	public static String getFieldValueGet(JClassType clazz, String propertyName, String parentVariable, boolean allowProtected)
-	{
-		JMethod jMethod = JClassUtils.getMethod(clazz, JClassUtils.getGetterMethod(propertyName, clazz), new JType[]{});
-		if (jMethod != null && (jMethod.isPublic() || (allowProtected && jMethod.isProtected())))
-		{
-			return (parentVariable+"."+jMethod.getName()+"()");
-		}
-		JField field = getField(clazz, propertyName);
-
-		if (field.isPublic() || (allowProtected && field.isProtected()))
-		{
-			return parentVariable+"."+field.getName();
-		}
-
-		throw new CruxGeneratorException("Property ["+propertyName+"] could not be created. It is not visible neither has a getter/setter method.");
-	}
-	
-	/**
-	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
-	 * @param voClass
-	 * @param field
-	 * @param parentVariable
-	 * @param allowProtected
-	 * @deprecated Use getFieldValueGet(JClassType, String, String boolean) instead.
-	 */
-	@Deprecated
-	@Legacy
-	public static String getFieldValueGet(JClassType voClass, JField field, String parentVariable, boolean allowProtected)
-	{
-		return getFieldValueGet(voClass, field.getName(), parentVariable, allowProtected);
-	}
-
-	public static boolean isValidSetterMethod(JMethod method)
-	{
-        return (method.isPublic() && method.getName().startsWith("set") && method.getName().length() >3 && method.getParameters().length == 1);
-	}
-	
-	public static boolean isValidGetterMethod(JMethod method)
-	{
-        return ((method.isPublic() && method.getName().startsWith("get") && method.getName().length() >3 
-        		&& method.getParameters().length == 0) && !method.getName().equals("getClass") 
-        		|| (method.isPublic() && method.getName().startsWith("is") && method.getName().length() >2 
-                		&& method.getParameters().length == 0) 
-                		&& (method.getReturnType() == JPrimitiveType.BOOLEAN || Boolean.class.getCanonicalName().equals(method.getReturnType().getQualifiedSourceName()))
-        		);
-	}
-	
-	public static String getPropertyForGetterOrSetterMethod(JMethod method)
-    {
-		String name = method.getName();
-		if (name.startsWith("get") || name.startsWith("set"))
-		{
-			name = name.substring(3);
-		}
-		else if (name.startsWith("is"))
-		{
-			name = name.substring(2);
-		}
-		name = Character.toLowerCase(name.charAt(0))+ name.substring(1);
-		
-		return name;
     }
+	
+	/**
+	 * @param methodName
+	 * @return
+	 */
+	public static JType getReturnTypeFromMethodClass(JClassType clazz, String methodName, JType[] params)
+    {
+	    JMethod method = getMethod(clazz, methodName, params);
+		
+		if (method == null)
+		{
+			return null;
+		}
+		JType returnType = method.getReturnType();
+		return returnType;
+    }
+
+	/**
+	 * 
+	 * @param propertyName
+	 * @param baseClass 
+	 * @return
+	 */
+	public static String getSetterMethod(String propertyName, JClassType baseClass, JType propertyType)
+	{
+		if (propertyName == null || propertyName.length() == 0)
+		{
+			return null;
+		}
+		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
+		result += propertyName.substring(1);
+		if (propertyName.length() > 1)
+		{
+			try
+            {
+	            baseClass.getMethod("set"+result, new JType[]{propertyType});
+                result = "set"+result;
+            }
+            catch (Exception e)
+            {
+            	if (baseClass.getSuperclass() == null)
+            	{
+            		result = null;
+            	}
+            	else
+            	{
+            		result = getSetterMethod(propertyName, baseClass.getSuperclass(), propertyType);
+            	}
+            }
+		}
+		return result;
+	}
 	
 	public static List<JMethod> getSetterMethods(JClassType objectType)
     {
@@ -971,82 +865,41 @@ public class JClassUtils
         }
 	    
 	    return result;
-    }
+    }	
+	
+	public static JClassType getType(TypeOracle typeOracle, String className) throws NotFoundException
+	{
+		return getType(typeOracle, className, null);
+	}
+	
+	public static JClassType getType(TypeOracle typeOracle, String className, String viewName) throws NotFoundException
+	{
+		try
+		{
+			return typeOracle.getType(className);
+		} 
+		catch (Exception e)
+		{
+			String message = "Class ["+className+"] " + (viewName != null ? ", declared on view ["+viewName+"]," : "") + " could not be loaded. "
+			   + "\n Possible causes:"
+			   + "\n\t 1. Check if any type or subtype used by this class refers to another module and if this module is inherited in the .gwt.xml file."
+			   + "\n\t 2. Check if your class or its members belongs to a client package."
+			   + "\n\t 3. Check the versions of all your modules.";
+			
+			throw new NotFoundException(message, e);
+		}
+	}
 
-	public static List<JMethod> getGetterMethods(JClassType objectType)
+	public static JClassType getTypeArgForGenericType(JClassType type)
     {
-		List<JMethod> result = new ArrayList<JMethod>();
-	    JMethod[] methods = objectType.getInheritableMethods();
-	    
-	    for (JMethod jMethod : methods)
-        {
-	        if (isValidGetterMethod(jMethod))
-	        {
-	        	result.add(jMethod);
-	        }
-        }
-	    
-	    return result;
+	    JParameterizedType parameterized = type.isParameterized();
+	    if (parameterized == null)
+	    {
+	    	return type.getOracle().findType("java.lang.Object");
+	    }
+	    JClassType jClassType = parameterized.getTypeArgs()[0];
+	    return jClassType;
     }
-
-	public static class PropertyInfo
-	{
-		private final String name;
-		private final JType type;
-		private final JMethod readMethod;
-		private final JMethod writeMethod;
-
-		public PropertyInfo(String name, JType type, JMethod readMethod, JMethod writeMethod)
-        {
-			this.name = name;
-			this.type = type;
-			this.readMethod = readMethod;
-			this.writeMethod = writeMethod;
-        }
-
-		public String getName()
-        {
-        	return name;
-        }
-
-		public JType getType()
-        {
-        	return type;
-        }
-
-		public JMethod getReadMethod()
-        {
-        	return readMethod;
-        }
-
-		public JMethod getWriteMethod()
-        {
-        	return writeMethod;
-        }
-	}
-
-	public static PropertyInfo[] extractBeanPropertiesInfo(JClassType type)
-	{
-		List<PropertyInfo> result = new ArrayList<PropertyInfo>();
-
-		List<JMethod> getterMethods = getGetterMethods(type);
-		List<JMethod> setterMethods = getSetterMethods(type);
-		
-		for (JMethod setterMethod : setterMethods)
-        {
-	        String setterProperty = getPropertyForGetterOrSetterMethod(setterMethod);
-	        for (JMethod getterMethod : getterMethods)
-            {
-		        String getterProperty = getPropertyForGetterOrSetterMethod(getterMethod);
-	            if (getterProperty.equals(setterProperty))
-	            {
-					result.add(new PropertyInfo(setterProperty, getterMethod.getReturnType(), getterMethod, setterMethod));
-					break;
-	            }
-            }
-        }
-		return result.toArray(new PropertyInfo[result.size()]);
-	}
 	
 	public static JType getTypeForProperty(String property, JClassType objectType)
 	{
@@ -1072,99 +925,92 @@ public class JClassUtils
 		return getTypeForProperty(property.substring(index+1), JClassUtils.getReturnTypeFromMethodClass(objectType, getterMethod, new JType[]{}).isClassOrInterface());
 	}
 	
-	public static String getNullSafeExpression(String widgetExpression, JType propertyType, String widgetVariable)
+	/**
+	 * Returns <code>true</code> is the given field has both a "get" and a "set" methods.
+	 * @param clazz
+	 * @param field
+	 * @return
+	 */
+	public static boolean hasGetAndSetMethods(JField field, JClassType clazz)
 	{
-		String getExpression = null;
-		JPrimitiveType primitiveType = propertyType.isPrimitive();
-		if (primitiveType == null)
-		{
-			getExpression = "(" + widgetVariable + "==null?null:" + widgetExpression + ")";
-		}
-		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
-		{
-			getExpression = "(" + widgetVariable + "==null?false:" + widgetExpression + "==null?false:" + widgetExpression + ")";
-		}
-		else if (primitiveType.equals(JPrimitiveType.CHAR))
-		{
-			getExpression = "(" + widgetVariable + "==null?' ':" + widgetExpression + "==null?' ':" + widgetExpression + ")";
-		}
-		else if (!primitiveType.equals(JPrimitiveType.VOID))
-		{
-			getExpression = "(" + widgetVariable + "==null?0:" + widgetExpression + "==null?0:" + widgetExpression + ")";
-		}
-		return getExpression;
-	}
-
-	public static String getEmptyValueForType(JType objectType)
-	{
-		return getEmptyValueForType(objectType, true);
+		return hasGetMethod(field, clazz) && hasSetMethod(field, clazz);
 	}
 	
-	public static String getEmptyValueForType(JType objectType, boolean useNullForString)
-    {
-		JPrimitiveType primitiveType = objectType.isPrimitive();
-		if (primitiveType != null)
-		{
-			if ((primitiveType == JPrimitiveType.INT)
-					||(primitiveType == JPrimitiveType.SHORT)
-					||(primitiveType == JPrimitiveType.LONG)
-					||(primitiveType == JPrimitiveType.BYTE)
-					||(primitiveType == JPrimitiveType.FLOAT)
-					||(primitiveType == JPrimitiveType.DOUBLE))
-					{
-				return "0";
-					}
-			else if (primitiveType == JPrimitiveType.BOOLEAN)
-			{
-				return "false";
-			}
-			else if (primitiveType == JPrimitiveType.CHAR)
-			{
-				return "' '";
-			}
-			else if (primitiveType ==JPrimitiveType.VOID)
-			{
-				return null;
-			}
-		}
-		else if (objectType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
-		{
-			if (!useNullForString)
-			{
-				return "\"\"";
-			}
-		}
-		
-		return "null";
-    }
-	
-	public static JClassType getTypeArgForGenericType(JClassType type)
-    {
-	    JParameterizedType parameterized = type.isParameterized();
-	    if (parameterized == null)
-	    {
-	    	return type.getOracle().findType("java.lang.Object");
-	    }
-	    JClassType jClassType = parameterized.getTypeArgs()[0];
-	    return jClassType;
-    }
-	
-	public static JClassType[] getActualParameterTypes(JClassType baseType, JClassType desiredInterfaceType)
+	/**
+	 * Returns <code>true</code> is the given field has an associated public "get" method.
+	 * @param clazz
+	 * @param field
+	 * @return
+	 */
+	public static boolean hasGetMethod(JField field, JClassType clazz)
 	{
-		Set<? extends JClassType> interfaces = baseType.getFlattenedSupertypeHierarchy();
-		for (JClassType intf : interfaces)
+		String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+		try
 		{
-			JParameterizedType parameterized = intf.isParameterized();
-			if (parameterized != null)
+			return (clazz.getMethod(getterMethodName, new JType[]{}) != null);
+		}
+		catch (Exception e)
+		{
+			try
 			{
-				if (parameterized.getBaseType().getQualifiedSourceName().equals(desiredInterfaceType.getQualifiedSourceName()))
+				getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+				return (clazz.getMethod(getterMethodName, new JType[]{}) != null);
+			}
+			catch (Exception e1)
+			{
+				if (clazz.getSuperclass() == null)
 				{
-					return parameterized.getTypeArgs();
+					return false;
+				}
+				else
+				{
+					return hasGetMethod(field, clazz.getSuperclass());
 				}
 			}
 		}
-		throw new RuntimeException("Desired interface ["+desiredInterfaceType.getQualifiedSourceName()+"] is nor parameterized or baseIntef does not extends that interface.");
 	}
+
+	/**
+	 * Returns <code>true</code> is the given field has an associated public "set" method.
+	 * @param field
+	 * @param clazz
+	 * @return
+	 */
+	public static boolean hasSetMethod(JField field, JClassType clazz)
+	{
+		String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+		try
+		{
+			return (clazz.getMethod(setterMethodName, new JType[]{field.getType()}) != null);
+		}
+		catch (Exception e)
+		{
+			if (clazz.getSuperclass() == null)
+			{
+				return false;
+			}
+			else
+			{
+				return hasSetMethod(field, clazz.getSuperclass());
+			}
+		}
+	}
+
+	public static boolean isCollection(JType type)
+    {
+		JClassType classOrInterface = type.isClassOrInterface();
+		if (classOrInterface != null)
+		{
+			if (classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(List.class.getCanonicalName())) || 
+				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Set.class.getCanonicalName())) ||
+				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Map.class.getCanonicalName())))
+			{
+				return true;
+			}
+		}
+		
+	    return false;
+    }
 
 	/**
 	 * Check if a type can be assigned to another
@@ -1198,23 +1044,18 @@ public class JClassUtils
 		}
 	    return false;
     }
-
-	public static boolean isCollection(JType type)
-    {
-		JClassType classOrInterface = type.isClassOrInterface();
-		if (classOrInterface != null)
-		{
-			if (classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(List.class.getCanonicalName())) || 
-				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Set.class.getCanonicalName())) ||
-				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Map.class.getCanonicalName())))
-			{
-				return true;
-			}
-		}
-		
-	    return false;
-    }
-
+	
+	/**
+	 * Verify if the given field is fully accessible.
+	 * @param field
+	 * @param clazz
+	 * @return <code>true</code> if the field is public or has associated "get" and "set" methods.
+	 */
+	public static boolean isFullAccessibleField(JField field, JClassType clazz)
+	{
+		return field.isPublic() || hasGetAndSetMethods(field, clazz);
+	}
+	
 	public static boolean isNumeric(JType widgetPropertyType)
     {
 		JPrimitiveType primitiveType = widgetPropertyType.isPrimitive();
@@ -1234,4 +1075,163 @@ public class JClassUtils
 				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.FLOAT.getQualifiedBoxedSourceName()))||
 				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.DOUBLE.getQualifiedBoxedSourceName()));
     }
+
+	/**
+	 * Verify if the given field is a visible property
+	 * @param voClass
+	 * @param field
+	 * @param allowProtected
+	 * @return
+	 */
+	public static boolean isPropertyVisibleToRead(JClassType voClass, JField field, boolean allowProtected)
+	{
+		if (field.isPublic() || (allowProtected && field.isProtected()))
+		{
+			return true;
+		}
+		else
+		{
+			return hasGetMethod(field, voClass);
+		}
+	}
+	
+	/**
+	 * Verify if the given field is a visible property
+	 * @param voClass
+	 * @param field
+	 * @param allowProtected
+	 * @return
+	 */
+	public static boolean isPropertyVisibleToWrite(JClassType voClass, JField field, boolean allowProtected)
+	{
+		if ((field.isPublic() || (allowProtected && field.isProtected())) && !field.isFinal())
+		{
+			return true;
+		}
+		else
+		{
+			return hasSetMethod(field, voClass);
+		}
+	}
+	
+	/**
+	 * @param type
+	 * @return
+	 */
+	public static boolean isSimpleType(JType type)
+	{
+		if (type instanceof JPrimitiveType)
+		{
+			return true;
+		}
+		else
+		{
+			try
+            {
+	            JClassType classType = (JClassType)type;
+
+	            JClassType charSequenceType = classType.getOracle().getType(CharSequence.class.getCanonicalName());
+	            JClassType dateType = classType.getOracle().getType(Date.class.getCanonicalName());
+	            JClassType sqlDateType = classType.getOracle().getType(java.sql.Date.class.getCanonicalName());
+	            JClassType numberType = classType.getOracle().getType(Number.class.getCanonicalName());
+	            JClassType booleanType = classType.getOracle().getType(Boolean.class.getCanonicalName());
+	            JClassType characterType = classType.getOracle().getType(Character.class.getCanonicalName());
+	            JClassType bigIntegerType = classType.getOracle().getType(BigInteger.class.getCanonicalName());
+	            JClassType bigDecimalType = classType.getOracle().getType(BigDecimal.class.getCanonicalName());
+
+	            return (classType.isPrimitive() != null)       ||
+	            (numberType.isAssignableFrom(classType))       ||
+	            (booleanType.isAssignableFrom(classType))      ||
+	            (characterType.isAssignableFrom(classType))    ||
+	            (charSequenceType.isAssignableFrom(classType)) ||
+	            (charSequenceType.isAssignableFrom(classType)) ||
+	            (dateType.isAssignableFrom(classType)) 		   ||
+	            (sqlDateType.isAssignableFrom(classType))      ||
+	            (bigIntegerType.isAssignableFrom(classType))   ||
+	            (bigDecimalType.isAssignableFrom(classType))   ||
+	            (classType.isEnum() != null);
+            }
+            catch (NotFoundException e)
+            {
+            	throw new CruxGeneratorException(e.getMessage(), e);
+            }		
+		}
+	}
+	
+	public static boolean isValidGetterMethod(JMethod method)
+	{
+        return ((method.isPublic() && method.getName().startsWith("get") && method.getName().length() >3 
+        		&& method.getParameters().length == 0) && !method.getName().equals("getClass") 
+        		|| (method.isPublic() && method.getName().startsWith("is") && method.getName().length() >2 
+                		&& method.getParameters().length == 0) 
+                		&& (method.getReturnType() == JPrimitiveType.BOOLEAN || Boolean.class.getCanonicalName().equals(method.getReturnType().getQualifiedSourceName()))
+        		);
+	}
+
+	public static boolean isValidSetterMethod(JMethod method)
+	{
+        return (method.isPublic() && method.getName().startsWith("set") && method.getName().length() >3 && method.getParameters().length == 1);
+	}
+
+	private static JType buildGetExpression(String prop, JClassType baseClassType, StringBuilder getExpression)
+	{
+		String getterMethod = JClassUtils.getGetterMethod(prop, baseClassType);
+		if (getterMethod == null)
+		{
+			JMethod method = getMethod(baseClassType, prop, new JType[]{});
+			if (method == null)
+			{
+				method = getMethodOverInterfaces(baseClassType, prop, new JType[]{});	
+			
+				if (method == null)
+    			{
+					return null;
+    			} 
+				getterMethod = method.getName();
+				baseClassType = method.getEnclosingType();
+			}
+			else
+			{
+				getterMethod = prop;
+			}
+		}
+		getExpression.append("."+getterMethod+"()");
+		return JClassUtils.getReturnTypeFromMethodClass(baseClassType, getterMethod, new JType[]{});
+	}
+
+	public static class PropertyInfo
+	{
+		private final String name;
+		private final JMethod readMethod;
+		private final JType type;
+		private final JMethod writeMethod;
+
+		public PropertyInfo(String name, JType type, JMethod readMethod, JMethod writeMethod)
+        {
+			this.name = name;
+			this.type = type;
+			this.readMethod = readMethod;
+			this.writeMethod = writeMethod;
+        }
+
+		public String getName()
+        {
+        	return name;
+        }
+
+		public JMethod getReadMethod()
+        {
+        	return readMethod;
+        }
+
+		public JType getType()
+        {
+        	return type;
+        }
+
+		public JMethod getWriteMethod()
+        {
+        	return writeMethod;
+        }
+	}
 }
