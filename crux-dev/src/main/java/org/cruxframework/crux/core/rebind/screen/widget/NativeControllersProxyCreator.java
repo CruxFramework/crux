@@ -26,7 +26,11 @@ import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.View.NativeControllerCall;
 
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
 /**
@@ -66,25 +70,43 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
 		View view = viewFactoryCreator.getView();
 		String device = viewFactoryCreator.getDevice();
 		
-		Iterator<String> nativeControllerCalls = view.iterateNativeControllerCalls();
+		Iterator<NativeControllerCall> nativeControllerCalls = view.iterateNativeControllerCalls();
 		
 		while(nativeControllerCalls.hasNext())
 		{
-			String methodName = nativeControllerCalls.next();
-			Event event = EventFactory.getEvent(methodName, view.getNativeControllerCall(methodName));
+			NativeControllerCall nativeControllerCall = nativeControllerCalls.next();
+			String methodName = nativeControllerCall.getMethod();
+			Event event = EventFactory.getEvent(methodName, nativeControllerCall.getControllerCall());
 			
-			printer.println("public final void bridge_" + methodName + "(){");
-
-			printer.println(viewFactoryCreator.getControllerAccessHandler().getControllerExpression(event.getController(), Device.valueOf(device)) + 
-						  "." + event.getMethod()+ControllerProxyCreator.EXPOSED_METHOD_SUFFIX+"();");
+			JClassType eventType = getControllerMethodParameter(nativeControllerCall);
+			printer.print("public final void bridge_" + methodName + "(");
+			if (eventType != null)
+			{
+				printer.print(eventType.getParameterizedQualifiedSourceName() + " e");
+			}
+			printer.println("){");
+			
+			printer.print(viewFactoryCreator.getControllerAccessHandler().getControllerExpression(event.getController(), Device.valueOf(device)) + 
+						  "." + event.getMethod()+ControllerProxyCreator.EXPOSED_METHOD_SUFFIX+"(");
+			if (eventType != null)
+			{
+				printer.print("e");
+			}
+			printer.println(");");
 				
 			printer.println("}");
 
 			printer.println("public native void register_" + methodName + "("+proxyName+"  proxy)/*-{");
-			printer.println("if (!$wnd."+methodName+") {");
 			printer.println("$wnd."+methodName+" = function(e){");
-			printer.println("proxy.@"+proxyName+"::bridge_" + methodName+"()();");
-			printer.println("}");
+			if (eventType != null)
+			{
+				printer.println("proxy.@"+proxyName+"::bridge_" + methodName+"(L"+
+									eventType.getParameterizedQualifiedSourceName().replace('.', '/')+";)(e);");
+			}
+			else
+			{
+				printer.println("proxy.@"+proxyName+"::bridge_" + methodName+"()();");
+			}
 			printer.println("}");
 			printer.println("}-*/;");
 			
@@ -95,6 +117,41 @@ public class NativeControllersProxyCreator extends AbstractProxyCreator
 		printer.println(initMethods.toString());
 		printer.println("}");
 	}
+	
+	protected JClassType getControllerMethodParameter(NativeControllerCall nativeControllerCall) 
+	{
+		View view = viewFactoryCreator.getView();
+		String device = viewFactoryCreator.getDevice();
+
+		JMethod[] possibleEventHandlers = EvtProcessor.getControllerDomEventHandlers(context, "nativeEvent", 
+			nativeControllerCall.getControllerCall(), view, Device.valueOf(device));
+		
+		if (possibleEventHandlers.length == 0)
+		{
+			throw new CruxGeneratorException("Error creating native HTML controller call for event["+nativeControllerCall.getControllerCall()+"]."
+				+ "There is no possible handler for this call on target controller. The event handler method must be annotated with @Expose, be public "
+				+ "and have no parameter or a single parameter of type NativeEvent.");
+		}
+		try
+		{
+			JMethod method = possibleEventHandlers[0];
+			JType[] parameterTypes = method.getParameterTypes();
+			if (parameterTypes.length > 0)
+			{
+				JClassType parameterType = parameterTypes[0].isClassOrInterface();
+				return parameterType;
+			}
+			else 
+			{
+				return null;
+			}
+		}
+		catch (Exception e)
+		{
+			throw new CruxGeneratorException("Error creating native HTML controller call for event["+nativeControllerCall.getControllerCall()+"].", e);
+		}
+	}
+	
 	
 	@Override
     public String getProxyQualifiedName()
