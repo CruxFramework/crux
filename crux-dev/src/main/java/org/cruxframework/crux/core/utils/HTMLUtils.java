@@ -182,14 +182,15 @@ public class HTMLUtils
 	    {
 	    	Node attribute = attributes.item(i);
 	    	String name = attribute.getNodeName();
-	    	if (!name.toLowerCase().startsWith("xmlns"))
+	    	String nameLowerCase = name.toLowerCase();
+			if (!nameLowerCase.startsWith("xmlns"))
 	    	{
 	    		String attributeValue = attribute.getNodeValue();
-	    		if (nativeControllers != null && RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
+	    		if (nativeControllers != null && nameLowerCase.startsWith("on") 
+	    			&&RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
 	    		{
 	    			String controllerCall = attributeValue.trim();
 	    			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
-
 					String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerCall.replace('.', '_');
 	    			out.write(" "+name+"=\""+methodCall+"(event)"+"\"");
 	    			
@@ -197,7 +198,8 @@ public class HTMLUtils
 	    			{
 	    				nativeControllers.append(",");
 	    			}
-	    			nativeControllers.append("\""+methodCall+"\":"+"\""+controllerCall+"\"");
+	    			nativeControllers.append("{\"method\": \""+methodCall+"\"," 
+	    								   + "\"controllerCall\" : \""+controllerCall+"\"}");
 	    		}
 	    		else
 	    		{
