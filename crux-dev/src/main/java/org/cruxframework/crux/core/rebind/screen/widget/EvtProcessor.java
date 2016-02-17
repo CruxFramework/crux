@@ -55,15 +55,20 @@ public abstract class EvtProcessor extends AbstractProcessor
     }
 
 	/**
-	 * @param out
-	 * @param context
-	 * @param eventValue
+	 * @return
 	 */
-    public void processEvent(SourcePrinter out, WidgetCreatorContext context, String eventValue)
-    {
-		processEvent(out, eventValue, context.getWidget(), context.getWidgetId());
-    }
+	public abstract Class<?> getEventClass();
 
+
+    /**
+	 * @return
+	 */
+	public abstract Class<?> getEventHandlerClass();
+
+    /**
+	 * @return
+	 */
+	public abstract String getEventName();
 
     /**
      * @param out
@@ -76,82 +81,38 @@ public abstract class EvtProcessor extends AbstractProcessor
     }
 
     /**
-     * @param out
      * @param eventValue
-     * @param eventName
-     * @param eventClass
      * @param cruxEvent
-     * @param creator
      */
-    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, Class<?> eventClass, String cruxEvent, WidgetCreator<?> creator)
+    public void printPostProcessingEvtCall(String eventValue, String cruxEvent, Device device)
     {
-    	printEvtCall(out, eventValue, eventName,  eventClass!= null? eventClass.getCanonicalName():null, cruxEvent, creator);
+    	printPostProcessingEvtCall(eventValue, getEventName(), getEventClass(), cruxEvent, getWidgetCreator());
     }
-
-    /**
-     * @param out
-     * @param eventValue
-     * @param eventName
-     * @param eventClassName
-     * @param cruxEvent
-     * @param creator
-     */
-    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, String eventClassName,
-    								String cruxEvent, WidgetCreator<?> creator)
-    {
-    	printEvtCall(out, eventValue, eventName, eventClassName, cruxEvent, creator.getContext(), creator.getView(), creator.getControllerAccessorHandler(), 
-    			creator.getDevice(), true);
-    }
-
-    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, String eventClassName,
-			String cruxEvent, WidgetCreator<?> creator, boolean allowNoParameterCall)
-	{
-		printEvtCall(out, eventValue, eventName, eventClassName, cruxEvent, creator.getContext(), creator.getView(), creator.getControllerAccessorHandler(), 
-		creator.getDevice(), allowNoParameterCall);
-	}
     
     /**
-     * 
      * @param out
      * @param eventValue
-     * @param eventName
-     * @param eventClass
-     * @param cruxEvent
-     * @param context
-     * @param view
-     * @param controllerAccessHandler
+     * @param parentVariable
+     * @param widgetId
      */
-    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, Class<?> eventClass,
-    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, Device device)
+    public void processEvent(SourcePrinter out, String eventValue, String parentVariable, String widgetId)
     {
-    	printEvtCall(out, eventValue, eventName, eventClass!= null? eventClass.getCanonicalName():null, cruxEvent, context, view, 
-    			controllerAccessHandler, device, true);
+		out.println(parentVariable+".add"+getEventHandlerClass().getSimpleName()+"(new "+getEventHandlerClass().getCanonicalName()+"(){");
+		out.println("public void "+getEventName()+"("+getEventClass().getCanonicalName()+" event){");
+		printEvtCall(out, eventValue, "event");
+		out.println("}");
+		out.println("});");
+		//TODO adicionar tratamento de erro e logar a widgetId onde deu o erro aqui.
     }
 
     /**
-     * 
-     * @param out
-     * @param eventValue
-     * @param eventName
-     * @param parameterClassName
-     * @param cruxEvent
-     * @param context
-     * @param view
-     * @param controllerAccessHandler
-     */
-    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName,String parameterClassName,
-    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, 
-    		                        Device device, boolean allowNoParameterCall)
+	 * @param out
+	 * @param context
+	 * @param eventValue
+	 */
+    public void processEvent(SourcePrinter out, WidgetCreatorContext context, String eventValue)
     {
-    	Event event = EventFactory.getEvent(eventName, eventValue);
-    	boolean hasEventParameter = checkEvtCall(eventValue, eventName, parameterClassName, context, view, device, allowNoParameterCall);
-    	out.print(controllerAccessHandler.getControllerExpression(event.getController(), device)+"."+event.getMethod()+ControllerProxyCreator.EXPOSED_METHOD_SUFFIX+"(");
-    	
-    	if (hasEventParameter)
-    	{
-    		out.print(cruxEvent);
-    	}
-    	out.println(");");
+		processEvent(out, eventValue, context.getWidget(), context.getWidgetId());
     }
 
     /**
@@ -228,76 +189,6 @@ public abstract class EvtProcessor extends AbstractProcessor
 
     
     /**
-	 * @param event
-	 * @param controller
-	 * @param exposedMethod
-	 * @param context
-	 */
-	private static void checkExposedMethod(Event event, String controller, JMethod exposedMethod, RebindContext context)
-	{
-		if (exposedMethod.getAnnotation(Expose.class) == null && exposedMethod.getAnnotation(Factory.class) == null)
-    	{
-    		throw new CruxGeneratorException(" Method ["+event.getMethod()+"] of Controller ["+controller+"] is not exposed, so it can not be called from crux.xml pages.");
-    	}
-
-		JClassType runtimeExceptionType = context.getGeneratorContext().getTypeOracle().findType(RuntimeException.class.getCanonicalName());
-
-    	JClassType[] methodThrows = exposedMethod.getThrows();
-    	if (methodThrows != null)
-    	{
-    		for (JClassType exception : methodThrows)
-    		{
-    			if (!exception.isAssignableTo(runtimeExceptionType))
-    			{
-    				throw new CruxGeneratorException("Method ["+event.getMethod()+"] of Controller ["+controller+"] can not be exposed. It can throw a checked exception.");
-    			}
-			}
-    	}
-	}
-
-	/**
-	 * @param methodName
-	 * @param eventClassType
-	 * @param controllerClass
-	 * @return
-	 */
-	static JMethod getControllerMethodWithEvent(String methodName, JClassType eventClassType, JClassType controllerClass)
-    {
-		if (eventClassType == null)
-		{
-			return null;
-		}
-		JGenericType genericType = eventClassType.isGenericType();
-		if (genericType == null)
-		{
-			return JClassUtils.getMethod(controllerClass, methodName, new JType[]{eventClassType});
-		}
-		else
-		{
-			eventClassType = genericType.getRawType();
-			JClassType superClass = controllerClass;
-			while (superClass.getSuperclass() != null)
-			{
-				JMethod[] methods = superClass.getMethods();
-				if (methods != null)
-				{
-					for (JMethod method : methods)
-					{
-						JParameter[] parameters = method.getParameters();
-						if (method.getName().equals(methodName) && parameters != null && parameters.length==1 &&
-								parameters[0].getType().isClass() != null && parameters[0].getType().isClass().isAssignableTo(eventClassType))
-						{
-							return method;
-						}
-					}
-				}
-				superClass = superClass.getSuperclass();
-			}
-			return null;
-		}
-    }
-
-	/**
 	 * Retrieve a list of possible methods to handle a call to a controller method. This list contains method candidates that 
 	 * receives events preceding methods that has no parameters.
 	 * @param context
@@ -345,51 +236,85 @@ public abstract class EvtProcessor extends AbstractProcessor
 		return getControllerDomEventHandlers(context, event.getMethod(), controllerClass);
 	}
 
+	/**
+     * 
+     * @param out
+     * @param eventValue
+     * @param eventName
+     * @param eventClass
+     * @param cruxEvent
+     * @param context
+     * @param view
+     * @param controllerAccessHandler
+     */
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, Class<?> eventClass,
+    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, Device device)
+    {
+    	printEvtCall(out, eventValue, eventName, eventClass!= null? eventClass.getCanonicalName():null, cruxEvent, context, view, 
+    			controllerAccessHandler, device, true);
+    }
+
+	/**
+     * @param out
+     * @param eventValue
+     * @param eventName
+     * @param eventClass
+     * @param cruxEvent
+     * @param creator
+     */
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, Class<?> eventClass, String cruxEvent, WidgetCreator<?> creator)
+    {
+    	printEvtCall(out, eventValue, eventName,  eventClass!= null? eventClass.getCanonicalName():null, cruxEvent, creator);
+    }
+
 	
 	/**
-	 * 
-	 * @param context 
-	 * @param methodName
-	 * @param controllerClass
-	 * @return
-	 */
-	static JMethod[] getControllerDomEventHandlers(RebindContext context, String methodName, JClassType controllerClass)
-	{
-		List<JMethod> result = new ArrayList<JMethod>();
-    	JClassType nativeEventClass = context.getGeneratorContext().getTypeOracle().findType(NativeEvent.class.getCanonicalName());
-		
-		JMethod[] methods = controllerClass.getInheritableMethods();
-		for (JMethod method : methods)
-        {
-	        if (method.getName().equals(methodName) && method.isAnnotationPresent(Expose.class) && method.getParameterTypes().length <= 1)
-	        {
-	        	JType[] parameterTypes = method.getParameterTypes();
-	        	if (parameterTypes.length == 0)
-	        	{
-	        		result.add(method);
-	        	}
-	        	else
-	        	{
-	        		JClassType parameterClass = parameterTypes[0].isClassOrInterface();
-	        		if (parameterClass != null && parameterClass.isAssignableTo(nativeEventClass))
-	        		{
-		        		result.add(0,method);
-	        		}
-	        	}
-	        }
-        }
-		
-		return result.toArray(new JMethod[result.size()]);
-	}
+     * 
+     * @param out
+     * @param eventValue
+     * @param eventName
+     * @param parameterClassName
+     * @param cruxEvent
+     * @param context
+     * @param view
+     * @param controllerAccessHandler
+     */
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName,String parameterClassName,
+    		                        String cruxEvent, RebindContext context, View view, ControllerAccessHandler controllerAccessHandler, 
+    		                        Device device, boolean allowNoParameterCall)
+    {
+    	Event event = EventFactory.getEvent(eventName, eventValue);
+    	boolean hasEventParameter = checkEvtCall(eventValue, eventName, parameterClassName, context, view, device, allowNoParameterCall);
+    	out.print(controllerAccessHandler.getControllerExpression(event.getController(), device)+"."+event.getMethod()+ControllerProxyCreator.EXPOSED_METHOD_SUFFIX+"(");
+    	
+    	if (hasEventParameter)
+    	{
+    		out.print(cruxEvent);
+    	}
+    	out.println(");");
+    }
 	
     /**
+     * @param out
      * @param eventValue
+     * @param eventName
+     * @param eventClassName
      * @param cruxEvent
+     * @param creator
      */
-    public void printPostProcessingEvtCall(String eventValue, String cruxEvent, Device device)
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, String eventClassName,
+    								String cruxEvent, WidgetCreator<?> creator)
     {
-    	printPostProcessingEvtCall(eventValue, getEventName(), getEventClass(), cruxEvent, getWidgetCreator());
+    	printEvtCall(out, eventValue, eventName, eventClassName, cruxEvent, creator.getContext(), creator.getView(), creator.getControllerAccessorHandler(), 
+    			creator.getDevice(), true);
     }
+
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, String eventClassName,
+			String cruxEvent, WidgetCreator<?> creator, boolean allowNoParameterCall)
+	{
+		printEvtCall(out, eventValue, eventName, eventClassName, cruxEvent, creator.getContext(), creator.getView(), creator.getControllerAccessorHandler(), 
+		creator.getDevice(), allowNoParameterCall);
+	}
 
     /**
      * @param eventValue
@@ -453,34 +378,109 @@ public abstract class EvtProcessor extends AbstractProcessor
     	creator.printlnPostProcessing(");");
     }
 
-    /**
-     * @param out
-     * @param eventValue
-     * @param parentVariable
-     * @param widgetId
-     */
-    public void processEvent(SourcePrinter out, String eventValue, String parentVariable, String widgetId)
+	/**
+	 * 
+	 * @param context 
+	 * @param methodName
+	 * @param controllerClass
+	 * @return
+	 */
+	static JMethod[] getControllerDomEventHandlers(RebindContext context, String methodName, JClassType controllerClass)
+	{
+		List<JMethod> result = new ArrayList<JMethod>();
+    	JClassType nativeEventClass = context.getGeneratorContext().getTypeOracle().findType(NativeEvent.class.getCanonicalName());
+		
+		JMethod[] methods = controllerClass.getInheritableMethods();
+		for (JMethod method : methods)
+        {
+	        if (method.getName().equals(methodName) && method.isAnnotationPresent(Expose.class) && method.getParameterTypes().length <= 1)
+	        {
+	        	JType[] parameterTypes = method.getParameterTypes();
+	        	if (parameterTypes.length == 0)
+	        	{
+	        		result.add(method);
+	        	}
+	        	else
+	        	{
+	        		JClassType parameterClass = parameterTypes[0].isClassOrInterface();
+	        		if (parameterClass != null && parameterClass.isAssignableTo(nativeEventClass))
+	        		{
+		        		result.add(0,method);
+	        		}
+	        	}
+	        }
+        }
+		
+		return result.toArray(new JMethod[result.size()]);
+	}
+
+	/**
+	 * @param methodName
+	 * @param eventClassType
+	 * @param controllerClass
+	 * @return
+	 */
+	static JMethod getControllerMethodWithEvent(String methodName, JClassType eventClassType, JClassType controllerClass)
     {
-		out.println(parentVariable+".add"+getEventHandlerClass().getSimpleName()+"(new "+getEventHandlerClass().getCanonicalName()+"(){");
-		out.println("public void "+getEventName()+"("+getEventClass().getCanonicalName()+" event){");
-		printEvtCall(out, eventValue, "event");
-		out.println("}");
-		out.println("});");
-		//TODO adicionar tratamento de erro e logar a widgetId onde deu o erro aqui.
+		if (eventClassType == null)
+		{
+			return null;
+		}
+		JGenericType genericType = eventClassType.isGenericType();
+		if (genericType == null)
+		{
+			return JClassUtils.getMethod(controllerClass, methodName, new JType[]{eventClassType});
+		}
+		else
+		{
+			eventClassType = genericType.getRawType();
+			JClassType superClass = controllerClass;
+			while (superClass.getSuperclass() != null)
+			{
+				JMethod[] methods = superClass.getMethods();
+				if (methods != null)
+				{
+					for (JMethod method : methods)
+					{
+						JParameter[] parameters = method.getParameters();
+						if (method.getName().equals(methodName) && parameters != null && parameters.length==1 &&
+								parameters[0].getType().isClass() != null && parameters[0].getType().isClass().isAssignableTo(eventClassType))
+						{
+							return method;
+						}
+					}
+				}
+				superClass = superClass.getSuperclass();
+			}
+			return null;
+		}
     }
 
 	/**
-	 * @return
+	 * @param event
+	 * @param controller
+	 * @param exposedMethod
+	 * @param context
 	 */
-	public abstract Class<?> getEventClass();
+	private static void checkExposedMethod(Event event, String controller, JMethod exposedMethod, RebindContext context)
+	{
+		if (exposedMethod.getAnnotation(Expose.class) == null && exposedMethod.getAnnotation(Factory.class) == null)
+    	{
+    		throw new CruxGeneratorException(" Method ["+event.getMethod()+"] of Controller ["+controller+"] is not exposed, so it can not be called from crux.xml pages.");
+    	}
 
-	/**
-	 * @return
-	 */
-	public abstract Class<?> getEventHandlerClass();
+		JClassType runtimeExceptionType = context.getGeneratorContext().getTypeOracle().findType(RuntimeException.class.getCanonicalName());
 
-	/**
-	 * @return
-	 */
-	public abstract String getEventName();
+    	JClassType[] methodThrows = exposedMethod.getThrows();
+    	if (methodThrows != null)
+    	{
+    		for (JClassType exception : methodThrows)
+    		{
+    			if (!exception.isAssignableTo(runtimeExceptionType))
+    			{
+    				throw new CruxGeneratorException("Method ["+event.getMethod()+"] of Controller ["+controller+"] can not be exposed. It can throw a checked exception.");
+    			}
+			}
+    	}
+	}
 }
