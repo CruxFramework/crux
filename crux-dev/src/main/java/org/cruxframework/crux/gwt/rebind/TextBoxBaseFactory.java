@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.TextBoxBase.TextAlignConstant;
  */
 @SuppressWarnings("deprecation")
 @TagAttributes({
-	@TagAttribute(value="value", dataBindingTargetsAttributes=false, supportsResources=true),
+	@TagAttribute(value="value", dataBindingTargetsAttributes=false, supportsI18N=true),
 	@TagAttribute(value="textAlignment", type=TextBoxBaseFactory.TextAlign.class,
 				widgetType=TextAlignConstant.class,
 				processor=TextBoxBaseFactory.TextAlignmentProcessor.class)
