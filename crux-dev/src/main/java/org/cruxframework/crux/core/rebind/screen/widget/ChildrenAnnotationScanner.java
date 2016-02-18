@@ -21,7 +21,6 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.LazyWidgets;
 import org.cruxframework.crux.core.declarativeui.LazyWidgets.WidgetLazyChecker;
@@ -243,16 +242,16 @@ class ChildrenAnnotationScanner
 		{
 			public void processChildren(SourcePrinter out, WidgetCreatorContext context)
 			{
-				String child = widgetCreator.ensureTextChild(context.getChildElement(), acceptNoChildren, context.getWidgetId(), false);
-				if (!StringUtils.isEmpty(child))
+				String child = widgetCreator.ensureTextChild(context.getChildElement(), acceptNoChildren, context.getWidgetId(), true);
+				if (child != null)
 				{
 					if (!StringUtils.isEmpty(widgetProperty))
 					{
-						out.println(context.getWidget()+"."+ClassUtils.getSetterMethod(widgetProperty)+"("+EscapeUtils.quote(child)+");");
+						out.println(context.getWidget()+"."+ClassUtils.getSetterMethod(widgetProperty)+"("+child+");");
 					}
 					else if (isHasText)
 					{
-						out.println(context.getWidget()+".setText("+EscapeUtils.quote(child)+");");
+						out.println(context.getWidget()+".setText("+child+");");
 					}
 					else 
 					{

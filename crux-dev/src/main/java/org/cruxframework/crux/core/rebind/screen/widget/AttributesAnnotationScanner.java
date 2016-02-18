@@ -251,7 +251,7 @@ class AttributesAnnotationScanner
 		}
 		else if (supportsI18N)
 		{
-			expression = widgetCreator.getDeclaredMessage(attrValue);
+			expression = widgetCreator.resolveI18NString(attrValue);
 		}
 		else if (supportsResources)
 		{
