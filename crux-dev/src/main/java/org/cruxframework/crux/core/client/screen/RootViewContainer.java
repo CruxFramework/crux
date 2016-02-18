@@ -35,8 +35,13 @@ class RootViewContainer extends SingleViewContainer
 
 	public RootViewContainer()
     {
+		this(null);
+    }
+	
+	public RootViewContainer(String rootViewElementID)
+    {
 		super(null, true);
-		handleRootViewElementID();
+		handleRootViewElementID(rootViewElementID);
 		bindToDOM();
     }
 
@@ -94,12 +99,17 @@ class RootViewContainer extends SingleViewContainer
 		Window.setTitle(title);
 	}
 	
-	private void handleRootViewElementID()
+	private void handleRootViewElementID(String rootViewElementID)
 	{
-		String rootViewElementId = Crux.getConfig().rootViewElementId();
-		if(!StringUtils.isEmpty(rootViewElementId))
+		String configRootViewElementId = Crux.getConfig().rootViewElementId();
+		
+		if(!StringUtils.isEmpty(rootViewElementID))
 		{
-			containerPanel = RootPanel.get(rootViewElementId);
+			containerPanel = RootPanel.get(rootViewElementID);
+		}
+		else if(!StringUtils.isEmpty(configRootViewElementId))
+		{
+			containerPanel = RootPanel.get(configRootViewElementId);
 		}
 		else
 		{

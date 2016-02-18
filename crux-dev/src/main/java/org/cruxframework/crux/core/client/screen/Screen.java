@@ -65,10 +65,10 @@ public class Screen
 	protected String id;
 	private static HandlerRegistration refreshPreviewHandler;
 
-    protected Screen(final String id) 
+    protected Screen(final String id, String rootViewElementID) 
 	{
 		this.id = id;
-		rootViewContainer = new RootViewContainer();
+		rootViewContainer = new RootViewContainer(rootViewElementID);
 		createRootView(id);
 	}
 

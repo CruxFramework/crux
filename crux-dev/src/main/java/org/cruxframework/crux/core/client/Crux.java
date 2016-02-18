@@ -108,7 +108,14 @@ public class Crux implements EntryPoint
 	/**
 	 * 
 	 */
+	
 	public static void initializeEngine()
+	{
+		initializeEngine(null, null);
+	}
+	
+	
+	public static void initializeEngine(String screenName, String rootViewElementID)
 	{
 		try 
 		{
@@ -137,7 +144,7 @@ public class Crux implements EntryPoint
 					}
 				});
 				
-				org.cruxframework.crux.core.client.screen.ScreenFactory.getInstance().getScreen();
+				org.cruxframework.crux.core.client.screen.ScreenFactory.getInstance().getScreen(screenName, rootViewElementID);
 				initialized = true;
 				if (LogConfiguration.loggingIsEnabled())
 				{

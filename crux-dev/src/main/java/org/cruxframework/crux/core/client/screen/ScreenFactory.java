@@ -24,6 +24,7 @@ import org.cruxframework.crux.core.client.formatter.Formatter;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 
 /**
  * Factory for CRUX screen. 
@@ -64,9 +65,18 @@ public class ScreenFactory
 	 */
 	public Screen getScreen()
 	{
+		return getScreen(null, null);
+	}
+	
+	/**
+	 * Get the screen associated with current page. If not created yet, create it.
+	 * @return
+	 */
+	public Screen getScreen(String screenName, String rootViewElementID)
+	{
 		if (screen == null)
 		{
-			create();
+			create(screenName, rootViewElementID);
 		}
 		return screen;
 	}
@@ -80,12 +90,18 @@ public class ScreenFactory
 		return ViewContainer.getViewFactory().getCurrentDevice();
 	}
 		
-	/**
-	 * 
-	 */
 	private void create()
 	{
-		screen = new Screen(getCurrentScreenName());
+		create(null, null);
+	}
+	
+	private void create(String screenName, String rootViewElementID)
+	{
+		String currentScreenName = StringUtils.isEmpty(screenName) ? getCurrentScreenName() : screenName;
+		if(!StringUtils.isEmpty(currentScreenName))
+		{
+			screen = new Screen(currentScreenName, rootViewElementID);
+		}
 	}
 	
 	/**
