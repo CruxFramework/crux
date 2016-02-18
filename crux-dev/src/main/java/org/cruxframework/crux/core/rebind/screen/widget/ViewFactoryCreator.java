@@ -341,7 +341,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("protected "+getProxySimpleName()+"(String id){");
 		printer.println("super(id);");
-		printer.println("setTitle("+getDeclaredMessage(view.getTitle())+");");
+		printer.println("setTitle("+resolveI18NString(view.getTitle())+");");
 		printer.println("this.iocContainer = new "+iocContainerClassName+"(this);");
 		printer.println("this.registeredControllers = new "+regsiteredControllersClass+"(this, iocContainer);");
 		printer.println("this.registeredFormatters = new "+regsiteredFormattersClass+"();");
@@ -969,6 +969,10 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	protected String resolveI18NString(String text)
 	{
+		if (text == null)
+		{
+			return null;
+		}
 		Matcher matcher = RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text);
 	    int pos = 0;
 	    StringBuilder result = new StringBuilder();

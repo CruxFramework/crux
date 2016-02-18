@@ -94,7 +94,7 @@ public abstract class ValueBoxBaseFactory extends FocusWidgetFactory<WidgetCreat
 		public void processAttribute(SourcePrinter out,
 				WidgetCreatorContext context, String attributeValue) 
 		{
-			out.println(context.getWidget() + ".getElement().setPropertyString(\"placeholder\", " + getWidgetCreator().getDeclaredMessage(attributeValue) + ");");
+			out.println(context.getWidget() + ".getElement().setPropertyString(\"placeholder\", " + getWidgetCreator().resolveI18NString(attributeValue) + ");");
 		}
 	}
 	
