@@ -70,13 +70,35 @@ public abstract class Animation <T extends CssResource>
 	}
 	
 	/**
+	 * Run the animation on the given widget
+	 * @param widget to be animated
+	 * @param callback called when animation is completed
+	 * @param duration animation duration in seconds
+	 */
+	public void animate(Widget widget, final Callback callback, double duration)
+	{
+		animate(widget.getElement(), callback, duration);
+	}
+	
+	/**
 	 * Run the animation on the given element
 	 * @param el to be animated
 	 * @param callback called when animation is completed
 	 */
 	public void animate(final Element el, final Callback callback)
 	{
-		getBrowserImpl().animate(el, callback, getAnimationCssTrigger(), getAnimationName());
+		animate(el, callback, -1);
+	}
+	
+	/**
+	 * Run the animation on the given element
+	 * @param el to be animated
+	 * @param callback called when animation is completed
+	 * @param duration animation duration in seconds
+	 */
+	public void animate(final Element el, final Callback callback, double duration)
+	{
+		getBrowserImpl().animate(el, callback, getAnimationCssTrigger(), getAnimationName(), duration);
 	}
 	
 	/**
@@ -124,7 +146,9 @@ public abstract class Animation <T extends CssResource>
 	
 	static class BrowserImpl
 	{
-		public void animate(final Element el, final Callback callback, final String animationCssTrigger, final String animationName)
+		public void animate(final Element el, final Callback callback, 
+							final String animationCssTrigger, final String animationName, 
+							final double duration)
 		{
 			DOMUtils.addOneTimeHandler(el, getAnimationEndFunctioName(), new DOMUtils.EvtHandler()
 			{
@@ -143,11 +167,24 @@ public abstract class Animation <T extends CssResource>
 						}
 					}
 					el.removeClassName(animationCssTrigger+" "+animationName);
+					if (duration > 0)
+					{
+						el.getStyle().setProperty(getAnimationDurationName(), "");
+					}
 				}
 			});
+			if (duration > 0)
+			{
+				el.getStyle().setProperty(getAnimationDurationName(), duration+"s");
+			}
 			el.addClassName(animationCssTrigger+" "+animationName);
 		}
 		
+		public String getAnimationDurationName()
+        {
+	        return "animationDuration";
+        }
+
 		public String getAnimationEndFunctioName()
 		{
 			return "animationend";
@@ -161,12 +198,19 @@ public abstract class Animation <T extends CssResource>
         {
 	        return "webkitAnimationEnd";
         }
+
+		public String getAnimationDurationName()
+        {
+	        return "webkitAnimationDuration";
+        }
 	}
 	
 	static class MSIE9BrowserImpl extends BrowserImpl
 	{
 		@Override
-		public void animate(final Element el, final Callback callback, final String animationCssTrigger, final String animationName)
+		public void animate(final Element el, final Callback callback, 
+							final String animationCssTrigger, final String animationName, 
+							final double duration)
 		{
 			if (callback != null)
 			{
@@ -185,5 +229,11 @@ public abstract class Animation <T extends CssResource>
         {
 	        return null;
         }
+		
+		@Override
+		public String getAnimationDurationName()
+		{
+		    return null;
+		}
 	}
 }
