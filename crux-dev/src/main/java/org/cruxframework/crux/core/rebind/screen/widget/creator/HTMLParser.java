@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -38,7 +37,7 @@ public class HTMLParser extends AttributeProcessor<WidgetCreatorContext>
 		String text = context.readWidgetProperty("text");
 		if (text == null || text.length() ==0)
 		{
-			out.println(context.getWidget()+".setHTML("+EscapeUtils.quote(attributeValue)+");");
+			out.println(context.getWidget()+".setHTML("+getWidgetCreator().resolveI18NString(attributeValue)+");");
 		}
     }
 }
