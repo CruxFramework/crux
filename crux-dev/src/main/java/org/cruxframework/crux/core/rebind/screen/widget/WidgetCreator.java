@@ -24,7 +24,6 @@ import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.Update
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.utils.StyleUtils;
-import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
@@ -274,7 +273,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		if (result != null)
 		{
-			result = EscapeUtils.quote(result).replace(ViewParser.CRUX_VIEW_PREFIX, "\"+"+getViewVariable()+".getPrefix()+\"");
+			result = viewFactory.getViewHTML(result);
 		}
 		return result;
 	}
@@ -414,6 +413,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getDeclaredMessage(property);
 	}
 	
+	/**
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public String resolveI18NString(String text)
+	{
+		return viewFactory.resolveI18NString(text);
+	}
+
 	/**
 	 * @return
 	 */

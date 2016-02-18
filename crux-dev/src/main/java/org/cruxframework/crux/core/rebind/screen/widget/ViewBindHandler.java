@@ -287,7 +287,7 @@ public class ViewBindHandler
 	    	hasExpression = true;
 	    	if (pos != matcher.start())
 	    	{
-	    		String literal = resolveI18NString(trimPropertyValue.substring(pos, matcher.start()));
+	    		String literal = viewFactoryCreator.resolveI18NString(trimPropertyValue.substring(pos, matcher.start()));
 	    		result.addStringConstant(literal, false);
 	    	}
 	    	pos = matcher.end();
@@ -303,7 +303,7 @@ public class ViewBindHandler
 	    }
 	    if (pos != trimPropertyValue.length())
 	    {
-	    	String i18nString = resolveI18NString(trimPropertyValue.substring(pos));
+	    	String i18nString = viewFactoryCreator.resolveI18NString(trimPropertyValue.substring(pos));
 			result.addStringConstant(i18nString, false);
 	    }
 	    return result;
@@ -383,40 +383,6 @@ public class ViewBindHandler
 		return false;
 	}
 	
-	private String resolveI18NString(String text)
-	{
-		Matcher matcher = RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text);
-	    int pos = 0;
-	    StringBuilder result = new StringBuilder();
-	    while (matcher.find())
-	    {
-	    	if (pos != matcher.start())
-	    	{
-	    		String literal = text.substring(pos, matcher.start());
-	    		result.append(EscapeUtils.quote(literal));
-	    	}
-	    	pos = matcher.end();
-	    	String group = matcher.group();
-		    if (result.length() > 0)
-		    {
-		    	result.append("+");
-		    }
-		    
-		    result.append(viewFactoryCreator.getDeclaredMessage(group));
-	    }	    	
-	    
-	    if (pos != text.length())
-	    {
-		    if (result.length() > 0)
-		    {
-		    	result.append("+");
-		    }
-			result.append(EscapeUtils.quote(text.substring(pos)));
-	    }
-	    
-	    return result.toString();
-	}
-
 	public static JClassType getConverterType(RebindContext context, String bindConverter)
     {
 		JClassType converterType = null;
