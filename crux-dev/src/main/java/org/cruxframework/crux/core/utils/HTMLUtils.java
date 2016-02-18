@@ -36,9 +36,9 @@ import org.w3c.dom.NodeList;
  */
 public class HTMLUtils
 {
-	private static Set<String> voidElements = new HashSet<String>();
 	private static Set<String> rawTextElements = new HashSet<String>();
 	private static Set<String> rcDataElements = new HashSet<String>();
+	private static Set<String> voidElements = new HashSet<String>();
 
 	static
 	{
@@ -59,6 +59,59 @@ public class HTMLUtils
     }
 
 	/**
+	 * @param s
+	 * @return
+	 */
+	public static String escapeHTML(String s)
+	{
+		return escapeHTML(s, true);
+	}
+
+	/**
+	 * @param s
+	 * @return
+	 */
+	public static String escapeHTMLAttribute(String s)
+	{
+		return escapeHTML(s, false);
+	}
+	
+	/**
+	 * @param s
+	 * @return
+	 */
+	public static String escapeJavascriptString(String s, boolean escapeXML)
+	{
+		StringBuilder sb = new StringBuilder();
+		int n = s.length();
+		
+		for (int i = 0; i < n; i++)
+		{
+			char c = s.charAt(i);
+			switch (c)
+			{
+				case '\\': sb.append("\\\\"); break;
+				case '"': sb.append("\\\""); break;
+				case '\n': sb.append("\\n"); break;
+				case '\r': sb.append("\\r"); break;
+				case '\t': sb.append("\\t"); break;
+				case '<': 
+					if (escapeXML) sb.append("&lt;");
+					else sb.append("<");
+				break;
+				case '>': 
+					if (escapeXML) sb.append("&gt;"); 
+					else sb.append(">");
+				break;
+	
+				default: sb.append(c); break;
+			}
+		}
+		s = sb.toString().replace("&quot;", "\\\"");
+		return s;
+	}
+	
+	/**
 	 * @param viewId
 	 * @param device
 	 * @param nativeControllers 
@@ -70,7 +123,7 @@ public class HTMLUtils
 	{
 		write(viewId, device, nativeControllers, node, out, false);
 	}
-
+	
 	/**
 	 * @param viewId
 	 * @param device
@@ -134,17 +187,34 @@ public class HTMLUtils
 			}
 		}
 	}
-	
+
 	/**
-	 * @param child
+	 * @param viewId
+	 * @param device
+	 * @param nativeControllers 
+	 * @param node
 	 * @param out
-	 * @throws DOMException
 	 * @throws IOException
 	 */
-	public static void writeRcData(Node child, Writer out) throws DOMException, IOException
+	public static void writeAttributes(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
     {
-	    out.write(child.getNodeValue()); 
+	    NamedNodeMap attributes = node.getAttributes();
+	    for (int i=0; i<attributes.getLength(); i++)
+	    {
+	    	Node attribute = attributes.item(i);
+	    	String name = attribute.getNodeName();
+	    	String nameLowerCase = name.toLowerCase();
+			if (!nameLowerCase.startsWith("xmlns"))
+	    	{
+	    		String attributeValue = attribute.getNodeValue();
+	    		if (!writeAttributeWithController(viewId, device, nativeControllers, out, name, nameLowerCase, attributeValue))
+	    		{
+	    			out.write(" "+name+"=\""+escapeHTMLAttribute(attributeValue)+"\"");
+	    		}
+	    	}
+	    }
     }
+	
 	
 	/**
 	 * @param child
@@ -168,64 +238,15 @@ public class HTMLUtils
     }
 	
 	/**
-	 * @param viewId
-	 * @param device
-	 * @param nativeControllers 
-	 * @param node
+	 * @param child
 	 * @param out
+	 * @throws DOMException
 	 * @throws IOException
 	 */
-	public static void writeAttributes(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
+	public static void writeRcData(Node child, Writer out) throws DOMException, IOException
     {
-	    NamedNodeMap attributes = node.getAttributes();
-	    for (int i=0; i<attributes.getLength(); i++)
-	    {
-	    	Node attribute = attributes.item(i);
-	    	String name = attribute.getNodeName();
-	    	String nameLowerCase = name.toLowerCase();
-			if (!nameLowerCase.startsWith("xmlns"))
-	    	{
-	    		String attributeValue = attribute.getNodeValue();
-	    		if (nativeControllers != null && nameLowerCase.startsWith("on") 
-	    			&&RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
-	    		{
-	    			String controllerCall = attributeValue.trim();
-	    			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
-					String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerCall.replace('.', '_');
-	    			out.write(" "+name+"=\""+methodCall+"(event)"+"\"");
-	    			
-	    			if (nativeControllers.length() > 1)
-	    			{
-	    				nativeControllers.append(",");
-	    			}
-	    			nativeControllers.append("{\"method\": \""+methodCall+"\"," 
-	    								   + "\"controllerCall\" : \""+controllerCall+"\"}");
-	    		}
-	    		else
-	    		{
-	    			out.write(" "+name+"=\""+escapeHTMLAttribute(attributeValue)+"\"");
-	    		}
-	    	}
-	    }
+	    out.write(child.getNodeValue()); 
     }
-
-	/**
-	 * @param s
-	 * @return
-	 */
-	public static String escapeHTML(String s)
-	{
-		return escapeHTML(s, true);
-	}
-	
-	/**
-	 * @param s
-	 * @return
-	 */
-	public static String escapeHTMLAttribute(String s)
-	{
-		return escapeHTML(s, false);
-	}
 
 	/**
 	 * @param s
@@ -303,38 +324,25 @@ public class HTMLUtils
 		return (sb.toString());
 	}
 
-	/**
-	 * @param s
-	 * @return
-	 */
-	public static String escapeJavascriptString(String s, boolean escapeXML)
+	private static boolean writeAttributeWithController(String viewId, String device, StringBuilder nativeControllers, Writer out,
+												String attributeName, String attributeNameLower, String attributeValue) throws IOException
 	{
-		StringBuilder sb = new StringBuilder();
-		int n = s.length();
-		
-		for (int i = 0; i < n; i++)
+		if (nativeControllers != null && attributeNameLower.startsWith("on") 
+			&&RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
 		{
-			char c = s.charAt(i);
-			switch (c)
+			String controllerCall = attributeValue.trim();
+			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
+			String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerCall.replace('.', '_');
+			out.write(" "+attributeName+"=\""+methodCall+"(event)"+"\"");
+			
+			if (nativeControllers.length() > 1)
 			{
-				case '\\': sb.append("\\\\"); break;
-				case '"': sb.append("\\\""); break;
-				case '\n': sb.append("\\n"); break;
-				case '\r': sb.append("\\r"); break;
-				case '\t': sb.append("\\t"); break;
-				case '<': 
-					if (escapeXML) sb.append("&lt;");
-					else sb.append("<");
-				break;
-				case '>': 
-					if (escapeXML) sb.append("&gt;"); 
-					else sb.append(">");
-				break;
-	
-				default: sb.append(c); break;
+				nativeControllers.append(",");
 			}
+			nativeControllers.append("{\"method\": \""+methodCall+"\"," 
+								   + "\"controllerCall\" : \""+controllerCall+"\"}");
+			return true;
 		}
-		s = sb.toString().replace("&quot;", "\\\"");
-		return s;
+		return false;
 	}
 }
