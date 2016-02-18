@@ -24,7 +24,6 @@ import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.Update
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.utils.StyleUtils;
-import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
@@ -274,7 +273,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		if (result != null)
 		{
-			result = EscapeUtils.quote(result).replace(ViewParser.CRUX_VIEW_PREFIX, "\"+"+getViewVariable()+".getPrefix()+\"");
+			result = viewFactory.getViewHTML(result);
 		}
 		return result;
 	}
@@ -283,19 +282,25 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * 
 	 * @param metaElem
 	 * @param acceptsNoChild
+	 * @param parentWidgetId
+	 * @param nullWhenEmpty
 	 * @return
-	 * @throws CruxGeneratorException 
+	 * @throws CruxGeneratorException
 	 */
-	public String ensureTextChild(JSONObject metaElem, boolean acceptsNoChild, String parentWidgetId, boolean addQuotes) throws CruxGeneratorException
+	public String ensureTextChild(JSONObject metaElem, boolean acceptsNoChild, String parentWidgetId, boolean nullWhenEmpty) throws CruxGeneratorException
 	{
 		String result = metaElem.optString("_text");
 		if (!acceptsNoChild && (result == null || result.length() == 0))
 		{
 			throw new CruxGeneratorException("The widget ["+parentWidgetId+"], declared on View ["+getView().getId()+"], must contain a text node child.");
 		}
-		if (result != null && addQuotes)
+		if (nullWhenEmpty && result != null && result.length() == 0)
 		{
-			result = EscapeUtils.quote(result);
+			result = null;
+		}
+		if (result != null)
+		{
+			result = resolveI18NString(result);
 		}
 		return result;
 	}
@@ -393,7 +398,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			}
 			else
 			{
-				expression.append(getDeclaredMessage(propertyValue));
+				expression.append(resolveI18NString(propertyValue));
 				result = getContext().getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 			}
 		}
@@ -406,22 +411,13 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	}
 	
 	/**
-	 * @param property
-	 * @return
-	 */
-	public String getDeclaredMessage(String property)
-	{
-		return viewFactory.getDeclaredMessage(property);
-	}
-	
-	/**
 	 * @return
 	 */
 	public Device getDevice()
 	{
 		return (viewFactory.getDevice() == null?null:Device.valueOf(viewFactory.getDevice()));
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -432,7 +428,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, dataBindingProcessor);
 	}
-
+	
 	/**
 	 * 
 	 * @param propertyValue
@@ -465,7 +461,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
 			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod, propertyTypeName);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -473,7 +469,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getLogger();
 	}
-
+	
 	/**
 	 * 
 	 * @param propertyValue
@@ -486,7 +482,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, boundToAttribute, dataBindingProcessor);
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -507,7 +503,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
 												getUiObjectExpression, dataBindingProcessor);
 	}
-
+	
 	/**
 	 * 
 	 * @param property
@@ -517,8 +513,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getResourceAccessExpression(property);
 	}
-	
-    /**
+
+	/**
 	 * Create a new printer for a subType.  That subType will be declared on the package name informed in the first parameter
 	 * 
 	 * @param packageName
@@ -534,8 +530,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     	return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
     }
 	
-	
-	/**
+    /**
 	 * @param subType
 	 * @param superClass
 	 * @param interfaces
@@ -546,6 +541,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports);
 	}
+	
 	
 	/**
 	 * Create a new printer for a subType. That subType will be declared on the same package of the
@@ -562,7 +558,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
     	return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports, isInterface);
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -595,9 +591,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public String getWidgetClassName()
     {
 	    return getWidgetClass().getCanonicalName();
-    }	
-	
-	
+    }
+
 	/**
 	 * 
 	 * @return
@@ -605,8 +600,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public JClassType getWidgetClassType()
     {
 	    return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
-    }
-
+    }	
+	
+	
 	/**
 	 * @return
 	 */
@@ -619,7 +615,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		throw new CruxGeneratorException("Error reading viewFactory declaration."); 
 	}
-	
+
 	/**
 	 * @param metaElem
 	 * @return
@@ -628,7 +624,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).hasPartialSupport();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -638,12 +634,12 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return widgetClassType != null && widgetClassType.getAnnotation(PartialSupport.class) != null 
 	    	   && ClassUtils.hasMethod(getWidgetClass(), "isSupported");
     }
-	
+
 	/**
 	 * @return
 	 */
     public abstract C instantiateContext();
-
+	
 	/**
 	 * @param out
 	 * @param context
@@ -682,7 +678,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return ViewFactory.isValidWidget(metaElem);
 	}
-	
+
 	/**
 	 * Process element children
 	 * @param out 
@@ -712,7 +708,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processChildren(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-
+	
 	/**
 	 * Process widget events
 	 * @param out 
@@ -721,6 +717,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public void processEvents(SourcePrinter out, C context) throws CruxGeneratorException
 	{
+	}
+
+	/**
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public String resolveI18NString(String text)
+	{
+		return viewFactory.resolveI18NString(text);
 	}
 	
 	/**

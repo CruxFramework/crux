@@ -54,7 +54,7 @@ public abstract class AbstractListBoxFactory extends FocusWidgetFactory<ListBoxC
 
 			if(label != null && label.length() > 0)
 			{
-				label = getWidgetCreator().getDeclaredMessage(label);
+				label = getWidgetCreator().resolveI18NString(label);
 			}
 
 			value = EscapeUtils.quote(value);

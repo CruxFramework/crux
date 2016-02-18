@@ -100,15 +100,16 @@ public class ViewProcessor
 	 * Extract the widgets metadata from the view page.
      *
 	 * @param viewId
+	 * @param device
 	 * @param viewSource
 	 * @param xhmltInput
 	 * @return
 	 */
-	public JSONObject extractWidgetsMetadata(String viewId, Document viewSource, boolean xhmltInput)
+	public JSONObject extractWidgetsMetadata(String viewId, String device, Document viewSource, boolean xhmltInput)
 	{
 		try
 		{
-			ViewParser viewParser = new ViewParser(viewId, true, mustIndent(), xhmltInput);
+			ViewParser viewParser = new ViewParser(viewId, device, true, mustIndent(), xhmltInput);
 			String metadata = viewParser.extractCruxMetaData(viewSource);
 			return new JSONObject(metadata);
 		}
@@ -123,15 +124,16 @@ public class ViewProcessor
 	 * Generate the HTML code from the view page.
 	 * 
 	 * @param viewId
+	 * @param device
 	 * @param view
 	 * @param out
 	 */
-	public void generateHTML(String viewId, Document view, OutputStream out)
+	public void generateHTML(String viewId, String device, Document view, OutputStream out)
 	{
 		try
 		{
 			StringWriter buff = new StringWriter();
-			ViewParser viewParser = new ViewParser(viewId, false, mustIndent(), true);
+			ViewParser viewParser = new ViewParser(viewId, device, false, mustIndent(), true);
 			viewParser.generateHTMLHostPage(view, buff);
 			String result = buff.toString();
 			String outCharset = getOutputCharset();

@@ -130,7 +130,7 @@ public class ScreenFactory
 					InputStream inputStream = resource.openContents();
 					Document screenView = viewFactory.getViewDocument(screenId, device, inputStream);
 					StreamUtils.safeCloseStream(inputStream);
-					viewFactory.generateHTML(screenId, screenView, stream);
+					viewFactory.generateHTML(screenId, device, screenView, stream);
 					StreamUtils.safeCloseStream(stream);
 					context.getGeneratorContext().commitResource(context.getLogger(), stream).setVisibility(Visibility.Private);
 				}

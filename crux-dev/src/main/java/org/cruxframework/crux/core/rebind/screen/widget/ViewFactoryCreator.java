@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
@@ -124,6 +125,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private final LazyPanelFactory lazyFactory;
 	private final Set<String> lazyPanels = new HashSet<String>();
 	private String loggerVariable;
+	private String nativeControllers;
 	private final LinkedList<PostProcessingData> postProcessingCode = new LinkedList<PostProcessingData>();
 	private Set<String> resources;
 	private Set<String> rootPanelChildren;
@@ -339,12 +341,13 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("protected "+getProxySimpleName()+"(String id){");
 		printer.println("super(id);");
-		printer.println("setTitle("+getDeclaredMessage(view.getTitle())+");");
+		printer.println("setTitle("+resolveI18NString(view.getTitle())+");");
 		printer.println("this.iocContainer = new "+iocContainerClassName+"(this);");
 		printer.println("this.registeredControllers = new "+regsiteredControllersClass+"(this, iocContainer);");
 		printer.println("this.registeredFormatters = new "+regsiteredFormattersClass+"();");
 		printer.println("this.registeredDataSources = new "+regsiteredDataSourcesClass+"(this, iocContainer);");
 		generateResources(printer);
+		printer.println("new " + nativeControllers + "(this).init();");
 		printer.println("}");
 	}
     
@@ -441,6 +444,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	String resourceKey = resources.next();
 	    	this.resources.add(new ResourcesHandlerProxyCreator(context, resourceKey, view, device).create());
 	    }
+
+	    nativeControllers = new NativeControllersProxyCreator(this).create();
     }
 
 	/**
@@ -748,6 +753,17 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 
     /**
+	 * Process the given HTML code. It handles the placeholder div elements for crux widgets as any resource declaration.
+	 * @param html
+	 * @return
+	 */
+	protected String getViewHTML(String html)
+    {
+	    String result = resolveI18NString(html).replace(ViewParser.CRUX_VIEW_PREFIX, "\"+"+getViewVariable()+".getPrefix()+\"");
+		return result;
+    }
+
+	/**
 	 * Returns the creator of the widgets of the given type.
 	 * @param widgetType
 	 * @return the creator of the widgets of the given type.
@@ -776,7 +792,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return factory;
 	}
 
-	/**
+    /**
 	 * 
 	 * @return
 	 */
@@ -785,7 +801,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return !StringUtils.isEmpty(view.getDataObject());
 	}
 
-    /**
+	/**
      * Returns <code>true</code> if the given text is an internationalization key.
 	 * @param text
 	 * @return <code>true</code> if the given text is an internationalization key.
@@ -795,7 +811,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return text!= null && RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text).matches(); 
 	}
 
-	/**
+    /**
      * Returns <code>true</code> if the given text is a reference to a resource.
 	 * @param text
 	 * @return <code>true</code> if the given text is a reference to a resource.
@@ -809,7 +825,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		return false;
 	}
-
+    
     /**
      * Check if the given widget is available for postProcessing 
      * @param widgetId widget identifier
@@ -879,7 +895,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		return widget;
 	}
-    
+
     /**
 	 * @param context
 	 * @param changed 
@@ -907,7 +923,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			this.bindHandler = null;
 		}
 	}
-
+    
     /**
 	 * Print code that will be executed after the viewFactory completes the widgets construction.
 	 * Note that this code will be executed from inside a Command class. Any variable accessed in
@@ -920,7 +936,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.postProcessingCode.getLast().postProcessingPrinter.println(s);
 	}
     
-    /**
+	/**
 	 * Generate the code for the View events creation
 	 *
 	 * @param printer
@@ -936,7 +952,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		processActivateEvt(printer);
 		processDeactivateEvt(printer);
 	}
-    
+
 	/**
      * Inform the factory that the given widget needs to be available for postProcessing
      * @param widgetId widget identifier
@@ -945,6 +961,53 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     {
     	this.postProcessingCode.getLast().referencedWidgets.add(widgetId);
     }
+
+	/**
+	 * 
+	 * @param text
+	 * @return
+	 */
+	protected String resolveI18NString(String text)
+	{
+		if (text == null)
+		{
+			return null;
+		}
+		Matcher matcher = RegexpPatterns.REGEXP_CRUX_MESSAGE.matcher(text);
+	    int pos = 0;
+	    StringBuilder result = new StringBuilder();
+	    while (matcher.find())
+	    {
+	    	if (pos != matcher.start())
+	    	{
+	    		String literal = text.substring(pos, matcher.start());
+			    if (result.length() > 0)
+			    {
+			    	result.append("+");
+			    }
+	    		result.append(EscapeUtils.quote(literal));
+	    	}
+	    	pos = matcher.end();
+	    	String group = matcher.group();
+		    if (result.length() > 0)
+		    {
+		    	result.append("+");
+		    }
+		    
+		    result.append(getDeclaredMessage(group));
+	    }	    	
+	    
+	    if (pos != text.length())
+	    {
+		    if (result.length() > 0)
+		    {
+		    	result.append("+");
+		    }
+			result.append(EscapeUtils.quote(text.substring(pos)));
+	    }
+	    
+	    return result.toString();
+	}
 
 	protected boolean targetsDevice(JSONObject child)
     {
@@ -1006,7 +1069,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		};
 	    return imports;
 	}
-
+	
 	/**
 	 * @return the widgetConsumer
 	 */
@@ -1082,7 +1145,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		return widget;
 	}
-
+	
 	/**
 	 * @param printer
 	 */
@@ -1113,7 +1176,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("}");
     }
-	
+
 	private void generateDataProvidersCreationBlock(SourcePrinter printer)
     {
 	    Iterator<DataProvider> dataProviders = view.iterateDataProviders();
@@ -1131,7 +1194,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			}
 		}
     }
-	
+
 	/**
 	 * @param printer
 	 */
@@ -1284,18 +1347,17 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 				}
 			}
 		}
-    }
-
+    } 
+	
 	/**
 	 * 
 	 * @return
 	 */
 	private String getViewHTML()
     {
-	    String html = EscapeUtils.quote(view.getHtml()).replace(ViewParser.CRUX_VIEW_PREFIX, "\"+"+getViewVariable()+".getPrefix()+\"");
-		return html;
+		return getViewHTML(view.getHtml());
     }
-
+	
 	/**
 	 * Verifies if a method exists into a interface
 	 * @param clazz
@@ -1559,6 +1621,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	public static String createVariableName(String varName)
 	{
 		return nameFactory.createName(varName);
+	}
+	
+	/**
+	 * Retreive the name of the class responsible for native calls to controller methods.
+	 * @param viewId
+	 * @return
+	 */
+	public static String getViewNativeControllersType(String viewId, String device)
+	{
+		return viewId.replaceAll("\\W", "_") + "_NativeControllers_" + device;
 	}
 	
 	/**

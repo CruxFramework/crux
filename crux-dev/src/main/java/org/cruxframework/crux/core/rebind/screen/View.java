@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.screen;
  
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,6 @@ import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.json.JSONObject;
-
-import com.google.gwt.dev.util.collect.HashSet;
 
 /**
  * Represents a Crux View at the application's server side. Used for GWT Generators.
@@ -49,6 +48,7 @@ public class View
 	protected String height;
 	protected String id;
 	protected String largeViewport;
+	protected Set<NativeControllerCall> nativeControllers = new HashSet<NativeControllerCall>();
 	protected List<String> resources = new ArrayList<String>();
 	@Deprecated
 	@Legacy
@@ -65,7 +65,7 @@ public class View
 	private final JSONObject lazyDependencies;
 	private final boolean rootView;
 	private JSONObject viewElement;
-	
+
 	public View(String id, JSONObject lazyDependencies, String html, boolean rootView) 
 	{
 		this.id = id;
@@ -163,7 +163,7 @@ public class View
 	{
 		return lazyDependencies;
 	}
-
+	
 	/**
 	 * Viewport for small devices
 	 * 
@@ -173,7 +173,7 @@ public class View
     {
     	return smallViewport;
     }
-	
+
 	/**
 	 * Return the view title
 	 * @return
@@ -182,7 +182,7 @@ public class View
 	{
 		return title;
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -211,7 +211,7 @@ public class View
 	{
 		return widgetTypes;
 	}
-	
+
 	/**
 	 * Retrieve the view width
 	 * @return
@@ -220,7 +220,7 @@ public class View
     {
     	return width;
     }
-
+	
 	/**
 	 * 
 	 * @return
@@ -269,8 +269,8 @@ public class View
 	public Iterator<Event> iterateEvents()
 	{
 		return events.values().iterator();
-	}
-	
+	}	
+
 	/**
 	 * Iterate over view formatters
 	 * @return
@@ -278,8 +278,17 @@ public class View
 	public Iterator<String> iterateFormatters()
 	{
 		return formatters.iterator();
-	}	
-
+	}
+	
+	/**
+	 * Iterate over native controller method calls
+	 * @return
+	 */
+	public Iterator<NativeControllerCall> iterateNativeControllerCalls()
+	{
+		return nativeControllers.iterator();
+	}
+	
 	/**
 	 * Iterate over view resources
 	 * @return
@@ -306,7 +315,7 @@ public class View
 	{
 		return widgets.values().iterator();
 	}
-	
+
 	/**
 	 * Set the view height
 	 * @param height
@@ -429,6 +438,16 @@ public class View
 			formatters.add(formatter);
 		}
 	}
+	
+	/**
+	 * Register a native controller call
+	 * @param method
+	 * @param controllerCall
+	 */
+	protected void addNativeControllerCall(String method, String controllerCall)
+	{
+		nativeControllers.add(new NativeControllerCall(method, controllerCall));
+	}
 
 	/**
 	 * Import a resources into view
@@ -528,4 +547,31 @@ public class View
     {
     	this.viewElement = viewElement;
     }
+	
+	/**
+	 * Represents a native call to a view controller method
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static class NativeControllerCall
+	{
+		private final String controllerCall;
+		private final String method;
+		
+		public NativeControllerCall(String method, String controllerCall)
+		{
+			this.method = method;
+			this.controllerCall = controllerCall;
+		}
+
+		public String getControllerCall()
+		{
+			return controllerCall;
+		}
+
+		public String getMethod()
+		{
+			return method;
+		}
+	}
 }

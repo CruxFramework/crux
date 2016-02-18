@@ -103,6 +103,7 @@ public class ViewFactory
 	/**
 	 * Factory method for views.
 	 * @param id
+	 * @param device
 	 * @param view
 	 * @param rootView
 	 * @return
@@ -112,7 +113,7 @@ public class ViewFactory
 	{
 		try 
 		{
-			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
+			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, device, view, rootView);
 			View result = parseView(id, metadata, rootView);
 			result.setLastModified(lastModified);
 			return result;
@@ -141,9 +142,9 @@ public class ViewFactory
 	    return context.getScreenLoader().getViewLoader().getViews();
     }
 	
-	protected void generateHTML(String viewId, Document view, OutputStream out)
+	protected void generateHTML(String viewId, String device, Document view, OutputStream out)
 	{
-		viewProcessor.generateHTML(viewId, view, out);
+		viewProcessor.generateHTML(viewId, device, view, out);
 	}
 	
 	/**
@@ -296,10 +297,19 @@ public class ViewFactory
 			JSONArray elementsMetadata = metaData.getJSONArray("elements");
 			JSONObject lazyDependencies = metaData.getJSONObject("lazyDeps");
 			String html = metaData.getString("_html");
+			JSONArray nativeControllers = metaData.getJSONArray("nativeControllers");
 			
 			View view = new View(id, lazyDependencies, html, rootView);
+			int length = nativeControllers.length();
+			for (int i = 0; i < length; i++) 
+			{
+				JSONObject nativeController = nativeControllers.getJSONObject(i);
+				String method = nativeController.getString("method");
+				String controllerCall = nativeController.getString("controllerCall");
+				view.addNativeControllerCall(method, controllerCall);
+			}
 
-			int length = elementsMetadata.length();
+			length = elementsMetadata.length();
 			for (int i = 0; i < length; i++) 
 			{
 				JSONObject compCandidate = elementsMetadata.getJSONObject(i);

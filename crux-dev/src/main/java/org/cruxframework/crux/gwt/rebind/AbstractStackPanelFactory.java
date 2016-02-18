@@ -43,7 +43,7 @@ public abstract class AbstractStackPanelFactory extends ComplexPanelFactory<Abst
 		@Override
 		public void processChildren(SourcePrinter out, AbstractStackPanelFactoryContext context) throws CruxGeneratorException 
 		{
-			context.title = getWidgetCreator().getDeclaredMessage(getWidgetCreator().ensureTextChild(context.getChildElement(), true, context.getWidgetId(), false));
+			context.title = getWidgetCreator().ensureTextChild(context.getChildElement(), true, context.getWidgetId(), true);
 			context.isHtmlTitle = false;
 		}
 	}
