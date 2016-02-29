@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -29,11 +30,13 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.SameAsType;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -62,53 +65,6 @@ class AttributesAnnotationScanner
 		return attributes;
 	}
 	
-	/**
-	 * @param factoryClass
-	 * @param attributes
-	 * @param added
-	 * @throws CruxGeneratorException
-	 */
-	void scanAttributes(Class<?> factoryClass, Class<?> targetUIClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
-	{
-		try
-        {
-			TagAttributes attrs = factoryClass.getAnnotation(TagAttributes.class);
-			if (attrs != null)
-			{
-				for (TagAttribute attr : attrs.value())
-				{
-					String attrName = attr.value();
-					if (!added.contains(attrName))
-					{
-						added.add(attrName);
-						if (isValidName(attrName))
-						{
-							attributes.add(createAttributeProcessor(targetUIClass, attr));
-						}
-						else
-						{
-							throw new CruxGeneratorException("Error generating widget factory. Invalid attribute name: ["+attrName+"].");
-						}
-					}
-				}
-			}
-	        Class<?> superclass = factoryClass.getSuperclass();
-	        if (superclass!= null && !superclass.equals(Object.class))
-	        {
-	        	scanAttributes(superclass, targetUIClass, attributes, added);
-	        }
-	        Class<?>[] interfaces = factoryClass.getInterfaces();
-	        for (Class<?> interfaceClass : interfaces)
-	        {
-	        	scanAttributes(interfaceClass, targetUIClass, attributes, added);
-	        }
-        }
-        catch (Exception e)
-        {
-        	throw new CruxGeneratorException(e.getMessage(), e);
-        }
-	}
-
 	/**
 	 * @param factoryClass
 	 * @param attr
@@ -265,6 +221,54 @@ class AttributesAnnotationScanner
 		}
     }
 
+	private boolean hasReferencedWidget(String widgetId, WidgetCreatorContext context)
+	{
+		if (widgetCreator.getView().getWidget(widgetId) != null)
+		{
+			return true;
+		}
+		Iterator<org.cruxframework.crux.core.rebind.screen.Widget> widgets = widgetCreator.getView().iterateWidgets();
+		while (widgets.hasNext())
+		{
+			org.cruxframework.crux.core.rebind.screen.Widget widget = widgets.next();
+			
+			if (hasReferencedWidget(widgetId, context, widget.getMetadata()))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private boolean hasReferencedWidget(String widgetId, WidgetCreatorContext context, JSONObject widgetElement)
+	{
+		JSONArray children = widgetCreator.ensureChildren(widgetElement, true, widgetId);
+		if (children != null)
+		{
+			for (int i = 0; i < children.length(); i++)
+            {
+	            JSONObject child = children.optJSONObject(i);
+	            if (child != null)
+	            {
+	            	if (widgetCreator.isWidget(child))
+	            	{
+	            		String childId = child.optString("id");
+	            		if (childId != null && childId.equals(widgetId))
+	            		{
+	            			return true;
+	            		}
+	            	}
+	            	if (hasReferencedWidget(widgetId, context, child))
+	            	{
+	            		return true;
+	            	}
+	            }
+            }
+		}
+		return false;
+	}
+	
 	private String getExpression(WidgetCreatorContext context, 
 		String typeName, 
 		boolean isStringExpression, 
@@ -280,11 +284,11 @@ class AttributesAnnotationScanner
 		}
 		else if (isWidgetReferencedType)
 		{
-//			if (!hasReferencedWidget(attrValue, context))
-//			{
-//				throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
-//					"] on the view ["+widgetCreator.getView().getId()+"]");
-//			}
+			if (!hasReferencedWidget(attrValue, context))
+			{
+				throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
+					"] on the view ["+widgetCreator.getView().getId()+"]");
+			}
 
 			if (!typeName.equals(Widget.class.getCanonicalName()))
 			{
@@ -373,7 +377,7 @@ class AttributesAnnotationScanner
         	widgetCreator.printlnPostProcessing(widgetDecl);
         }
     }
-	
+
 	private void printAttributeExpression(final String setterMethod, final boolean isWidgetReferencedType, final boolean isStringExpression,
         final boolean supportsI18N, final boolean isEnumExpression, final boolean isPrimitiveExpression,
         final boolean supportsResources, final String typeName, final ProcessingTime processingTime, SourcePrinter out,
@@ -395,5 +399,52 @@ class AttributesAnnotationScanner
         			break;
         	}
         }
-    }	
+    }
+	
+	/**
+	 * @param factoryClass
+	 * @param attributes
+	 * @param added
+	 * @throws CruxGeneratorException
+	 */
+	void scanAttributes(Class<?> factoryClass, Class<?> targetUIClass, List<AttributeCreator> attributes, Set<String> added) throws CruxGeneratorException
+	{
+		try
+        {
+			TagAttributes attrs = factoryClass.getAnnotation(TagAttributes.class);
+			if (attrs != null)
+			{
+				for (TagAttribute attr : attrs.value())
+				{
+					String attrName = attr.value();
+					if (!added.contains(attrName))
+					{
+						added.add(attrName);
+						if (isValidName(attrName))
+						{
+							attributes.add(createAttributeProcessor(targetUIClass, attr));
+						}
+						else
+						{
+							throw new CruxGeneratorException("Error generating widget factory. Invalid attribute name: ["+attrName+"].");
+						}
+					}
+				}
+			}
+	        Class<?> superclass = factoryClass.getSuperclass();
+	        if (superclass!= null && !superclass.equals(Object.class))
+	        {
+	        	scanAttributes(superclass, targetUIClass, attributes, added);
+	        }
+	        Class<?>[] interfaces = factoryClass.getInterfaces();
+	        for (Class<?> interfaceClass : interfaces)
+	        {
+	        	scanAttributes(interfaceClass, targetUIClass, attributes, added);
+	        }
+        }
+        catch (Exception e)
+        {
+        	throw new CruxGeneratorException(e.getMessage(), e);
+        }
+	}	
 }
