@@ -29,13 +29,11 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.ProcessingTime;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.SameAsType;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute.WidgetReference;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -282,11 +280,11 @@ class AttributesAnnotationScanner
 		}
 		else if (isWidgetReferencedType)
 		{
-			if (!hasReferencedWidget(attrValue, context))
-			{
-				throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
-					"] on the view ["+widgetCreator.getView().getId()+"]");
-			}
+//			if (!hasReferencedWidget(attrValue, context))
+//			{
+//				throw new CruxGeneratorException("There is no " + typeName + " named ["+attrValue+
+//					"] on the view ["+widgetCreator.getView().getId()+"]");
+//			}
 
 			if (!typeName.equals(Widget.class.getCanonicalName()))
 			{
@@ -325,40 +323,6 @@ class AttributesAnnotationScanner
 		return expression;
 	}
 	
-	private boolean hasReferencedWidget(String widgetId, WidgetCreatorContext context)
-	{
-		if (widgetCreator.getView().getWidget(widgetId) != null)
-		{
-			return true;
-		}
-		return hasReferencedWidget(widgetId, context, context.getWidgetElement());
-	}
-	
-	private boolean hasReferencedWidget(String widgetId, WidgetCreatorContext context, JSONObject widgetElement)
-	{
-		JSONArray children = widgetCreator.ensureChildren(widgetElement, true, widgetId);
-		if (children != null)
-		{
-			for (int i = 0; i < children.length(); i++)
-            {
-	            JSONObject child = children.optJSONObject(i);
-	            if (child != null && widgetCreator.isWidget(child))
-	            {
-	            	String childId = child.optString("id");
-	            	if (childId != null && childId.equals(widgetId))
-	            	{
-	            		return true;
-	            	}
-	            	if (hasReferencedWidget(widgetId, context, child))
-	            	{
-	            		return true;
-	            	}
-	            }
-            }
-		}
-		return false;
-	}
-
 	private void invokeAttributeProcessor(final String attrName, final Method method, final AttributeProcessor<?> processor,
         final ProcessingTime processingTime, SourcePrinter out, WidgetCreatorContext context, String attrValue)
     {
