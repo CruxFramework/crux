@@ -36,8 +36,8 @@ import com.google.gwt.dom.client.PartialSupport;
 @PartialSupport
 public class ImageProcessor
 {
-	private NativeImage image;
 	private CanvasElement canvas = Document.get().createCanvasElement().cast();
+	private NativeImage image;
 
 	/**
 	 * Constructor
@@ -45,198 +45,33 @@ public class ImageProcessor
 	protected ImageProcessor(){}
 	
 	/**
-	 * Create ImageProcessor instance and automatically loads the image. 
-	 * @param file Image File
-	 * @param handler Called whem image is completely loaded
+	 * Export content image as a GIF file.
+	 * @return
 	 */
-	public static void createIfSupportedAndLoadImage(final Blob image, final ImageCreateAndLoadHandler handler)
+	public Blob asGif()
 	{
-		ImageProcessor imageProcessor = createIfSupported();
-		if(imageProcessor == null) 
-		{
-			handler.onNotSupported();
-			return;
-		}
-		imageProcessor.loadImage(image, handler);
+		return exportImage("image/gif");
 	}
 	
 	/**
-	 * Create ImageProcessor instance and automatically loads the image.
-	 * @param url Image URL
-	 * @param handler Called whem image is completely loaded
+	 * Export content image as a JPEG file.
+	 * @param quality JPEG quality. It ranges from 0.0 to 1.0
+	 * @return
 	 */
-	public static void createIfSupportedAndLoadImage(String url, final ImageCreateAndLoadHandler handler)
+	public Blob asJpeg(double quality)
 	{
-		ImageProcessor imageProcessor = createIfSupported();
-		if(imageProcessor == null) 
-		{
-			handler.onNotSupported();
-			return;
-		}
-		imageProcessor.loadImage(url, handler);
+		return FileUtils.fromDataURI(toJpegURL(canvas, quality));
 	}
 	
 	/**
-	 * Loads an image to the processor.
-	 * @param url Image URL
-	 * @param handler Called whem image is completely loaded
+	 * Export content image as a PNG file.
+	 * @return
 	 */
-	public void loadImage(String url, final ImageLoadHandler handler)
+	public Blob asPng()
 	{
-		final NativeImage newImage = NativeImage.create();
-		newImage.setLoadHandler(new ImageLoadHandler()
-		{
-			@Override
-			public void onLoad(ImageProcessor processor)
-			{
-				loadImageToCanvas(newImage, newImage.getWidth(), newImage.getHeight());
-				if (handler != null)
-				{
-					handler.onLoad(processor);
-				}
-			}
-			
-			@Override
-			public void onError()
-			{
-				if (handler != null)
-				{
-					handler.onError();
-				}
-			}
-		}, this);
-		newImage.setSrc(url);
+		return exportImage("image/png");
 	}
 
-	/**
-	 * Rotates an image to a certanly degree.
-	 * @param degrees the degree of rotation. sample values: 90, 180, 270.
-	 */
-	public void rotate(int degrees)
-	{
-		Context2d context = canvas.getContext2d();
-		
-		//clear canvas
-		canvas.getContext2d().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
-
-	    // move to the center of the canvas
-	    context.translate(canvas.getWidth()/2,canvas.getHeight()/2);
-
-	    // rotate the canvas to the specified degrees
-	    context.rotate(degrees*Math.PI/180);
-
-	    // draw the image
-	    // since the context is rotated, the image will be rotated also
-	    context.drawImage(image.asImageElement(),-image.getWidth()/2,image.getHeight()/2);
-		
-	    //restore previous rotation
-	    context.rotate(-degrees*Math.PI/180);
-	    
-	    //translate back the image
-	    context.translate(-canvas.getWidth()/2,-canvas.getHeight()/2);
-	}
-	
-	private void loadImageToCanvas(NativeImage image, int width, int height)
-	{
-		this.image = image;
-		canvas.setWidth(width);
-		canvas.setHeight(height);
-		canvas.getContext2d().drawImage(image.asImageElement(), 0, 0, width, height);
-	}
-	
-	/**
-	 * Undo the last operation: resize, rotate and so on.
-	 */
-	public void undoLastOperation()
-	{
-		canvas.getContext2d().restore();
-	}
-	
-	/**
-	 * Save the state of the operation: resize, rotate and so on.
-	 */
-	public void saveOperation()
-	{
-		canvas.getContext2d().save();
-	}
-	
-	/**
-	 * Loads an image to the processor.
-	 * @param file Image File
-	 * @param handler Called when image is completely loaded
-	 */
-	public void loadImage(final Blob image, final ImageLoadHandler handler)
-	{
-		if(FileReader.isSupported())
-		{
-			FileReader.createIfSupported().readAsDataURL(image, new ReaderStringCallback()
-			{
-				@Override
-				public void onComplete(String result)
-				{
-					loadImage(result, handler);
-				}
-			});
-		} 
-		else if (URL.isSupported())
-		{
-			loadImage(URL.createObjectURL(image), handler);
-		} 
-		else
-		{
-			handler.onError();
-		}
-	}
-	
-	/**
-	 * @return true if the image is a portrait image.
-	 */
-	public boolean isPortrait()
-	{
-		if (canvas.getWidth() > canvas.getHeight())
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	
-	/**
-	 * @return true if the image is a landscape image.
-	 */
-	public boolean isLandscape()
-	{
-		return !isPortrait();
-	}
-	
-	/**
-	 * @return the image width.
-	 */
-	public int getWidth()
-	{
-		if(canvas != null)
-		{
-			return canvas.getWidth();
-		}
-		
-		return 0;
-	}
-
-	/**
-	 * @return the image height.
-	 */
-	public int getHeight()
-	{
-		if(canvas != null)
-		{
-			return canvas.getHeight();
-		}
-		
-		return 0;
-	}
-	
 	/**
 	 * Ensure a max size for the image
 	 * @param maxHeight
@@ -274,7 +109,129 @@ public class ImageProcessor
 		}
 		resize(width, height);
 	}
+	
+	/**
+	 * @return the canvas.
+	 */
+	public CanvasElement getCanvas()
+	{
+		return canvas;
+	}
+	
+	/**
+	 * @return the image height.
+	 */
+	public int getHeight()
+	{
+		if(canvas != null)
+		{
+			return canvas.getHeight();
+		}
+		
+		return 0;
+	}
+	
+	public NativeImage getImage()
+	{
+		return image;
+	}
+	
+	/**
+	 * @return the image width.
+	 */
+	public int getWidth()
+	{
+		if(canvas != null)
+		{
+			return canvas.getWidth();
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * @return true if the image is a landscape image.
+	 */
+	public boolean isLandscape()
+	{
+		return !isPortrait();
+	}
+	
+	/**
+	 * @return true if the image is a portrait image.
+	 */
+	public boolean isPortrait()
+	{
+		if (canvas.getWidth() > canvas.getHeight())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	/**
+	 * Loads an image to the processor.
+	 * @param file Image File
+	 * @param handler Called when image is completely loaded
+	 */
+	public void loadImage(final Blob image, final ImageLoadHandler handler)
+	{
+		if(FileReader.isSupported())
+		{
+			FileReader.createIfSupported().readAsDataURL(image, new ReaderStringCallback()
+			{
+				@Override
+				public void onComplete(String result)
+				{
+					loadImage(result, handler);
+				}
+			});
+		} 
+		else if (URL.isSupported())
+		{
+			loadImage(URL.createObjectURL(image), handler);
+		} 
+		else
+		{
+			handler.onError();
+		}
+	}
 
+	/**
+	 * Loads an image to the processor.
+	 * @param url Image URL
+	 * @param handler Called whem image is completely loaded
+	 */
+	public void loadImage(String url, final ImageLoadHandler handler)
+	{
+		final NativeImage newImage = NativeImage.create();
+		newImage.setLoadHandler(new ImageLoadHandler()
+		{
+			@Override
+			public void onError()
+			{
+				if (handler != null)
+				{
+					handler.onError();
+				}
+			}
+			
+			@Override
+			public void onLoad(ImageProcessor processor)
+			{
+				loadImageToCanvas(newImage, newImage.getWidth(), newImage.getHeight());
+				if (handler != null)
+				{
+					handler.onLoad(processor);
+				}
+			}
+		}, this);
+		newImage.setSrc(url);
+	}
+	
 	/**
 	 * Resize the internal image
 	 * @param width
@@ -290,51 +247,66 @@ public class ImageProcessor
     }
 
 	/**
-	 * Export content image as a JPEG file.
-	 * @param quality JPEG quality. It ranges from 0.0 to 1.0
-	 * @return
+	 * Rotates an image to a certanly degree.
+	 * @param degrees the degree of rotation. sample values: 90, 180, 270.
 	 */
-	public Blob asJpeg(double quality)
+	public void rotate(int degrees)
 	{
-		return FileUtils.fromDataURI(toJpegURL(canvas, quality));
-	}
-	
-	private native String toJpegURL(CanvasElement canvas, double quality)/*-{
-		return canvas.toDataURL("image/jpeg", quality);
-	}-*/;
-	
-	/**
-	 * Export content image as a PNG file.
-	 * @return
-	 */
-	public Blob asPng()
-	{
-		return exportImage("image/png");
+		Context2d context = canvas.getContext2d();
+		
+		//clear canvas
+		canvas.getContext2d().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
+
+	    // move to the center of the canvas
+	    context.translate(canvas.getWidth()/2,canvas.getHeight()/2);
+
+	    // rotate the canvas to the specified degrees
+	    context.rotate(degrees*Math.PI/180);
+
+	    // draw the image
+	    // since the context is rotated, the image will be rotated also
+	    context.drawImage(image.asImageElement(),-image.getWidth()/2,image.getHeight()/2);
+		
+	    //restore previous rotation
+	    context.rotate(-degrees*Math.PI/180);
+	    
+	    //translate back the image
+	    context.translate(-canvas.getWidth()/2,-canvas.getHeight()/2);
 	}
 
 	/**
-	 * Export content image as a GIF file.
-	 * @return
+	 * Save the state of the operation: resize, rotate and so on.
 	 */
-	public Blob asGif()
+	public void saveOperation()
 	{
-		return exportImage("image/gif");
+		canvas.getContext2d().save();
 	}
-
+	
+	/**
+	 * Undo the last operation: resize, rotate and so on.
+	 */
+	public void undoLastOperation()
+	{
+		canvas.getContext2d().restore();
+	}
+	
 	private Blob exportImage(String imageType)
     {
 		return FileUtils.fromDataURI(canvas.toDataUrl(imageType));
     }
 
-	/**
-	 * Check if browser supports this feature
-	 * @return
-	 */
-	public static boolean isSupported()
+	private void loadImageToCanvas(NativeImage image, int width, int height)
 	{
-		return Blob.isSupported() && FileReader.isSupported();
+		this.image = image;
+		canvas.setWidth(width);
+		canvas.setHeight(height);
+		canvas.getContext2d().drawImage(image.asImageElement(), 0, 0, width, height);
 	}
-	
+
+	private native String toJpegURL(CanvasElement canvas, double quality)/*-{
+		return canvas.toDataURL("image/jpeg", quality);
+	}-*/;
+
 	/**
 	 * If the current browser supports, create a new ImageProcessor
 	 * @return
@@ -348,6 +320,58 @@ public class ImageProcessor
 		return null;
 	}
 	
+	/**
+	 * Create ImageProcessor instance and automatically loads the image. 
+	 * @param file Image File
+	 * @param handler Called whem image is completely loaded
+	 */
+	public static void createIfSupportedAndLoadImage(final Blob image, final ImageCreateAndLoadHandler handler)
+	{
+		ImageProcessor imageProcessor = createIfSupported();
+		if(imageProcessor == null) 
+		{
+			handler.onNotSupported();
+			return;
+		}
+		imageProcessor.loadImage(image, handler);
+	}
+	
+	/**
+	 * Create ImageProcessor instance and automatically loads the image.
+	 * @param url Image URL
+	 * @param handler Called whem image is completely loaded
+	 */
+	public static void createIfSupportedAndLoadImage(String url, final ImageCreateAndLoadHandler handler)
+	{
+		ImageProcessor imageProcessor = createIfSupported();
+		if(imageProcessor == null) 
+		{
+			handler.onNotSupported();
+			return;
+		}
+		imageProcessor.loadImage(url, handler);
+	}
+	
+	/**
+	 * Check if browser supports this feature
+	 * @return
+	 */
+	public static boolean isSupported()
+	{
+		return Blob.isSupported() && FileReader.isSupported();
+	}
+	
+	public static interface ImageCreateAndLoadHandler extends ImageLoadHandler  
+	{
+		void onNotSupported();
+	}
+
+	public static interface ImageLoadHandler 
+	{
+		void onError();
+		void onLoad(ImageProcessor processor);
+	}
+
 	public static class NativeImage extends JavaScriptObject
 	{
 		protected NativeImage(){}
@@ -356,16 +380,12 @@ public class ImageProcessor
 	        return this;
         }-*/;
 
-		public final native int getWidth()/*-{
-			return this.width;
-		}-*/;
-
 		public final native int getHeight()/*-{
 			return this.height;
 		}-*/;
 
-		public final native void setSrc(String url)/*-{
-			this.src = url;
+		public final native int getWidth()/*-{
+			return this.width;
 		}-*/;
 
 		public final native void setLoadHandler(ImageLoadHandler handler, ImageProcessor processor)/*-{
@@ -376,33 +396,13 @@ public class ImageProcessor
 				handler.@org.cruxframework.crux.core.client.image.ImageProcessor.ImageLoadHandler::onError()();
 			};
 		}-*/;
+
+		public final native void setSrc(String url)/*-{
+			this.src = url;
+		}-*/;
 		
 		public static native NativeImage create()/*-{
 			return new Image();
 		}-*/;
-	}
-	
-	public static interface ImageCreateAndLoadHandler extends ImageLoadHandler  
-	{
-		void onNotSupported();
-	}
-	
-	public static interface ImageLoadHandler 
-	{
-		void onLoad(ImageProcessor processor);
-		void onError();
-	}
-
-	/**
-	 * @return the canvas.
-	 */
-	public CanvasElement getCanvas()
-	{
-		return canvas;
-	}
-
-	public NativeImage getImage()
-	{
-		return image;
 	}
 }
