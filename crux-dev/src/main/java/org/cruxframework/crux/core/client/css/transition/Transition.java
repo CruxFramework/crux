@@ -31,67 +31,11 @@ public class Transition
 	/**
 	 * 
 	 * @param widget
-	 * @param diff
-	 * @param callback
 	 */
-	public static void translateX(Widget widget, int diff, Callback callback)
-	{
-		getTransitionHandler().translateX(widget, diff, callback);
-	}
-	
-	/**
-	 * 
-	 * @param widget
-	 * @param diff
-	 * @param duration
-	 * @param callback
-	 */
-	public static void translateX(Widget widget, int diff, int duration, Callback callback)
-	{
-		getTransitionHandler().translateX(widget, diff, duration, callback);
-	}
-	
-	/**
-	 * 
-	 * @param widget
-	 * @param height
-	 * @param duration
-	 * @param callback
-	 */
-	public static void setHeight(Widget widget, String height, int duration, Callback callback)
-	{
-		getTransitionHandler().setHeight(widget, height, duration, callback);
-	}
-
-	/**
-	 * 
-	 * @param widget
-	 * @param height
-	 * @param duration
-	 * @param callback
-	 */
-	public static void setHeight(Widget widget, int height, int duration, Callback callback)
-	{
-		getTransitionHandler().setHeight(widget, height, duration, callback);
-	}
-
-	/**
-	 * 
-	 * @param widget
-	 */
-	public static void resetTransition(Widget widget)
-	{
-		getTransitionHandler().resetTransition(widget);
-	}
-
-	/**
-	 * 
-	 * @param widget
-	 */
-	public static void hideBackface(Widget widget)
-	{
-		getTransitionHandler().hideBackface(widget);
-	}
+	public static void clearFadeTransitions(Widget widget)
+    {
+		getTransitionHandler().clearFadeTransitions(widget);
+    }
 	
 	/**
 	 * 
@@ -115,26 +59,6 @@ public class Transition
 	
 	/**
 	 * 
-	 * @param outWidget
-	 * @param duration
-	 * @param callback
-	 */
-	public static void fadeOut(Widget outWidget, int duration, Callback callback)
-	{
-		getTransitionHandler().fadeOut(outWidget, duration, callback);
-	}
-	
-	/**
-	 * 
-	 * @param widget
-	 */
-	public static void clearFadeTransitions(Widget widget)
-    {
-		getTransitionHandler().clearFadeTransitions(widget);
-    }
-	
-	/**
-	 * 
 	 * @param inWidget
 	 * @param duration
 	 * @param callback
@@ -151,16 +75,16 @@ public class Transition
 			}
 		});
 	}
-
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante
-	 *
+	 * @param outWidget
+	 * @param duration
+	 * @param callback
 	 */
-	public static interface Callback
+	public static void fadeOut(Widget outWidget, int duration, Callback callback)
 	{
-		void onTransitionCompleted();
+		getTransitionHandler().fadeOut(outWidget, duration, callback);
 	}
 
 	public static TransitionHandler getTransitionHandler()
@@ -171,18 +95,119 @@ public class Transition
 		}
 		return transitionHandler;
 	}
+
+	/**
+	 * 
+	 * @param widget
+	 */
+	public static void hideBackface(Widget widget)
+	{
+		getTransitionHandler().hideBackface(widget);
+	}
+
+	/**
+	 * 
+	 * @param widget
+	 */
+	public static void resetTransition(Widget widget)
+	{
+		getTransitionHandler().resetTransition(widget);
+	}
+
+	/**
+	 * 
+	 * @param widget
+	 * @param height
+	 * @param duration
+	 * @param callback
+	 */
+	public static void setHeight(Widget widget, int height, int duration, Callback callback)
+	{
+		getTransitionHandler().setHeight(widget, height, duration, callback);
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param height
+	 * @param duration
+	 * @param callback
+	 */
+	public static void setHeight(Widget widget, String height, int duration, Callback callback)
+	{
+		getTransitionHandler().setHeight(widget, height, duration, callback);
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param diff
+	 * @param callback
+	 */
+	public static void translateX(Widget widget, int diff, Callback callback)
+	{
+		getTransitionHandler().translateX(widget, diff, callback);
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param diff
+	 * @param duration
+	 * @param callback
+	 */
+	public static void translateX(Widget widget, int diff, int duration, Callback callback)
+	{
+		getTransitionHandler().translateX(widget, diff, duration, callback);
+	}
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param diff
+	 * @param callback
+	 */
+	public static void translateY(Widget widget, int diff, Callback callback)
+	{
+		getTransitionHandler().translateY(widget, diff, callback);
+	}
+
+	
+	/**
+	 * 
+	 * @param widget
+	 * @param diff
+	 * @param duration
+	 * @param callback
+	 */
+	public static void translateY(Widget widget, int diff, int duration, Callback callback)
+	{
+		getTransitionHandler().translateY(widget, diff, duration, callback);
+	}
+
+	/**
+	 * 
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static interface Callback
+	{
+		void onTransitionCompleted();
+	}
 	
 	static interface TransitionHandler
 	{
-		void translateX(Widget widget, int diff, Callback callback);
-		void translateX(Widget widget, int diff, int duration, Callback callback);
+		void clearFadeTransitions(Widget widget);
+		void fade(Widget outWidget, Widget inWidget, int duration, Callback callback);
+		void fadeIn(Widget InWidget, int duration, Callback callback);
+		void fadeOut(Widget outWidget, int duration, Callback callback);
+		void hideBackface(Widget widget);
+		void resetTransition(Widget widget);
 		void setHeight(Widget widget, int height, int duration, Callback callback);
 		void setHeight(Widget widget, String height, int duration, Callback callback);
-		void resetTransition(Widget widget);
-		void hideBackface(Widget widget);
-		void fade(Widget outWidget, Widget inWidget, int duration, Callback callback);
-		void fadeOut(Widget outWidget, int duration, Callback callback);
-		void fadeIn(Widget InWidget, int duration, Callback callback);
-		void clearFadeTransitions(Widget widget);
+		void translateX(Widget widget, int diff, Callback callback);
+		void translateX(Widget widget, int diff, int duration, Callback callback);
+		void translateY(Widget widget, int diff, Callback callback);
+		void translateY(Widget widget, int diff, int duration, Callback callback);
 	}
 }
