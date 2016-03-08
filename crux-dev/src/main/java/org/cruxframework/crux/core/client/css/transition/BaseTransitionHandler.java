@@ -28,82 +28,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class BaseTransitionHandler implements TransitionHandler
 {
-	public void translateX(Widget widget, int diff, Callback callback)
+	public void clearFadeTransitions(Widget widget)
 	{
 		if(widget == null)
 		{
 			return;
 		}
 		
-		Element element = widget.getElement();
-		if (callback != null)
-		{
-			addCallbackHandler(element, 0, callback);
-		}
-		translateX(element, diff);
-	}
-
-	public void resetTransition(Widget widget)
-	{
-		if(widget == null)
-		{
-			return;
-		}
-		resetTransition(widget.getElement());
-	}
-
-	public void translateX(Widget widget, int diff, int duration, Callback callback)
-	{
-		if(widget == null)
-		{
-			return;
-		}
-		Element element = widget.getElement();
-		if (callback != null)
-		{
-			addCallbackHandler(element, duration, callback);
-		}
-		translateX(element, diff, duration);
-	}
-	
-	public void setHeight(Widget widget, int height, int duration, Callback callback)
-    {
-		if(widget == null)
-		{
-			return;
-		}
-		setHeight(widget, height+"px", duration, callback);
-    }
-
-    public void setHeight(Widget widget, String height, int duration, final Callback callback)
-    {
-		if(widget == null)
-		{
-			return;
-		}
-		final Element element = widget.getElement();
-		addCallbackHandler(element, duration, new Callback()
-		{
-			@Override
-			public void onTransitionCompleted()
-			{
-				clearTransitionProperties(element);
-				if (callback != null)
-				{
-					callback.onTransitionCompleted();
-				}
-			}
-		});
-		setHeight(element, height, duration);
-    }
-
-	public void hideBackface(Widget widget)
-	{
-		if(widget == null)
-		{
-			return;
-		}
-		widget.getElement().getStyle().setProperty("webkitBackfaceVisibility", "hidden");
+		widget.getElement().getStyle().setOpacity(1);
 	}
 
 	public void fade(Widget outWidget, Widget inWidget, int duration, final Callback callback)
@@ -138,6 +70,29 @@ public abstract class BaseTransitionHandler implements TransitionHandler
 		fadeOut(outElement, (duration/2.0));
 		fadeIn(inElement, (duration/2.0), (duration/2.0));
 	}
+
+	public void fadeIn(Widget inWidget, int duration, final Callback callback)
+	{
+		if(inWidget == null)
+		{
+			return;
+		}
+		
+		final Element inElement = inWidget.getElement();
+		addCallbackHandler(inElement, duration, new Callback()
+		{
+			@Override
+			public void onTransitionCompleted()
+			{
+				clearTransitionProperties(inElement);
+				if (callback != null)
+				{
+					callback.onTransitionCompleted();
+				}
+			}
+		});
+		fadeIn(inElement, duration, 0);
+	}
 	
 	public void fadeOut(Widget outWidget, int duration, final Callback callback)
 	{
@@ -162,39 +117,113 @@ public abstract class BaseTransitionHandler implements TransitionHandler
 		fadeOut(outElement, duration);
 	}
 
-	public void fadeIn(Widget inWidget, int duration, final Callback callback)
+    public void hideBackface(Widget widget)
 	{
-		if(inWidget == null)
+		if(widget == null)
 		{
 			return;
 		}
-		
-		final Element inElement = inWidget.getElement();
-		addCallbackHandler(inElement, duration, new Callback()
+		widget.getElement().getStyle().setProperty("webkitBackfaceVisibility", "hidden");
+	}
+
+	public void resetTransition(Widget widget)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		resetTransition(widget.getElement());
+	}
+
+	public void setHeight(Widget widget, int height, int duration, Callback callback)
+    {
+		if(widget == null)
+		{
+			return;
+		}
+		setHeight(widget, height+"px", duration, callback);
+    }
+	
+	public void setHeight(Widget widget, String height, int duration, final Callback callback)
+    {
+		if(widget == null)
+		{
+			return;
+		}
+		final Element element = widget.getElement();
+		addCallbackHandler(element, duration, new Callback()
 		{
 			@Override
 			public void onTransitionCompleted()
 			{
-				clearTransitionProperties(inElement);
+				clearTransitionProperties(element);
 				if (callback != null)
 				{
 					callback.onTransitionCompleted();
 				}
 			}
 		});
-		fadeIn(inElement, duration, 0);
-	}
+		setHeight(element, height, duration);
+    }
 
-	public void clearFadeTransitions(Widget widget)
+	public void translateX(Widget widget, int diff, Callback callback)
 	{
 		if(widget == null)
 		{
 			return;
 		}
 		
-		widget.getElement().getStyle().setOpacity(1);
+		Element element = widget.getElement();
+		if (callback != null)
+		{
+			addCallbackHandler(element, 0, callback);
+		}
+		translateX(element, diff);
+	}
+
+	public void translateX(Widget widget, int diff, int duration, Callback callback)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		Element element = widget.getElement();
+		if (callback != null)
+		{
+			addCallbackHandler(element, duration, callback);
+		}
+		translateX(element, diff, duration);
 	}
 	
+	public void translateY(Widget widget, int diff, Callback callback)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		
+		Element element = widget.getElement();
+		if (callback != null)
+		{
+			addCallbackHandler(element, 0, callback);
+		}
+		translateY(element, diff);
+	}
+
+	public void translateY(Widget widget, int diff, int duration, Callback callback)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		Element element = widget.getElement();
+		if (callback != null)
+		{
+			addCallbackHandler(element, duration, callback);
+		}
+		translateY(element, diff, duration);
+	}
+
 	protected void addCallbackHandler(Element element, int duration, final Callback callback)
 	{
 		if (callback != null)
@@ -217,11 +246,13 @@ public abstract class BaseTransitionHandler implements TransitionHandler
 		}
 	}
 	
-	protected abstract void translateX(Element element, int diff);
-	protected abstract void setHeight(Element element, String height, int duration);
-	protected abstract void translateX(Element element, int diff, int duration);
-    protected abstract void resetTransition(Element element);
-    protected abstract void clearTransitionProperties(Element element);
+	protected abstract void clearTransitionProperties(Element element);
 	protected abstract void fadeIn(Element inElement, double d, double e);
 	protected abstract void fadeOut(Element outElement, double d);
+    protected abstract void resetTransition(Element element);
+    protected abstract void setHeight(Element element, String height, int duration);
+	protected abstract void translateX(Element element, int diff);
+	protected abstract void translateX(Element element, int diff, int duration);
+	protected abstract void translateY(Element element, int diff);
+	protected abstract void translateY(Element element, int diff, int duration);
 }

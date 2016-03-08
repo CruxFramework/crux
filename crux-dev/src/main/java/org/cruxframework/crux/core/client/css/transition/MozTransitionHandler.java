@@ -24,21 +24,10 @@ import com.google.gwt.dom.client.Element;
  */
 class MozTransitionHandler extends BaseTransitionHandler
 {
-	protected native void fadeOut(Element el, double duration)/*-{
-		el.style.transitionProperty = 'opacity';
-		el.style.transitionDelay = '0';
-		if (duration == 0)
-		{
-			el.style.transitionDuration = '';
-			el.style.transitionTimingFunction = '';
-		}
-		else
-		{
-			el.style.transitionDuration = duration+'ms';
-			el.style.transitionTimingFunction = 'ease-out';
-		}
-	
-		el.style.opacity = 0;
+	protected native void clearTransitionProperties(Element el)/*-{
+		el.style.transitionProperty = 'all';
+		el.style.transitionDuration = '';
+		el.style.transitionTimingFunction = '';
 	}-*/;
 
 	protected native void fadeIn(Element el, double duration, double delay)/*-{
@@ -59,6 +48,27 @@ class MozTransitionHandler extends BaseTransitionHandler
 		el.style.opacity = 1;
 	}-*/;
 
+	protected native void fadeOut(Element el, double duration)/*-{
+		el.style.transitionProperty = 'opacity';
+		el.style.transitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
+		}
+	
+		el.style.opacity = 0;
+	}-*/;
+
+	protected native void resetTransition(Element el)/*-{
+		el.style.transform = 'translate(0px,0px)';
+	}-*/;
+
 	protected native void setHeight(Element el, String height, int duration)/*-{
 		el.style.transitionProperty = 'height';
 		el.style.transitionDelay = '0';
@@ -74,12 +84,6 @@ class MozTransitionHandler extends BaseTransitionHandler
 		}
 
 		el.style.height = height;
-	}-*/;
-
-	protected native void clearTransitionProperties(Element el)/*-{
-		el.style.transitionProperty = 'all';
-		el.style.transitionDuration = '';
-		el.style.transitionTimingFunction = '';
 	}-*/;
 
 	protected native void translateX(Element el, int diff)/*-{
@@ -107,7 +111,28 @@ class MozTransitionHandler extends BaseTransitionHandler
 		el.style.transform = 'translate(' + diff + 'px,0px)';
 	}-*/;
 
-	protected native void resetTransition(Element el)/*-{
-		el.style.transform = 'translate(0px,0px)';
+	protected native void translateY(Element el, int diff)/*-{
+		el.style.transitionProperty = 'all';
+		el.style.transitionDuration = '';
+		el.style.transitionTimingFunction = '';
+		el.style.transitionDelay = '0';
+		el.style.transform = 'translate(0px,' + diff + 'px)';
+	}-*/;
+	
+	protected native void translateY(Element el, int diff, int duration)/*-{
+		el.style.transitionProperty = 'all';
+		el.style.transitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
+		}
+	
+		el.style.transform = 'translate(0px,' + diff + 'px)';
 	}-*/;
 }

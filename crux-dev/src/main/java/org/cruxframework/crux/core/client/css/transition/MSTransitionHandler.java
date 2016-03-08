@@ -31,21 +31,10 @@ class MSTransitionHandler extends BaseTransitionHandler
 	{
 	}
 
-	protected native void fadeOut(Element el, double duration)/*-{
-		el.style.msTransitionProperty = 'opacity';
-		el.style.msTransitionDelay = '0';
-		if (duration == 0)
-		{
-			el.style.msTransitionDuration = '';
-			el.style.msTransitionTimingFunction = '';
-		}
-		else
-		{
-			el.style.msTransitionDuration = duration+'ms';
-			el.style.msTransitionTimingFunction = 'ease-out';
-		}
-	
-		el.style.opacity = 0;
+	protected native void clearTransitionProperties(Element el)/*-{
+		el.style.msTransitionProperty = 'all';
+		el.style.msTransitionDuration = '';
+		el.style.msTransitionTimingFunction = '';
 	}-*/;
 
 	protected native void fadeIn(Element el, double duration, double delay)/*-{
@@ -66,6 +55,27 @@ class MSTransitionHandler extends BaseTransitionHandler
 		el.style.opacity = 1;
 	}-*/;
 
+	protected native void fadeOut(Element el, double duration)/*-{
+		el.style.msTransitionProperty = 'opacity';
+		el.style.msTransitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.msTransitionDuration = '';
+			el.style.msTransitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.msTransitionDuration = duration+'ms';
+			el.style.msTransitionTimingFunction = 'ease-out';
+		}
+	
+		el.style.opacity = 0;
+	}-*/;
+
+	protected native void resetTransition(Element el)/*-{
+		el.style.msTransform = 'translate(0px,0px)';
+	}-*/;
+
 	protected native void setHeight(Element el, String height, int duration)/*-{
 		el.style.msTransitionProperty = 'height';
 		el.style.msTransitionDelay = '0';
@@ -81,12 +91,6 @@ class MSTransitionHandler extends BaseTransitionHandler
 		}
 
 		el.style.height = height;
-	}-*/;
-
-	protected native void clearTransitionProperties(Element el)/*-{
-		el.style.msTransitionProperty = 'all';
-		el.style.msTransitionDuration = '';
-		el.style.msTransitionTimingFunction = '';
 	}-*/;
 
 	protected native void translateX(Element el, int diff)/*-{
@@ -114,7 +118,28 @@ class MSTransitionHandler extends BaseTransitionHandler
 		el.style.msTransform = 'translate(' + diff + 'px,0px)';
 	}-*/;
 
-	protected native void resetTransition(Element el)/*-{
-		el.style.msTransform = 'translate(0px,0px)';
+	protected native void translateY(Element el, int diff)/*-{
+		el.style.msTransitionProperty = 'all';//-webkit-transform
+		el.style.msTransitionDuration = '';
+		el.style.msTransitionTimingFunction = '';
+		el.style.msTransitionDelay = '0';
+		el.style.msTransform = 'translate(0px,' + diff + 'px)';
+	}-*/;
+	
+	protected native void translateY(Element el, int diff, int duration)/*-{
+		el.style.msTransitionProperty = 'all';//-webkit-transform
+		el.style.msTransitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.msTransitionDuration = '';
+			el.style.msTransitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.msTransitionDuration = duration+'ms';
+			el.style.msTransitionTimingFunction = 'ease-out';
+		}
+	
+		el.style.msTransform = 'translate(0px,' + diff + 'px)';
 	}-*/;
 }

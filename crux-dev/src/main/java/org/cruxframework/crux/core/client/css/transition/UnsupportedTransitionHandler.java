@@ -32,28 +32,65 @@ class UnsupportedTransitionHandler implements TransitionHandler
 	private Animation animation;
 
 	@Override
-	public void translateX(Widget widget, int diff, Callback callback)
+	public void clearFadeTransitions(Widget widget)
 	{
 		if(widget == null)
 		{
 			return;
 		}
 		
-		Element element = widget.getElement();
-		if (!hasOriginalLeft(element))
+		widget.getElement().getStyle().setOpacity(1);
+	}
+	
+	@Override
+    public void fade(Widget outWidget, Widget inWidget, int duration, Callback callback)
+    {
+		if(inWidget == null || outWidget == null)
 		{
-			setOriginalLeft(element, element.getOffsetLeft());
-		}
-		else
-		{
-			diff = getOriginalLeft(element) + diff;
+			return;
 		}
 		
-		setLeft(element, diff);
+		outWidget.getElement().getStyle().setOpacity(0);
+		inWidget.getElement().getStyle().setOpacity(1);
 		if (callback != null)
 		{
 			callback.onTransitionCompleted();
 		}
+    }
+
+	@Override
+    public void fadeIn(Widget inWidget, int duration, Callback callback)
+    {
+		if(inWidget == null)
+		{
+			return;
+		}
+		
+		inWidget.getElement().getStyle().setOpacity(1);
+		if (callback != null)
+		{
+			callback.onTransitionCompleted();
+		}
+    }
+		
+	@Override
+    public void fadeOut(Widget outWidget, int duration, Callback callback)
+    {
+		if(outWidget == null)
+		{
+			return;
+		}
+		
+		outWidget.getElement().getStyle().setOpacity(0);
+		if (callback != null)
+		{
+			callback.onTransitionCompleted();
+		}
+    }
+
+	@Override
+	public void hideBackface(Widget widget)
+	{
 	}
 	
 	@Override
@@ -71,18 +108,7 @@ class UnsupportedTransitionHandler implements TransitionHandler
 			clearOriginalLeft(element);
 		}
 	}
-
-	@Override
-	public void translateX(Widget widget, final int diff, int duration, final Callback callback)
-	{
-		if(widget == null)
-		{
-			return;
-		}
-		
-		translateX(widget, diff, callback);
-	}
-		
+	
 	@Override
     public void setHeight(Widget widget, int height, int duration, Callback callback)
     {
@@ -110,76 +136,89 @@ class UnsupportedTransitionHandler implements TransitionHandler
     }
 	
 	@Override
-    public void fade(Widget outWidget, Widget inWidget, int duration, Callback callback)
-    {
-		if(inWidget == null || outWidget == null)
-		{
-			return;
-		}
-		
-		outWidget.getElement().getStyle().setOpacity(0);
-		inWidget.getElement().getStyle().setOpacity(1);
-		if (callback != null)
-		{
-			callback.onTransitionCompleted();
-		}
-    }
-	
-	@Override
-    public void fadeOut(Widget outWidget, int duration, Callback callback)
-    {
-		if(outWidget == null)
-		{
-			return;
-		}
-		
-		outWidget.getElement().getStyle().setOpacity(0);
-		if (callback != null)
-		{
-			callback.onTransitionCompleted();
-		}
-    }
-
-	@Override
-    public void fadeIn(Widget inWidget, int duration, Callback callback)
-    {
-		if(inWidget == null)
-		{
-			return;
-		}
-		
-		inWidget.getElement().getStyle().setOpacity(1);
-		if (callback != null)
-		{
-			callback.onTransitionCompleted();
-		}
-    }
-	
-	@Override
-	public void clearFadeTransitions(Widget widget)
+	public void translateX(Widget widget, int diff, Callback callback)
 	{
 		if(widget == null)
 		{
 			return;
 		}
 		
-		widget.getElement().getStyle().setOpacity(1);
+		Element element = widget.getElement();
+		if (!hasOriginalLeft(element))
+		{
+			setOriginalLeft(element, element.getOffsetLeft());
+		}
+		else
+		{
+			diff = getOriginalLeft(element) + diff;
+		}
+		
+		setLeft(element, diff);
+		if (callback != null)
+		{
+			callback.onTransitionCompleted();
+		}
 	}
 
 	@Override
-	public void hideBackface(Widget widget)
+	public void translateX(Widget widget, final int diff, int duration, final Callback callback)
 	{
+		if(widget == null)
+		{
+			return;
+		}
+		
+		translateX(widget, diff, callback);
 	}
 
-	private void setLeft(Element element, double left)
-    {
-	    element.getStyle().setLeft(left, Unit.PX);
-    }
+	@Override
+	public void translateY(Widget widget, int diff, Callback callback)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		
+		Element element = widget.getElement();
+		if (!hasOriginalTop(element))
+		{
+			setOriginalTop(element, element.getOffsetTop());
+		}
+		else
+		{
+			diff = getOriginalTop(element) + diff;
+		}
+		
+		setTop(element, diff);
+		if (callback != null)
+		{
+			callback.onTransitionCompleted();
+		}
+	}
+
+	@Override
+	public void translateY(Widget widget, final int diff, int duration, final Callback callback)
+	{
+		if(widget == null)
+		{
+			return;
+		}
+		
+		translateY(widget, diff, callback);
+	}
+
+	private native void clearOriginalLeft(Element el)/*-{
+		el._originalLeft = null;
+	}-*/;
 
 	private native int getOriginalLeft(Element el)/*-{
 		return el._originalLeft;
 	}-*/;
 	
+	private native int getOriginalTop(Element el)/*-{
+		return el._originalTop;
+	}-*/;
+
 	private native boolean hasOriginalLeft(Element el)/*-{
 		var intRegex = /^\d+$/;
 		try {
@@ -189,12 +228,32 @@ class UnsupportedTransitionHandler implements TransitionHandler
 		} catch(err) {}
 		return false;
 	}-*/;
+	
+	private native boolean hasOriginalTop(Element el)/*-{
+		var intRegex = /^\d+$/;
+		try {
+			if(intRegex.test(el._originalTop)) {
+			   return true;
+			}
+		} catch(err) {}
+		return false;
+	}-*/;
 
+	private void setLeft(Element element, double left)
+    {
+	    element.getStyle().setLeft(left, Unit.PX);
+    }
+	
 	private native void setOriginalLeft(Element el, int left)/*-{
 		el._originalLeft = left;
 	}-*/;
 
-	private native void clearOriginalLeft(Element el)/*-{
-		el._originalLeft = null;
+	private native void setOriginalTop(Element el, int top)/*-{
+		el._originalTop = top;
 	}-*/;
+
+	private void setTop(Element element, double top)
+    {
+	    element.getStyle().setTop(top, Unit.PX);
+    }
 }

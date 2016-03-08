@@ -24,22 +24,11 @@ import com.google.gwt.dom.client.Element;
  */
 class WebkitTransitionHandler extends BaseTransitionHandler
 {
-	protected native void fadeOut(Element el, double duration)/*-{
-		el.style.webkitTransitionProperty = 'opacity';
-		el.style.webkitTransitionDelay = '0';
-		if (duration == 0)
-		{
-			el.style.webkitTransitionDuration = '';
-			el.style.webkitTransitionTimingFunction = '';
-		}
-		else
-		{
-			el.style.webkitTransitionDuration = duration+'ms';
-			el.style.webkitTransitionTimingFunction = 'ease-out';
-		}
-	
-		el.style.opacity = 0;
-	}-*/;
+	protected native void clearTransitionProperties(Element el)/*-{
+		el.style.webkitTransitionProperty = 'all';//-webkit-transform
+		el.style.webkitTransitionDuration = '';
+		el.style.webkitTransitionTimingFunction = '';
+    }-*/;
 
 	protected native void fadeIn(Element el, double duration, double delay)/*-{
 		el.style.webkitTransitionProperty = 'opacity';
@@ -59,6 +48,27 @@ class WebkitTransitionHandler extends BaseTransitionHandler
 		el.style.opacity = 1;
 	}-*/;
 
+	protected native void fadeOut(Element el, double duration)/*-{
+		el.style.webkitTransitionProperty = 'opacity';
+		el.style.webkitTransitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.webkitTransitionDuration = '';
+			el.style.webkitTransitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.webkitTransitionDuration = duration+'ms';
+			el.style.webkitTransitionTimingFunction = 'ease-out';
+		}
+	
+		el.style.opacity = 0;
+	}-*/;
+
+	protected native void resetTransition(Element el)/*-{
+		el.style.webkitTransform = 'translate3d(0px,0px,0px)';
+	}-*/;
+
 	protected native void setHeight(Element el, String height, int duration)/*-{
 		el.style.webkitTransitionProperty = 'height';
 		el.style.webkitTransitionDelay = '0';
@@ -75,12 +85,6 @@ class WebkitTransitionHandler extends BaseTransitionHandler
 
 		el.style.height = height;
 	}-*/;
-
-	protected native void clearTransitionProperties(Element el)/*-{
-		el.style.webkitTransitionProperty = 'all';//-webkit-transform
-		el.style.webkitTransitionDuration = '';
-		el.style.webkitTransitionTimingFunction = '';
-    }-*/;
 
 	protected native void translateX(Element el, int diff)/*-{
 		el.style.webkitTransitionProperty = 'all';//-webkit-transform
@@ -107,7 +111,28 @@ class WebkitTransitionHandler extends BaseTransitionHandler
 		el.style.webkitTransform = 'translate3d(' + diff + 'px,0px,0px)';
 	}-*/;
 
-	protected native void resetTransition(Element el)/*-{
-		el.style.webkitTransform = 'translate3d(0px,0px,0px)';
+	protected native void translateY(Element el, int diff)/*-{
+		el.style.webkitTransitionProperty = 'all';//-webkit-transform
+		el.style.webkitTransitionDuration = '';
+		el.style.webkitTransitionTimingFunction = '';
+		el.style.webkitTransitionDelay = '0';
+		el.style.webkitTransform = 'translate3d(0px,' + diff + 'px,0px)';
+	}-*/;
+
+	protected native void translateY(Element el, int diff, int duration)/*-{
+		el.style.webkitTransitionProperty = 'all';//-webkit-transform
+		el.style.webkitTransitionDelay = '0';
+		if (duration == 0)
+		{
+			el.style.webkitTransitionDuration = '';
+			el.style.webkitTransitionTimingFunction = '';
+		}
+		else
+		{
+			el.style.webkitTransitionDuration = duration+'ms';
+			el.style.webkitTransitionTimingFunction = 'ease-out';
+		}
+
+		el.style.webkitTransform = 'translate3d(0px,' + diff + 'px,0px)';
 	}-*/;
 }
