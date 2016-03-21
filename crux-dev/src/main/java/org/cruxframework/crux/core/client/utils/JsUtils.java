@@ -298,6 +298,22 @@ public class JsUtils
 	 * @param property the name of the property. You can pass inner properties using dot notation (prop1.prop2)
 	 * @param input the property value.
 	 */
+	public static native void writePropertyValue(JavaScriptObject object, String property, int input)/*-{
+		var obj = object;
+		var arr = property.split(".");
+		while((arr.length-1) && (obj = obj[arr.shift()]));
+	    if (obj)
+	    {
+    		obj[arr.shift()] = input;
+	    }
+    }-*/;
+
+	/**
+	 * Write property to native javascript objects. 
+	 * @param object the Object where the property will be written. 
+	 * @param property the name of the property. You can pass inner properties using dot notation (prop1.prop2)
+	 * @param input the property value.
+	 */
 	public static native void writePropertyValue(JavaScriptObject object, String property, boolean input)/*-{
 		var obj = object;
 		var arr = property.split(".");
