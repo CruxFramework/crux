@@ -94,7 +94,7 @@ public abstract class AbstractTabBarFactory extends CompositeFactory<TabBarConte
 		@Override
 		public void processChildren(SourcePrinter out, TabBarContext context) throws CruxGeneratorException 
 		{
-			String title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId());
+			String title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context);
 			out.println(context.getWidget()+".addTab("+title+", true);");
 			updateTabState(out, context);
 		}

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.screen.binding.NativeWrapper;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -29,6 +30,8 @@ import org.cruxframework.crux.core.utils.JClassUtils;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.dom.client.Element;
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -218,20 +221,34 @@ public class ExpressionDataBinding
 		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
 	}
 
-	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionItemVar) throws NoSuchFieldException
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionItemVar) 
+		throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 
 		
+		String uiObjectVar = getUIObjectVar(widgetVar);
+		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+		writeExpression.append(uiObjectType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
 		if (!StringUtils.isEmpty(setterMethod))
 		{
-			writeExpression.append(getUIObjectVar(widgetVar)+"."+setterMethod+"("+expression.toString()+");");
+			writeExpression.append(uiObjectVariable+"."+setterMethod+"("+expression.toString()+");");
 
 		}
-		else
-		{
-			JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, getUIObjectVar(widgetVar), expression.toString());
-		}
+        else
+        {
+	        boolean nativeWrapper = uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName()) ||
+	        						uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
+	        if (nativeWrapper)
+	        {
+	        	writeExpression.append(uiObjectVariable+".setPropertyString("+EscapeUtils.quote(widgetPropertyPath)+","+expression.toString()+");");
+	        }
+	        else
+	        {
+	        	JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, uiObjectVariable, expression.toString());
+	        }
+        }
 
 		for (String dataObject : dataObjects)
         {
@@ -358,7 +375,8 @@ public class ExpressionDataBinding
 		{
 			return widgetVar;
 		}
-		return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
+		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
+		return uiObjectVar;
 	}
 
 	public static enum LogicalOperation{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}

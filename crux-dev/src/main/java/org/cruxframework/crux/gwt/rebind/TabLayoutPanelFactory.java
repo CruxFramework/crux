@@ -115,7 +115,7 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanelContex
 		@Override
 		public void processChildren(SourcePrinter out, TabLayoutPanelContext context) throws CruxGeneratorException 
 		{
-			context.title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId());
+			context.title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context);
 			context.isTitleHTML = true;
 		}
 	}

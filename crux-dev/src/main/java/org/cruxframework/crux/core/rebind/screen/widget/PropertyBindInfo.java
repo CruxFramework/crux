@@ -15,11 +15,14 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import org.cruxframework.crux.core.client.screen.binding.NativeWrapper;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.dom.client.Element;
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -34,6 +37,7 @@ public class PropertyBindInfo extends BindInfo
 	protected String readExpression;
 	protected boolean boundToAttribute;
 	protected String getUiObjectExpression;
+	protected boolean nativeWrapper = false;
 
 	public PropertyBindInfo(String widgetPropertyPath, boolean boundToAttribute, String bindPath, JClassType widgetType, JClassType dataObjectType, 
 							JClassType converterType, String dataObject, String converterParams,
@@ -42,14 +46,16 @@ public class PropertyBindInfo extends BindInfo
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
 		this.boundToAttribute = boundToAttribute;
 		uiObjectType = uiObjectType==null?widgetType:uiObjectType;
+		this.nativeWrapper = uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName()) || 
+							 uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
 		this.getUiObjectExpression = getUiObjectExpression;
 		if (widgetType != null)
 		{
 			this.widgetClassName = widgetType.getQualifiedSourceName();
 			if (!StringUtils.isEmpty(widgetPropertyPath))
 			{
-				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
-				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
+				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath, nativeWrapper);
+				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType, nativeWrapper);
 			}
 		}
     }
@@ -124,24 +130,40 @@ public class PropertyBindInfo extends BindInfo
 		return getUiObjectExpression;
 	}
 	
+	public boolean isNativeWrapper()
+	{
+		return nativeWrapper;
+	}
+	
 	/**
 	 * Expression to read FROM widget and write TO dataObject
 	 * @param widgetPropertyPath
 	 * @param widgetType
 	 * @param dataObjectType
 	 * @param bindPath
+	 * @param nativeWrapper
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
 	protected String getReadExpression(String widgetPropertyPath, JClassType widgetType, JClassType dataObjectType, 
-				String bindPath) throws NoSuchFieldException
+				String bindPath, boolean nativeWrapper) throws NoSuchFieldException
     {
 		StringBuilder getExpression = new StringBuilder();
-		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF, false);
-		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVar, false, true, true);
-		return "if ("+uiObjectVar + " != null){\n" 
+		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF);
+		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+		
+		if (nativeWrapper)
+		{
+			getExpression.append(uiObjectVariable+".getPropertyString(" + EscapeUtils.quote(widgetPropertyPath) + ")");
+		}
+		else
+		{
+			JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVariable, false, true, true);
+		}
+		return widgetType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n"
+			    +"if ("+uiObjectVariable + " != null){\n" 
 				+getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString())
-				+"}";
+				+"\n}";
     }
 
 	/**
@@ -149,26 +171,39 @@ public class PropertyBindInfo extends BindInfo
 	 * 
 	 * @param widgetPropertyPath
 	 * @param widgetType
+	 * @param nativeWrapper
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType) throws NoSuchFieldException
+	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType, boolean nativeWrapper) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
-		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, getUIObjectVar(WIDGET_VAR_REF, true), getDataObjectReadExpression());
+		
+		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF);
+		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+		writeExpression.append(widgetType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
+		if (nativeWrapper)
+		{
+			writeExpression.append(uiObjectVariable+".setPropertyString(" + 
+								EscapeUtils.quote(widgetPropertyPath) + "," + getDataObjectReadExpression() + ");");
+		}
+		else
+		{
+			JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, 
+				uiObjectVariable, getDataObjectReadExpression());
+		}
 		return writeExpression.toString();
 	}
 	
-	protected String getUIObjectVar(String widgetVar, boolean addNullTeste)
+	protected String getUIObjectVar(String widgetVar)
 	{
 		if (StringUtils.isEmpty(getUiObjectExpression))
 		{
 			return widgetVar;
 		}
-		if (addNullTeste)
-		{
-			return "if ("+widgetVar + "." + getUiObjectExpression+" != null)\n" +widgetVar + "." + getUiObjectExpression;
-		}
-		return widgetVar + "." + getUiObjectExpression;
+		
+		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
+		return uiObjectVar;
 	}
 }

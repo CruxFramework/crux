@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -114,33 +115,37 @@ public class HTMLUtils
 	/**
 	 * @param viewId
 	 * @param device
-	 * @param nativeControllers 
+	 * @param nativeControllers
+	 * @param nativeBindings 
 	 * @param node
 	 * @param out
 	 * @throws IOException
 	 */
-	public static void write(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
+	public static void write(String viewId, String device, StringBuilder nativeControllers, 
+							StringBuilder nativeBindings, Node node, Writer out) throws IOException
 	{
-		write(viewId, device, nativeControllers, node, out, false);
+		write(viewId, device, nativeControllers, nativeBindings, node, out, false);
 	}
 	
 	/**
 	 * @param viewId
 	 * @param device
 	 * @param nativeControllers 
+	 * @param nativeBindings 
 	 * @param node
 	 * @param out
 	 * @param indentOutput
 	 * @throws IOException
 	 */
-	public static void write(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out, boolean indentOutput) throws IOException
+	public static void write(String viewId, String device, StringBuilder nativeControllers, StringBuilder nativeBindings, 
+							Node node, Writer out, boolean indentOutput) throws IOException
 	{
 		if (node.getNodeType() == Node.ELEMENT_NODE)
 		{
 			String name = ((Element)node).getNodeName().toLowerCase();
 			out.write("<");
 			out.write(name);
-			writeAttributes(viewId, device, nativeControllers, node, out);
+			writeAttributes(viewId, device, nativeControllers, nativeBindings, node, out);
 			
 			if (voidElements.contains(name))
 			{
@@ -166,7 +171,7 @@ public class HTMLUtils
 						}
 						else
 						{
-							write(viewId, device, nativeControllers, child, out, indentOutput);
+							write(viewId, device, nativeControllers, nativeBindings, child, out, indentOutput);
 						}
 					}
 				}
@@ -192,13 +197,21 @@ public class HTMLUtils
 	 * @param viewId
 	 * @param device
 	 * @param nativeControllers 
+	 * @param nativeBindings
 	 * @param node
 	 * @param out
 	 * @throws IOException
 	 */
-	public static void writeAttributes(String viewId, String device, StringBuilder nativeControllers, Node node, Writer out) throws IOException
+	public static void writeAttributes(String viewId, String device, StringBuilder nativeControllers,
+										StringBuilder nativeBindings, Node node, Writer out) throws IOException
     {
 	    NamedNodeMap attributes = node.getAttributes();
+	    Node idAttr = node.getAttributes().getNamedItem("id");
+	    String id = null;
+	    if (idAttr != null)
+	    {
+	    	id = idAttr.getNodeValue();
+	    }
 	    for (int i=0; i<attributes.getLength(); i++)
 	    {
 	    	Node attribute = attributes.item(i);
@@ -209,7 +222,15 @@ public class HTMLUtils
 	    		String attributeValue = attribute.getNodeValue();
 	    		if (!writeAttributeWithController(viewId, device, nativeControllers, out, name, nameLowerCase, attributeValue))
 	    		{
-	    			out.write(" "+name+"=\""+escapeHTMLAttribute(attributeValue)+"\"");
+	    			AttributeDataBindingStatus status = processAttributeDataBinding(viewId, device, nativeBindings, out, name, nameLowerCase, attributeValue, id);
+	    			if (!status.status)
+	    			{
+	    				out.write(" "+name+"=\""+escapeHTMLAttribute(attributeValue)+"\"");
+	    			}
+	    			else
+	    			{
+	    				id = status.id;
+	    			}
 	    		}
 	    	}
 	    }
@@ -328,7 +349,7 @@ public class HTMLUtils
 												String attributeName, String attributeNameLower, String attributeValue) throws IOException
 	{
 		if (nativeControllers != null && attributeNameLower.startsWith("on") 
-			&&RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
+			&& RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
 		{
 			String controllerCall = attributeValue.trim();
 			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
@@ -345,4 +366,44 @@ public class HTMLUtils
 		}
 		return false;
 	}
+
+	private static AttributeDataBindingStatus processAttributeDataBinding(String viewId, String device, StringBuilder nativeBindings, Writer out,
+		String attributeName, String attributeNameLower, String attributeValue, String id) throws IOException
+	{
+		if (!attributeNameLower.startsWith("on") 
+			&& RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(attributeValue.trim()).find())
+		{
+			String dataBinding = attributeValue.trim();
+			if (id == null)
+			{
+				id = ViewFactoryCreator.createVariableName(viewId.replaceAll("\\W", "_") + "_" + device + "_elem");
+				out.write(" id=\""+escapeHTMLAttribute(id)+"\"");
+			}
+
+			if (nativeBindings != null)
+			{
+				if (nativeBindings.length() > 1)
+				{
+					nativeBindings.append(",");
+				}
+				nativeBindings.append("{\"elementId\": \""+id+"\"," 
+					+ "\"dataBinding\" : \""+dataBinding+"\","
+					+ "\"attributeName\" : \""+attributeName+"\"}");
+			}
+			return new AttributeDataBindingStatus(id, true);
+		}
+		return new AttributeDataBindingStatus(id, false);
+	}
+	
+	private static class AttributeDataBindingStatus
+	{
+		private AttributeDataBindingStatus(String id, boolean status)
+        {
+			this.id = id;
+			this.status = status;
+        }
+		private boolean status;
+		private String id;
+	}
+	
 }

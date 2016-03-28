@@ -181,7 +181,7 @@ public abstract class HTMLTableFactory <C extends HTMLTableFactoryContext> exten
 		{
 			String rootWidget = context.getWidget();
 			out.println(rootWidget+".setHTML("+context.rowIndex+", "+context.colIndex+", "+getWidgetCreator().
-					ensureHtmlChild(context.getChildElement(), true, context.getWidgetId())+");");
+					ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context)+");");
 		}
 	}
 	

@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.PartialSupport;
 
@@ -61,7 +62,7 @@ import com.google.gwt.dom.client.PartialSupport;
  */
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="id", required=true, supportsDataBinding=false,
-							description="Sets the identifier used to reference this widget on the crux view. ")
+		description="Sets the identifier used to reference this widget on the crux view. ")
 })
 @TagAttributes({
 	@TagAttribute(value="width", description="Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
@@ -82,7 +83,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	private WidgetCreatorAnnotationsProcessor annotationProcessor;
 	private ViewFactoryCreator viewFactory = null;
 	private Class<?> widgetClass = getWidgetTypeFromClass();
-	
+
 	/**
 	 * Used by widgets that need to create new widgets as children. 
 	 * 
@@ -97,13 +98,13 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @throws CruxGeneratorException
 	 */
 	public String createChildWidget(SourcePrinter out, JSONObject metaElem, String widgetId, 
-			String widgetType, WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
+		String widgetType, WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		WidgetConsumer widgetConsumer = consumer != null ? consumer : context.getWidgetConsumer();
 		DataBindingProcessor bindingProcessor = dataBindingProcessor != null ? dataBindingProcessor : context.getDataBindingProcessor();
 		return viewFactory.newWidget(out, metaElem, widgetId, widgetType, widgetConsumer, bindingProcessor);
 	}	
-	
+
 	/**
 	 * Used by widgets that need to create new widgets as children. 
 	 * 
@@ -116,17 +117,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @throws CruxGeneratorException
 	 */
 	public String createChildWidget(SourcePrinter out, JSONObject metaElem, WidgetConsumer consumer, 
-			DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
+		DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		if (!metaElem.has("id"))
 		{
 			throw new CruxGeneratorException("The id attribute is required for CRUX Widgets. " +
-					"On page ["+getView().getId()+"], there is an widget of type ["+viewFactory.getMetaElementType(metaElem)+"] without id.");
+				"On page ["+getView().getId()+"], there is an widget of type ["+viewFactory.getMetaElementType(metaElem)+"] without id.");
 		}
 		String widgetId = metaElem.optString("id");
 		return createChildWidget(out, metaElem, widgetId, viewFactory.getMetaElementType(metaElem), consumer, dataBindingProcessor, context);
 	}
-	
+
 	/**
 	 * Used by widgets that need to create new widgets as children. 
 	 * 
@@ -140,7 +141,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return createChildWidget(out, metaElem, null, null, context);
 	}
-	
+
 	/**
 	 * @param varName
 	 * @return
@@ -149,7 +150,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return ViewFactoryCreator.createVariableName(varName);
 	}
-	
+
 	/**
 	 * Generates the code for the given widget creation. 
 	 * 
@@ -162,7 +163,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @throws CruxGeneratorException
 	 */
 	public String createWidget(SourcePrinter out, JSONObject metaElem, String widgetId, 
-			WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor) throws CruxGeneratorException
+		WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor) throws CruxGeneratorException
 	{
 		boolean partialSupport = hasPartialSupport();
 		C context = createContext(out, metaElem, widgetId, consumer, dataBindingProcessor);
@@ -215,7 +216,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		{
 			throw new CruxGeneratorException("The widget ["+parentWidgetId+"], declared on View ["+getView().getId()+"], must contain at least one child.");
 		}
-		
+
 		JSONArray children = metaElem.optJSONArray("_children");
 		if (acceptsNoChild && children == null)
 		{
@@ -228,7 +229,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		return children;
 	}
-	
+
 	/**
 	 * @param metaElem
 	 * @param acceptsNoChild
@@ -256,7 +257,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		return firstChild;
 	}
-	
+
 	/**
 	 * 
 	 * @param metaElem
@@ -264,7 +265,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @return
 	 * @throws CruxGeneratorException 
 	 */
-	public String ensureHtmlChild(JSONObject metaElem, boolean acceptsNoChild, String parentWidgetId) throws CruxGeneratorException
+	public String ensureHtmlChild(JSONObject metaElem, boolean acceptsNoChild, String parentWidgetId, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		String result = metaElem.optString("_html");
 		if (!acceptsNoChild && (result == null || result.length() == 0))
@@ -274,9 +275,50 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		if (result != null)
 		{
 			result = viewFactory.getViewHTML(result);
+			processNativeDataBindings(metaElem, context);
 		}
 		return result;
 	}
+
+	public void processNativeDataBindings(JSONObject metaElem, WidgetCreatorContext context) throws CruxGeneratorException
+	{
+		JSONArray nativeBindings = metaElem.optJSONArray("nativeBindings");
+
+		for (int i = 0; i < nativeBindings.length(); i++)
+		{
+			try
+			{
+				JSONObject nativeDataBinding = nativeBindings.getJSONObject(i);
+				String elementId = nativeDataBinding.getString("elementId");
+				String dataBinding = nativeDataBinding.getString("dataBinding");
+				String attributeName = nativeDataBinding.getString("attributeName");
+				String getUiObjectExpression = Document.class.getCanonicalName() + ".get().getElementById(" + EscapeUtils.quote(elementId) + ")";
+				PropertyBindInfo binding = getObjectDataBinding(dataBinding, getWidgetClassName(), 
+					attributeName, !attributeName.equals("value"), Element.class.getCanonicalName(), 
+					getUiObjectExpression, context.getDataBindingProcessor());
+				if (binding != null)
+				{
+					context.registerObjectDataBinding(binding);
+				}
+				else
+				{
+					ExpressionDataBinding expressionBinding = getExpressionDataBinding(dataBinding, getWidgetClassName(),
+						attributeName, Element.class.getCanonicalName(), getUiObjectExpression,
+						context.getDataBindingProcessor(), null, null);
+					if (expressionBinding != null)
+					{
+						context.registerExpressionDataBinding(expressionBinding);
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				throw new CruxGeneratorException("Error processing native databinding declaration on widget [" + 
+					context.getWidgetId() + "] declared on view [" + getView().getId() + "]");
+			}
+		}
+	}
+
 
 	/**
 	 * 
@@ -318,7 +360,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		return metaElem;
 	}	
-	
+
 	/**
 	 * 
 	 * @param out
@@ -326,11 +368,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param bindableContainerVariable
 	 */
 	public void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable, String bindableContainerVariable)
-    {
-	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
+	{
+		String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
 		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
 			bindableContainerVariable + ", 0);");
-    }
+	}
 
 	/**
 	 * 
@@ -341,7 +383,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).getWidgetClass();
 	}		
-	
+
 	/**
 	 * @param metaElem
 	 * @return
@@ -350,7 +392,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).getWidgetClassName();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -358,13 +400,13 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getContext();
 	}
-	
+
 	public JType getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
 		String propertyValue, Set<String> converterDeclarations, String widgetClassName, String widgetPropertyPath, 
 		HasDataProviderDataBindingProcessor dataBindingProcessor, StringBuilder expression)
 	{
 		return getDataBindingReadExpression(resultVariable, dataObjectAlias, bindingContextVariable, 
-				propertyValue, converterDeclarations, widgetClassName, widgetPropertyPath, dataBindingProcessor, expression, true);
+			propertyValue, converterDeclarations, widgetClassName, widgetPropertyPath, dataBindingProcessor, expression, true);
 	}
 
 	public JType getDataBindingReadExpression(String resultVariable, String dataObjectAlias, String bindingContextVariable, 
@@ -372,9 +414,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		HasDataProviderDataBindingProcessor dataBindingProcessor, StringBuilder expression, boolean acceptExpressions)
 	{
 		JType result = null;
-		
+
 		PropertyBindInfo binding = getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, true, dataBindingProcessor);
-		
+
 		String dataObjectVariable = dataBindingProcessor.getCollectionDataObjectVariable();
 		String collectionItemVariable = dataBindingProcessor.getCollectionItemVariable();
 		if (binding != null)
@@ -404,12 +446,12 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		return result;
 	}
-	
+
 	public JClassType getDataObjectFromProvider(String dataProviderId)
 	{
 		return viewFactory.getDataObjectFromProvider(dataProviderId);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -428,7 +470,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, dataBindingProcessor);
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -455,8 +497,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @return
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-							String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor, 
-							String setterMethod, String propertyTypeName)
+		String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor, 
+		String setterMethod, String propertyTypeName)
 	{
 		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, 
 			uiObjectClassName, getUiObjectExpression, dataBindingProcessor, setterMethod, propertyTypeName);
@@ -469,7 +511,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getLogger();
 	}
-	
+
 	/**
 	 * 
 	 * @param propertyValue
@@ -492,18 +534,18 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @return
 	 */
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
-											boolean boundToAttribute, DataBindingProcessor dataBindingProcessor)
+		boolean boundToAttribute, DataBindingProcessor dataBindingProcessor)
 	{
 		return getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, null, null, dataBindingProcessor);
 	}
-	
+
 	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute, 
-												String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
+		String uiObjectClassName, String getUiObjectExpression, DataBindingProcessor dataBindingProcessor)
 	{
 		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute, uiObjectClassName, 
-												getUiObjectExpression, dataBindingProcessor);
+			getUiObjectExpression, dataBindingProcessor);
 	}
-	
+
 	/**
 	 * 
 	 * @param property
@@ -518,19 +560,19 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * Create a new printer for a subType.  That subType will be declared on the package name informed in the first parameter
 	 * 
 	 * @param packageName
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @param isInterface
-     * @return 
-     */
-    public SourcePrinter getSubTypeWriter(String packageName,String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
-    {
-    	return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
-    }
-	
-    /**
+	 * @param subType
+	 * @param superClass
+	 * @param interfaces
+	 * @param imports
+	 * @param isInterface
+	 * @return 
+	 */
+	public SourcePrinter getSubTypeWriter(String packageName,String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
+	{
+		return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
+	}
+
+	/**
 	 * @param subType
 	 * @param superClass
 	 * @param interfaces
@@ -541,24 +583,24 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports);
 	}
-	
-	
+
+
 	/**
 	 * Create a new printer for a subType. That subType will be declared on the same package of the
 	 * {@code ViewFactory}. 
 	 * 
-     * @param subType
-     * @param superClass
-     * @param interfaces
-     * @param imports
-     * @param isInterface
-     * @return 
-     */
-    public SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
-    {
-    	return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports, isInterface);
-    }
-	
+	 * @param subType
+	 * @param superClass
+	 * @param interfaces
+	 * @param imports
+	 * @param isInterface
+	 * @return 
+	 */
+	public SourcePrinter getSubTypeWriter(String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
+	{
+		return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports, isInterface);
+	}
+
 	/**
 	 * @return
 	 */
@@ -568,41 +610,41 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	}
 
 	public Class<?> getWidgetClass()
-    {
-	    return widgetClass;
-    }
+	{
+		return widgetClass;
+	}
 
 	/**
 	 * @return
 	 */
 	public Class<?> getWidgetClass(String widgetDeclaration)
-    {
+	{
 		WidgetCreator<?> widgetCreator = viewFactory.getWidgetCreator(widgetDeclaration);
 		if (widgetCreator == null)
 		{
 			throw new CruxGeneratorException("No widget registered for declaration ["+widgetDeclaration+"]."); 
 		}
 		return widgetCreator.getWidgetClass();
-    }
+	}
 
 	/**
 	 * @return
 	 */
 	public String getWidgetClassName()
-    {
-	    return getWidgetClass().getCanonicalName();
-    }
+	{
+		return getWidgetClass().getCanonicalName();
+	}
 
 	/**
 	 * 
 	 * @return
 	 */
 	public JClassType getWidgetClassType()
-    {
-	    return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
-    }	
-	
-	
+	{
+		return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
+	}	
+
+
 	/**
 	 * @return
 	 */
@@ -624,22 +666,22 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getWidgetCreator(viewFactory.getMetaElementType(metaElem)).hasPartialSupport();
 	}
-	
-	/**
-	 * @return
-	 */
-	public boolean hasPartialSupport()
-    {
-	    JClassType widgetClassType = getWidgetClassType();
-		return widgetClassType != null && widgetClassType.getAnnotation(PartialSupport.class) != null 
-	    	   && ClassUtils.hasMethod(getWidgetClass(), "isSupported");
-    }
 
 	/**
 	 * @return
 	 */
-    public abstract C instantiateContext();
-	
+	public boolean hasPartialSupport()
+	{
+		JClassType widgetClassType = getWidgetClassType();
+		return widgetClassType != null && widgetClassType.getAnnotation(PartialSupport.class) != null 
+			&& ClassUtils.hasMethod(getWidgetClass(), "isSupported");
+	}
+
+	/**
+	 * @return
+	 */
+	public abstract C instantiateContext();
+
 	/**
 	 * @param out
 	 * @param context
@@ -674,7 +716,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param metaElem
 	 * @return
 	 */
-    public boolean isWidget(JSONObject metaElem)
+	public boolean isWidget(JSONObject metaElem)
 	{
 		return ViewFactory.isValidWidget(metaElem);
 	}
@@ -688,7 +730,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void postProcess(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
+
 	/**
 	 * Process widget attributes
 	 * @param out 
@@ -698,7 +740,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processAttributes(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
+
 	/**
 	 * Process element children
 	 * @param out 
@@ -708,7 +750,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void processChildren(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
-	
+
 	/**
 	 * Process widget events
 	 * @param out 
@@ -728,7 +770,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.resolveI18NString(text);
 	}
-	
+
 	/**
 	 * Close the current postProcessing scope and schedule the execution of all scope commands.
 	 * @param printer
@@ -737,8 +779,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.commitPostProcessing(printer);
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param out
@@ -769,7 +811,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}			
 		return context;
 	}
-	
+
 	/**
 	 * Create a new post-processing scope
 	 */
@@ -786,7 +828,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getControllerAccessHandler();
 	}
-	
+
 	protected Map<String, String> getDeclaredMessages()
 	{
 		return viewFactory.getDeclaredMessages();
@@ -798,19 +840,19 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	}
 
 	/**
-     * Retrieve the current PostProcessingPrinter
+	 * Retrieve the current PostProcessingPrinter
 	 * @return
 	 */
 	protected SourcePrinter getPostProcessingPrinter()
 	{
 		return viewFactory.getPostProcessingPrinter();
 	}
-	
+
 	protected String getViewVariable()
 	{
 		return ViewFactoryCreator.getViewVariable();
 	}
-	
+
 	/**
 	 * 
 	 * @param supported
@@ -819,7 +861,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	protected boolean isCurrentDeviceSupported(Device[] supported)
 	{
 		for (Device device : supported)
-        {
+		{
 			if (device.equals(Device.all))
 			{
 				return true;
@@ -828,12 +870,12 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			{
 				return true;
 			}
-        }
+		}
 		return false;
 	}
-	
+
 	protected boolean isCurrentDeviceSupported(String size, String input)
-    {
+	{
 		Device current = Device.valueOf(viewFactory.getDevice());
 		if (current.equals(Device.all))
 		{
@@ -853,15 +895,15 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 				return false;
 			}
 		}
-		
-	    return true;
-    }
-	
+
+		return true;
+	}
+
 	protected boolean isWidgetRegisteredForPostProcessing(String widgetId)
 	{
 		return viewFactory.isWidgetRegisteredForPostProcessing(widgetId);
 	}
-	
+
 	/**
 	 * Print code that will be executed after the viewFactory completes the widgets construction
 	 * @param s code string
@@ -870,17 +912,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		viewFactory.printlnPostProcessing(s);
 	}
-		
+
 	protected void registerWidgetForPostProcessing(String widgetId)
 	{
 		viewFactory.registerWidgetForPostProcessing(widgetId);
 	}
-	
+
 	protected boolean targetsDevice(JSONObject child)
-    {
-	    return viewFactory.targetsDevice(child);
-    }
-	
+	{
+		return viewFactory.targetsDevice(child);
+	}
+
 	/**
 	 * 
 	 * @param processorClass
@@ -897,7 +939,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 				attributes = getTagConstraints(superClass);
 			}
 		}
-		
+
 		return attributes;
 	}	
 
@@ -908,7 +950,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return this.viewFactory;
 	}
-	
+
 	/**
 	 * @param viewFactory
 	 */
@@ -920,7 +962,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			this.annotationProcessor = new WidgetCreatorAnnotationsProcessor(this);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -937,7 +979,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Retrieve the widget child element name
 	 * @param childElement element representing the child
@@ -947,7 +989,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return childElement.optString("_childTag");
 	}
-	
+
 	/**
 	 * 
 	 * @param metaElem
@@ -962,7 +1004,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		String width = metaElem.optString("height");
 		return width != null && (width.length() > 0);
 	}
-	
+
 	/**
 	 * 
 	 * @param metaElem
@@ -977,7 +1019,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		String width = metaElem.optString("width");
 		return width != null && (width.length() > 0);
 	}
-	
+
 	/**
 	 * @param metaElem
 	 * @return
@@ -988,7 +1030,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		String result = metaElem.optString("_html");
 		return (!StringUtils.isEmpty(result));
 	}
-	
+
 	/**
 	 * @param metaElem
 	 * @return
@@ -999,13 +1041,13 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		String result = metaElem.optString("_text");
 		return (!StringUtils.isEmpty(result));
 	}
-	
+
 	public static class StyleNameProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
 		public StyleNameProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		public void processAttribute(SourcePrinter out, String widget, String styleName)
 		{
@@ -1018,36 +1060,36 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 					{
 						styleName = classAttributes[i];
 						if (getWidgetCreator().isResourceReference(styleName))
-				        {
-				        	styleName = widgetCreator.getResourceAccessExpression(styleName);
-				        	addStyleName(out, widget, styleName, i > 0);
-				        }
-				        else
-				        {
-				        	addStyleName(out, widget, EscapeUtils.quote(styleName), i > 0);
-				        }
+						{
+							styleName = widgetCreator.getResourceAccessExpression(styleName);
+							addStyleName(out, widget, styleName, i > 0);
+						}
+						else
+						{
+							addStyleName(out, widget, EscapeUtils.quote(styleName), i > 0);
+						}
 					}
 				} 
 				else 
 				{
 					if (getWidgetCreator().isResourceReference(styleName))
-			        {
-			        	styleName = widgetCreator.getResourceAccessExpression(styleName);
-			        	addStyleName(out, widget, styleName, false);
-			        }
-			        else
-			        {
-			        	addStyleName(out, widget, EscapeUtils.quote(styleName), false);
-			        }
+					{
+						styleName = widgetCreator.getResourceAccessExpression(styleName);
+						addStyleName(out, widget, styleName, false);
+					}
+					else
+					{
+						addStyleName(out, widget, EscapeUtils.quote(styleName), false);
+					}
 				}
 			}
 		}
-		
+
 		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String styleName)
 		{
 			processAttribute(out, context.getWidget(), styleName);	
 		}
-		
+
 		private void addStyleName(SourcePrinter out, String widgetName, String valueExpr, boolean add)
 		{
 			if (add)
@@ -1068,9 +1110,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public static class StyleProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
 		public StyleProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		public void processAttribute(SourcePrinter out, String widget, String style)
 		{
@@ -1085,17 +1127,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 					if (attr != null && attr.length == 2)
 					{
 						out.println(StyleUtils.class.getCanonicalName()+".addStyleProperty("+element+", "+EscapeUtils.quote(getStylePropertyName(attr[0]))+
-								", "+EscapeUtils.quote(attr[1])+");");
+							", "+EscapeUtils.quote(attr[1])+");");
 					}
 				}
 			}
 		}
-		
+
 		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String style)
 		{
 			processAttribute(out, context.getWidget(), style);
 		}
-		
+
 		private String getStylePropertyName(String property)
 		{
 			int index = -1;
@@ -1118,16 +1160,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public static class ViewPermissionAttributeProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
 		public ViewPermissionAttributeProcessor(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
+		{
+			super(widgetCreator);
+		}
 
 		@Override
-        public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
-        {
+		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
+		{
 			out.println("if (!"+Permissions.class.getCanonicalName()+".hasRole("+EscapeUtils.quote(attributeValue)+")){");
 			out.println(Permissions.class.getCanonicalName()+".markAsUnauthorizedForViewing("+context.getWidget()+");");
 			out.println("}");
-        }
+		}
 	}
 }

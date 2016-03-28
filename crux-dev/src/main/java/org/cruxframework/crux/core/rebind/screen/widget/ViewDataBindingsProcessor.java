@@ -18,15 +18,15 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder;
-import org.cruxframework.crux.core.client.screen.binding.PropertyBinder;
 import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder.BindingContext;
+import org.cruxframework.crux.core.client.screen.binding.PropertyBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 
-import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.dom.client.Element;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -154,8 +154,16 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 				
 				if (!StringUtils.isEmpty(bind.getUiObjectExpression()))
 				{
-					out.println("public "+UIObject.class.getCanonicalName()+" getUiObject(){");
-					out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF, false) + ";");
+					out.println("public "+Element.class.getCanonicalName()+" getUiElement(){");
+					
+					if (bind.isNativeWrapper())
+					{
+						out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ";");
+					}
+					else
+					{
+						out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ".getElement();");
+					}
 					out.println("}");
 				}
 				out.println("}, "+bind.isBoundToAttribute()+");");

@@ -298,6 +298,7 @@ public class ViewFactory
 			JSONObject lazyDependencies = metaData.getJSONObject("lazyDeps");
 			String html = metaData.getString("_html");
 			JSONArray nativeControllers = metaData.getJSONArray("nativeControllers");
+			JSONArray nativeBindings = metaData.getJSONArray("nativeBindings");
 			
 			View view = new View(id, lazyDependencies, html, rootView);
 			int length = nativeControllers.length();
@@ -307,6 +308,15 @@ public class ViewFactory
 				String method = nativeController.getString("method");
 				String controllerCall = nativeController.getString("controllerCall");
 				view.addNativeControllerCall(method, controllerCall);
+			}
+			length = nativeBindings.length();
+			for (int i = 0; i < length; i++) 
+			{
+				JSONObject nativeBinding = nativeBindings.getJSONObject(i);
+				String elementId = nativeBinding.getString("elementId");
+				String dataBinding = nativeBinding.getString("dataBinding");
+				String attributeName = nativeBinding.getString("attributeName");
+				view.addNativeDataBinding(elementId, dataBinding, attributeName);
 			}
 
 			length = elementsMetadata.length();

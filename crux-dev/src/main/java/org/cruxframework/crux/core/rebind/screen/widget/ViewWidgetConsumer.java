@@ -51,8 +51,8 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 
 	public void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem)
 	{
-		String bindPath = metaElem.optString("bindPath");
-		String bindConverter = metaElem.optString("bindConverter");
+		String bindPath = metaElem!=null?metaElem.optString("bindPath"):null;
+		String bindConverter = metaElem!=null?metaElem.optString("bindConverter"):null;
 		if (viewFactoryCreator.isBindableView() && !StringUtils.isEmpty(bindPath))
 		{
 			Class<?> widgetClass = viewFactoryCreator.getWidgetCreator(widgetType).getWidgetClass();
