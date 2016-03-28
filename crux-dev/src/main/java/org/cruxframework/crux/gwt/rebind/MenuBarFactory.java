@@ -150,7 +150,7 @@ public class MenuBarFactory extends WidgetCreator<MenuBarContext>
 		@Override
 		public void processChildren(SourcePrinter out, MenuBarContext context) throws CruxGeneratorException
 		{
-			context.caption = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId());
+			context.caption = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context);
 			context.isHtml = true;
 		}
 	}

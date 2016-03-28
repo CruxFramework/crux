@@ -37,6 +37,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Size;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
+import org.cruxframework.crux.core.client.screen.binding.NativeWrapper;
 import org.cruxframework.crux.core.client.screen.views.BindableView;
 import org.cruxframework.crux.core.client.screen.views.View.RenderCallback;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
@@ -47,6 +48,7 @@ import org.cruxframework.crux.core.client.screen.views.ViewFactory;
 import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
 import org.cruxframework.crux.core.client.screen.views.ViewLoadEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewLoadHandler;
+import org.cruxframework.crux.core.client.screen.views.ViewPanel;
 import org.cruxframework.crux.core.client.screen.views.ViewUnloadEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewUnloadHandler;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
@@ -66,8 +68,10 @@ import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.DataProvider;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.View.NativeDataBinding;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.json.JSONObject;
@@ -94,7 +98,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -131,6 +134,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
 	private String viewPanelVariable;
+	private String viewPanelInitializedVariable;
 
 	/**
 	 * Constructor
@@ -151,6 +155,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.lazyFactory = new LazyPanelFactory(this);
 		this.loggerVariable = createVariableName("logger");
 		this.viewPanelVariable = createVariableName("viewPanel");
+		this.viewPanelInitializedVariable = createVariableName("viewPanelInitialized");
 		this.widgetConsumer = new ViewWidgetConsumer(this);
 		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
 		this.dataProviderHelper = new DataProviderHelper(this);
@@ -324,7 +329,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     
     protected void generateGetViewPanelMethod(SourcePrinter printer)
     {
-    	printer.println("public "+HTMLPanel.class.getCanonicalName()+" getViewPanel(){");
+    	printer.println("public "+ViewPanel.class.getCanonicalName()+" getViewPanel(){");
     	printer.println("return "+viewPanelVariable + ";");
     	printer.println("}");
     }
@@ -372,7 +377,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("private final "+getViewSuperClassName()+" "+viewVariable+" = this;");
 		printer.println("private static "+Logger.class.getCanonicalName()+" "+loggerVariable+" = "+
 	    		Logger.class.getCanonicalName()+".getLogger("+getProxySimpleName()+".class.getName());");
-		printer.println("private "+HTMLPanel.class.getCanonicalName()+" "+viewPanelVariable+" = null;");
+		printer.println("private "+ViewPanel.class.getCanonicalName()+" "+viewPanelVariable+" = null;");
+		printer.println("private boolean "+viewPanelInitializedVariable+" = false;");
     }
     
 
@@ -1164,17 +1170,63 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    createPostProcessingScope();
 		printer.println("protected void createWidgets(){");
 
+		String viewHTML = getViewHTML();
+		printer.println("this."+viewPanelVariable+" = new " +
+				ViewPanel.class.getCanonicalName() + "("+viewHTML+");");
+		
 		processViewEvents(printer);
 		processViewDimensions(printer);
 		
 		generateDataProvidersCreationBlock(printer);
 		generateWidgetsCreationBlock(printer);
 
+		generateNativeDataBindingsBlock(printer);
+		
 		printer.println("if ("+LogConfiguration.class.getCanonicalName()+".loggingIsEnabled()){");
 		printer.println(loggerVariable+".fine(Crux.getMessages().viewContainerViewCreated(getId()));");
 		printer.println("}");
 
 		printer.println("}");
+    }
+
+	private void generateNativeDataBindingsBlock(SourcePrinter printer)
+    {
+	    Iterator<NativeDataBinding> nativeDataBindings = view.iterateNativeDataBindings();
+	    Set<String> nativeWrappers = new HashSet<String>();
+		while(nativeDataBindings.hasNext())
+		{
+			NativeDataBinding nativeDataBinding = nativeDataBindings.next();
+			String nativeWrapper = createVariableName("nativeWrapper");
+			String nativeWrapperClassName = NativeWrapper.class.getCanonicalName();
+			if (!nativeWrappers.contains(nativeDataBinding.getElementId()))
+			{
+				printer.println(nativeWrapperClassName + " " + nativeWrapper + "= this."+viewPanelVariable+".wrapNative(" + 
+								EscapeUtils.quote(nativeDataBinding.getElementId()) + ");");
+				
+				getScreenWidgetConsumer().consume(printer, nativeDataBinding.getElementId(), nativeWrapper, null, null);
+				nativeWrappers.add(nativeDataBinding.getElementId());
+			}
+			PropertyBindInfo binding = getObjectDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName, 
+										nativeDataBinding.getAttributeName(), !nativeDataBinding.getAttributeName().equals("value"), 
+				null, null, this.dataBindingProcessor);
+			WidgetCreatorContext ctx = new WidgetCreatorContext();
+			ctx.setWidgetId(nativeDataBinding.getElementId());
+			if (binding != null)
+			{
+				ctx.registerObjectDataBinding(binding);
+			}
+			else
+			{
+				ExpressionDataBinding expressionBinding = getExpressionDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName,
+					nativeDataBinding.getAttributeName(), null, null,
+					this.dataBindingProcessor, null, nativeWrapperClassName);
+				if (expressionBinding != null)
+				{
+					ctx.registerExpressionDataBinding(expressionBinding);
+				}
+			}
+			dataBindingProcessor.processBindings(printer, ctx);
+		}
     }
 
 	private void generateDataProvidersCreationBlock(SourcePrinter printer)
@@ -1235,12 +1287,11 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    String rootPanelVariable = createVariableName("rootPanel");
     	printer.println("protected void render("+Panel.class.getCanonicalName()+" "+rootPanelVariable+", final "+RenderCallback.class.getCanonicalName()+" renderCallback) throws InterfaceConfigException{");
 
-		printer.println("if (this."+viewPanelVariable+" == null){");
+		printer.println("if (!this."+viewPanelInitializedVariable+"){");
 		String viewHTML = getViewHTML();
-		printer.println("this."+viewPanelVariable+" = new " +
-				HTMLPanel.class.getCanonicalName() + "("+viewHTML+");");
 		
-		if (viewHTML.indexOf("<script") >= 0)
+		boolean hasScript = viewHTML.indexOf("<script") >= 0;
+		if (hasScript)
 		{
 			printer.println("this."+viewPanelVariable+".addAttachHandler(new "+Handler.class.getCanonicalName()+"(){");
 			printer.println("private boolean scriptsProcessed = false;");
@@ -1281,16 +1332,18 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     				"ViewFactoryUtils.getEnclosingPanelId("+EscapeUtils.quote(widgetId)+", "+viewVariable+"));");
         }
 
-		if (viewHTML.indexOf("<script") < 0)
+		if (!hasScript)
 		{
 			printer.println("renderCallback.onRendered();");
 		}
 
 		commitPostProcessing(printer);
+		
+		printer.println("this."+viewPanelInitializedVariable+"=true;");
 		printer.println("}");
 		printer.println("else {");
 		printer.println(rootPanelVariable+".add(this."+viewPanelVariable+");");
-		if (viewHTML.indexOf("<script") < 0)
+		if (!hasScript)
 		{
 			printer.println("renderCallback.onRendered();");
 		}
@@ -1624,7 +1677,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	}
 	
 	/**
-	 * Retreive the name of the class responsible for native calls to controller methods.
+	 * Retrieve the name of the class responsible for native calls to controller methods.
 	 * @param viewId
 	 * @return
 	 */

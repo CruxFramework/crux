@@ -387,7 +387,7 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 		@Override
 		public void processChildren(SourcePrinter out, CellTableContext context) throws CruxGeneratorException
 		{
-			String innerText = getWidgetCreator().ensureHtmlChild(context.getChildElement(),true, context.getWidgetId());
+			String innerText = getWidgetCreator().ensureHtmlChild(context.getChildElement(),true, context.getWidgetId(), context);
 			context.header = "new "+SafeHtmlHeader.class.getCanonicalName()+"("+innerText+")";
 		}
 	}
@@ -441,7 +441,7 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 		@Override
 		public void processChildren(SourcePrinter out, CellTableContext context) throws CruxGeneratorException
 		{
-			String innerHTML = getWidgetCreator().ensureHtmlChild(context.getChildElement(),true, context.getWidgetId());
+			String innerHTML = getWidgetCreator().ensureHtmlChild(context.getChildElement(),true, context.getWidgetId(), context);
 			context.footer = "new "+SafeHtmlHeader.class.getCanonicalName()+"("+innerHTML+")";
 		}		
 	}

@@ -141,7 +141,7 @@ public class StackLayoutPanelFactory extends WidgetCreator<StackLayoutContext>
 		@Override
 		public void processChildren(SourcePrinter out, StackLayoutContext context) throws CruxGeneratorException 
 		{
-			context.title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId());
+			context.title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context);
 			context.isHtmlTitle = true;
 		}
 	}

@@ -49,6 +49,7 @@ public class View
 	protected String id;
 	protected String largeViewport;
 	protected Set<NativeControllerCall> nativeControllers = new HashSet<NativeControllerCall>();
+	protected Set<NativeDataBinding> nativeBindings = new HashSet<NativeDataBinding>();
 	protected List<String> resources = new ArrayList<String>();
 	@Deprecated
 	@Legacy
@@ -290,6 +291,15 @@ public class View
 	}
 	
 	/**
+	 * Iterate over native native binding declarations
+	 * @return
+	 */
+	public Iterator<NativeDataBinding> iterateNativeDataBindings()
+	{
+		return nativeBindings.iterator();
+	}
+
+	/**
 	 * Iterate over view resources
 	 * @return
 	 */
@@ -450,6 +460,17 @@ public class View
 	}
 
 	/**
+	 * Register a native databinding declaration
+	 * @param elementId
+	 * @param dataBinding
+	 * @param attributeName
+	 */
+	protected void addNativeDataBinding(String elementId, String dataBinding, String attributeName)
+    {
+		nativeBindings.add(new NativeDataBinding(elementId, dataBinding, attributeName));
+    }
+	
+	/**
 	 * Import a resources into view
 	 * @param event
 	 */
@@ -488,7 +509,7 @@ public class View
 			}
 		}
 	}
-	
+
 	/**
 	 * DataObject bound to this view.
 	 * @param dataObject
@@ -497,7 +518,7 @@ public class View
     {
     	this.dataObject = dataObject;
     }
-
+	
 	/**
 	 * 
 	 * @param disableRefresh
@@ -506,7 +527,7 @@ public class View
     {
     	this.disableRefresh = disableRefresh;
     }
-	
+
 	/**
 	 * Fragment name, used for code spliting
 	 * @param fragment
@@ -533,7 +554,7 @@ public class View
     {
     	this.smallViewport = smallViewport;
     }
-
+	
 	void setLastModified(long lastModified)
     {
 		this.lastModified = lastModified;
@@ -547,7 +568,7 @@ public class View
     {
     	this.viewElement = viewElement;
     }
-	
+
 	/**
 	 * Represents a native call to a view controller method
 	 * @author Thiago da Rosa de Bustamante
@@ -574,4 +595,34 @@ public class View
 			return method;
 		}
 	}
+	
+	public static class NativeDataBinding
+	{
+		private final String elementId;
+		private final String binding;
+		private final String attributeName;
+
+		public NativeDataBinding(String elementId, String dataBinding, String attributeName)
+        {
+			this.elementId = elementId;
+			this.binding = dataBinding;
+			this.attributeName = attributeName;
+        }
+
+		public String getElementId()
+		{
+			return elementId;
+		}
+
+		public String getBinding()
+		{
+			return binding;
+		}
+
+		public String getAttributeName()
+		{
+			return attributeName;
+		}
+	}
+	
 }

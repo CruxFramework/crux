@@ -51,7 +51,7 @@ public class HTMLPanelFactory extends AbstractHTMLPanelFactory
 	{
 		String className = HTMLPanel.class.getCanonicalName();
 		String tag = context.readChildProperty("tag");
-		String html = ensureHtmlChild(context.getWidgetElement(), true, context.getWidgetId());
+		String html = ensureHtmlChild(context.getWidgetElement(), true, context.getWidgetId(), context);
 		
 		if(!StringUtils.isEmpty(tag))
 		{

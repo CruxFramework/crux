@@ -272,10 +272,17 @@ public class ViewParser
 	 * @param htmlElement
 	 * @throws ViewParserException
 	 */
-	private void generateCruxInnerHTMLMetadata(StringBuilder nativeControllers, StringBuilder cruxArrayMetaData, Element htmlElement) throws ViewParserException
+	private void generateCruxInnerHTMLMetadata(StringBuilder nativeControllers, 
+								StringBuilder cruxArrayMetaData, Element htmlElement) throws ViewParserException
     {
-	    String innerHTML = getHTMLFromNode(nativeControllers, htmlElement);
-    	cruxArrayMetaData.append(",\"_html\":\""+innerHTML+"\"");
+		StringBuilder nativeBindings = new StringBuilder();
+		
+		nativeBindings.append("[");
+	    String innerHTML = getHTMLFromNode(nativeControllers, nativeBindings, htmlElement);
+		nativeBindings.append("]");
+
+	    cruxArrayMetaData.append(",\"_html\":\""+innerHTML+"\"");
+    	cruxArrayMetaData.append(",\"nativeBindings\":"+nativeBindings.toString());
     }
 
 	/**
@@ -337,7 +344,8 @@ public class ViewParser
 	 * @param nativeControllers
 	 * @throws ViewParserException 
 	 */
-	private void generateCruxMetaData(Node cruxPageBodyElement, StringBuilder cruxArrayMetaData, StringBuilder nativeControllers) throws ViewParserException
+	private void generateCruxMetaData(Node cruxPageBodyElement, StringBuilder cruxArrayMetaData, 
+		StringBuilder nativeControllers) throws ViewParserException
     {
 		NodeList childNodes = cruxPageBodyElement.getChildNodes();
 		if (childNodes != null)
@@ -486,7 +494,8 @@ public class ViewParser
 	 * @param nativeControllers
 	 * @throws ViewParserException
 	 */
-	private void generateCruxMetadataForView(Element htmlElement, StringBuilder elementsMetadata, StringBuilder nativeControllers) throws ViewParserException
+	private void generateCruxMetadataForView(Element htmlElement, StringBuilder elementsMetadata, 
+		StringBuilder nativeControllers) throws ViewParserException
     {
 		generateCruxMetadataForView(htmlElement, elementsMetadata, nativeControllers, !xhtmlInput);		
     }
@@ -513,7 +522,8 @@ public class ViewParser
 	 * @throws ViewParserException
 	 */
 	private void generateCruxMetadataForView(Element cruxPageScreen, StringBuilder cruxArrayMetaData, 
-											StringBuilder nativeControllers, boolean generateViewTag) throws ViewParserException
+											StringBuilder nativeControllers,
+											boolean generateViewTag) throws ViewParserException
     {
 	    writeIndentationSpaces(cruxArrayMetaData);
 		if (generateViewTag)
@@ -560,7 +570,8 @@ public class ViewParser
 	 * @param nativeControllers
 	 * @throws ViewParserException 
 	 */
-	private void generateCruxScreenMetaData(Element cruxPageScreen, StringBuilder cruxArrayMetaData, StringBuilder nativeControllers) throws ViewParserException
+	private void generateCruxScreenMetaData(Element cruxPageScreen, StringBuilder cruxArrayMetaData, 
+		StringBuilder nativeControllers) throws ViewParserException
     {
 		generateCruxMetadataForView(cruxPageScreen, cruxArrayMetaData, nativeControllers, xhtmlInput);		
     }
@@ -575,11 +586,12 @@ public class ViewParser
 
 	/**
 	 * @param nativeControllers 
+	 * @param nativeBindings
 	 * @param node
 	 * @return
 	 * @throws ViewParserException 
 	 */
-	private String getHTMLFromNode(StringBuilder nativeControllers, Element elem) throws ViewParserException
+	private String getHTMLFromNode(StringBuilder nativeControllers,StringBuilder nativeBindings, Element elem) throws ViewParserException
 	{
 		try
 		{
@@ -593,7 +605,7 @@ public class ViewParser
 					Node child = children.item(i);
 					if (!isCruxModuleImportTag(child))
 					{
-						HTMLUtils.write(viewId, device, nativeControllers, child, innerHTML);
+						HTMLUtils.write(viewId, device, nativeControllers, nativeBindings, child, innerHTML);
 					}
 				}
 			}
@@ -1080,7 +1092,7 @@ public class ViewParser
 		{
 			out.write("<!DOCTYPE " + doctype.getName() + ">\n");
 		}
-	    HTMLUtils.write(viewId, device, null, htmlDocument.getDocumentElement(), out, indentOutput);
+	    HTMLUtils.write(viewId, device, null, null, htmlDocument.getDocumentElement(), out, indentOutput);
 	}
 	
 	/**

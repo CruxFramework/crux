@@ -123,7 +123,7 @@ public abstract class CustomButtonFactory extends FocusWidgetFactory<CustomButto
 		public void processChildren(SourcePrinter out, CustomButtonContext context) throws CruxGeneratorException 
 		{
 			out.println(context.getWidget()+"get"+context.face+"().setHTML("+getWidgetCreator().
-					ensureHtmlChild(context.getChildElement(), true, context.getWidgetId())+");");
+					ensureHtmlChild(context.getChildElement(), true, context.getWidgetId(), context)+");");
 		}
 	}
 	

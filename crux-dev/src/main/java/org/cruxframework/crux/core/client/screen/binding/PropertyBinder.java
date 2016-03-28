@@ -24,7 +24,6 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Interface for data binding between dataObjects and widgets in this view.
@@ -77,11 +76,11 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 						@Override
 						public void onLoaded(MutationObserver mo)
 						{
-							UIObject uiObject = getUiObject();
+							Element uiObject = getUiElement();
 							if (uiObject != null)
 							{
 								mutationObserver = mo;					
-								mutationObserver.observe(uiObject.getElement(), true, true, true);
+								mutationObserver.observe(uiObject, true, true, true);
 							}
 						}
 						
@@ -103,11 +102,24 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 
 	protected void observeChangeEvents()
 	{
-		UIObject uiObject = getUiObject();
-		if (uiObject != null)
+		widget.asWidget().addAttachHandler(new AttachEvent.Handler()
 		{
-			observeChangeEvents(uiObject.getElement(), this);
-		}
+			private boolean listeningEvent = false;
+			
+			@Override
+			public void onAttachOrDetach(AttachEvent event)
+			{
+				if (event.isAttached() && !listeningEvent)
+				{
+					Element uiObject = getUiElement();
+					if (uiObject != null)
+					{
+						observeChangeEvents(uiObject, PropertyBinder.this);
+					}
+					listeningEvent = true;
+				}
+			}
+		});
 	}
 
 	protected native void observeChangeEvents(Element el, PropertyBinder<T, W> binder)/*-{
@@ -166,12 +178,12 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 	public abstract void copyFrom(T dataObject);
 	
 	/**
-	 * Retrieve the target {@link UIObject} that is associated to this binding. 
-	 * Default to the bound widget
-	 * @return the UIObject
+	 * Retrieve the target {@link Element} that is associated to this binding. 
+	 * Default to the bound widget element
+	 * @return the Element
 	 */
-	public UIObject getUiObject()
+	public Element getUiElement()
 	{
-		return widget!=null?widget.asWidget():null;
+		return widget!=null?widget.asWidget().getElement():null;
 	}
 }
