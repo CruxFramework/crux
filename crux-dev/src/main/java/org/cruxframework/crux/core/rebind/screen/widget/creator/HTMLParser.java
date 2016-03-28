@@ -38,6 +38,7 @@ public class HTMLParser extends AttributeProcessor<WidgetCreatorContext>
 		if (text == null || text.length() ==0)
 		{
 			out.println(context.getWidget()+".setHTML("+getWidgetCreator().resolveI18NString(attributeValue)+");");
+			getWidgetCreator().processNativeDataBindings(context.getWidgetElement(), context);
 		}
     }
 }
