@@ -304,7 +304,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 				{
 					ExpressionDataBinding expressionBinding = getExpressionDataBinding(dataBinding, getWidgetClassName(),
 						attributeName, Element.class.getCanonicalName(), getUiObjectExpression,
-						context.getDataBindingProcessor(), null, null);
+						context.getDataBindingProcessor(), null, String.class.getCanonicalName());
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
@@ -314,7 +314,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			catch(Exception e)
 			{
 				throw new CruxGeneratorException("Error processing native databinding declaration on widget [" + 
-					context.getWidgetId() + "] declared on view [" + getView().getId() + "]");
+					context.getWidgetId() + "] declared on view [" + getView().getId() + "]", e);
 			}
 		}
 	}
