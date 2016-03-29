@@ -163,7 +163,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 				{
 					out.println("public "+Element.class.getCanonicalName()+" getUiElement(){");
 					
-					if (bind.isNativeWrapper())
+					if (bind.isNativeElement())
 					{
 						out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ";");
 					}

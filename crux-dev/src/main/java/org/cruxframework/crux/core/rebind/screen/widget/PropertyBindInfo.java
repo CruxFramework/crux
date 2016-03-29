@@ -37,7 +37,8 @@ public class PropertyBindInfo extends BindInfo
 	protected String readExpression;
 	protected boolean boundToAttribute;
 	protected String getUiObjectExpression;
-	protected boolean nativeWrapper = false;
+	protected boolean nativeWrapperOrElement = false;
+	protected boolean nativeElement = false;
 
 	public PropertyBindInfo(String widgetPropertyPath, boolean boundToAttribute, String bindPath, JClassType widgetType, JClassType dataObjectType, 
 							JClassType converterType, String dataObject, String converterParams,
@@ -46,16 +47,16 @@ public class PropertyBindInfo extends BindInfo
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
 		this.boundToAttribute = boundToAttribute;
 		uiObjectType = uiObjectType==null?widgetType:uiObjectType;
-		this.nativeWrapper = uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName()) || 
-							 uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
+		this.nativeElement = uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
+		this.nativeWrapperOrElement = nativeElement || uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName());
 		this.getUiObjectExpression = getUiObjectExpression;
 		if (widgetType != null)
 		{
 			this.widgetClassName = widgetType.getQualifiedSourceName();
 			if (!StringUtils.isEmpty(widgetPropertyPath))
 			{
-				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath, nativeWrapper);
-				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType, nativeWrapper);
+				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
+				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
 			}
 		}
     }
@@ -130,9 +131,9 @@ public class PropertyBindInfo extends BindInfo
 		return getUiObjectExpression;
 	}
 	
-	public boolean isNativeWrapper()
+	public boolean isNativeElement()
 	{
-		return nativeWrapper;
+		return nativeElement;
 	}
 	
 	/**
@@ -141,18 +142,17 @@ public class PropertyBindInfo extends BindInfo
 	 * @param widgetType
 	 * @param dataObjectType
 	 * @param bindPath
-	 * @param nativeWrapper
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
 	protected String getReadExpression(String widgetPropertyPath, JClassType widgetType, JClassType dataObjectType, 
-				String bindPath, boolean nativeWrapper) throws NoSuchFieldException
+				String bindPath) throws NoSuchFieldException
     {
 		StringBuilder getExpression = new StringBuilder();
 		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF);
 		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
 		
-		if (nativeWrapper)
+		if (nativeWrapperOrElement)
 		{
 			String propertyGetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getGetter();
 			getExpression.append(uiObjectVariable+"."+propertyGetter+"(" + EscapeUtils.quote(widgetPropertyPath) + ")");
@@ -172,11 +172,10 @@ public class PropertyBindInfo extends BindInfo
 	 * 
 	 * @param widgetPropertyPath
 	 * @param widgetType
-	 * @param nativeWrapper
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType, boolean nativeWrapper) throws NoSuchFieldException
+	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 		
@@ -184,7 +183,7 @@ public class PropertyBindInfo extends BindInfo
 		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
 		writeExpression.append(widgetType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
 		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
-		if (nativeWrapper)
+		if (nativeWrapperOrElement)
 		{
 			String propertySetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getSetter();
 			writeExpression.append(uiObjectVariable+"."+propertySetter+"(" + 
