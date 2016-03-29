@@ -20,6 +20,7 @@ import java.util.Iterator;
 import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder;
 import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder.BindingContext;
 import org.cruxframework.crux.core.client.screen.binding.PropertyBinder;
+import org.cruxframework.crux.core.client.utils.DOMUtils;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
@@ -48,12 +49,18 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
     }
 	
 	@Override
+    public String getNativeUiObjectExpression(String elementId)
+    {
+	    return DOMUtils.class.getCanonicalName() + ".getElementById({0}," + EscapeUtils.quote(elementId) + ")";
+    }
+
+	@Override
     public void processBindings(SourcePrinter out, WidgetCreatorContext context)
     {
 		processDataObjectBindings(out, context);
 		processDataExpressionBindings(out, context);
     }
-
+	
 	/**
 	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
 	 * @param dataObjectAlias
@@ -64,7 +71,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 	{
 		return viewFactory.getDataObjectBinderVariable(dataObjectAlias, out);
 	}
-	
+
 	/**
 	 * Process any dataObject binding expression on this widget
 	 * @param out
