@@ -67,7 +67,7 @@ class DataBindingNativeTypeResolver
 		if (booleanProperties == null)
 		{
 			booleanProperties = new HashSet<String>();
-			String[] props = {"disabled", "checked", "defaultChecked", "readOnly", "multiple", "required", "selected", "nowrap"};
+			String[] props = {"disabled", "checked", "defaultchecked", "readonly", "multiple", "required", "selected", "nowrap"};
 			
 			booleanProperties.addAll(Arrays.asList(props));
 		}
@@ -91,7 +91,7 @@ class DataBindingNativeTypeResolver
 		if (intProperties == null)
 		{
 			intProperties = new HashSet<String>();
-			String[] props = {"colSpan", "rowSpan", "cellPadding", "cellSpacing", 
+			String[] props = {"colspan", "rowspan", "cellpadding", "cellspacing", 
 				"step", "size", "max", "min", "maxlength", "low", "high", "optimum"};
 			
 			intProperties.addAll(Arrays.asList(props));
@@ -101,15 +101,16 @@ class DataBindingNativeTypeResolver
 
 	public static PropertyType resolveTypeForProperty(String property)
 	{
-		if (getBooleanProperties().contains(property))
+		String propertyLower = property.toLowerCase();
+		if (getBooleanProperties().contains(propertyLower))
 		{
 			return PropertyType.booleanProperty;
 		}
-		if (getIntProperties().contains(property))
+		if (getIntProperties().contains(propertyLower))
 		{
 			return PropertyType.intProperty;
 		}
-		if (getDoubleProperties().contains(property))
+		if (getDoubleProperties().contains(propertyLower))
 		{
 			return PropertyType.doubleProperty;
 		}
