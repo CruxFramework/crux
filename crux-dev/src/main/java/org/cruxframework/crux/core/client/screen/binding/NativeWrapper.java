@@ -37,4 +37,34 @@ public class NativeWrapper extends Widget
 	{
 		getElement().setPropertyString(property, value);
 	}
+
+	public int getPropertyInt(String property)
+	{
+		return getElement().getPropertyInt(property);
+	}
+
+	public void setPropertyInt(String property, int value)
+	{
+		getElement().setPropertyInt(property, value);
+	}
+
+	public double getPropertyDouble(String property)
+	{
+		return getElement().getPropertyDouble(property);
+	}
+
+	public void setPropertyDouble(String property, double value)
+	{
+		getElement().setPropertyDouble(property, value);
+	}
+
+	public boolean getPropertyBoolean(String property)
+	{
+		return getElement().getPropertyBoolean(property);
+	}
+
+	public void setPropertyBoolean(String property, boolean value)
+	{
+		getElement().setPropertyBoolean(property, value);
+	}
 }

@@ -305,7 +305,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 				{
 					ExpressionDataBinding expressionBinding = getExpressionDataBinding(dataBinding, getWidgetClassName(),
 						attributeName, Element.class.getCanonicalName(), getUiObjectExpression,
-						context.getDataBindingProcessor(), null, String.class.getCanonicalName());
+						context.getDataBindingProcessor(), null, 
+						DataBindingNativeTypeResolver.resolveTypeForProperty(attributeName).getType());
 					if (expressionBinding != null)
 					{
 						context.registerExpressionDataBinding(expressionBinding);
