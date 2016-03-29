@@ -154,7 +154,8 @@ public class PropertyBindInfo extends BindInfo
 		
 		if (nativeWrapper)
 		{
-			getExpression.append(uiObjectVariable+".getPropertyString(" + EscapeUtils.quote(widgetPropertyPath) + ")");
+			String propertyGetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getGetter();
+			getExpression.append(uiObjectVariable+"."+propertyGetter+"(" + EscapeUtils.quote(widgetPropertyPath) + ")");
 		}
 		else
 		{
@@ -185,7 +186,8 @@ public class PropertyBindInfo extends BindInfo
 		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
 		if (nativeWrapper)
 		{
-			writeExpression.append(uiObjectVariable+".setPropertyString(" + 
+			String propertySetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getSetter();
+			writeExpression.append(uiObjectVariable+"."+propertySetter+"(" + 
 								EscapeUtils.quote(widgetPropertyPath) + "," + getDataObjectReadExpression() + ");");
 		}
 		else

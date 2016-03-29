@@ -1268,7 +1268,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			{
 				ExpressionDataBinding expressionBinding = getExpressionDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName,
 					nativeDataBinding.getAttributeName(), null, null,
-					this.dataBindingProcessor, null, String.class.getCanonicalName());
+					this.dataBindingProcessor, null, 
+					DataBindingNativeTypeResolver.resolveTypeForProperty(nativeDataBinding.getAttributeName()).getType());
 				if (expressionBinding != null)
 				{
 					ctx.registerExpressionDataBinding(expressionBinding);

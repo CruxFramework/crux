@@ -242,7 +242,8 @@ public class ExpressionDataBinding
 	        						uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
 	        if (nativeWrapper)
 	        {
-	        	writeExpression.append(uiObjectVariable+".setPropertyString("+EscapeUtils.quote(widgetPropertyPath)+","+expression.toString()+");");
+				String propertySetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getSetter();
+	        	writeExpression.append(uiObjectVariable+"."+propertySetter+"("+EscapeUtils.quote(widgetPropertyPath)+","+expression.toString()+");");
 	        }
 	        else
 	        {
