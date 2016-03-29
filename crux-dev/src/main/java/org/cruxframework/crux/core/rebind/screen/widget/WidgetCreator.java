@@ -50,7 +50,6 @@ import org.json.JSONObject;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.PartialSupport;
 
@@ -292,7 +291,9 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 				String elementId = nativeDataBinding.getString("elementId");
 				String dataBinding = nativeDataBinding.getString("dataBinding");
 				String attributeName = nativeDataBinding.getString("attributeName");
-				String getUiObjectExpression = Document.class.getCanonicalName() + ".get().getElementById(" + EscapeUtils.quote(elementId) + ")";
+				
+				String getUiObjectExpression = context.getDataBindingProcessor().getNativeUiObjectExpression(elementId);
+				
 				PropertyBindInfo binding = getObjectDataBinding(dataBinding, getWidgetClassName(), 
 					attributeName, !attributeName.equals("value"), Element.class.getCanonicalName(), 
 					getUiObjectExpression, context.getDataBindingProcessor());

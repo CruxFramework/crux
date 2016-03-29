@@ -19,9 +19,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -186,4 +188,48 @@ public class DOMUtils
 	public static native NodeList<Element> getElementsByClassName(Element el, String classname)/*-{
 		return el.getElementsByClassName(classname);
 	}-*/;
+	
+	public static Element getElementById(IsWidget parent, String id)
+	{
+		if (parent == null)
+		{
+			return null;
+		}
+		if (parent.asWidget().isAttached())
+		{
+			return Document.get().getElementById(id);
+		}
+		
+		return searchElementById(parent.asWidget().getElement(), id);
+	}
+
+	public static Element searchElementById(Element parent, String id)
+	{
+		NodeList<Node> children = parent.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++)
+		{
+			Node item = children.getItem(i);
+			
+			if (item.getNodeType() == Node.ELEMENT_NODE)
+			{
+				Element element = Element.as(item);
+				String candidateId = element.getId();
+				if (candidateId != null && StringUtils.unsafeEquals(candidateId, id))
+				{
+					return element;
+				}
+				else
+				{
+					Element childElem = searchElementById(element, id);
+					if (childElem != null)
+					{
+						return childElem;
+					}
+				}
+				
+			}
+		}
+		
+		return null;
+	}
 }

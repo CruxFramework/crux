@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.utils.DOMUtils;
+import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.ExpressionDataBinding;
@@ -147,4 +149,10 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 	{
 		return bindingContextVariable;
 	}
+
+	@Override
+    public String getNativeUiObjectExpression(String elementId)
+    {
+	    return DOMUtils.class.getCanonicalName() + ".searchElementById({0}.getElement()," + EscapeUtils.quote(elementId) + ")";
+    }
 }

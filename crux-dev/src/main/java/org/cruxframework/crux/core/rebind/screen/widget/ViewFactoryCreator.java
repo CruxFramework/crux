@@ -71,7 +71,6 @@ import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.View.NativeDataBinding;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
-import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.json.JSONObject;
@@ -133,8 +132,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private Set<String> resources;
 	private Set<String> rootPanelChildren;
 	private boolean viewChanged;
-	private String viewPanelVariable;
 	private String viewPanelInitializedVariable;
+	private String viewPanelVariable;
 
 	/**
 	 * Constructor
@@ -1189,46 +1188,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		printer.println("}");
     }
 
-	private void generateNativeDataBindingsBlock(SourcePrinter printer)
-    {
-	    Iterator<NativeDataBinding> nativeDataBindings = view.iterateNativeDataBindings();
-	    Set<String> nativeWrappers = new HashSet<String>();
-		while(nativeDataBindings.hasNext())
-		{
-			NativeDataBinding nativeDataBinding = nativeDataBindings.next();
-			String nativeWrapper = createVariableName("nativeWrapper");
-			String nativeWrapperClassName = NativeWrapper.class.getCanonicalName();
-			if (!nativeWrappers.contains(nativeDataBinding.getElementId()))
-			{
-				printer.println(nativeWrapperClassName + " " + nativeWrapper + "= this."+viewPanelVariable+".wrapNative(" + 
-								EscapeUtils.quote(nativeDataBinding.getElementId()) + ");");
-				
-				getScreenWidgetConsumer().consume(printer, nativeDataBinding.getElementId(), nativeWrapper, null, null);
-				nativeWrappers.add(nativeDataBinding.getElementId());
-			}
-			PropertyBindInfo binding = getObjectDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName, 
-										nativeDataBinding.getAttributeName(), !nativeDataBinding.getAttributeName().equals("value"), 
-				null, null, this.dataBindingProcessor);
-			WidgetCreatorContext ctx = new WidgetCreatorContext();
-			ctx.setWidgetId(nativeDataBinding.getElementId());
-			if (binding != null)
-			{
-				ctx.registerObjectDataBinding(binding);
-			}
-			else
-			{
-				ExpressionDataBinding expressionBinding = getExpressionDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName,
-					nativeDataBinding.getAttributeName(), null, null,
-					this.dataBindingProcessor, null, String.class.getCanonicalName());
-				if (expressionBinding != null)
-				{
-					ctx.registerExpressionDataBinding(expressionBinding);
-				}
-			}
-			dataBindingProcessor.processBindings(printer, ctx);
-		}
-    }
-
 	private void generateDataProvidersCreationBlock(SourcePrinter printer)
     {
 	    Iterator<DataProvider> dataProviders = view.iterateDataProviders();
@@ -1277,6 +1236,46 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("protected native "+org.cruxframework.crux.core.client.collection.Map.class.getCanonicalName()+"<String> initializeLazyDependencies()/*-{");
     	printer.println("return "+view.getLazyDependencies().toString()+";");
     	printer.println("}-*/;");
+    }
+
+	private void generateNativeDataBindingsBlock(SourcePrinter printer)
+    {
+	    Iterator<NativeDataBinding> nativeDataBindings = view.iterateNativeDataBindings();
+	    Set<String> nativeWrappers = new HashSet<String>();
+		while(nativeDataBindings.hasNext())
+		{
+			NativeDataBinding nativeDataBinding = nativeDataBindings.next();
+			String nativeWrapper = createVariableName("nativeWrapper");
+			String nativeWrapperClassName = NativeWrapper.class.getCanonicalName();
+			if (!nativeWrappers.contains(nativeDataBinding.getElementId()))
+			{
+				printer.println(nativeWrapperClassName + " " + nativeWrapper + "= this."+viewPanelVariable+".wrapNative(" + 
+								EscapeUtils.quote(nativeDataBinding.getElementId()) + ");");
+				
+				getScreenWidgetConsumer().consume(printer, nativeDataBinding.getElementId(), nativeWrapper, null, null);
+				nativeWrappers.add(nativeDataBinding.getElementId());
+			}
+			PropertyBindInfo binding = getObjectDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName, 
+										nativeDataBinding.getAttributeName(), !nativeDataBinding.getAttributeName().equals("value"), 
+				null, null, this.dataBindingProcessor);
+			WidgetCreatorContext ctx = new WidgetCreatorContext();
+			ctx.setWidgetId(nativeDataBinding.getElementId());
+			if (binding != null)
+			{
+				ctx.registerObjectDataBinding(binding);
+			}
+			else
+			{
+				ExpressionDataBinding expressionBinding = getExpressionDataBinding(nativeDataBinding.getBinding(), nativeWrapperClassName,
+					nativeDataBinding.getAttributeName(), null, null,
+					this.dataBindingProcessor, null, String.class.getCanonicalName());
+				if (expressionBinding != null)
+				{
+					ctx.registerExpressionDataBinding(expressionBinding);
+				}
+			}
+			dataBindingProcessor.processBindings(printer, ctx);
+		}
     }
 
 	/**
@@ -1731,6 +1730,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	public interface DataBindingProcessor
 	{
 		String getDataObjectAlias(String dataObject);
+		String getNativeUiObjectExpression(String elementId);
 		void processBindings(SourcePrinter out, WidgetCreatorContext context);
 	}
 
