@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.rebind.screen;
 
+import org.cruxframework.crux.core.utils.RegexpPatterns;
+
 /**
  * 
  * @author Thiago da Rosa de Bustamante
@@ -25,12 +27,23 @@ public class EventFactory
 	{
 		if (evtId != null && evtId.trim().length() > 0 && evt != null && evt.trim().length() > 0)
 		{
-			int dotPos = evt.indexOf('.');
-			if (dotPos > 0 && dotPos < evt.length()-1)
+			if (RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(evt.trim()).matches())
 			{
+				evt = evt.substring(1, evt.length()-1);
+				int dotPos = evt.indexOf('.');
 				String evtHandler = evt.substring(0, dotPos);
 				final String method = evt.substring(dotPos+1);				
 				return new Event(evtId, evtHandler, method);
+			}
+			else //old syntax. deprecated.
+			{
+				int dotPos = evt.indexOf('.');
+				if (dotPos > 0 && dotPos < evt.length()-1)
+				{
+					String evtHandler = evt.substring(0, dotPos);
+					final String method = evt.substring(dotPos+1);				
+					return new Event(evtId, evtHandler, method);
+				}
 			}
 		}
 		return null;
