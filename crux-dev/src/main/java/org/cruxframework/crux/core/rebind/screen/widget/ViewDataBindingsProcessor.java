@@ -38,29 +38,29 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 	private ViewFactoryCreator viewFactory;
 
 	public ViewDataBindingsProcessor(ViewFactoryCreator viewFactory)
-    {
+	{
 		this.viewFactory = viewFactory;
-    }
-	
-	@Override
-    public String getDataObjectAlias(String dataObject)
-    {
-	    return dataObject;
-    }
-	
-	@Override
-    public String getNativeUiObjectExpression(String elementId)
-    {
-	    return DOMUtils.class.getCanonicalName() + ".getElementById({0}," + EscapeUtils.quote(elementId) + ")";
-    }
+	}
 
 	@Override
-    public void processBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
+	public String getDataObjectAlias(String dataObject)
+	{
+		return dataObject;
+	}
+
+	@Override
+	public String getNativeUiObjectExpression(String elementId)
+	{
+		return DOMUtils.class.getCanonicalName() + ".getElementById({0}," + EscapeUtils.quote(elementId) + ")";
+	}
+
+	@Override
+	public void processBindings(SourcePrinter out, WidgetCreatorContext context)
+	{
 		processDataObjectBindings(out, context);
 		processDataExpressionBindings(out, context);
-    }
-	
+	}
+
 	/**
 	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
 	 * @param dataObjectAlias
@@ -79,9 +79,9 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 	 * @param dataObjectBinderVariables 
 	 */
 	protected void processDataExpressionBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
+	{
 		Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
-		
+
 		try
 		{
 			while (expressionBindings.hasNext())
@@ -90,7 +90,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 
 				String expressionBinder = ViewFactoryCreator.createVariableName("expressionBinder");
 				out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
-						+ "new " + ExpressionBinder.class.getCanonicalName() + "<"+expressionBinding.getWidgetClassName()+">(){");
+					+ "new " + ExpressionBinder.class.getCanonicalName() + "<"+expressionBinding.getWidgetClassName()+">(){");
 
 				for (String converterDeclaration: expressionBinding.getConverterDeclarations())
 				{
@@ -111,7 +111,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 					String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
 
 					out.println(dataObjectBinder + ".addExpressionBinder(" + EscapeUtils.quote(context.getWidgetId()) 
-							+ ", " + expressionBinder + ");");
+						+ ", " + expressionBinder + ");");
 				}
 			}
 		}
@@ -119,7 +119,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 		{
 			throw new CruxGeneratorException("Error processing data binding expression.", e);
 		}
-    }
+	}
 
 	/**
 	 * Process any dataObject binding on this widget
@@ -128,53 +128,59 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 	 * @return 
 	 */
 	protected void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
+	{
 		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
-		
+
 		while (dataObjects.hasNext())
 		{
 			String dataObjectAlias = dataObjects.next();
 			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
-			
+
 			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
 			String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
 			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
-			
+
 			while (propertyBindings.hasNext())
 			{
-				PropertyBindInfo bind = propertyBindings.next(); 
-				out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
+				try{
+					PropertyBindInfo bind = propertyBindings.next(); 
+					out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
 						", new " + PropertyBinder.class.getCanonicalName() + "<" + dataObjectClassName + ", "+ bind.getWidgetClassName() +">(){");
-				String converterDeclaration = bind.getConverterDeclaration();
-				if (converterDeclaration != null)
-				{
-					out.println(converterDeclaration);
-				}
+					String converterDeclaration = bind.getConverterDeclaration();
+					if (converterDeclaration != null)
+					{
+						out.println(converterDeclaration);
+					}
 
-				out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getWriteExpression("dataObject"));
-				out.println("}");
-				
-				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getReadExpression("dataObject"));
-				out.println("}");
-				
-				if (!StringUtils.isEmpty(bind.getUiObjectExpression()))
-				{
-					out.println("public "+Element.class.getCanonicalName()+" getUiElement(){");
-					
-					if (bind.isNativeElement())
-					{
-						out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ";");
-					}
-					else
-					{
-						out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ".getElement();");
-					}
+					out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
+					out.println(bind.getWriteExpression("dataObject"));
 					out.println("}");
+
+					out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
+					out.println(bind.getReadExpression("dataObject"));
+					out.println("}");
+
+					if (!StringUtils.isEmpty(bind.getUiObjectExpression()))
+					{
+						out.println("public "+Element.class.getCanonicalName()+" getUiElement(){");
+
+						if (bind.isNativeElement())
+						{
+							out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ";");
+						}
+						else
+						{
+							out.println("return " + bind.getUIObjectVar(PropertyBindInfo.WIDGET_VAR_REF) + ".getElement();");
+						}
+						out.println("}");
+					}
+					out.println("}, "+bind.isBoundToAttribute()+");");
 				}
-				out.println("}, "+bind.isBoundToAttribute()+");");
+				catch(NoSuchFieldException e)
+				{
+					throw new CruxGeneratorException("Error processing data binding expression.", e);
+				}
 			}
 		}
-    }
+	}
 }

@@ -47,11 +47,11 @@ public class ExpressionDataBinding
 	private StringBuilder expression = new StringBuilder();
 	private JType expressionType;
 	private String getUiObjectExpression;
+	private String setterMethod;
 	private JClassType uiObjectType;
 	private String widgetClassName;
 	private String widgetPropertyPath;
 	private JClassType widgetType;
-	private String setterMethod;
 
 	public ExpressionDataBinding(RebindContext context, JClassType widgetType, String widgetPropertyPath, 
 								 JClassType uiObjectType, String getUiObjectExpression, String setterMethod)
@@ -211,25 +211,55 @@ public class ExpressionDataBinding
 		return expressionType;
 	}
 	
+	public String getUiObjectClassName()
+	{
+		return uiObjectType.getParameterizedQualifiedSourceName();
+	}
+	
+	public String getUiObjectExpression()
+	{
+		return getUiObjectExpression;
+	}
+
+	public String getUIObjectVar(String widgetVar)
+	{
+		if (!hasUiObjectExpression())
+		{
+			return widgetVar;
+		}
+		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
+		return uiObjectVar;
+	}
+
 	public String getWidgetClassName()
 	{
 		return widgetClassName;
 	}
-
+	
 	public String getWriteExpression(String contextVariable) throws NoSuchFieldException
 	{
-		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
+		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null, null);
 	}
 
-	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionItemVar) 
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, 
+				  String collectionItemVar, String uiObjectVariable) 
 		throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 
 		
 		String uiObjectVar = getUIObjectVar(widgetVar);
-		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
-		writeExpression.append(uiObjectType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+
+		boolean hasUiObjectVariable = !StringUtils.isEmpty(uiObjectVariable);
+		boolean createAuxiliaryVariable = hasUiObjectExpression() && !hasUiObjectVariable;
+
+		uiObjectVariable = createAuxiliaryVariable?ViewFactoryCreator.createVariableName("uiObjectVariable"):
+								(hasUiObjectVariable?uiObjectVariable:uiObjectVar);
+		if (createAuxiliaryVariable)
+		{
+			writeExpression.append(getUiObjectClassName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		}
+		
 		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
 		if (!StringUtils.isEmpty(setterMethod))
 		{
@@ -238,8 +268,8 @@ public class ExpressionDataBinding
 		}
         else
         {
-	        boolean nativeWrapper = uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName()) ||
-	        						uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
+	        boolean nativeWrapper = getUiObjectClassName().equals(NativeWrapper.class.getCanonicalName()) ||
+	        						getUiObjectClassName().equals(Element.class.getCanonicalName());
 	        if (nativeWrapper)
 	        {
 				String propertySetter = DataBindingNativeTypeResolver.resolveTypeForProperty(widgetPropertyPath).getSetter();
@@ -273,6 +303,11 @@ public class ExpressionDataBinding
 		return writeExpression.toString();
 	}
 	
+	public boolean hasUiObjectExpression()
+    {
+	    return !StringUtils.isEmpty(getUiObjectExpression);
+    }
+	
 	public Iterator<String> iterateDataObjects()
 	{
 		return dataObjects.iterator();
@@ -296,7 +331,7 @@ public class ExpressionDataBinding
 	    }
 		appendConverterDeclaration(expressionPart);
     }
-	
+
 	private void addLogicalBindingForFilledOperation(ExpressionPart expressionPart, String readExpression)
     {
 		JType expressionType = expressionPart.getType();
@@ -316,7 +351,7 @@ public class ExpressionDataBinding
 		}
 		appendConverterDeclaration(expressionPart);
     }
-	
+
 	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart, String readExpression)
     {
 		JType expressionType = expressionPart.getType();
@@ -369,16 +404,6 @@ public class ExpressionDataBinding
 			convertersDeclarations.add(converterDeclaration);
 		}
     }
-
-	private String getUIObjectVar(String widgetVar)
-	{
-		if (StringUtils.isEmpty(getUiObjectExpression))
-		{
-			return widgetVar;
-		}
-		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
-		return uiObjectVar;
-	}
-
+	
 	public static enum LogicalOperation{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}
 }

@@ -15,8 +15,10 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.cruxframework.crux.core.client.utils.DOMUtils;
@@ -43,25 +45,26 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 	private Set<String> converterDeclarations = new HashSet<String>();
 	private String itemVar;
 	private String collectionDataObjectVariable;
-	
+
 	public HasDataProviderDataBindingProcessor(String bindingContextVariable, String collectionObjectReference, 
-												String collectionDataObject, 
-												String itemVar)
-    {
+		String collectionDataObject, 
+		String itemVar)
+	{
 		this.collectionDataObjectVariable = ViewFactoryCreator.createVariableName("value");
 		this.bindingContextVariable = bindingContextVariable;
 		this.collectionObjectReference = collectionObjectReference;
 		this.collectionDataObject = collectionDataObject;
 		this.itemVar = itemVar;
-    }
-	
+	}
+
 	@Override
-    public void processBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
-		processDataObjectBindings(out, context);
-		processBindingExpressions(out, context);
-    }
-	
+	public void processBindings(SourcePrinter out, WidgetCreatorContext context)
+	{
+		Map<String, String> uiObjectExpressions = new HashMap<String, String>();
+		processDataObjectBindings(out, context, uiObjectExpressions);
+		processBindingExpressions(out, context, uiObjectExpressions);
+	}
+
 	public String getCollectionObjectReference()
 	{
 		return collectionObjectReference;
@@ -73,18 +76,31 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 		result.addAll(converterDeclarations);
 		return result;
 	}
-	
-	private void processBindingExpressions(SourcePrinter out, WidgetCreatorContext context)
-    {
-	    Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
-		
+
+	private void processBindingExpressions(SourcePrinter out, WidgetCreatorContext context, Map<String, String> uiObjectExpressions)
+	{
+		Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
+
 		try
 		{
 			while (expressionBindings.hasNext())
 			{
 				ExpressionDataBinding expressionBinding = expressionBindings.next();
+
+				String uiObjectVariable = null;
+				if (expressionBinding.hasUiObjectExpression())
+				{
+					uiObjectVariable = uiObjectExpressions.get(expressionBinding.getUiObjectExpression());
+					if (uiObjectVariable == null)
+					{
+						uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+						out.println(expressionBinding.getUiObjectClassName() + " " + uiObjectVariable + " = " + 
+											expressionBinding.getUIObjectVar(context.getWidget()) + ";");
+						uiObjectExpressions.put(expressionBinding.getUiObjectExpression(), uiObjectVariable);
+					}
+				}
 				out.println(expressionBinding.getWriteExpression(bindingContextVariable, context.getWidget(), 
-							collectionObjectReference, itemVar));
+					collectionObjectReference, itemVar, uiObjectVariable));
 				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
 			}
 		}
@@ -92,22 +108,22 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 		{
 			throw new CruxGeneratorException("Error processing data binding expression.", e);
 		}
-    }
+	}
 
-	private void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context)
-    {
+	private void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context, Map<String, String> uiObjectExpressions)
+	{
 		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
-		
+
 		while (dataObjects.hasNext())
 		{
 			String dataObjectAlias = dataObjects.next();
 			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
 			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
-			
+
 			while (propertyBindings.hasNext())
 			{
 				PropertyBindInfo bind = propertyBindings.next(); 
-				
+
 				if (bind.getConverterClassName() != null && bind.getConverterClassName().length() > 0 && 
 					!converterClasses.contains(bind.getConverterClassName()))
 				{
@@ -118,41 +134,59 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 						converterDeclarations.add(converterDeclaration);
 					}
 				}
-
-				out.println(bind.getWriteExpression(bindingContextVariable, context.getWidget(),
-					collectionObjectReference, itemVar));
+				try 
+				{
+					String uiObjectVariable = null;
+					if (bind.hasUiObjectExpression())
+					{
+						uiObjectVariable = uiObjectExpressions.get(bind.getUiObjectExpression());
+						if (uiObjectVariable == null)
+						{
+							uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+							out.println(bind.getUiObjectClassName() + " " + uiObjectVariable + " = " + bind.getUIObjectVar(context.getWidget()) + ";");
+							uiObjectExpressions.put(bind.getUiObjectExpression(), uiObjectVariable);
+						}
+					}
+					
+					out.println(bind.getWriteExpression(bindingContextVariable, context.getWidget(),
+						collectionObjectReference, itemVar, uiObjectVariable));
+				}
+				catch(NoSuchFieldException e)
+				{
+					throw new CruxGeneratorException("Error processing data binding expression.", e);
+				}
 			}
 		}
-    }
+	}
 
 	@Override
-    public String getDataObjectAlias(String dataObject)
-    {
+	public String getDataObjectAlias(String dataObject)
+	{
 		if (dataObject != null && dataObject.equals(itemVar))
 		{
 			return collectionDataObject;
 		}
-	    return dataObject;
-    }
-	
+		return dataObject;
+	}
+
 	public String getCollectionDataObjectVariable()
 	{
 		return collectionDataObjectVariable;
 	}
-	
+
 	public String getCollectionItemVariable()
 	{
 		return itemVar;
 	}
-	
+
 	public String getBindingContextVariable()
 	{
 		return bindingContextVariable;
 	}
 
 	@Override
-    public String getNativeUiObjectExpression(String elementId)
-    {
-	    return DOMUtils.class.getCanonicalName() + ".searchElementById({0}.getElement()," + EscapeUtils.quote(elementId) + ")";
-    }
+	public String getNativeUiObjectExpression(String elementId)
+	{
+		return DOMUtils.class.getCanonicalName() + ".searchElementById({0}.getElement()," + EscapeUtils.quote(elementId) + ")";
+	}
 }
