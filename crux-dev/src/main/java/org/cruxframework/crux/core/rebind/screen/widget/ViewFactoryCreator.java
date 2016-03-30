@@ -76,6 +76,7 @@ import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.json.JSONObject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.ext.CachedGeneratorResult;
@@ -83,6 +84,7 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -416,12 +418,30 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	while (dataObjects.hasNext())
     	{
     		String dataObjectAlias = dataObjects.next();
-        	String dataObjectClass = context.getDataObjects().getDataObject(dataObjectAlias);
-    		printer.println("addDataObjectBinder(new "+DataObjectBinder.class.getCanonicalName()+"<"+dataObjectClass+">(this){");
-    		printer.println("protected "+dataObjectClass+" createDataObject() {");
-        	printer.println("return GWT.create("+dataObjectClass+".class);");
-    		printer.println("}");
-    		printer.println("}, "+EscapeUtils.quote(dataObjectAlias)+");");
+    		String dataObjectClass = context.getDataObjects().getDataObject(dataObjectAlias);
+    		try
+    		{
+    			JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().getType(dataObjectClass);
+    			JClassType javaScriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+
+    			printer.println("addDataObjectBinder(new "+DataObjectBinder.class.getCanonicalName()+"<"+dataObjectClass+">(this){");
+    			printer.println("protected "+dataObjectClass+" createDataObject() {");
+    			if (dataObjectType.isAssignableTo(javaScriptObjectType))
+    			{
+    				printer.println(dataObjectClass+" obj = "+dataObjectClass+".createObject().cast();");
+    				printer.println("return obj;");
+    			}
+    			else
+    			{
+    				printer.println("return GWT.create("+dataObjectClass+".class);");
+    			}
+    			printer.println("}");
+    			printer.println("}, "+EscapeUtils.quote(dataObjectAlias)+");");
+    		}
+    		catch (NotFoundException e)
+    		{
+    			throw new CruxGeneratorException("DataObject class ["+dataObjectClass+"] not found", e);
+    		}
     	}
 		printer.println("}");
     }
