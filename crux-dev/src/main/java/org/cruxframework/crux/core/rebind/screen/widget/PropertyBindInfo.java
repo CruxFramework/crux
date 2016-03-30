@@ -32,67 +32,31 @@ public class PropertyBindInfo extends BindInfo
 {
 	protected static String WIDGET_VAR_REF = "widget";
 	
-	protected String widgetClassName;
-	protected String writeExpression;
-	protected String readExpression;
 	protected boolean boundToAttribute;
 	protected String getUiObjectExpression;
-	protected boolean nativeWrapperOrElement = false;
 	protected boolean nativeElement = false;
+	protected boolean nativeWrapperOrElement = false;
+	protected JClassType uiObjectType;
+	protected String widgetClassName;
+	protected String widgetPropertyPath;
 
 	public PropertyBindInfo(String widgetPropertyPath, boolean boundToAttribute, String bindPath, JClassType widgetType, JClassType dataObjectType, 
 							JClassType converterType, String dataObject, String converterParams,
-							JClassType uiObjectType, String getUiObjectExpression) throws NoSuchFieldException
+							JClassType uiObjectType, String getUiObjectExpression)  throws NoSuchFieldException
     {
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
+		this.widgetPropertyPath = widgetPropertyPath;
 		this.boundToAttribute = boundToAttribute;
-		uiObjectType = uiObjectType==null?widgetType:uiObjectType;
-		this.nativeElement = uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
-		this.nativeWrapperOrElement = nativeElement || uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName());
+		this.uiObjectType = uiObjectType==null?widgetType:uiObjectType;
+		this.nativeElement = this.uiObjectType.getQualifiedSourceName().equals(Element.class.getCanonicalName());
+		this.nativeWrapperOrElement = nativeElement || this.uiObjectType.getQualifiedSourceName().equals(NativeWrapper.class.getCanonicalName());
 		this.getUiObjectExpression = getUiObjectExpression;
 		if (widgetType != null)
 		{
 			this.widgetClassName = widgetType.getQualifiedSourceName();
-			if (!StringUtils.isEmpty(widgetPropertyPath))
-			{
-				this.readExpression = getReadExpression(widgetPropertyPath, uiObjectType, dataObjectType, bindPath);
-				this.writeExpression = getWriteExpression(widgetPropertyPath, uiObjectType);
-			}
 		}
     }
 
-	public String getWriteExpression(String dataObjectVariable)
-	{
-		return getExpression(writeExpression, dataObjectVariable);
-	}
-
-	public String getWriteExpression(String contextVariable, String widgetVar, String collectionObjectReference, String collectionItemVar)
-	{
-		
-        boolean isCollectionObjectReference = collectionObjectReference != null && collectionItemVar.equals(dataObject);
-        String dataObjectVariable = isCollectionObjectReference?collectionObjectReference:ViewFactoryCreator.createVariableName(dataObject);
-        boolean isReferenced = !isCollectionObjectReference;
-        String result;
-        if (isReferenced)
-        {
-        	result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
-        		+ "if (" + dataObjectVariable + " != null){\n"
-        		+ getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable)
-        		+ "\n}";
-        }
-        else
-        {
-        	result = getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable);
-        }
-		
-		return result;
-	}
-
-	public String getReadExpression(String dataObjectVariable)
-	{
-		return getExpression(readExpression, dataObjectVariable);
-	}
-	
 	public String getDataObjectReadExpression(String contextVariable, String resultVariable, String collectionDataObjectRef, String collectionItemVar)
 	{
         boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionItemVar.equals(dataObject);
@@ -100,7 +64,7 @@ public class PropertyBindInfo extends BindInfo
         String result = "";
         if (!isCollectionObjectReference)
     	{
-    		result = dataObjectClassName+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n";
+    		result = getDataObjectClassName()+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n";
     	}
         result += "if (" + dataObjectVariable + " != null){\n"
 			+ resultVariable + " = " + getExpression(getDataObjectReadExpression(), dataObjectVariable) + ";"
@@ -115,42 +79,107 @@ public class PropertyBindInfo extends BindInfo
 	{
 		return getExpression(getDataObjectWriteExpression(newValue), dataObjectVar);
 	}
+
+	public String getReadExpression(String dataObjectVariable) throws NoSuchFieldException
+	{
+		String readExpression = buildReadExpression(widgetPropertyPath);
+		return getExpression(readExpression, dataObjectVariable);
+	}
 	
+	public String getUiObjectClassName()
+	{
+		return uiObjectType.getParameterizedQualifiedSourceName();
+	}
+
+	public String getUiObjectExpression()
+	{
+		return getUiObjectExpression;
+	}
+	
+	/**
+	 * Retrieve the reference to the variable that represents the target ui element from this binding
+	 * @param widgetVar
+	 * @return
+	 */
+	public String getUIObjectVar(String widgetVar)
+	{
+		if (!hasUiObjectExpression())
+		{
+			return widgetVar;
+		}
+		
+		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
+		return uiObjectVar;
+	}
+
 	public String getWidgetClassName()
 	{
 		return widgetClassName;
 	}
+	
+	public String getWriteExpression(String dataObjectVariable) throws NoSuchFieldException
+	{
+		String writeExpression = buildWriteExpression(widgetPropertyPath, null);
+		return getExpression(writeExpression, dataObjectVariable);
+	}
+	
+	public String getWriteExpression(String contextVariable, String widgetVar, 
+						String collectionObjectReference, String collectionItemVar, 
+						String uiObjectVariable) throws NoSuchFieldException
+	{
+		String writeExpression = buildWriteExpression(widgetPropertyPath, uiObjectVariable);
+		
+        boolean isCollectionObjectReference = collectionObjectReference != null && collectionItemVar.equals(dataObject);
+        String dataObjectVariable = isCollectionObjectReference?collectionObjectReference:ViewFactoryCreator.createVariableName(dataObject);
+        boolean isReferenced = !isCollectionObjectReference;
+        String result;
+        if (isReferenced)
+        {
+        	result = getDataObjectClassName()+" "+dataObjectVariable+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n"
+        		+ "if (" + dataObjectVariable + " != null){\n"
+        		+ getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable)
+        		+ "\n}";
+        }
+        else
+        {
+        	result = getExpression(writeExpression.replace(WIDGET_VAR_REF, widgetVar), dataObjectVariable);
+        }
+		
+		return result;
+	}
+	
+	/**
+	 * If this databinding reference an ui element that is not the widget bound to this binding, 
+	 * then an expression is used to retrieve the target ui element
+	 * @return
+	 */
+	public boolean hasUiObjectExpression()
+    {
+	    return !StringUtils.isEmpty(getUiObjectExpression);
+    }
 
 	public boolean isBoundToAttribute()
     {
 	    return boundToAttribute;
     }
 	
-	public String getUiObjectExpression()
-	{
-		return getUiObjectExpression;
-	}
-	
 	public boolean isNativeElement()
 	{
 		return nativeElement;
 	}
-	
+
 	/**
 	 * Expression to read FROM widget and write TO dataObject
 	 * @param widgetPropertyPath
-	 * @param widgetType
-	 * @param dataObjectType
-	 * @param bindPath
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	protected String getReadExpression(String widgetPropertyPath, JClassType widgetType, JClassType dataObjectType, 
-				String bindPath) throws NoSuchFieldException
+	protected String buildReadExpression(String widgetPropertyPath) throws NoSuchFieldException
     {
 		StringBuilder getExpression = new StringBuilder();
 		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF);
-		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
+		boolean createAuxiliaryVariable = hasUiObjectExpression();
+		String uiObjectVariable = createAuxiliaryVariable?ViewFactoryCreator.createVariableName("uiObjectVariable"):uiObjectVar;
 		
 		if (nativeWrapperOrElement)
 		{
@@ -159,29 +188,41 @@ public class PropertyBindInfo extends BindInfo
 		}
 		else
 		{
-			JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, uiObjectVariable, false, true, true);
+			JClassUtils.buildGetValueExpression(getExpression, uiObjectType, widgetPropertyPath, uiObjectVariable, false, true, true);
 		}
-		return widgetType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n"
-			    +"if ("+uiObjectVariable + " != null){\n" 
-				+getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString())
-				+"\n}";
+		StringBuilder result = new StringBuilder();
+		if (createAuxiliaryVariable)
+		{
+			result.append(getUiObjectClassName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		}
+		result.append("if ("+uiObjectVariable + " != null){\n"); 
+		result.append(buildDataObjectWriteExpression(getExpression.toString()));
+		result.append("\n}");
+		return result.toString();
     }
-
+	
 	/**
 	 * Expression to read FROM dataObject and write TO widget
 	 * 
 	 * @param widgetPropertyPath
-	 * @param widgetType
+	 * @param uiObjectVariable
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType) throws NoSuchFieldException
+	protected String buildWriteExpression(String widgetPropertyPath, String uiObjectVariable) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 		
 		String uiObjectVar = getUIObjectVar(WIDGET_VAR_REF);
-		String uiObjectVariable = ViewFactoryCreator.createVariableName("uiObjectVariable");
-		writeExpression.append(widgetType.getParameterizedQualifiedSourceName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		boolean hasUiObjectVariable = !StringUtils.isEmpty(uiObjectVariable);
+		boolean createAuxiliaryVariable = hasUiObjectExpression() && !hasUiObjectVariable;
+
+		uiObjectVariable = createAuxiliaryVariable?ViewFactoryCreator.createVariableName("uiObjectVariable"):
+								(hasUiObjectVariable?uiObjectVariable:uiObjectVar);
+		if (createAuxiliaryVariable)
+		{
+			writeExpression.append(getUiObjectClassName() + " " + uiObjectVariable + " = " + uiObjectVar + ";\n");
+		}
 		writeExpression.append("if ("+uiObjectVariable + " != null)\n");
 		if (nativeWrapperOrElement)
 		{
@@ -191,20 +232,9 @@ public class PropertyBindInfo extends BindInfo
 		}
 		else
 		{
-			JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, 
+			JClassUtils.buildSetValueExpression(writeExpression, uiObjectType, widgetPropertyPath, 
 				uiObjectVariable, getDataObjectReadExpression());
 		}
 		return writeExpression.toString();
-	}
-	
-	protected String getUIObjectVar(String widgetVar)
-	{
-		if (StringUtils.isEmpty(getUiObjectExpression))
-		{
-			return widgetVar;
-		}
-		
-		String uiObjectVar = MessageFormat.format(getUiObjectExpression, widgetVar);
-		return uiObjectVar;
 	}
 }

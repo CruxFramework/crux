@@ -38,20 +38,22 @@ class BindInfo
 	protected JClassType converterType;
 	protected String converterVariableName;
 	protected String dataObject;
-	protected String dataObjectClassName;
+	protected JClassType dataObjectType;
 	protected String dataObjectReadExpression;
 	protected String dataObjectWriteExpression;
+	protected String bindPath;
 
 	public BindInfo(String bindPath, JClassType dataObjectType, 
 			JClassType converterType, String dataObject, String converterParams) throws NoSuchFieldException
 	{
+		this.bindPath = bindPath;
 		this.converterType = converterType;
-		this.dataObjectClassName = dataObjectType.getQualifiedSourceName();
+		this.dataObjectType = dataObjectType;
 		this.dataObject = dataObject;
 		this.converterClassName = converterType != null ? converterType.getParameterizedQualifiedSourceName() : null;
 		this.converterParams = converterParams == null ? "": converterParams;
-		this.dataObjectReadExpression = getDataObjectReadExpression(dataObjectType, bindPath);
-		this.dataObjectWriteExpression = getDataObjectWriteExpression(dataObjectType, bindPath, DATA_OBJECT_WRITE_VALUE_REF);
+		this.dataObjectReadExpression = buildDataObjectReadExpression();
+		this.dataObjectWriteExpression = buildDataObjectWriteExpression(DATA_OBJECT_WRITE_VALUE_REF);
 	}
 	
 	public String getConverterClassName()
@@ -89,7 +91,7 @@ class BindInfo
 	
 	public String getDataObjectClassName()
     {
-	    return dataObjectClassName;
+	    return dataObjectType.getParameterizedQualifiedSourceName();
     }
 
 	public String getExpression(String expression, String dataObjectVariable)
@@ -112,7 +114,7 @@ class BindInfo
 		return dataObjectWriteExpression.replace(DATA_OBJECT_WRITE_VALUE_REF, newValue);
 	}
 	
-	protected String getDataObjectReadExpression(JClassType dataObjectType, String bindPath) throws NoSuchFieldException
+	protected String buildDataObjectReadExpression() throws NoSuchFieldException
 	{
 		StringBuilder getExpression = new StringBuilder();
 
@@ -136,7 +138,7 @@ class BindInfo
 		return "("+getExpression.toString()+")";
 	}
 	
-	protected String getDataObjectWriteExpression(JClassType dataObjectType, String bindPath, String value) throws NoSuchFieldException
+	protected String buildDataObjectWriteExpression(String value) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
 		
