@@ -50,6 +50,7 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.DataProvider;
 import org.json.JSONObject;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -194,6 +195,8 @@ class DataProviderHelper
 	
 	private void createDataHandlerObject(SourcePrinter out, JClassType dataObjectType)
 	{
+		JClassType javascriptObjectType = viewFactory.getContext().getGeneratorContext().
+						getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
 		String dataObject = dataObjectType.getParameterizedQualifiedSourceName();
 		String copierSimpleClassName = dataObjectType.getSimpleSourceName() + "_Data_Copier";
 		String packageName = dataObjectType.getPackage().getName();
@@ -208,7 +211,15 @@ class DataProviderHelper
 		out.println("new " + org.cruxframework.crux.core.client.dataprovider.DataProvider.EditionDataHandler.class.getCanonicalName() + "<" + dataObject + ">(){");
 		out.println(copierClassName + " copier = GWT.create(" + copierClassName + ".class);");
 		out.println("public " + dataObject + " clone(" + dataObject + " value){");
-		out.println(dataObject + " result = new " + dataObject + "();");
+		
+		if (dataObjectType.isAssignableTo(javascriptObjectType))
+		{
+			out.println(dataObject + " result = " + dataObject + ".createObject().cast();");
+		}
+		else
+		{
+			out.println(dataObject + " result = new " + dataObject + "();");
+		}
 		out.println("copier.copyTo(value, result);");
 		out.println("return result;");
 		out.println("}");
