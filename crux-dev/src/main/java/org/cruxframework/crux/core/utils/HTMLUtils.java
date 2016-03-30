@@ -352,8 +352,8 @@ public class HTMLUtils
 			&& RegexpPatterns.REGEXP_CRUX_CONTROLLER_CALL.matcher(attributeValue.trim()).matches())
 		{
 			String controllerCall = attributeValue.trim();
-			controllerCall = controllerCall.substring(1, controllerCall.length()-1);
-			String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerCall.replace('.', '_');
+			String controllerNativeCall = controllerCall.substring(1, controllerCall.length()-1);
+			String methodCall = viewId.replaceAll("\\W", "_") + "_" + device + "_" + controllerNativeCall.replace('.', '_');
 			out.write(" "+attributeName+"=\""+methodCall+"(event)"+"\"");
 			
 			if (nativeControllers.length() > 1)
