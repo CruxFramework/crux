@@ -48,6 +48,8 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.ResettableEventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.user.client.History;
@@ -73,22 +75,17 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	private static FastMap<ClientBundle> resources = new FastMap<ClientBundle>();
 	
 	protected boolean active = false;
-	protected FastList<ViewActivateHandler> attachHandlers = null;
 	protected DataBindingHandler dataBindingHandler = null;
+	
 	protected Map<DataProvider<?>> dataProviders = null;
-	protected FastList<ViewDeactivateHandler> detachHandlers = null;
+	protected ResettableEventBus eventBus = new ResettableEventBus(new SimpleEventBus());
 	protected String height;
-	protected FastList<ValueChangeHandler<String>> historyHandlers = null;
 	protected Map<String> lazyWidgets = null;
 	protected boolean loaded = false;
-	protected FastList<ViewLoadHandler> loadHandlers = null;
-	protected FastList<OrientationChangeHandler> orientationHandlers = null;
-	protected FastList<ResizeHandler> resizeHandlers = null;
-	protected FastList<ViewUnloadHandler> unloadHandlers = null;
 	protected FastMap<Widget> widgets = null;
+	@Deprecated
+	protected FastList<ValueChangeHandler<String>> historyHandlers = new FastList<>();
 	protected String width;
-	protected FastList<CloseHandler<Window>> windowCloseHandlers = null;
-	protected FastList<ClosingHandler> windowClosingHandlers = null;
 	private String id;
 	private String prefix;
 	
@@ -125,94 +122,28 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		dataProviders.put(id, dataProvider);
 	}
 	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
 	@Override
 	public HandlerRegistration addResizeHandler(final ResizeHandler handler)
 	{
-		resizeHandlers.add(handler);
-		if (isActive())
-		{	
-			ViewHandlers.ensureViewContainerResizeHandler(getContainer());
-		}
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = resizeHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					resizeHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(ResizeEvent.getType(), handler);
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public HandlerRegistration addViewActivateHandler(final ViewActivateHandler handler)
 	{
-		attachHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = attachHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					attachHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(ViewActivateEvent.getType(), handler);
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public HandlerRegistration addViewDeactivateHandler(final ViewDeactivateHandler handler)
 	{
-		detachHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = detachHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					detachHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(ViewDeactivateEvent.getType(), handler);
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public HandlerRegistration addViewLoadHandler(final ViewLoadHandler handler)
 	{
-		loadHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = loadHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					loadHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(ViewLoadEvent.getType(), handler);
 	}
 	
 	/**
@@ -221,19 +152,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	@Override
 	public HandlerRegistration addViewUnloadHandler(final ViewUnloadHandler handler)
 	{
-		unloadHandlers.add(handler);
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = unloadHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					unloadHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(ViewUnloadEvent.getType(), handler);
 	}
 	
 	/**
@@ -264,23 +183,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	@Override
 	public HandlerRegistration addWindowCloseHandler(final CloseHandler<Window> handler)
 	{
-		windowCloseHandlers.add(handler);
-		if (isActive())
-		{	
-			ViewHandlers.ensureViewContainerCloseHandler(getContainer());
-		}
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = windowCloseHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					windowCloseHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(CloseEvent.getType(), handler);
 	}
 
 	/**
@@ -290,23 +193,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 */
 	public HandlerRegistration addWindowClosingHandler(final ClosingHandler handler)
 	{
-		windowClosingHandlers.add(handler);
-		if (isActive())
-		{	
-			ViewHandlers.ensureViewContainerClosingHandler(getContainer());
-		}
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = windowClosingHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					windowClosingHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(new ClosingEvent().getAssociatedType(), handler);
 	}
 
 	/**
@@ -314,12 +201,15 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * @param handler
 	 * @return
 	 */
+	@Deprecated
+	@Legacy
 	public HandlerRegistration addWindowHistoryChangedHandler(final ValueChangeHandler<String> handler)
 	{
+		
 		historyHandlers.add(handler);
 		if (isActive())
 		{	
-			ViewHandlers.ensureViewContainerHistoryHandler(getContainer());
+			ViewHandlers.ensureViewContainerHistoryHandler();
 		}
 		return new HandlerRegistration()
 		{
@@ -344,24 +234,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			return null;
 		}
 		
-		orientationHandlers.add(handler);
-		if (isActive())
-		{	
-			ViewHandlers.ensureViewContainerOrientationChangeHandler(getContainer());
-		}
-		
-		return new HandlerRegistration()
-		{
-			@Override
-			public void removeHandler()
-			{
-				int index = orientationHandlers.indexOf(handler);
-				if (index >= 0)
-				{
-					orientationHandlers.remove(index);
-				}
-			}
-		};
+		return eventBus.addHandler(OrientationChangeEvent.getType(), handler);
 	}
 	/**
 	 * Verify if the view contains an widget associated with the given identifier
@@ -798,16 +671,8 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     {
 		lazyWidgets = null;
 	    widgets = null;
-	    windowClosingHandlers = null;
-	    windowCloseHandlers = null;
-	    resizeHandlers = null;
-	    attachHandlers = null;
-	    detachHandlers = null;
-	    historyHandlers = null;
-	    orientationHandlers = null;
-	    loadHandlers = null;
-	    unloadHandlers = null;
 	    dataBindingHandler = null;
+	    eventBus.removeHandlers();
     }
 
 	/**
@@ -816,6 +681,25 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 */
 	protected abstract void createWidgets() throws InterfaceConfigException;
 	
+	protected void fireActivateEvent(final ViewActivateEvent event)
+    {
+	    Scheduler.get().scheduleDeferred(new ScheduledCommand()
+	    {
+	    	@Override
+	    	public void execute()
+	    	{
+	    		eventBus.fireEvent(event);
+	    		viewContainer.fireActivateEvent(event);
+	    	}
+	    });
+    }
+
+	protected void fireDeactivateEvent(ViewDeactivateEvent event)
+    {
+		eventBus.fireEvent(event);
+		viewContainer.fireDeactivateEvent(event);
+    }
+
 	/**
 	 * 
 	 * @param event
@@ -828,96 +712,63 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	        handler.onValueChange(event);
         }
 	}
-
+	
 	/**
 	 * Fires the load event
 	 */
-	protected ViewLoadEvent fireLoadEvent(Object paramenter)
+	protected void fireLoadEvent(ViewLoadEvent event)
 	{
-		ViewLoadEvent event = new ViewLoadEvent(this, paramenter);
-		for (int i = 0; i < loadHandlers.size(); i++)
-        {
-			ViewLoadHandler handler = loadHandlers.get(i);
-			handler.onLoad(event);
-        }
-		return event;
-	}
-
-	/**
-	 * 
-	 */
-	protected void fireOrientationEvent()
-	{
-		for (int i = 0; i < orientationHandlers.size(); i++)
-        {
-			OrientationChangeHandler handler = orientationHandlers.get(i);
-	        handler.onOrientationChange();
-        }
+		eventBus.fireEvent(event);
 	}
 	
+	protected void fireOrientationEvent(String orientation)
+	{
+		OrientationChangeEvent.fire(this, orientation);
+	}
+	
+	protected void fireOrientationChangeEvent(OrientationChangeEvent event)
+	{
+		eventBus.fireEvent(event);
+	}
+
 	/**
 	 * 
 	 * @param event
 	 */
 	protected void fireResizeEvent(ResizeEvent event)
 	{
-		for (int i = 0; i < resizeHandlers.size(); i++)
-        {
-			ResizeHandler handler = resizeHandlers.get(i);
-	        handler.onResize(event);
-        }
+		eventBus.fireEvent(event);
 	}
 	
 	/**
 	 * Fires the unload event.
-	 * @return true if the view can be unloaded. If any event handler cancel the event, 
-	 * the view is not unloaded
+	 * @param event
 	 */
-	protected boolean fireUnloadEvent()
+	protected void fireUnloadEvent(ViewUnloadEvent event)
 	{
-		boolean canceled = false;
-		ViewUnloadEvent event = new ViewUnloadEvent(this);
-		for (int i = 0; i < unloadHandlers.size(); i++)
-        {
-			ViewUnloadHandler handler = unloadHandlers.get(i);
-			handler.onUnload(event);
-			if (event.isCanceled())
-			{
-				canceled = true;
-			}
-        }
-		
+		eventBus.fireEvent(event);
 		viewContainer.fireUnloadEvent(event);
-		return !canceled;
 	}
-	
+
 	/**
 	 * 
 	 * @param event
 	 */
 	protected void fireWindowCloseEvent(CloseEvent<Window> event)
 	{
-		for (int i = 0; i < windowCloseHandlers.size(); i++)
-        {
-			CloseHandler<Window> handler = windowCloseHandlers.get(i);
-	        handler.onClose(event);
-        }
+		eventBus.fireEvent(event);
 	}
-	
+
 	/**
 	 * 
 	 * @param event
 	 */
 	protected void fireWindowClosingEvent(ClosingEvent event)
 	{
-		fireUnloadEvent();
-		for (int i = 0; i < windowClosingHandlers.size(); i++)
-		{
-			ClosingHandler handler = windowClosingHandlers.get(i);
-			handler.onWindowClosing(event);
-		}
+		ViewUnloadEvent.fire(this);
+		eventBus.fireEvent(event);
 	}
-
+	
 	/**
 	 * Retrieve the view prefix. It is used to isolate all elements from this view on DOM
 	 * @return
@@ -926,58 +777,12 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		return prefix;
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean hasHistoryHandlers()
-	{
-		return historyHandlers.size() > 0;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean hasOrientationChangeHandlers()
-	{
-		return orientationHandlers.size() > 0;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean hasResizeHandlers()
-	{
-		return resizeHandlers.size() > 0;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean hasWindowCloseHandlers()
-	{
-		return windowCloseHandlers.size() > 0;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected boolean hasWindowClosingHandlers()
-	{
-		return windowClosingHandlers.size() > 0;
-	}
-	
 	
 	/**
 	 *  Called when the view are loaded to initialize the lazy dependencies map
 	 */
 	protected abstract Map<String> initializeLazyDependencies();
-	
+
 	/**
 	 * Call the {@code LazyPanel.ensureWidget()} method of the given lazyPanel.
 	 * This method can trigger other dependent lazyPanel initialization, through 
@@ -1020,14 +825,14 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Called by the {@link ViewContainer} when the view is added to the container. 
 	 * This method creates the view widgets
 	 * @param parameter parameter sent to view and accessible through ViewLoadEvent event
 	 * @return true if loaded
 	 */
-	protected boolean load(Object paramenter)
+	protected boolean load(Object parameter)
 	{
 		if (!loaded)
 		{
@@ -1036,24 +841,15 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			registerLoadedView();
 			createWidgets();
 			loaded = true;
-			fireLoadEvent(paramenter);
+			ViewLoadEvent.fire(this, parameter);
 		}
 		return loaded;
 	}
-
+	
 	protected void prepareViewObjects()
 	{
 	    lazyWidgets = initializeLazyDependencies();
 	    widgets = new FastMap<Widget>();
-	    resizeHandlers = new FastList<ResizeHandler>();
-	    windowCloseHandlers = new FastList<CloseHandler<Window>>();
-	    windowClosingHandlers = new FastList<ClosingHandler>();
-	    attachHandlers = new FastList<ViewActivateHandler>();
-	    detachHandlers = new FastList<ViewDeactivateHandler>();
-	    historyHandlers = new FastList<ValueChangeHandler<String>>();
-	    orientationHandlers = new FastList<OrientationChangeHandler>();
-	    loadHandlers = new FastList<ViewLoadHandler>();
-	    unloadHandlers = new FastList<ViewUnloadHandler>();
 	    dataBindingHandler = new DataBindingHandler(this);
 	}
 
@@ -1061,7 +857,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * Called when the view are loaded to initialize the dataObjectBinders
 	 */
 	protected abstract void registerDataObjectBinders();
-	
+
 	/**
 	 * Register current view into the loaded views list
 	 */
@@ -1085,23 +881,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		if (!active)
 		{
 			active = true;
-			final ViewActivateEvent event = new ViewActivateEvent(this, this.getId(), parameter);
-			Scheduler.get().scheduleDeferred(new ScheduledCommand()
-			{
-				//IE Bug. It does not found attachHandlers reference when running on a setTimeout function
-				private FastList<ViewActivateHandler> handlers = attachHandlers;
-				
-				@Override
-				public void execute()
-				{
-					for (int i = 0; i < handlers.size(); i++)
-					{
-						ViewActivateHandler handler = handlers.get(i);
-						handler.onActivate(event);
-					}
-					viewContainer.fireActivateEvent(event);
-				}
-			});
+			ViewActivateEvent.fire(this, parameter);;
 		}
 	}
 
@@ -1124,13 +904,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		{
 			if (!skipEvent)
 			{
-				ViewDeactivateEvent event = new ViewDeactivateEvent(this, this.getId());
-				for (int i = 0; i < detachHandlers.size(); i++)
-				{
-					ViewDeactivateHandler handler = detachHandlers.get(i);
-					handler.onDeactivate(event);
-				}
-				viewContainer.fireDeactivateEvent(event);
+				ViewDeactivateEvent event = ViewDeactivateEvent.fire(this);
 				active = event.isCanceled();
 				return !active;
 			}
@@ -1151,7 +925,8 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		boolean unloaded = true;
 		if (this.loaded)
 		{
-			unloaded = fireUnloadEvent();
+			ViewUnloadEvent event = ViewUnloadEvent.fire(this);
+			unloaded = !event.isCanceled();
 			if (unloaded)
 			{
 				unregisterLoadedView();

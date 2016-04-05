@@ -15,13 +15,15 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import com.google.gwt.event.shared.EventHandler;
+
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface ViewDeactivateHandler 
+public interface ViewDeactivateHandler extends EventHandler
 {
 	void onDeactivate(ViewDeactivateEvent event);
 }

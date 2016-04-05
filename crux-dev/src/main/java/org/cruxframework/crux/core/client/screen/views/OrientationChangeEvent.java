@@ -16,72 +16,55 @@
 package org.cruxframework.crux.core.client.screen.views;
 
 
-import org.cruxframework.crux.core.client.Legacy;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewLoadEvent extends GwtEvent<ViewLoadHandler>
+public class OrientationChangeEvent extends GwtEvent<OrientationChangeHandler>
 {
-	private static Type<ViewLoadHandler> TYPE;
+	private static Type<OrientationChangeHandler> TYPE;
 
-	private final Object parameter;
-	private View view;
+	private String orientation;
 
 	/**
 	 * Constructor
 	 */
-	protected ViewLoadEvent(View view, Object parameter)
+	protected OrientationChangeEvent(String orientation)
 	{
-		this.view = view;
-		this.parameter = parameter;
+		this.orientation = orientation;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public final Type<ViewLoadHandler> getAssociatedType()
+	public final Type<OrientationChangeHandler> getAssociatedType()
 	{
 		return (Type) TYPE;
 	}
 
-	@SuppressWarnings("unchecked")
-    public <T> T getParameterObject()
+	public String getOrientation()
 	{
-		return (T) parameter;
-	}
-
-	public View getView()
-	{
-		return view;
+		return orientation;
 	}
 
 	@Override
-	protected void dispatch(ViewLoadHandler handler)
+	protected void dispatch(OrientationChangeHandler handler)
 	{
-		handler.onLoad(this);
+		handler.onOrientationChange(this);
 	}
 
-	public static void fire(View source, Object parameter)
+	public static void fire(View source, String orientation)
 	{
 		if (TYPE != null)
 		{
-			ViewLoadEvent event = new ViewLoadEvent(source, parameter);
-			source.fireLoadEvent(event);
+			OrientationChangeEvent event = new OrientationChangeEvent(orientation);
+			source.fireOrientationChangeEvent(event);
 		}
 	}
 
-	public static Type<ViewLoadHandler> getType()
+	public static Type<OrientationChangeHandler> getType()
 	{
-		return TYPE != null ? TYPE : (TYPE = new Type<ViewLoadHandler>());
+		return TYPE != null ? TYPE : (TYPE = new Type<OrientationChangeHandler>());
 	}
-	
-	@Deprecated
-	@Legacy
-	public String getSenderId()
-    {
-	    return view.getId();
-    }
 }

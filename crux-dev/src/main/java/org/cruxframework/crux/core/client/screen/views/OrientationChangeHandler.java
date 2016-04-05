@@ -15,11 +15,13 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import com.google.gwt.event.shared.EventHandler;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface OrientationChangeHandler
+public interface OrientationChangeHandler extends EventHandler
 {
-	void onOrientationChange();
+	void onOrientationChange(OrientationChangeEvent event);
 }

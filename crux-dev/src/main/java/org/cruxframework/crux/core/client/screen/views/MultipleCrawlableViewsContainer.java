@@ -102,81 +102,6 @@ public abstract class MultipleCrawlableViewsContainer extends CrawlableViewConta
 	}
 	
 	@Override
-    protected boolean hasResizeHandlers()
-    {
-		FastList<String> keys = activeViews.keys();
-		for (int i = 0; i < keys.size(); i++)
-		{
-			if (activeViews.get(keys.get(i)).hasResizeHandlers())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-    }
-	
-	@Override
-	protected boolean hasWindowCloseHandlers()
-	{
-		FastList<String> keys = activeViews.keys();
-		for (int i = 0; i < keys.size(); i++)
-		{
-			if (activeViews.get(keys.get(i)).hasWindowCloseHandlers())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	@Override
-	protected boolean hasWindowClosingHandlers()
-	{
-		FastList<String> keys = activeViews.keys();
-		for (int i = 0; i < keys.size(); i++)
-		{
-			if (activeViews.get(keys.get(i)).hasWindowClosingHandlers())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	@Override
-	protected boolean hasOrientationChangeHandlers()
-	{
-		FastList<String> keys = activeViews.keys();
-		for (int i = 0; i < keys.size(); i++)
-		{
-			if (activeViews.get(keys.get(i)).hasOrientationChangeHandlers())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	@Override
-	protected boolean hasHistoryHandlers()
-	{
-		FastList<String> keys = activeViews.keys();
-		for (int i = 0; i < keys.size(); i++)
-		{
-			if (activeViews.get(keys.get(i)).hasHistoryHandlers())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	@Override
     protected void notifyViewsAboutWindowResize(ResizeEvent event)
     {
 		FastList<String> keys = activeViews.keys();
@@ -207,12 +132,12 @@ public abstract class MultipleCrawlableViewsContainer extends CrawlableViewConta
     }
 	
 	@Override
-	protected void notifyViewsAboutOrientationChange()
+	protected void notifyViewsAboutOrientationChange(String orientation)
 	{
 		FastList<String> keys = activeViews.keys();
 		for (int i = 0; i < keys.size(); i++)
 		{
-			activeViews.get(keys.get(i)).fireOrientationEvent();
+			activeViews.get(keys.get(i)).fireOrientationEvent(orientation);
 		}
 	}
 	
