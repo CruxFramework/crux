@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import com.google.gwt.event.shared.EventHandler;
+
 
 
 /**
@@ -22,7 +24,7 @@ package org.cruxframework.crux.core.client.screen.views;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface ViewLoadHandler 
+public interface ViewLoadHandler extends EventHandler
 {
 	void onLoad(ViewLoadEvent event);
 }

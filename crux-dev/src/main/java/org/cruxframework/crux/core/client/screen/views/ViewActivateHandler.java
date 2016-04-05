@@ -15,13 +15,15 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import com.google.gwt.event.shared.EventHandler;
+
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface ViewActivateHandler 
+public interface ViewActivateHandler extends EventHandler
 {
 	void onActivate(ViewActivateEvent event);
 }

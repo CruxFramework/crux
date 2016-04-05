@@ -15,24 +15,68 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
-import org.cruxframework.crux.core.client.event.CruxEvent;
+import org.cruxframework.crux.core.client.Legacy;
 
-public class ViewActivateEvent extends CruxEvent<View> 
+import com.google.gwt.event.shared.GwtEvent;
+
+public class ViewActivateEvent extends GwtEvent<ViewActivateHandler>
 {
+	private static Type<ViewActivateHandler> TYPE;
+	
 	private final Object parameter;
+	private View view;
 
 	/**
 	 * 
 	 */
-	protected ViewActivateEvent(View view, String viewId, Object parameter)
+	protected ViewActivateEvent(View view, Object parameter)
 	{
-		super(view, viewId);
+		this.view = view;
 		this.parameter = parameter;
 	}
-	
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public final Type<ViewActivateHandler> getAssociatedType()
+	{
+		return (Type) TYPE;
+	}
+
 	@SuppressWarnings("unchecked")
     public <T> T getParameterObject()
 	{
 		return (T) parameter;
 	}
+
+	public View getView()
+	{
+		return view;
+	}
+
+	@Override
+	protected void dispatch(ViewActivateHandler handler)
+	{
+		handler.onActivate(this);
+	}
+
+	public static void fire(View source, Object parameter)
+	{
+		if (TYPE != null)
+		{
+			ViewActivateEvent event = new ViewActivateEvent(source, parameter);
+			source.fireActivateEvent(event);
+		}
+	}
+
+	public static Type<ViewActivateHandler> getType()
+	{
+		return TYPE != null ? TYPE : (TYPE = new Type<ViewActivateHandler>());
+	}
+
+	@Deprecated
+	@Legacy
+	public String getSenderId()
+    {
+	    return view.getId();
+    }
 }

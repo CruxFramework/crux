@@ -47,15 +47,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class ViewContainer extends Composite implements HasViewActivateHandlers, HasViewLoadHandlers
 {
-	private static ViewFactory viewFactory;	
-	private final boolean clearPanelsForDeactivatedViews;
+	protected static Logger logger = Logger.getLogger(ViewContainer.class.getName());	
+	private static ViewFactory viewFactory;
 	
-	protected static Logger logger = Logger.getLogger(ViewContainer.class.getName());
-	protected Map<View> views = CollectionFactory.createMap();
-	protected Array<ViewLoadHandler> loadHandlers = null;
-	protected Array<ViewUnloadHandler> unloadHandlers = null;
 	protected Array<ViewActivateHandler> attachHandlers = null;
 	protected Array<ViewDeactivateHandler> detachHandlers = null;
+	protected Array<ViewLoadHandler> loadHandlers = null;
+	protected Array<ViewUnloadHandler> unloadHandlers = null;
+	protected Map<View> views = CollectionFactory.createMap();
+	private final boolean clearPanelsForDeactivatedViews;
 
 	private final Widget mainWidget;
 
@@ -100,6 +100,55 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 		ViewHandlers.initializeWindowContainers();
     }
 	
+	/**
+	 * Loads a new view into the container
+	 * @param view View to be added
+	 * @return
+	 */
+	public boolean add(View view)
+	{
+		return add(view, false, null);
+	}
+	
+	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @return
+	 */
+	public boolean addLazy(String viewName)
+	{
+		return addLazy(viewName, viewName);
+	}
+
+	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param viewName Name of the View to be added
+	 * @param viewId ID of the View to be added
+	 * @return
+	 */
+	public boolean addLazy(String viewName, String viewId)
+	{
+		createView(viewName, viewId, new CreateCallback()
+		{
+			@Override
+            public void onViewCreated(View view)
+            {
+				addView(view, true, null);
+            }
+		});
+		return true;
+	}
+
+	/**
+	 * Adds a new view into the container, but does not load the view. 
+	 * @param view View to be added
+	 * @return
+	 */
+	public boolean addLazy(View view)
+	{
+		return addView(view, true, null);
+	}
+	
 	@Override
 	public HandlerRegistration addViewActivateHandler(final ViewActivateHandler handler)
 	{
@@ -121,7 +170,7 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 			}
 		};
 	}
-	
+
 	@Override
 	public HandlerRegistration addViewDeactivateHandler(final ViewDeactivateHandler handler)
 	{
@@ -143,7 +192,7 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 			}
 		};
 	}
-
+	
 	@Override
 	public HandlerRegistration addViewLoadHandler(final ViewLoadHandler handler)
 	{
@@ -165,7 +214,8 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 			}
 		};
 	}
-
+	
+	
 	@Override
 	public HandlerRegistration addViewUnloadHandler(final ViewUnloadHandler handler)
 	{
@@ -189,128 +239,6 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	}
 	
 	/**
-	 * Fires the unload event.
-	 * @return true if the view can be unloaded. If any event handler cancel the event, 
-	 * the view is not unloaded
-	 */
-	protected boolean fireUnloadEvent(ViewUnloadEvent event)
-	{
-		boolean canceled = false;
-		if (unloadHandlers != null)
-		{
-			for (int i = 0; i < unloadHandlers.size(); i++)
-			{
-				ViewUnloadHandler handler = unloadHandlers.get(i);
-				handler.onUnload(event);
-				if (event.isCanceled())
-				{
-					canceled = true;
-				}
-			}
-		}
-		
-		return !canceled;
-	}
-
-	/**
-	 * Fire the activate event
-	 * @param event
-	 */
-	protected void fireActivateEvent(ViewActivateEvent event)
-    {
-		if (attachHandlers != null)
-		{
-			for (int i = 0; i < attachHandlers.size(); i++)
-			{
-				ViewActivateHandler handler = attachHandlers.get(i);
-				handler.onActivate(event);
-			}
-		}
-    }
-	
-	/**
-	 * Fire the deactivate event
-	 * @param event
-	 */
-	protected void fireDeactivateEvent(ViewDeactivateEvent event)
-    {
-		if (detachHandlers != null)
-		{
-			for (int i = 0; i < detachHandlers.size(); i++)
-			{
-				ViewDeactivateHandler handler = detachHandlers.get(i);
-				handler.onDeactivate(event);
-			}
-		}
-    }
-	
-	
-	/**
-	 * Fires the load event
-	 */
-	protected void fireLoadEvent(View view, Object parameter)
-	{
-		if (loadHandlers != null)
-		{
-			ViewLoadEvent event = new ViewLoadEvent(view, parameter); 
-			for (int i = 0; i < loadHandlers.size(); i++)
-			{
-				ViewLoadHandler handler = loadHandlers.get(i);
-				handler.onLoad(event);
-			}
-		}
-	}
-	
-	/**
-	 * Loads a new view into the container
-	 * @param view View to be added
-	 * @return
-	 */
-	public boolean add(View view)
-	{
-		return add(view, false, null);
-	}
-
-	/**
-	 * Adds a new view into the container, but does not load the view. 
-	 * @param viewName Name of the View to be added
-	 * @return
-	 */
-	public boolean addLazy(String viewName)
-	{
-		return addLazy(viewName, viewName);
-	}
-	
-	/**
-	 * Adds a new view into the container, but does not load the view. 
-	 * @param viewName Name of the View to be added
-	 * @param viewId ID of the View to be added
-	 * @return
-	 */
-	public boolean addLazy(String viewName, String viewId)
-	{
-		createView(viewName, viewId, new CreateCallback()
-		{
-			@Override
-            public void onViewCreated(View view)
-            {
-				addView(view, true, null);
-            }
-		});
-		return true;
-	}
-	
-	/**
-	 * Adds a new view into the container, but does not load the view. 
-	 * @param view View to be added
-	 * @return
-	 */
-	public boolean addLazy(View view)
-	{
-		return addView(view, true, null);
-	}
-	
-	/**
 	 * Remove all view inside this container
 	 */
 	public void clear()
@@ -320,6 +248,43 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 		{
 			remove(getView(keys.get(i)), true);
 		}
+	}
+
+	/**
+	 * Retrieve the view associated to viewId
+	 * @param viewId View identifier
+	 * @return The view
+	 */
+    public View getView(String viewId)
+    {
+		if (viewId == null)
+		{
+			return null;
+		}
+	    return views.get(viewId);
+    }
+	
+	/**
+	 * Loads a view into the current container
+	 * 
+	 * @param viewName View name
+	 * @param render If true also render the view
+	 */
+	public void loadView(String viewName, final boolean render)
+	{
+		loadView(viewName, viewName, render);
+	}
+	
+	/**
+	 * Loads a view into the current container
+	 * 
+	 * @param viewName View name
+	 * @param viewId View identifier
+	 * @param render If true also render the view
+	 */
+	public void loadView(final String viewName, final String viewId, final boolean render)
+	{
+		loadView(viewName, viewId, render, null);
 	}
 	
 	/**
@@ -348,8 +313,8 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 		}
 		return false;
 	}
-
-    /**
+	
+	/**
      * Render the requested view into the container.
      * @param viewName View name
      */
@@ -358,7 +323,7 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 		showView(viewName, viewName);
 	}
 
-	/**
+    /**
      * Render the requested view into the container.
      * @param viewId View identifier
 	 * @param viewId View name
@@ -367,80 +332,272 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	{
 		showView(viewName, viewId, null);
 	}
+
+	/**
+	 * This method must be called by subclasses when any of your views is rendered.
+	 * @param view
+	 * @param containerPanel
+	 * @param parameter
+	 */
+	protected boolean activate(final View view, Panel containerPanel, final Object parameter)
+	{
+		if (!view.isLoaded())
+		{
+			if (view.load(parameter))
+			{
+				fireLoadEvent(view, parameter);
+			}
+		}
+		view.render(containerPanel, new RenderCallback()
+		{
+			@Override
+			public void onRendered()
+			{
+				view.setActive(parameter);
+			}
+		});
+		return true;
+	}
 	
 	/**
-	 * Retrieve the view associated to viewId
-	 * @param viewId View identifier
-	 * @return The view
+	 * Loads a new view into the container
+	 * @param view View to be added
+	 * @param render If true, call the render method
+	 * @param parameter A parameter passed that will be bound to the view load and activate events
+	 * @return true if the view is loaded into the container
 	 */
-    public View getView(String viewId)
+    protected boolean add(View view, boolean render, Object parameter)
     {
-		if (viewId == null)
+		if (addView(view, false, parameter))
 		{
-			return null;
+			if (render)
+			{
+				renderView(view, parameter);
+			}
+			return true;
 		}
-	    return views.get(viewId);
+		return false;
     }
 
 	/**
-	 * Retrieve the views factory associated with this screen.
+     * 
+     * @param view
+     * @param lazy
+     * @return
+     */
+    protected boolean addView(View view, boolean lazy, Object parameter)
+    {
+	    assert (view != null):"Can not add a null view to the ViewContainer";
+		assert (getView(view.getId()) == null):"This container already contains a view with the given identifier ["+view.getId()+"].";
+		if (doAdd(view, lazy, parameter))
+		{
+			adoptView(view);
+			return true;
+		}
+		return false;
+    }
+
+	/**
+     * 
+     * @param view
+     */
+    protected void adoptView(View view)
+    {
+    	view.setContainer(this);
+    }
+
+	/**
+	 * This method must be called by subclasses when the container is attached to DOM
+	 */
+	protected void bindToDOM()
+	{
+		ViewHandlers.bindToDOM(this);
+	}
+
+	/**
+	 * This method must be called by subclasses when any of your views currently rendered is removed from view.
+	 * 
+	 * @param view
+	 * @param containerPanel
+	 * @param skipEvent
+	 * @return True if view is deactivated
+	 */
+	protected boolean deactivate(View view, Panel containerPanel, boolean skipEvent)
+    {
+		if (view.isActive())
+		{
+			if (view.setDeactivated(skipEvent))
+			{
+				if (this.clearPanelsForDeactivatedViews)
+				{
+					containerPanel.clear();
+				}
+				return true;
+			}
+			return false;
+		}
+		return true;
+    }
+
+	/**
+	 * Loads a new view into the container
+	 * @param view View to be added
 	 * @return
 	 */
-	public static ViewFactory getViewFactory()
-	{
-		if (viewFactory == null)
+    protected boolean doAdd(View view, boolean lazy, Object parameter)
+    {
+		if (!views.containsKey(view.getId()))
 		{
-			viewFactory = (ViewFactory) GWT.create(ViewFactory.class);
+			views.put(view.getId(), view);
+			if (!lazy)
+			{
+				if (view.load(parameter))
+				{
+					fireLoadEvent(view, parameter);
+				}
+			}
+			return true;
 		}
-		return viewFactory;
+		return false;
+    }
+	
+	/**
+     * 
+     * @param view
+     * @param skipEvent
+     * @return
+     */
+	protected boolean doRemove(View view, boolean skipEvent)
+    {
+	    if (views.containsKey(view.getId()))
+		{
+			Panel containerPanel = getContainerPanel(view);
+			boolean active = view.isActive();
+			if (deactivate(view, containerPanel, skipEvent) && (skipEvent || view.unload()))
+			{
+				views.remove(view.getId());
+				if (active)
+				{
+					containerPanel.clear();
+				}
+				return true;
+			}
+		}
+		return false;
+    }
+	
+	/**
+	 * Fire the activate event
+	 * @param event
+	 */
+	protected void fireActivateEvent(ViewActivateEvent event)
+    {
+		if (attachHandlers != null)
+		{
+			for (int i = 0; i < attachHandlers.size(); i++)
+			{
+				ViewActivateHandler handler = attachHandlers.get(i);
+				handler.onActivate(event);
+			}
+		}
+    }
+
+    /**
+	 * Fire the deactivate event
+	 * @param event
+	 */
+	protected void fireDeactivateEvent(ViewDeactivateEvent event)
+    {
+		if (detachHandlers != null)
+		{
+			for (int i = 0; i < detachHandlers.size(); i++)
+			{
+				ViewDeactivateHandler handler = detachHandlers.get(i);
+				handler.onDeactivate(event);
+			}
+		}
+    }
+    
+	/**
+	 * Fires the load event
+	 */
+	protected void fireLoadEvent(View view, Object parameter)
+	{
+		if (loadHandlers != null)
+		{
+			ViewLoadEvent event = new ViewLoadEvent(view, parameter); 
+			for (int i = 0; i < loadHandlers.size(); i++)
+			{
+				ViewLoadHandler handler = loadHandlers.get(i);
+				handler.onLoad(event);
+			}
+		}
 	}
 
 	/**
-	 * Creates the view referenced by the given name
-	 * 
-	 * @param viewName View name
-	 * @param callback Called when the view creation is completed.
+	 * Fires the unload event.
+	 * @return true if the view can be unloaded. If any event handler cancel the event, 
+	 * the view is not unloaded
 	 */
-	public static void createView(String viewName, CreateCallback callback)
+	protected boolean fireUnloadEvent(ViewUnloadEvent event)
 	{
-		getViewFactory().createView(viewName, callback);
-	}
-
-	/**
-	 * Creates the view referenced by the given name and associate a custom identifier with the view created
-	 * 
-	 * @param viewName View name
-	 * @param viewId View identifier
-	 * @param callback Called when the view creation is completed.
-	 */
-	public static void createView(String viewName, String viewId, CreateCallback callback)
-	{
-		getViewFactory().createView(viewName, viewId, callback);
-	}
-
-	/**
-	 * Loads a view into the current container
-	 * 
-	 * @param viewName View name
-	 * @param render If true also render the view
-	 */
-	public void loadView(String viewName, final boolean render)
-	{
-		loadView(viewName, viewName, render);
-	}
-
-	/**
-	 * Loads a view into the current container
-	 * 
-	 * @param viewName View name
-	 * @param viewId View identifier
-	 * @param render If true also render the view
-	 */
-	public void loadView(final String viewName, final String viewId, final boolean render)
-	{
-		loadView(viewName, viewId, render, null);
+		boolean canceled = false;
+		if (unloadHandlers != null)
+		{
+			for (int i = 0; i < unloadHandlers.size(); i++)
+			{
+				ViewUnloadHandler handler = unloadHandlers.get(i);
+				handler.onUnload(event);
+				if (event.isCanceled())
+				{
+					canceled = true;
+				}
+			}
+		}
+		
+		return !canceled;
 	}
 	
+	protected abstract Panel getContainerPanel(View view);
+	
+	@SuppressWarnings("unchecked")
+    protected <T extends Widget> T getMainWidget()
+	{
+		return (T) mainWidget;
+	}
+	
+	protected abstract void handleViewTitle(String title, Panel containerPanel, String viewId);
+
+	protected void loadAndRenderView(final String viewName, final String viewId, final Object parameter)
+	{
+		try
+		{
+			if (LogConfiguration.loggingIsEnabled())
+			{
+				logger.info(Crux.getMessages().viewContainerCreatingView(viewId));
+			}
+			createView(viewName, viewId, new CreateCallback()
+			{
+				@Override
+				public void onViewCreated(View view)
+				{
+					if (addView(view, false, parameter))
+					{
+						renderView(view, parameter);
+					}
+					else
+					{
+						Crux.getErrorHandler().handleError(Crux.getMessages().viewContainerErrorCreatingView(viewId));
+					}
+				}
+			});
+		}
+		catch (InterfaceConfigException e)
+		{
+			Crux.getErrorHandler().handleError(Crux.getMessages().viewContainerErrorCreatingView(viewId), e);
+		}
+	}
+
 	/**
 	 * Loads a view into the current container
 	 * 
@@ -475,27 +632,33 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 		}
 	}
 	
+	protected abstract void notifyViewsAboutHistoryChange(ValueChangeEvent<String> event);
+    protected abstract void notifyViewsAboutOrientationChange(String orientation);
+    protected abstract void notifyViewsAboutWindowClose(CloseEvent<Window> event);	
+    protected abstract void notifyViewsAboutWindowClosing(ClosingEvent event);
+    protected abstract void notifyViewsAboutWindowResize(ResizeEvent event);
+    
 	/**
-	 * Loads a new view into the container
-	 * @param view View to be added
-	 * @param render If true, call the render method
-	 * @param parameter A parameter passed that will be bound to the view load and activate events
-	 * @return true if the view is loaded into the container
-	 */
-    protected boolean add(View view, boolean render, Object parameter)
+     * Render the view into the container
+     * @param view
+     * @param parameter
+     */
+    protected boolean renderView(View view, Object parameter)
     {
-		if (addView(view, false, parameter))
+		assert (view!= null && views.containsKey(view.getId())):"Can not render the view["+view.getId()+"]. It was not added to the container";
+		Panel containerPanel = getContainerPanel(view);
+		boolean activated = activate(view, containerPanel, parameter);
+		if (activated)
 		{
-			if (render)
+			String title = view.getTitle();
+			if (!StringUtils.isEmpty(title))
 			{
-				renderView(view, parameter);
+				handleViewTitle(title, containerPanel, view.getId());
 			}
-			return true;
 		}
-		return false;
+		return activated;
     }
-
-    /**
+	/**
      * Render the requested view into the container.
 	 * @param viewName View name
 	 * @param parameter to be passed to activate event
@@ -504,7 +667,6 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	{
     	showView(viewName, viewName, parameter);
 	}
-    
 	/**
      * Render the requested view into the container.
      * @param viewId View identifier
@@ -527,51 +689,6 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 			loadAndRenderView(viewName, viewId, parameter);
 		}
 	}
-
-	protected void loadAndRenderView(final String viewName, final String viewId, final Object parameter)
-	{
-		try
-		{
-			if (LogConfiguration.loggingIsEnabled())
-			{
-				logger.info(Crux.getMessages().viewContainerCreatingView(viewId));
-			}
-			createView(viewName, viewId, new CreateCallback()
-			{
-				@Override
-				public void onViewCreated(View view)
-				{
-					if (addView(view, false, parameter))
-					{
-						renderView(view, parameter);
-					}
-					else
-					{
-						Crux.getErrorHandler().handleError(Crux.getMessages().viewContainerErrorCreatingView(viewId));
-					}
-				}
-			});
-		}
-		catch (InterfaceConfigException e)
-		{
-			Crux.getErrorHandler().handleError(Crux.getMessages().viewContainerErrorCreatingView(viewId), e);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-    protected <T extends Widget> T getMainWidget()
-	{
-		return (T) mainWidget;
-	}
-	
-	/**
-	 * This method must be called by subclasses when the container is attached to DOM
-	 */
-	protected void bindToDOM()
-	{
-		ViewHandlers.bindToDOM(this);
-	}
-	
 	/**
 	 * This method must be called by subclasses when the container is detached from DOM
 	 */
@@ -579,165 +696,37 @@ public abstract class ViewContainer extends Composite implements HasViewActivate
 	{
 		ViewHandlers.unbindToDOM(this);
 	}
-
 	/**
-	 * This method must be called by subclasses when any of your views is rendered.
-	 * @param view
-	 * @param containerPanel
-	 * @param parameter
-	 */
-	protected boolean activate(final View view, Panel containerPanel, final Object parameter)
-	{
-		if (!view.isLoaded())
-		{
-			if (view.load(parameter))
-			{
-				fireLoadEvent(view, parameter);
-			}
-		}
-		view.render(containerPanel, new RenderCallback()
-		{
-			@Override
-			public void onRendered()
-			{
-				view.setActive(parameter);
-			}
-		});
-		ViewHandlers.ensureViewContainerHandlers(this);
-		return true;
-	}
-
-	/**
-	 * This method must be called by subclasses when any of your views currently rendered is removed from view.
+	 * Creates the view referenced by the given name
 	 * 
-	 * @param view
-	 * @param containerPanel
-	 * @param skipEvent
-	 * @return True if view is deactivated
+	 * @param viewName View name
+	 * @param callback Called when the view creation is completed.
 	 */
-	protected boolean deactivate(View view, Panel containerPanel, boolean skipEvent)
-    {
-		if (view.isActive())
-		{
-			if (view.setDeactivated(skipEvent))
-			{
-				if (this.clearPanelsForDeactivatedViews)
-				{
-					containerPanel.clear();
-				}
-				ViewHandlers.removeViewContainerHandlers();
-				return true;
-			}
-			return false;
-		}
-		return true;
-    }
-	
+	public static void createView(String viewName, CreateCallback callback)
+	{
+		getViewFactory().createView(viewName, callback);
+	}
 	/**
-	 * Loads a new view into the container
-	 * @param view View to be added
+	 * Creates the view referenced by the given name and associate a custom identifier with the view created
+	 * 
+	 * @param viewName View name
+	 * @param viewId View identifier
+	 * @param callback Called when the view creation is completed.
+	 */
+	public static void createView(String viewName, String viewId, CreateCallback callback)
+	{
+		getViewFactory().createView(viewName, viewId, callback);
+	}
+	/**
+	 * Retrieve the views factory associated with this screen.
 	 * @return
 	 */
-    protected boolean doAdd(View view, boolean lazy, Object parameter)
-    {
-		if (!views.containsKey(view.getId()))
+	public static ViewFactory getViewFactory()
+	{
+		if (viewFactory == null)
 		{
-			views.put(view.getId(), view);
-			if (!lazy)
-			{
-				if (view.load(parameter))
-				{
-					fireLoadEvent(view, parameter);
-				}
-			}
-			return true;
+			viewFactory = (ViewFactory) GWT.create(ViewFactory.class);
 		}
-		return false;
-    }
-
-    /**
-     * 
-     * @param view
-     * @param skipEvent
-     * @return
-     */
-	protected boolean doRemove(View view, boolean skipEvent)
-    {
-	    if (views.containsKey(view.getId()))
-		{
-			Panel containerPanel = getContainerPanel(view);
-			boolean active = view.isActive();
-			if (deactivate(view, containerPanel, skipEvent) && (skipEvent || view.unload()))
-			{
-				views.remove(view.getId());
-				if (active)
-				{
-					containerPanel.clear();
-				}
-				return true;
-			}
-		}
-		return false;
-    }
-
-    /**
-     * Render the view into the container
-     * @param view
-     * @param parameter
-     */
-    protected boolean renderView(View view, Object parameter)
-    {
-		assert (view!= null && views.containsKey(view.getId())):"Can not render the view["+view.getId()+"]. It was not added to the container";
-		Panel containerPanel = getContainerPanel(view);
-		boolean activated = activate(view, containerPanel, parameter);
-		if (activated)
-		{
-			String title = view.getTitle();
-			if (!StringUtils.isEmpty(title))
-			{
-				handleViewTitle(title, containerPanel, view.getId());
-			}
-		}
-		return activated;
-    }	
-    
-    /**
-     * 
-     * @param view
-     * @param lazy
-     * @return
-     */
-    protected boolean addView(View view, boolean lazy, Object parameter)
-    {
-	    assert (view != null):"Can not add a null view to the ViewContainer";
-		assert (getView(view.getId()) == null):"This container already contains a view with the given identifier ["+view.getId()+"].";
-		if (doAdd(view, lazy, parameter))
-		{
-			adoptView(view);
-			return true;
-		}
-		return false;
-    }
-
-    /**
-     * 
-     * @param view
-     */
-    protected void adoptView(View view)
-    {
-    	view.setContainer(this);
-    }
-    
-	protected abstract boolean hasResizeHandlers();
-	protected abstract boolean hasWindowCloseHandlers();
-	protected abstract boolean hasWindowClosingHandlers();
-	protected abstract boolean hasOrientationChangeHandlers();
-	protected abstract boolean hasHistoryHandlers();
-	protected abstract void notifyViewsAboutWindowResize(ResizeEvent event);
-	protected abstract void notifyViewsAboutWindowClose(CloseEvent<Window> event);
-	protected abstract void notifyViewsAboutWindowClosing(ClosingEvent event);
-	protected abstract void notifyViewsAboutOrientationChange();
-	protected abstract void notifyViewsAboutHistoryChange(ValueChangeEvent<String> event);
-	protected abstract Panel getContainerPanel(View view);
-	protected abstract void handleViewTitle(String title, Panel containerPanel, String viewId);
+		return viewFactory;
+	}
 }

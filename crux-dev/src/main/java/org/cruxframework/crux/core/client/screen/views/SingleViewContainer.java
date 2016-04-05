@@ -81,36 +81,6 @@ public abstract class SingleViewContainer extends ParameterizedViewContainer
 	}
 	
 	@Override
-    protected boolean hasResizeHandlers()
-    {
-	    return activeView!= null && activeView.hasResizeHandlers();
-    }
-	
-	@Override
-	protected boolean hasWindowCloseHandlers()
-	{
-	    return activeView!= null && activeView.hasWindowCloseHandlers();
-	}
-
-	@Override
-	protected boolean hasWindowClosingHandlers()
-	{
-	    return activeView!= null && activeView.hasWindowClosingHandlers();
-	}
-
-	@Override
-	protected boolean hasOrientationChangeHandlers()
-	{
-	    return activeView!= null && activeView.hasOrientationChangeHandlers();
-	}
-	
-	@Override
-	protected boolean hasHistoryHandlers()
-	{
-	    return activeView!= null && activeView.hasHistoryHandlers();
-	}
-	
-	@Override
     protected void notifyViewsAboutWindowResize(ResizeEvent event)
     {
 		if (activeView!= null)
@@ -138,11 +108,11 @@ public abstract class SingleViewContainer extends ParameterizedViewContainer
     }
 	
 	@Override
-	protected void notifyViewsAboutOrientationChange()
+	protected void notifyViewsAboutOrientationChange(String orientation)
 	{
 		if (activeView!= null)
 		{
-			activeView.fireOrientationEvent();
+			activeView.fireOrientationEvent(orientation);
 		}
 	}
 	

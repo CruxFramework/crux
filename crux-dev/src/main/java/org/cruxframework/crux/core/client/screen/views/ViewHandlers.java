@@ -72,7 +72,7 @@ public class ViewHandlers
 	protected static void bindToDOM(ViewContainer container)
 	{
 		boundContainers.add(container);
-		ensureViewContainerHandlers(container);
+		ensureViewContainerHandlers();
 	}
 	
 	/**
@@ -81,41 +81,28 @@ public class ViewHandlers
 	protected static void unbindToDOM(ViewContainer container)
 	{
 		boundContainers.remove(boundContainers.indexOf(container));
-		ViewHandlers.removeViewContainerHandlers();
 	}
 	
 	/**
 	 * 
 	 * @param viewContainer
 	 */
-	protected static void ensureViewContainerHandlers(ViewContainer viewContainer)
+	protected static void ensureViewContainerHandlers()
     {
-	    ensureViewContainerResizeHandler(viewContainer);
-	    ensureViewContainerOrientationChangeHandler(viewContainer);
-	    ensureViewContainerCloseHandler(viewContainer);
-	    ensureViewContainerClosingHandler(viewContainer);
-	    ensureViewContainerHistoryHandler(viewContainer);
-    }
-
-	/**
-	 * 
-	 */
-	protected static void removeViewContainerHandlers()
-    {
-	    removeViewContainerResizeHandler();
-	    removeViewContainerOrientationChangeHandler();
-	    removeViewContainerCloseHandler();
-	    removeViewContainerClosingHandler();
-	    removeViewContainerHistoryHandler();
+	    ensureViewContainerResizeHandler();
+	    ensureViewContainerOrientationChangeHandler();
+	    ensureViewContainerCloseHandler();
+	    ensureViewContainerClosingHandler();
+	    ensureViewContainerHistoryHandler();
     }
 
 	/**
 	 * 
 	 * @param viewContainer
 	 */
-	protected static void ensureViewContainerResizeHandler(ViewContainer viewContainer)
+	protected static void ensureViewContainerResizeHandler()
     {
-	    if (!hasWindowResizeHandler && viewContainer.hasResizeHandlers())
+	    if (!hasWindowResizeHandler)
 	    {
 	    	hasWindowResizeHandler = true;
 	    	resizeHandler = addWindowResizeHandler(new ResizeHandler()
@@ -136,9 +123,9 @@ public class ViewHandlers
 	 * 
 	 * @param viewContainer
 	 */
-	protected static void ensureViewContainerHistoryHandler(ViewContainer viewContainer)
+	protected static void ensureViewContainerHistoryHandler()
     {
-	    if (!hasHistoryHandler && viewContainer.hasHistoryHandlers())
+	    if (!hasHistoryHandler)
 	    {
 	    	prepareHistoryFrame();
 	    	hasHistoryHandler = true;
@@ -161,19 +148,19 @@ public class ViewHandlers
 	 * @param viewContainer
 	 * @return 
 	 */
-	protected static void ensureViewContainerOrientationChangeHandler(ViewContainer viewContainer)
+	protected static void ensureViewContainerOrientationChangeHandler()
     {
-	    if (!hasOrientationChangeHandler && viewContainer.hasOrientationChangeHandlers())
+	    if (!hasOrientationChangeHandler)
 	    {
 	    	hasOrientationChangeHandler = true;
-	    	orientationChangeHandler = addWindowOrientationChangeHandler(new OrientationChangeHandler()
+	    	orientationChangeHandler = addWindowOrientationChangeHandler(new OrientationChangeCallback()
 			{
 				@Override
-				public void onOrientationChange()
+				public void onOrientationChange(String orientation)
 				{
 					for (int i=0; i< boundContainers.size(); i++)
 					{
-						boundContainers.get(i).notifyViewsAboutOrientationChange();
+						boundContainers.get(i).notifyViewsAboutOrientationChange(orientation);
 					}
 				}
 			});
@@ -184,9 +171,9 @@ public class ViewHandlers
 	 * 
 	 * @param viewContainer
 	 */
-	protected static void ensureViewContainerCloseHandler(ViewContainer viewContainer)
+	protected static void ensureViewContainerCloseHandler()
     {
-	    if (!hasWindowCloseHandler && viewContainer.hasWindowCloseHandlers())
+	    if (!hasWindowCloseHandler)
 	    {
 	    	hasWindowCloseHandler = true;
 	    	closeHandler = Window.addCloseHandler(new CloseHandler<Window>()
@@ -207,9 +194,9 @@ public class ViewHandlers
 	 * 
 	 * @param viewContainer
 	 */
-	protected static void ensureViewContainerClosingHandler(ViewContainer viewContainer)
+	protected static void ensureViewContainerClosingHandler()
     {
-	    if (!hasWindowClosingHandler && viewContainer.hasWindowClosingHandlers())
+	    if (!hasWindowClosingHandler)
 	    {
 	    	hasWindowClosingHandler = true;
 	    	closingHandler = Window.addWindowClosingHandler(new ClosingHandler()
@@ -225,154 +212,14 @@ public class ViewHandlers
 			});
 	    }
     }
-
-	/**
-	 * 
-	 */
-	private static void removeViewContainerOrientationChangeHandler()
-    {
-	    if (hasOrientationChangeHandler)
-		{
-	    	boolean hasOrientationHandlers = false;
-	    	for(int i=0; i< boundContainers.size(); i++)
-	    	{
-	    		if (boundContainers.get(i).hasOrientationChangeHandlers())
-	    		{
-	    			hasOrientationHandlers = true;
-	    			break;
-	    		}
-	    	}
-	    	if (!hasOrientationHandlers)
-	    	{
-	    		if(orientationChangeHandler != null)
-	    		{
-	    			orientationChangeHandler.removeHandler();
-	    		}
-	    		orientationChangeHandler = null;
-	    		hasOrientationChangeHandler = false;
-	    	}
-		}
-    }
-
-	/**
-	 * 
-	 */
-	private static void removeViewContainerResizeHandler()
-    {
-	    if (hasWindowResizeHandler)
-		{
-	    	boolean hasResizeHandlers = false;
-	    	for(int i=0; i< boundContainers.size(); i++)
-	    	{
-	    		if (boundContainers.get(i).hasResizeHandlers())
-	    		{
-	    			hasResizeHandlers = true;
-	    			break;
-	    		}
-	    	}
-	    	if (!hasResizeHandlers)
-	    	{
-	    		if(resizeHandler != null)
-	    		{
-	    			resizeHandler.removeHandler();
-	    		}
-	    		resizeHandler = null;
-	    		hasWindowResizeHandler = false;
-	    	}
-		}
-    }
-
-	/**
-	 * 
-	 */
-	private static void removeViewContainerHistoryHandler()
-    {
-	    if (hasHistoryHandler)
-		{
-	    	boolean hasHistoryHandlers = false;
-	    	for(int i=0; i< boundContainers.size(); i++)
-	    	{
-	    		if (boundContainers.get(i).hasHistoryHandlers())
-	    		{
-	    			hasHistoryHandlers = true;
-	    			break;
-	    		}
-	    	}
-	    	if (!hasHistoryHandlers)
-	    	{
-	    		if(historyHandler != null)
-	    		{
-	    			historyHandler.removeHandler();
-	    		}
-	    		historyHandler = null;
-	    		hasHistoryHandler = false;
-	    	}
-		}
-    }
-
-	/**
-	 * 
-	 */
-	private static void removeViewContainerCloseHandler()
-    {
-	    if (hasWindowCloseHandler)
-		{
-	    	boolean hasCloseHandlers = false;
-	    	for(int i=0; i< boundContainers.size(); i++)
-	    	{
-	    		if (boundContainers.get(i).hasWindowCloseHandlers())
-	    		{
-	    			hasCloseHandlers = true;
-	    			break;
-	    		}
-	    	}
-	    	if (!hasCloseHandlers)
-	    	{
-	    		if(closeHandler != null)
-	    		{
-	    			closeHandler.removeHandler();
-	    		}
-	    		closeHandler = null;
-	    		hasWindowCloseHandler = false;
-	    	}
-		}
-    }
-
-	/**
-	 * 
-	 */
-	private static void removeViewContainerClosingHandler()
-    {
-	    if (hasWindowClosingHandler)
-		{
-	    	boolean hasClosingHandlers = false;
-	    	for(int i=0; i< boundContainers.size(); i++)
-	    	{
-	    		if (boundContainers.get(i).hasWindowClosingHandlers())
-	    		{
-	    			hasClosingHandlers = true;
-	    			break;
-	    		}
-	    	}
-	    	if (!hasClosingHandlers)
-	    	{
-	    		if(closingHandler != null)
-	    		{
-	    			closingHandler.removeHandler();
-	    		}
-	    		closingHandler = null;
-	    		hasWindowClosingHandler = false;
-	    	}
-		}
-    }
 	
 	/**
-	 * @param handler
+	 * @param callbak
 	 * @return
 	 */
-	private static HandlerRegistration addWindowOrientationChangeHandler(final OrientationChangeHandler handler) 
+	private static HandlerRegistration addWindowOrientationChangeHandler(final OrientationChangeCallback callbak) 
 	{
-		final JavaScriptObject orientationHandler = attachOrientationChangeHandler(handler);
+		final JavaScriptObject orientationHandler = attachOrientationChangeHandler(callbak);
 		
 		if(orientationHandler == null)
 		{
@@ -493,7 +340,7 @@ public class ViewHandlers
 	 * @param executor
 	 * @return
 	 */
-	private static native JavaScriptObject attachOrientationChangeHandler(OrientationChangeHandler handler)/*-{
+	private static native JavaScriptObject attachOrientationChangeHandler(OrientationChangeCallback handler)/*-{
 		if (! @org.cruxframework.crux.core.client.screen.views.View::isOrientationChangeSupported()())
 		{
 			return null;
@@ -507,7 +354,7 @@ public class ViewHandlers
 		{
 			attachEvent = "onorientationchange";
 			eventListener = "orientationchange";
-			orientationHandler = function() { handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()(); };
+			orientationHandler = function() { handler.@org.cruxframework.crux.core.client.screen.views.ViewHandlers.OrientationChangeCallback::onOrientationChange(Ljava/lang/String;)('unknow'); };
 			
 		} else if("ondeviceorientation" in $wnd || "deviceorientation" in $wnd)
 		{
@@ -523,7 +370,7 @@ public class ViewHandlers
 					if($wnd.orientation !== $wnd.previousOrientation)
 					{
 						$wnd.previousOrientation = $wnd.orientation;
-						handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()();
+						handler.@org.cruxframework.crux.core.client.screen.views.ViewHandlers.OrientationChangeCallback::onOrientationChange(Ljava/lang/String;)($wnd.orientation);
 					}
 				} else if( (position >= (90 - delta) ) && (position <= (90 + delta) ) )
 				{
@@ -531,7 +378,7 @@ public class ViewHandlers
 					if($wnd.orientation !== $wnd.previousOrientation)
 					{
 						$wnd.previousOrientation = $wnd.orientation;
-						handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()();
+						handler.@org.cruxframework.crux.core.client.screen.views.ViewHandlers.OrientationChangeCallback::onOrientationChange(Ljava/lang/String;)($wnd.orientation);
 					}
 				}
 			};
@@ -545,6 +392,11 @@ public class ViewHandlers
 			$wnd.addEventListener(eventListener, orientationHandler, false);
 		}
 	}-*/;
+	
+	private static interface OrientationChangeCallback
+	{
+		void onOrientationChange(String orientation);
+	}
 	
 	/**
 	 * 

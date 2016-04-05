@@ -16,32 +16,77 @@
 package org.cruxframework.crux.core.client.screen.views;
 
 
-import org.cruxframework.crux.core.client.event.CruxEvent;
+import org.cruxframework.crux.core.client.Legacy;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewUnloadEvent extends CruxEvent<View>
+public class ViewUnloadEvent extends GwtEvent<ViewUnloadHandler>
 {
+	private static Type<ViewUnloadHandler> TYPE;
+
 	private boolean canceled = false;
-	
-	
+	private View view;
+
 	/**
-	 * Constructor
+	 * 
 	 */
 	protected ViewUnloadEvent(View view)
 	{
-		super(view, view.getId());
+		this.view = view;
 	}
-	
+
 	public void cancel()
 	{
-		canceled = true;
+		this.canceled = true;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public final Type<ViewUnloadHandler> getAssociatedType()
+	{
+		return (Type) TYPE;
 	}
 	
-	public boolean isCanceled()
+	public View getView()
 	{
-		return canceled;
+		return view;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isCanceled()
+    {
+	    return this.canceled;
+    }
+	
+	@Override
+	protected void dispatch(ViewUnloadHandler handler)
+	{
+		handler.onUnload(this);
+	}
+
+	public static ViewUnloadEvent fire(View source)
+	{
+		ViewUnloadEvent event = new ViewUnloadEvent(source);
+		source.fireUnloadEvent(event);
+		return event;
+	}
+
+	public static Type<ViewUnloadHandler> getType()
+	{
+		return TYPE != null ? TYPE : (TYPE = new Type<ViewUnloadHandler>());
+	}
+	
+	@Deprecated
+	@Legacy
+	public String getSenderId()
+    {
+	    return view.getId();
+    }
 }
