@@ -161,13 +161,13 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	@Override
 	public DataProviderRecord<T> select(int index, boolean selected)
 	{
-		return operations.selectRecord(index, selected);
+		return operations.selectRecord(index, selected, true);
 	}
 
 	@Override
 	public DataProviderRecord<T> select(T object, boolean selected)
 	{
-		return operations.selectRecord(indexOf(object), selected);
+		return operations.selectRecord(indexOf(object), selected, true);
 	}
 	
 	@Override

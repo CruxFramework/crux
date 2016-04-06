@@ -412,7 +412,10 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 		int rowCount = getRowsToBeRendered();
 
-		getDataProvider().firstOnPage();
+		if (rowCount > 0)
+		{
+			getDataProvider().firstOnPage();
+		}
 		if (clearRange && !refresh && pager != null && pager.supportsInfiniteScroll())
 		{
 			clearRange(getDataProvider().getCurrentPageStartRecord());

@@ -367,11 +367,11 @@ class DataProviderOperations<T>
 		}
     }
 	
-	DataProviderRecord<T> selectRecord(int index, boolean selected)
+	DataProviderRecord<T> selectRecord(int index, boolean selected, boolean fireEvents)
 	{
 		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
-		record.setSelected(selected);
+		record.setSelected(selected, fireEvents);
 		return record;
 	}
 	
@@ -422,6 +422,10 @@ class DataProviderOperations<T>
 				{
 					changedRecords.remove(record);
 				}
+				if (previousState.isSelected())
+				{
+					selectedRecords.remove(record);
+				}
 			}
 		}
 		else if (record.isDirty() && !previousState.isDirty())
@@ -429,7 +433,7 @@ class DataProviderOperations<T>
 			changedRecords.add(record);
 		}
 		
-		if (record.isSelected() && !previousState.isSelected())
+		if (record.isSelected() && !previousState.isSelected() && !record.isRemoved())
 		{
 			selectedRecords.add(record);
 		}
