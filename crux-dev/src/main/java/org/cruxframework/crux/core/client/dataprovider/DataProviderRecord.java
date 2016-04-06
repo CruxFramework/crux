@@ -26,8 +26,8 @@ import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMod
  */
 public class DataProviderRecord<T> implements Cloneable
 {
-	T recordObject;
 	AbstractDataProvider<T> dataProvider;
+	T recordObject;
 	DataProviderRecordState state = new DataProviderRecordState();
 	
 	DataProviderRecord(AbstractDataProvider<T> dataProvider)
@@ -35,36 +35,6 @@ public class DataProviderRecord<T> implements Cloneable
 		this.dataProvider = dataProvider; 
 	}
 
-	public T getRecordObject()
-    {
-    	return recordObject;
-    }
-
-	public boolean isCreated()
-	{
-		return this.state.isCreated();
-	}
-	
-	public boolean isDirty()
-	{
-		return this.state.isDirty();
-	}
-
-	public boolean isReadOnly()
-	{
-		return state.isReadOnly();
-	}
-	
-	public boolean isRemoved()
-	{
-		return this.state.isRemoved();
-	}
-
-	public boolean isSelected()
-	{
-		return state.isSelected();
-	}
-	
 	public DataProviderRecord<T> clone()
 	{
 		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
@@ -77,51 +47,43 @@ public class DataProviderRecord<T> implements Cloneable
 		record.state = getCurrentState();
 		return record;
 	}
+
+	public T getRecordObject()
+    {
+    	return recordObject;
+    }
 	
-	DataProviderRecordState getCurrentState()
+	public boolean isCreated()
 	{
-		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
+		return this.state.isCreated();
 	}
 
-	void set(T value)
+	public boolean isDirty()
 	{
-		setRecordObject(value);
-		setDirty(true);
+		return this.state.isDirty();
 	}
 	
-	void setDirty(boolean dirty)
+	public boolean isReadOnly()
 	{
-		if (dirty)
-		{
-			DataProviderRecordState previousState = getCurrentState();
-			this.state.setDirty(true);
-			if (!previousState.equals(state));
-			{
-				dataProvider.updateState(this, previousState);
-			}
-		}
-		else
-		{
-			this.state.setDirty(false);
-		}
-	}
-	
-	void setReadOnly(boolean readOnly)
-	{
-		if (this.state.isReadOnly() != readOnly)
-		{
-			DataProviderRecordState previousState = getCurrentState();
-			this.state.setReadOnly(readOnly);
-			dataProvider.updateState(this, previousState);
-		}
+		return state.isReadOnly();
 	}
 
-	public void setSelected(boolean selected)
+	public boolean isRemoved()
+	{
+		return this.state.isRemoved();
+	}
+	
+	public boolean isSelected()
+	{
+		return state.isSelected();
+	}
+	
+	void setSelected(boolean selected)
 	{
 		setSelected(selected, true);	
 	}
-	
-	public void setSelected(boolean selected, boolean fireEvents)
+
+	void setSelected(boolean selected, boolean fireEvents)
 	{
 		if (!dataProvider.getSelectionMode().equals(SelectionMode.unselectable) 
 			&& this.state.isSelected() != selected)
@@ -150,10 +112,16 @@ public class DataProviderRecord<T> implements Cloneable
 			}
 		}
 	}
-
-	private void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
+	
+	DataProviderRecordState getCurrentState()
 	{
-		this.dataProvider.fireDataSelectionEvent(changedRecords);
+		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
+	}
+	
+	void set(T value)
+	{
+		setRecordObject(value);
+		setDirty(true);
 	}
 
 	void setCreated(boolean created)
@@ -161,15 +129,47 @@ public class DataProviderRecord<T> implements Cloneable
 		this.state.setCreated(created);
 	}
 	
+	void setDirty(boolean dirty)
+	{
+		if (dirty)
+		{
+			DataProviderRecordState previousState = getCurrentState();
+			this.state.setDirty(true);
+			if (!previousState.equals(state));
+			{
+				dataProvider.updateState(this, previousState);
+			}
+		}
+		else
+		{
+			this.state.setDirty(false);
+		}
+	}
+
+	void setReadOnly(boolean readOnly)
+	{
+		if (this.state.isReadOnly() != readOnly)
+		{
+			DataProviderRecordState previousState = getCurrentState();
+			this.state.setReadOnly(readOnly);
+			dataProvider.updateState(this, previousState);
+		}
+	}
+
+	void setRecordObject(T recordObject)
+    {
+    	this.recordObject = recordObject;
+    }
+	
 	void setRemoved(boolean removed)
 	{
 		this.state.setRemoved(removed);
 	}
 	
-	void setRecordObject(T recordObject)
-    {
-    	this.recordObject = recordObject;
-    }
+	private void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
+	{
+		this.dataProvider.fireDataSelectionEvent(changedRecords);
+	}
 	
 	/**
 	 * Represents the state of a {@link DataProvider} record

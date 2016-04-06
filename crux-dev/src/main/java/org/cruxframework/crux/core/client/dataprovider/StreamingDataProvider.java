@@ -178,7 +178,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public int getCurrentPageSize()
 	{
-		int pageEndRecord = getPageEndRecord();
+		int pageEndRecord = getLoadedPageEndRecord();
 		return pageEndRecord - getPageStartRecord() + 1;
 	}
 
@@ -361,13 +361,13 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public DataProviderRecord<T> select(int index, boolean selected)
 	{
-		return operations.selectRecord(index, selected);
+		return operations.selectRecord(index, selected, true);
 	}
 
 	@Override
 	public DataProviderRecord<T> select(T object, boolean selected)
 	{
-		return operations.selectRecord(indexOf(object), selected);
+		return operations.selectRecord(indexOf(object), selected, true);
 	}
 	
 	@Override
@@ -544,7 +544,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		{
 			Array<DataProviderRecord<T>> pageData = CollectionFactory.createArray(pageSize);
 			int startPageRecord = getPageStartRecord();
-			int endPageRecord = getPageEndRecord();
+			int endPageRecord = getLoadedPageEndRecord();
 			int pageSize = endPageRecord - startPageRecord + 1;
 			for (int i = 0; i<pageSize; i++)
 			{
@@ -565,12 +565,6 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		super.stopLoading();
 	}
 
-	@Override
-	public void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
-	{
-		operations.updateState(record, previousState);
-	}
-
 	protected void ensureCurrentPageLoaded()
 	{
 		boolean loaded = isCurrentPageLoaded();
@@ -580,13 +574,21 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
 	}
 
+	protected void ensureLoaded()
+    {
+		if (!isLoaded())
+		{
+			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
+		}
+    }
+
 	protected void fetchCurrentPage()
 	{
 		if (!isCurrentPageLoaded())
 		{
 			if (dataLoader != null)
 			{
-				dataLoader.onFetchData(new FetchDataEvent<T>(this, getPageStartRecord(), getPageEndRecord()));
+				dataLoader.onFetchData(new FetchDataEvent<T>(this, getPageUnloadedStartRecord(), getPageEndRecord()));
 			}
 		}
 		else
@@ -594,6 +596,23 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 		}
 	}
+	
+	protected int getPageUnloadedStartRecord()
+	{
+		int pageStartRecord = getPageStartRecord();
+		int pageEndRecord = Math.min(getPageEndRecord(), data.size());
+		
+		for (int i = pageStartRecord; i < pageEndRecord; i++)
+		{
+			if (data.get(i) == null)
+			{
+				return i;
+			}
+		}
+		
+		return pageEndRecord;
+	}
+	
 	
 	protected void firePageLoadedEvent(int start, int end)
     {
@@ -619,6 +638,20 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
     }
 	
+	protected int getLoadedPageEndRecord()
+	{
+		int pageStartRecord = getPageStartRecord();
+		int end = Math.min(getPageEndRecord(), data.size()-1);
+		if (end >= 0)
+		{
+			while (end >= pageStartRecord && data.get(end) == null)
+			{
+				end--;
+			}
+		}
+		return end;
+	}
+
 	protected int getPageEndRecord()
 	{
 		int pageEndRecord = (currentPage * pageSize) - 1;
@@ -657,11 +690,10 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
 		int start = getPageStartRecord();
-		int end = getPageEndRecord();
+		int end = getLoadedPageEndRecord();
 		for (int i = start; i <= end; i++)
 		{
-			DataProviderRecord<T> record = data.get(i);
-			currentPageRecordsArray.add(record.clone());
+			currentPageRecordsArray.add(data.get(i).clone());
 		}
 
 		return currentPageRecordsArray;
@@ -698,7 +730,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
 	{
 		int start = getPageStartRecord();
-		int end = getPageEndRecord();
+		int end = getLoadedPageEndRecord();
 		data.remove(start, end-start+1);
 		
 		for (int i=0; i<transactionRecords.size(); i++)
@@ -741,6 +773,17 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		data = CollectionFactory.createArray(recordCount);
 		int startRecord = 0;
 		int endRecord = recordCount -1;
+		if (!loaded)
+		{
+			if (startRecord == 0 && endRecord > 0)
+			{
+				setLoaded();
+			}
+			else
+			{
+				return;
+			}
+		}
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
 		if (updateRecordsCount > 0)
 		{
@@ -810,6 +853,12 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			this.data.add(null);
 		}
 		return ret;
+	}
+
+	@Override
+	protected void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
+	{
+		operations.updateState(record, previousState);
 	}
 	
 }
