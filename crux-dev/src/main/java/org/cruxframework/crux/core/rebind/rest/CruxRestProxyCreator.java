@@ -254,7 +254,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		String callbackResultTypeName = getCallbackResultTypeName(callbackParameter.getType().isClassOrInterface());
 		String callbackParameterName = callbackParameter.getName();
 
-		srcWriter.println("String baseURIPath = " + EscapeUtils.quote(methodInfo.methodURI) + ";");
+		srcWriter.println("String baseURIPath = " + EscapeUtils.quote(methodInfo.methodURI.startsWith("/")?methodInfo.methodURI:"/"+methodInfo.methodURI) + ";");
 		queryParameterHandler.generateMethodParamToURICode(srcWriter, methodInfo, "baseURIPath");
 		srcWriter.println("final String restURI = __hostPath + baseURIPath;");
 
