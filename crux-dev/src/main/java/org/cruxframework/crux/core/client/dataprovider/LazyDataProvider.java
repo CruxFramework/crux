@@ -349,8 +349,12 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		return pageEndRecord;
 	}
 	
-	protected boolean isPageLoaded(int pageNumber)
+	public boolean isPageLoaded(int pageNumber)
 	{
+		if (!isLoaded())
+		{
+			return false;
+		}
 		int startPageRecord = getPageStartRecord(pageNumber);
 		int pageEndRecord = getPageEndRecord(pageNumber);
 		return (data.size() > 0 && data.get(startPageRecord) != null && data.get(pageEndRecord) != null);

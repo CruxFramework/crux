@@ -32,7 +32,8 @@ public interface PagedDataProvider<T> extends DataProvider<T>
 	
 	boolean hasPreviousPage();
 	boolean previousPage();
-
+	boolean isPageLoaded(int page);
+	
 	int getPageSize();
 	void setPageSize(int pageSize);
 

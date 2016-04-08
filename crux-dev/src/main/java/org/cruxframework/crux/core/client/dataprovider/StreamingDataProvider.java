@@ -700,6 +700,16 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int pageStartRecord = getPageStartRecord();
 		return (data.size() > pageStartRecord);
 	}
+
+	public boolean isPageLoaded(int pageNumber)
+	{
+		if (!isLoaded())
+		{
+			return false;
+		}
+		int startPageRecord = getPageStartRecord(pageNumber);
+		return (data.size() > 0 && data.get(startPageRecord) != null );
+	}
 	
 	protected boolean isRecordOnPage(int record)
 	{
