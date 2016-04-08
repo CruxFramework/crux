@@ -31,38 +31,38 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	protected LazyDataLoader<T> dataLoader;
 
 	public LazyDataProvider()
-    {
-    }
-	
-    public LazyDataProvider(DataProvider.EditionDataHandler<T> handler)
 	{
-    	super(handler);
+	}
+
+	public LazyDataProvider(DataProvider.EditionDataHandler<T> handler)
+	{
+		super(handler);
 		this.data = CollectionFactory.createArray();
 	}
 
 	public LazyDataProvider(DataProvider.EditionDataHandler<T> handler, LazyDataLoader<T> dataLoader)
-    {
+	{
 		this(handler);
 		this.dataLoader = dataLoader;
-    }
-	
-	@Override
-    public void setDataLoader(LazyDataLoader<T> dataLoader)
-    {
-		this.dataLoader = dataLoader;
-    }
+	}
 
 	@Override
-    public LazyDataLoader<T> getDataLoader()
-    {
-	    return dataLoader;
-    }
-	
-    @Override
-    public void stopLoading()
-    {
-    	previousPage--;
-    	currentPage--;
+	public void setDataLoader(LazyDataLoader<T> dataLoader)
+	{
+		this.dataLoader = dataLoader;
+	}
+
+	@Override
+	public LazyDataLoader<T> getDataLoader()
+	{
+		return dataLoader;
+	}
+
+	@Override
+	public void stopLoading()
+	{
+		previousPage--;
+		currentPage--;
 		updateCurrentRecord();
 		super.stopLoading();
 	}
@@ -75,7 +75,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			dataLoader.onMeasureData(new MeasureDataEvent<T>(this));
 		}
 	}
-		
+
 	@Override
 	public void first()
 	{
@@ -85,7 +85,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		}
 		super.first();
 	}
-	
+
 	@Override
 	public void firstOnPage()
 	{
@@ -122,7 +122,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean previousPage()
 	{
@@ -134,8 +134,8 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		}
 		return false;
 	}
-	
-    @Override
+
+	@Override
 	public void reset()
 	{
 		if(data != null)
@@ -150,7 +150,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		operations.reset();
 		fireResetEvent(); 
 	}
-		
+
 	@Override
 	public void setSize(int recordCount)
 	{
@@ -162,12 +162,12 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			this.setCurrentPage(1);
 		}
 	}
-	
+
 	@Override
 	public void setPageSize(int pageSize)
 	{
 		super.setPageSize(pageSize);
-		if (this.loaded && dataLoader != null)
+		if (this.isLoaded() && dataLoader != null)
 		{
 			dataLoader.onMeasureData(new MeasureDataEvent<T>(this));
 		}
@@ -194,8 +194,8 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	}	
 
 	@Override
-    public void setData(T[] data, int startRecord)
-    {
+	public void setData(T[] data, int startRecord)
+	{
 		ensureLoaded();
 		if (data != null)
 		{
@@ -209,11 +209,11 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			}
 			update(ret, startRecord, startRecord+dataSize-1);
 		}
-    }
+	}
 
 	@Override
-    public void setData(List<T> data, int startRecord)
-    {
+	public void setData(List<T> data, int startRecord)
+	{
 		ensureLoaded();
 		if (data != null)
 		{
@@ -227,11 +227,11 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			}
 			update(ret, startRecord, startRecord+dataSize-1);
 		}
-    }
+	}
 
 	@Override
-    public void setData(Array<T> data, int startRecord)
-    {
+	public void setData(Array<T> data, int startRecord)
+	{
 		ensureLoaded();
 		if (data != null)
 		{
@@ -245,8 +245,8 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			}
 			update(ret, startRecord, startRecord+dataSize-1);
 		}
-    }
-	
+	}
+
 	@Override
 	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
 	{
@@ -264,6 +264,19 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	}
 
 	@Override
+	protected void setFirstPosition(boolean fireEvents)
+	{
+		if (currentPage == 0 || hasPreviousPage() || !isPageLoaded(1))
+		{
+			setCurrentPage(1, fireEvents);
+		}
+		else
+		{
+			firstOnPage();
+		}
+	}	
+
+	@Override
 	protected void update(Array<DataProviderRecord<T>> records)
 	{
 		size = records!= null?records.size():0;
@@ -277,7 +290,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			this.setCurrentPage(1);
 		}
 	}
-	
+
 	protected void update(Array<DataProviderRecord<T>> records, int startRecord, int endRecord)
 	{
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
@@ -299,7 +312,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -318,12 +331,12 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 		}
 	}
-	
+
 	protected int getPageUnloadedStartRecord()
 	{
 		int pageStartRecord = getPageStartRecord();
 		int pageEndRecord = getPageEndRecord();
-		
+
 		for (int i = pageStartRecord; i < pageEndRecord; i++)
 		{
 			if (data.get(i) == null)
@@ -331,17 +344,21 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 				return i;
 			}
 		}
-		
+
 		return pageEndRecord;
 	}
-	
-	protected boolean isPageLoaded(int pageNumber)
+
+	@Override
+	public boolean isPageLoaded(int pageNumber)
 	{
-		int startPageRecord = getPageStartRecord(pageNumber);
+		if (!isLoaded())
+		{
+			return false;
+		}		 int startPageRecord = getPageStartRecord(pageNumber);
 		int pageEndRecord = getPageEndRecord(pageNumber);
 		return (data.size() > 0 && data.get(startPageRecord) != null && data.get(pageEndRecord) != null);
 	}
-	
+
 	/**
 	 * 
 	 * @param startRecord
@@ -357,7 +374,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			{
 				this.data.set(i, records.get(j));
 			}
-			
+
 			return records.size();
 		}
 		return 0;
@@ -370,7 +387,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			throw new DataProviderException("DataProvider has changes on page. You must save or discard them before perform this operation.");
 		}
 	}
-	
+
 	@Override
 	protected void concludeEdition(boolean commited)
 	{
@@ -378,6 +395,6 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		{
 			size = size + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
 		}
-	    super.concludeEdition(commited);
+		super.concludeEdition(commited);
 	}
 }

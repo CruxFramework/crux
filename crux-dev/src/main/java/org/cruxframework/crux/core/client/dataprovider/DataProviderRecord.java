@@ -1,252 +1,252 @@
 /*
- * Copyright 2014 cruxframework.org.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-package org.cruxframework.crux.core.client.dataprovider;
+	 * Copyright 2014 cruxframework.org.
+	 * 
+	 * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+	 * use this file except in compliance with the License. You may obtain a copy of
+	 * the License at
+	 * 
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+	 * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+	 * License for the specific language governing permissions and limitations under
+	 * the License.
+	 */
+	package org.cruxframework.crux.core.client.dataprovider;
 
-import org.cruxframework.crux.core.client.collection.Array;
-import org.cruxframework.crux.core.client.collection.CollectionFactory;
-import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
+	import org.cruxframework.crux.core.client.collection.Array;
+	import org.cruxframework.crux.core.client.collection.CollectionFactory;
+	import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
 
-/**
- * A record in a {@link DataProvider}.
- * 
- * @author Thiago da Rosa de Bustamante
- */
-public class DataProviderRecord<T> implements Cloneable
-{
-	T recordObject;
-	AbstractDataProvider<T> dataProvider;
-	DataProviderRecordState state = new DataProviderRecordState();
-	
-	DataProviderRecord(AbstractDataProvider<T> dataProvider)
+	/**
+	 * A record in a {@link DataProvider}.
+	 * 
+	 * @author Thiago da Rosa de Bustamante
+	 */
+	public class DataProviderRecord<T> implements Cloneable
 	{
-		this.dataProvider = dataProvider; 
-	}
-
-	public T getRecordObject()
-    {
-    	return recordObject;
-    }
-
-	public boolean isCreated()
-	{
-		return this.state.isCreated();
-	}
-	
-	public boolean isDirty()
-	{
-		return this.state.isDirty();
-	}
-
-	public boolean isReadOnly()
-	{
-		return state.isReadOnly();
-	}
-	
-	public boolean isRemoved()
-	{
-		return this.state.isRemoved();
-	}
-
-	public boolean isSelected()
-	{
-		return state.isSelected();
-	}
-	
-	public DataProviderRecord<T> clone()
-	{
-		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
+		AbstractDataProvider<T> dataProvider;
+		T recordObject;
+		DataProviderRecordState state = new DataProviderRecordState();
 		
-		if (!dataProvider.isEditable())
+		DataProviderRecord(AbstractDataProvider<T> dataProvider)
 		{
-			throw new UnsupportedOperationException("This dataProvider ins not Editable. You need to first call setEditionHandler() method.");
+			this.dataProvider = dataProvider; 
 		}
-		record.recordObject = dataProvider.dataHandler.clone(this.recordObject);
-		record.state = getCurrentState();
-		return record;
-	}
-	
-	DataProviderRecordState getCurrentState()
-	{
-		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
-	}
 
-	void set(T value)
-	{
-		setRecordObject(value);
-		setDirty(true);
-	}
-	
-	void setDirty(boolean dirty)
-	{
-		if (dirty)
+		public DataProviderRecord<T> clone()
 		{
-			DataProviderRecordState previousState = getCurrentState();
-			this.state.setDirty(true);
-			if (!previousState.equals(state));
+			DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
+			
+			if (!dataProvider.isEditable())
 			{
+				throw new UnsupportedOperationException("This dataProvider ins not Editable. You need to first call setEditionHandler() method.");
+			}
+			record.recordObject = dataProvider.dataHandler.clone(this.recordObject);
+			record.state = getCurrentState();
+			return record;
+		}
+
+		public T getRecordObject()
+	    {
+	    	return recordObject;
+	    }
+		
+		public boolean isCreated()
+		{
+			return this.state.isCreated();
+		}
+
+		public boolean isDirty()
+		{
+			return this.state.isDirty();
+		}
+		
+		public boolean isReadOnly()
+		{
+			return state.isReadOnly();
+		}
+
+		public boolean isRemoved()
+		{
+			return this.state.isRemoved();
+		}
+		
+		public boolean isSelected()
+		{
+			return state.isSelected();
+		}
+		
+		void setSelected(boolean selected)
+		{
+			setSelected(selected, true);	
+		}
+
+		void setSelected(boolean selected, boolean fireEvents)
+		{
+			if (!dataProvider.getSelectionMode().equals(SelectionMode.unselectable) 
+				&& this.state.isSelected() != selected)
+			{
+				Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();
+				if (selected && dataProvider.getSelectionMode().equals(SelectionMode.single))
+				{
+					DataProviderRecord<T>[] selectedRecords = dataProvider.getSelectedRecords();
+					for (DataProviderRecord<T> record : selectedRecords)
+	                {
+						record.setSelected(false, fireEvents);
+						if (fireEvents)
+						{
+							changedRecords.add(record);
+						}
+	                }
+				}
+
+				DataProviderRecordState previousState = getCurrentState();
+				this.state.setSelected(selected);
+				dataProvider.updateState(this, previousState);
+				if(fireEvents)
+				{
+					changedRecords.add(this);
+					fireDataSelectionEvent(changedRecords);
+				}
+			}
+		}
+		
+		DataProviderRecordState getCurrentState()
+		{
+			return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
+		}
+		
+		void set(T value)
+		{
+			setRecordObject(value);
+			setDirty(true);
+		}
+
+		void setCreated(boolean created)
+		{
+			this.state.setCreated(created);
+		}
+		
+		void setDirty(boolean dirty)
+		{
+			if (dirty)
+			{
+				DataProviderRecordState previousState = getCurrentState();
+				this.state.setDirty(true);
+				if (!previousState.equals(state));
+				{
+					dataProvider.updateState(this, previousState);
+				}
+			}
+			else
+			{
+				this.state.setDirty(false);
+			}
+		}
+
+		void setReadOnly(boolean readOnly)
+		{
+			if (this.state.isReadOnly() != readOnly)
+			{
+				DataProviderRecordState previousState = getCurrentState();
+				this.state.setReadOnly(readOnly);
 				dataProvider.updateState(this, previousState);
 			}
 		}
-		else
-		{
-			this.state.setDirty(false);
-		}
-	}
-	
-	void setReadOnly(boolean readOnly)
-	{
-		if (this.state.isReadOnly() != readOnly)
-		{
-			DataProviderRecordState previousState = getCurrentState();
-			this.state.setReadOnly(readOnly);
-			dataProvider.updateState(this, previousState);
-		}
-	}
 
-	public void setSelected(boolean selected)
-	{
-		setSelected(selected, true);	
-	}
-	
-	public void setSelected(boolean selected, boolean fireEvents)
-	{
-		if (!dataProvider.getSelectionMode().equals(SelectionMode.unselectable) 
-			&& this.state.isSelected() != selected)
-		{
-			Array<DataProviderRecord<T>> changedRecords = CollectionFactory.createArray();
-			if (selected && dataProvider.getSelectionMode().equals(SelectionMode.single))
-			{
-				DataProviderRecord<T>[] selectedRecords = dataProvider.getSelectedRecords();
-				for (DataProviderRecord<T> record : selectedRecords)
-                {
-					record.setSelected(false, fireEvents);
-					if (fireEvents)
-					{
-						changedRecords.add(record);
-					}
-                }
-			}
-
-			DataProviderRecordState previousState = getCurrentState();
-			this.state.setSelected(selected);
-			dataProvider.updateState(this, previousState);
-			if(fireEvents)
-			{
-				changedRecords.add(this);
-				fireDataSelectionEvent(changedRecords);
-			}
-		}
-	}
-
-	private void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
-	{
-		this.dataProvider.fireDataSelectionEvent(changedRecords);
-	}
-
-	void setCreated(boolean created)
-	{
-		this.state.setCreated(created);
-	}
-	
-	void setRemoved(boolean removed)
-	{
-		this.state.setRemoved(removed);
-	}
-	
-	void setRecordObject(T recordObject)
-    {
-    	this.recordObject = recordObject;
-    }
-	
-	/**
-	 * Represents the state of a {@link DataProvider} record
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	static class DataProviderRecordState 
-	{
-		private boolean created;
-		private boolean dirty;
-		private boolean readOnly;
-		private boolean removed;
-		private boolean selected;
+		void setRecordObject(T recordObject)
+	    {
+	    	this.recordObject = recordObject;
+	    }
 		
-		protected DataProviderRecordState()
+		void setRemoved(boolean removed)
 		{
-			this(false, false, false, false, false);
+			this.state.setRemoved(removed);
 		}
+		
+		private void fireDataSelectionEvent(Array<DataProviderRecord<T>> changedRecords)
+		{
+			this.dataProvider.fireDataSelectionEvent(changedRecords);
+		}
+		
+		/**
+		 * Represents the state of a {@link DataProvider} record
+		 * @author Thiago da Rosa de Bustamante
+		 *
+		 */
+		static class DataProviderRecordState 
+		{
+			private boolean created;
+			private boolean dirty;
+			private boolean readOnly;
+			private boolean removed;
+			private boolean selected;
+			
+			protected DataProviderRecordState()
+			{
+				this(false, false, false, false, false);
+			}
 
-		protected DataProviderRecordState(boolean selected, boolean dirty, boolean created, boolean removed, boolean readOnly)
-		{
-			this.selected = selected;
-			this.dirty = dirty;
-			this.created = created;
-			this.removed = removed;
-			this.readOnly = readOnly; 
-		}
+			protected DataProviderRecordState(boolean selected, boolean dirty, boolean created, boolean removed, boolean readOnly)
+			{
+				this.selected = selected;
+				this.dirty = dirty;
+				this.created = created;
+				this.removed = removed;
+				this.readOnly = readOnly; 
+			}
 
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (obj == null) return false;
-			if (!(obj instanceof DataProviderRecordState)) return false;
-			DataProviderRecordState otherState = (DataProviderRecordState)obj;
-			return (this.selected == otherState.selected) && (this.dirty == otherState.dirty) && 
-			       (this.created == otherState.created) && (this.removed == otherState.removed) &&
-			       (this.readOnly == otherState.readOnly);
-		}
-		public boolean isCreated()
-		{
-			return created;
-		}
-		public boolean isDirty()
-		{
-			return dirty;
-		}
-		public boolean isRemoved()
-		{
-			return removed;
-		}
-		public boolean isSelected()
-		{
-			return selected;
-		}
-		public void setCreated(boolean created)
-		{
-			this.created = created;
-		}
-		public void setDirty(boolean dirty)
-		{
-			this.dirty = dirty;
-		}
-		public void setRemoved(boolean removed)
-		{
-			this.removed = removed;
-		}
-		public void setSelected(boolean selected)
-		{
-			this.selected = selected;
-		}
-		protected boolean isReadOnly()
-		{
-			return readOnly;
-		}
-		protected void setReadOnly(boolean readOnly)
-		{
-			this.readOnly = readOnly;
+			@Override
+			public boolean equals(Object obj)
+			{
+				if (obj == null) return false;
+				if (!(obj instanceof DataProviderRecordState)) return false;
+				DataProviderRecordState otherState = (DataProviderRecordState)obj;
+				return (this.selected == otherState.selected) && (this.dirty == otherState.dirty) && 
+				       (this.created == otherState.created) && (this.removed == otherState.removed) &&
+				       (this.readOnly == otherState.readOnly);
+			}
+			public boolean isCreated()
+			{
+				return created;
+			}
+			public boolean isDirty()
+			{
+				return dirty;
+			}
+			public boolean isRemoved()
+			{
+				return removed;
+			}
+			public boolean isSelected()
+			{
+				return selected;
+			}
+			public void setCreated(boolean created)
+			{
+				this.created = created;
+			}
+			public void setDirty(boolean dirty)
+			{
+				this.dirty = dirty;
+			}
+			public void setRemoved(boolean removed)
+			{
+				this.removed = removed;
+			}
+			public void setSelected(boolean selected)
+			{
+				this.selected = selected;
+			}
+			protected boolean isReadOnly()
+			{
+				return readOnly;
+			}
+			protected void setReadOnly(boolean readOnly)
+			{
+				this.readOnly = readOnly;
+			}
 		}
 	}
-}

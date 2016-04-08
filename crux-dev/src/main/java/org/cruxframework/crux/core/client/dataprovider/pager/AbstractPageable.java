@@ -330,7 +330,10 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			getContentPanel().add(panel);
 		}
 		getDataProvider().first();
-		render(true, true, null);		
+		if (getDataProvider().isPageLoaded(1))
+		{
+			render(true, true, null);		
+		}
 	}
 		
 	protected void onTransactionCompleted(boolean commited)
@@ -412,7 +415,10 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 		int rowCount = getRowsToBeRendered();
 
-		getDataProvider().firstOnPage();
+		if (rowCount > 0)
+		{
+			getDataProvider().firstOnPage();
+		}
 		if (clearRange && !refresh && pager != null && pager.supportsInfiniteScroll())
 		{
 			clearRange(getDataProvider().getCurrentPageStartRecord());
