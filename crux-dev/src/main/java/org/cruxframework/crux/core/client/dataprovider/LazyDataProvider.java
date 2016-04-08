@@ -167,7 +167,7 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 	public void setPageSize(int pageSize)
 	{
 		super.setPageSize(pageSize);
-		if (this.loaded && dataLoader != null)
+		if (this.isLoaded() && dataLoader != null)
 		{
 			dataLoader.onMeasureData(new MeasureDataEvent<T>(this));
 		}
@@ -263,6 +263,20 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		return false;
 	}
 
+	@Override
+	protected void setFirstPosition(boolean fireEvents)
+	{
+		if (currentPage == 0 || hasPreviousPage() || !isPageLoaded(1))
+		{
+			setCurrentPage(1, fireEvents);
+		}
+		else
+		{
+			firstOnPage();
+		}
+	}	
+	
+	
 	@Override
 	protected void update(Array<DataProviderRecord<T>> records)
 	{

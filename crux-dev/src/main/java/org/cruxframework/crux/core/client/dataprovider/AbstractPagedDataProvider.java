@@ -231,7 +231,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			pageSize = 1;
 		}
 		this.pageSize = pageSize;
-		if (this.loaded)
+		if (this.isLoaded())
 		{
 			updateCurrentRecord();
 			firePageRequestedEvent(currentPage);
