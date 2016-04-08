@@ -769,7 +769,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		data = CollectionFactory.createArray(recordCount);
 		int startRecord = 0;
 		int endRecord = recordCount -1;
-		if (!loaded)
+		if (!isLoaded())
 		{
 			if (startRecord == 0 && endRecord > 0)
 			{
@@ -793,7 +793,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 
 	protected void update(Array<DataProviderRecord<T>> records, int startRecord, int endRecord)
 	{
-		if (!loaded)
+		if (!isLoaded())
 		{
 			if (startRecord == 0 && endRecord > 0)
 			{
