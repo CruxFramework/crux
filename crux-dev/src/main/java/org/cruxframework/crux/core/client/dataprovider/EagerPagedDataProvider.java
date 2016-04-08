@@ -162,4 +162,10 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 		operations.saveInitialData(records);
 		firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 	}
+	
+	@Override
+    public boolean isPageLoaded(int page)
+    {
+	    return isLoaded();
+	 }	
 }

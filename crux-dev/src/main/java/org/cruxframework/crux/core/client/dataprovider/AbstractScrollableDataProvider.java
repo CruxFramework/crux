@@ -161,13 +161,13 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	@Override
 	public DataProviderRecord<T> select(int index, boolean selected)
 	{
-		return operations.selectRecord(index, selected);
+		return operations.selectRecord(index, selected, true);
 	}
 
 	@Override
 	public DataProviderRecord<T> select(T object, boolean selected)
 	{
-		return operations.selectRecord(indexOf(object), selected);
+		return operations.selectRecord(indexOf(object), selected, true);
 	}
 	
 	@Override
@@ -285,7 +285,7 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 
 	protected void ensureLoaded()
 	{
-		if (!loaded)
+		if (!isLoaded())
 		{
 			throw new DataProviderException("Error processing requested operation. DataProvider is not loaded yet.");
 		}

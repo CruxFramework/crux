@@ -45,9 +45,9 @@ class StreamingDataProviderOperations<T>
 	{
 		if(transactionOriginalData == null)
 		{
-			int recordForEdition = dataProvider.lockRecordForEdition(recordIndex);
+			int firstRecordToLock = dataProvider.lockRecordForEdition(recordIndex);
 			this.transactionOriginalData = dataProvider.getTransactionRecords();
-			dataProvider.fireTransactionStartEvent(recordForEdition);
+			dataProvider.fireTransactionStartEvent(firstRecordToLock);
 		}
 	}
 	
@@ -82,7 +82,7 @@ class StreamingDataProviderOperations<T>
 	{
 		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
 		int start = this.dataProvider.getPageStartRecord();
-		int end = this.dataProvider.getPageEndRecord(); 
+		int end = this.dataProvider.getLoadedPageEndRecord(); 
 		for (int i = start; i <= end; i++)
     	{
     		DataProviderRecord<T> record = dataProvider.data.get(i);
@@ -102,7 +102,7 @@ class StreamingDataProviderOperations<T>
 	@SuppressWarnings("unchecked")
     DataProviderRecord<T>[] getNewRecords()
 	{
-		return newRecords.toArray(new DataProviderRecord[0]);
+		return newRecords.toArray(new DataProviderRecord[newRecords.size()]);
 	}
 
 	int getNewRecordsCount()
@@ -126,7 +126,7 @@ class StreamingDataProviderOperations<T>
 	@SuppressWarnings("unchecked")
     DataProviderRecord<T>[] getRemovedRecords()
 	{
-		return removedRecords.toArray(new DataProviderRecord[0]);
+		return removedRecords.toArray(new DataProviderRecord[removedRecords.size()]);
 	}
 	
 	int getRemovedRecordsCount()
@@ -137,13 +137,13 @@ class StreamingDataProviderOperations<T>
 	@SuppressWarnings("unchecked")
     DataProviderRecord<T>[] getSelectedRecords()
 	{
-		return selectedRecords.toArray(new DataProviderRecord[0]);
+		return selectedRecords.toArray(new DataProviderRecord[selectedRecords.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
     DataProviderRecord<T>[] getUpdatedRecords()
 	{
-		return changedRecords.toArray(new DataProviderRecord[0]);
+		return changedRecords.toArray(new DataProviderRecord[changedRecords.size()]);
 	}
 	
 	DataProviderRecord<T> insertRecord(int index, T object)
@@ -178,9 +178,10 @@ class StreamingDataProviderOperations<T>
 	
 	DataProviderRecord<T> removeRecord(int index)
 	{
-		beginTransaction(index);
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index, false);
+
+		beginTransaction(index);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		DataProviderRecordState previousState = record.getCurrentState();
 		if (previousState.isReadOnly())
@@ -241,11 +242,11 @@ class StreamingDataProviderOperations<T>
 		}
     }
 	
-	DataProviderRecord<T> selectRecord(int index, boolean selected)
+	DataProviderRecord<T> selectRecord(int index, boolean selected, boolean fireEvents)
 	{
 		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
-		record.setSelected(selected);
+		record.setSelected(selected, fireEvents);
 		return record;
 	} 
 	
@@ -277,7 +278,7 @@ class StreamingDataProviderOperations<T>
 	
 	void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
 	{
-		this.dataProvider.ensureCurrentPageLoaded();
+		this.dataProvider.ensureLoaded();
 		if (record.isCreated())
 		{
 			if (record.isRemoved())
@@ -294,6 +295,10 @@ class StreamingDataProviderOperations<T>
 				{
 					changedRecords.remove(record);
 				}
+				if (previousState.isSelected())
+				{
+					selectedRecords.remove(record);
+				}
 			}
 		}
 		else if (record.isDirty() && !previousState.isDirty())
@@ -301,7 +306,7 @@ class StreamingDataProviderOperations<T>
 			changedRecords.add(record);
 		}
 		
-		if (record.isSelected() && !previousState.isSelected())
+		if (record.isSelected() && !previousState.isSelected() && !record.isRemoved())
 		{
 			selectedRecords.add(record);
 		}
