@@ -197,7 +197,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 				{
 					final IsWidget pagePanel = (pager != null)?doInitializePagePanel():null;
 					
-					if (getPagePanel() == null)
+					if (getPagePanel() == null) // no pager
 					{
 						IsWidget panel = doInitializePagePanel();
 						getContentPanel().add(panel);

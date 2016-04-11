@@ -18,7 +18,7 @@ package org.cruxframework.crux.core.client.dataprovider;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * @author thiago
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public abstract class AbstractHasPagedDataProvider<T> extends Composite implements HasPagedDataProvider<PagedDataProvider<T>>
