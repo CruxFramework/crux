@@ -361,7 +361,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	protected void refreshPage(int startRecord)
     {
 		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
-	    if (refreshAll)
+	    if (refreshAll || startRecord < 0)
 	    {
 	    	clear();
 	    }
@@ -421,7 +421,15 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 		if (clearRange && !refresh && pager != null && pager.supportsInfiniteScroll())
 		{
-			clearRange(getDataProvider().getCurrentPageStartRecord());
+			int startRecord = getDataProvider().getCurrentPageStartRecord();
+			if (startRecord >= 0)
+			{
+				clearRange(startRecord);
+			}
+			else
+			{
+				clear();
+			}
 		}
 		
 		for (int i=0; i<rowCount; i++)
