@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.select;
 
+import org.cruxframework.crux.core.client.event.HasSelectHandlers;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Touch;
@@ -58,7 +60,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 					Widget parent = selectableWidget.getParent();
 					while (parent != null)
 					{
-						if (parent instanceof SelectableWidget)
+						if (parent instanceof HasSelectHandlers)
 						{
 							childOfSelectableWidget = true;
 							break;
