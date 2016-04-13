@@ -781,7 +781,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int endRecord = recordCount -1;
 		if (!isLoaded())
 		{
-			if (startRecord == 0 && endRecord > 0)
+			if (startRecord == 0 && endRecord >= 0)
 			{
 				setLoaded();
 			}
@@ -805,7 +805,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		if (!isLoaded())
 		{
-			if (startRecord == 0 && endRecord > 0)
+			if (startRecord == 0 && endRecord >= 0)
 			{
 				setLoaded();
 			}
