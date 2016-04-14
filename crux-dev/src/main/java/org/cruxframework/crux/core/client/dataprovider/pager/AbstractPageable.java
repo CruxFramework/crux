@@ -28,6 +28,8 @@ import org.cruxframework.crux.core.client.dataprovider.DataSortedHandler;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
+import org.cruxframework.crux.core.client.dataprovider.ResetEvent;
+import org.cruxframework.crux.core.client.dataprovider.ResetHandler;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
 import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
 
@@ -53,6 +55,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	protected DataProvider.DataReader<T> reader = getDataReader();
 	protected HandlerRegistration transactionEndHandler;
 	private   P pagePanel;
+	private HandlerRegistration resetHandler;
 	
 	public void add(T object)
 	{
@@ -226,7 +229,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			@Override
 			public void onLoadStopped(DataLoadStoppedEvent event)
 			{
-				render(true, true, null);
+				refresh();
 			}
 		});
 		
@@ -274,10 +277,19 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 				@Override
 				public void onFiltered(DataFilterEvent<T> event)
 				{
-					render(true, true, null);
+					refresh();
 				}
 			});
 		}
+		
+		resetHandler = getDataProvider().addResetHandler(new ResetHandler()
+		{
+			@Override
+			public void onReset(ResetEvent event)
+			{
+				refresh();
+			}
+		});
 	}
 	
 	protected abstract void clear();
@@ -351,7 +363,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	
 	protected void refresh(boolean goToFirstPage)
 	{
-		if (goToFirstPage)
+		if (goToFirstPage && isDataLoaded())
 		{
 			getDataProvider().first();
 		}
@@ -404,6 +416,11 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		{
 			dataSortedHandler.removeHandler();
 			dataSortedHandler = null;
+		}
+		if (resetHandler != null)
+		{
+			resetHandler.removeHandler();
+			resetHandler = null;
 		}
 	}
 		
