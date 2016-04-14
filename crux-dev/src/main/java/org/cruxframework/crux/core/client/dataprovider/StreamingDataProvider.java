@@ -781,7 +781,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int endRecord = recordCount -1;
 		if (!isLoaded())
 		{
-			if (startRecord == 0 && endRecord >= 0)
+			if (startRecord == 0)
 			{
 				setLoaded();
 			}
@@ -796,7 +796,10 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			previousPage = -1;
 			currentPage = 0;
 			currentRecord = -1;
-			setLoaded();
+			if (!isLoaded())
+			{
+				setLoaded();
+			}
 			nextPage();
 		}
 	}
@@ -805,7 +808,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	{
 		if (!isLoaded())
 		{
-			if (startRecord == 0 && endRecord >= 0)
+			if (startRecord == 0)
 			{
 				setLoaded();
 			}
@@ -817,7 +820,10 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
 		if (updateRecordsCount > 0)
 		{
-			setLoaded();
+			if (!isLoaded())
+			{
+				setLoaded();
+			}
 			firePageLoadedEvent(startRecord, startRecord+updateRecordsCount-1);
 		}
 		else
