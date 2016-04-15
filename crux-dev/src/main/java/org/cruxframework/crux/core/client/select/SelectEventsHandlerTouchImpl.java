@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.client.select;
 
-import org.cruxframework.crux.core.client.event.HasSelectHandlers;
+import org.cruxframework.crux.core.client.event.TouchEventsHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -60,7 +60,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 					Widget parent = selectableWidget.getParent();
 					while (parent != null)
 					{
-						if (parent instanceof HasSelectHandlers)
+						if (parent instanceof TouchEventsHandler)
 						{
 							childOfSelectableWidget = true;
 							break;
@@ -120,11 +120,6 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
-		Touch touch = event.getTouches().get(0);
-		startX = touch.getClientX();
-		startY = touch.getClientY();
-		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
-		touchEndHandler = selectableWidget.addTouchEndHandler(this);
 		if (stopPropagationTouchEvents)
 		{
 			event.stopPropagation();
@@ -134,7 +129,11 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 		{
 			event.preventDefault();
 		}
-		
+		Touch touch = event.getTouches().get(0);
+		startX = touch.getClientX();
+		startY = touch.getClientY();
+		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
+		touchEndHandler = selectableWidget.addTouchEndHandler(this);
 	}
 
 	private void resetHandlers()
