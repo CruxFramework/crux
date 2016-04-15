@@ -79,8 +79,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 		{
 			event.stopPropagation();
 		}
-		
-		if (stopPropagationTouchEvents)
+		else if (stopPropagationTouchEvents)
 		{
 			event.stopPropagation();
 		} 
@@ -126,6 +125,16 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 		startY = touch.getClientY();
 		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
 		touchEndHandler = selectableWidget.addTouchEndHandler(this);
+		if (stopPropagationTouchEvents)
+		{
+			event.stopPropagation();
+		} 
+
+		if (preventDefaultTouchEvents)
+		{
+			event.preventDefault();
+		}
+		
 	}
 
 	private void resetHandlers()
