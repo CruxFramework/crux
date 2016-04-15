@@ -24,7 +24,7 @@ import com.google.gwt.event.shared.HasHandlers;
  * @author Samuel Almeida Cardoso
  *
  */
-public interface HasSelectHandlers extends HasHandlers 
+public interface HasSelectHandlers extends HasHandlers, TouchEventsHandler 
 {
 	HandlerRegistration addSelectHandler(SelectHandler handler);
 }
