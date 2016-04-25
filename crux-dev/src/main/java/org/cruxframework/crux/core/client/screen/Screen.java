@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.client.screen;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.Legacy;
@@ -346,7 +345,8 @@ public class Screen
 	 */
 	public static HandlerRegistration addCloseHandler(CloseHandler<Window> handler) 
 	{
-		return Screen.get().addWindowCloseHandler(handler);
+		Screen screen = Screen.get();
+		return screen != null ? screen.addWindowCloseHandler(handler) : null;
 	}
 	/**
 	 * 
@@ -355,7 +355,8 @@ public class Screen
 	 */
 	public static HandlerRegistration addClosingHandler(ClosingHandler handler) 
 	{
-		return Screen.get().addWindowClosingHandler(handler);
+		Screen screen = Screen.get();
+		return screen != null ? screen.addWindowClosingHandler(handler) : null;
 	}
 	/**
 	 * 
@@ -364,7 +365,8 @@ public class Screen
 	 */
 	public static HandlerRegistration addHistoryChangedHandler(ValueChangeHandler<String> handler) 
 	{
-		return Screen.get().addWindowHistoryChangedHandler(handler);
+		Screen screen = Screen.get();
+		return screen != null ? screen.addWindowHistoryChangedHandler(handler) : null;
 	}
 	
 	/**
@@ -374,7 +376,8 @@ public class Screen
 	 */
 	public static HandlerRegistration addResizeHandler(ResizeHandler handler) 
 	{
-		return Screen.get().addWindowResizeHandler(handler);
+		Screen screen = Screen.get();
+		return screen != null ? screen.addWindowResizeHandler(handler) : null;
 	}
 	
 	/**
@@ -384,7 +387,8 @@ public class Screen
 	 */
 	public static HandlerRegistration addOrientationChangeHandler(final OrientationChangeHandler handler) 
 	{
-		return Screen.get().addWindowOrientationChangeHandler(handler);
+		Screen screen = Screen.get();
+		return screen != null ? screen.addWindowOrientationChangeHandler(handler) : null;
 	}
 	
 	/**
