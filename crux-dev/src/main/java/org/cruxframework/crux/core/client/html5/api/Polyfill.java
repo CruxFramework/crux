@@ -29,4 +29,7 @@ public interface Polyfill extends ClientBundle
 
 	@Source("MutationObserverMin.js")
 	ExternalTextResource mutationObserver();
+	
+	@Source("weakmap.min.js")
+	ExternalTextResource weakMap();
 }

@@ -21,6 +21,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.resources.client.ExternalTextResource;
 import com.google.gwt.resources.client.ResourceCallback;
 import com.google.gwt.resources.client.ResourceException;
 import com.google.gwt.resources.client.TextResource;
@@ -89,6 +90,14 @@ public class MutationObserver extends JavaScriptObject
 	}-*/;
 	
 	/**
+	 * Verify if the current browser supports the WeakMap API.
+	 * @return true if supported.
+	 */
+	public static native boolean isWeakMapSupported()/*-{
+		return !!$wnd.WeakMap;
+	}-*/;
+	
+	/**
 	 * If current browser supports the MutationObserver API, create a new Observer.
 	 * @param callback A handler for the mutations.
 	 * @return the MutationObserver
@@ -101,36 +110,87 @@ public class MutationObserver extends JavaScriptObject
 		}
 		else
 		{
-	            try
-                {
-	                Polyfill.INSTANCE.mutationObserver().getText(new ResourceCallback<TextResource>()
-	                {
-	                	@Override
-	                	public void onError(ResourceException e)
-	                	{
-	                		loadCallback.onError(e.getMessage());						
-	                	}
-	                	
-	                	@Override
-	                	public void onSuccess(TextResource resource)
-	                	{
-	                		ScriptInjector.fromString(resource.getText()).setRemoveTag(true).inject();
-	                		Scheduler.get().scheduleDeferred(new ScheduledCommand()
-	                		{
-	                			@Override
-	                			public void execute()
-	                			{
-	                				loadCallback.onLoaded(create(callback));
-	                			}
-	                		});
-	                	}
-	                });
-                }
-                catch (ResourceException e)
-                {
-            		loadCallback.onError(e.getMessage());						
-                }
+			if(!isWeakMapSupported())
+			{
+				injectPolyfill(Polyfill.INSTANCE.weakMap(), new ResourceCallback<TextResource>()
+				{
+					@Override
+					public void onSuccess(TextResource resource)
+					{
+						injectPolyfill(Polyfill.INSTANCE.mutationObserver(), new ResourceCallback<TextResource>()
+						{
+							@Override
+							public void onSuccess(TextResource resource)
+							{
+								loadCallback.onLoaded(create(callback));
+							}
+							
+							@Override
+							public void onError(ResourceException e)
+							{
+								loadCallback.onError(e.getMessage());
+							}
+						});
+					}
+					
+					@Override
+					public void onError(ResourceException e)
+					{
+						loadCallback.onError(e.getMessage());
+					}
+				});
+			}
+			else
+			{
+				injectPolyfill(Polyfill.INSTANCE.mutationObserver(), new ResourceCallback<TextResource>()
+				{
+					@Override
+					public void onSuccess(TextResource resource)
+					{
+						loadCallback.onLoaded(create(callback));
+					}
+					
+					@Override
+					public void onError(ResourceException e)
+					{
+						loadCallback.onError(e.getMessage());
+					}
+				});
+			}
 		}
+	}
+	
+	private static void injectPolyfill(ExternalTextResource resource, final ResourceCallback<TextResource> resourceCallback)
+	{
+        try
+        {
+        	resource.getText(new ResourceCallback<TextResource>()
+            {
+            	@Override
+            	public void onError(ResourceException e)
+            	{
+            		resourceCallback.onError(e);						
+            	}
+            	
+            	@Override
+            	public void onSuccess(final TextResource resource)
+            	{
+            		ScriptInjector.fromString(resource.getText()).setWindow(ScriptInjector.TOP_WINDOW).setRemoveTag(true).inject();
+            		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+            		{
+            			@Override
+            			public void execute()
+            			{
+            				resourceCallback.onSuccess(resource);	
+            			}
+            		});
+            	}
+            });
+        }
+        catch (ResourceException e)
+        {
+        	resourceCallback.onError(e);						
+        }
 	}
 	
 	protected static native MutationObserver create(Callback callback)/*-{
