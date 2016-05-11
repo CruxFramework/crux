@@ -47,14 +47,19 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 	@Override
     protected String getServiceBasePath(RebindContext context)
     {
-		String value = baseIntf.getAnnotation(Path.class).value();
-		if (value == null)
+		Path path = baseIntf.getAnnotation(Path.class);
+		String value;
+		if (path == null)
 		{
 			value = "";
 		}
-		else if (!value.startsWith("/"))
+		else
 		{
-			value = "/"+value;
+			value = path.value();
+			if (!value.startsWith("/"))
+			{
+				value = "/"+value;
+			}
 		}
 		
 		return value;

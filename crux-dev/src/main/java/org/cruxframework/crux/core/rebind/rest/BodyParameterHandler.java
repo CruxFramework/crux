@@ -287,24 +287,24 @@ class BodyParameterHandler extends AbstractParameterHelper
 		{
 			if (jClassType.isAssignableTo(stringType))
 			{
-				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", URL.encodePathSegment("+
-						parameterexpression+"));");
+				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", "+
+						parameterexpression+");");
 			}
 			else if (jClassType.isAssignableTo(dateType))
 			{
-				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", URL.encodePathSegment("+
-						"Long.toString("+parameterexpression+".getTime())));");
+				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", "+
+						"Long.toString("+parameterexpression+".getTime()));");
 			}
 		    else
 		    {
-				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", URL.encodePathSegment("+
-						"\"\"+"+parameterexpression+"));");
+				srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", "+
+						"\"\"+"+parameterexpression+");");
 		    }
 		}
 	    else
 	    {
-			srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", URL.encodePathSegment("+
-					"\"\"+"+parameterexpression+"));");
+			srcWriter.println(builderVarName+".setHeader("+EscapeUtils.quote(headerName)+", "+
+					"\"\"+"+parameterexpression+");");
 	    }
 		srcWriter.println("}");
     }
