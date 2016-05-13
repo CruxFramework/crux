@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
+import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.AbstractHasPagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.DataChangedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataChangedHandler;
@@ -23,6 +24,10 @@ import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider.SelectionMode;
+import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord;
+import org.cruxframework.crux.core.client.dataprovider.DataSelectionEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataSelectionHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataSortedEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataSortedHandler;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
@@ -49,13 +54,14 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	protected HandlerRegistration dataChangedHandler;
 	protected HandlerRegistration dataFilterHandler;
 	protected HandlerRegistration dataSortedHandler;
-	protected PageablePager<T> pager;
 	protected HandlerRegistration loadStoppedHandler;
 	protected HandlerRegistration pageLoadedHandler;
+	protected PageablePager<T> pager;
 	protected DataProvider.DataReader<T> reader = getDataReader();
 	protected HandlerRegistration transactionEndHandler;
 	private   P pagePanel;
 	private HandlerRegistration resetHandler;
+	private HandlerRegistration dataSelectionHandler;
 	
 	public void add(T object)
 	{
@@ -142,16 +148,6 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 	}
 	
-	protected void setForEdition(int index, T object)
-	{
-		if (getDataProvider() != null)
-		{
-			allowRefreshAfterDataChange = false;
-			getDataProvider().set(index, object);
-			allowRefreshAfterDataChange = true;
-		}
-	}
-
 	@Override
 	public void setHeight(String height) 
 	{
@@ -164,7 +160,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			super.setHeight(height);
 		}
 	}
-
+	
 	@Override
     public void setPager(PageablePager<T> pager)
     {
@@ -186,7 +182,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			}			
  		}
     }
-	
+
 	@Override
 	protected void addDataProviderHandler()
 	{
@@ -282,6 +278,28 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			});
 		}
 		
+		dataSelectionHandler = getDataProvider().addDataSelectionHandler(new DataSelectionHandler<T>()
+		{
+			@Override
+			public void onDataSelection(DataSelectionEvent<T> event)
+			{
+				if(getDataProvider().getSelectionMode().equals(SelectionMode.unselectable))
+				{
+					return;
+				}
+
+				Array<DataProviderRecord<T>> changedRecords = event.getChangedRecords();
+				if(changedRecords != null)
+				{
+					for(int i=0; i<changedRecords.size(); i++)
+					{
+						DataProviderRecord<T> dataProviderRecord = changedRecords.get(i);
+						onDataSelected(dataProviderRecord.getRecordObject(), dataProviderRecord.isSelected());
+					}
+				}
+			}
+		});
+		
 		resetHandler = getDataProvider().addResetHandler(new ResetHandler()
 		{
 			@Override
@@ -291,13 +309,45 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			}
 		});
 	}
-	
+
+	protected abstract void onDataSelected(T recordObject, boolean selected);
+
 	protected abstract void clear();
 	
 	protected abstract void clearRange(int startRecord);
-
+	
+	protected void ensurePageAndUpdatePagePanel(boolean forward)
+	{
+		IsWidget pagePanel = this.pagePanel!=null?this.pagePanel:doInitializePagePanel();
+		if (pager != null)
+	    {
+	     	pager.updatePagePanel(pagePanel, forward);
+		}
+	}
+	
 	protected abstract Panel getContentPanel();
 
+	protected int getDataObjectIndex(int pageIndex)
+    {
+        int numPreviousPage = getDataProvider().getCurrentPage() - 1;
+        int dataObjectIndex = pageIndex + (numPreviousPage*getPageSize());
+        return dataObjectIndex;
+    }
+
+	protected int getDataObjectIndexForWidgetIndex(int widgetIndex)
+	{
+		int index;
+		if(this.pager != null && this.pager.supportsInfiniteScroll())
+		{
+			index = widgetIndex;					
+		}
+		else
+		{
+			index = getDataObjectIndex(widgetIndex);
+		}
+		return index;
+	}
+	
 	protected abstract DataProvider.DataReader<T> getDataReader();
 
 	/**
@@ -309,30 +359,12 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		return pagePanel;
 	}
 
-	protected void ensurePageAndUpdatePagePanel(boolean forward)
-	{
-		IsWidget pagePanel = this.pagePanel!=null?this.pagePanel:doInitializePagePanel();
-		if (pager != null)
-	    {
-	     	pager.updatePagePanel(pagePanel, forward);
-		}
-	}
-
 	/**
 	* Creates the panel that will contain all the page data.
 	* @return
 	*/
 	protected abstract P initializePagePanel();
-	
-	/**
-	 * @return a Page Panel instance. 
-	 */
-	private IsWidget doInitializePagePanel()
-	{
-		pagePanel = initializePagePanel();
-		return pagePanel;
-	}
-	
+
 	@Override
 	protected void onDataProviderSet()
 	{
@@ -347,7 +379,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			render(true, true, null);		
 		}
 	}
-		
+	
 	protected void onTransactionCompleted(boolean commited)
     {
 		final int pageStartRecordOnTransactionEnd = getDataProvider().getCurrentPageStartRecord();
@@ -369,7 +401,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 		}
 		render(goToFirstPage, true, null);		
 	}
-	
+		
 	protected void refreshPage(int startRecord)
     {
 		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
@@ -383,7 +415,7 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 	    }
 	    render(false, false, null);
     }
-		
+	
 	@Override
 	protected void removeDataProviderHandler()
 	{
@@ -422,8 +454,13 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			resetHandler.removeHandler();
 			resetHandler = null;
 		}
+		if (dataSelectionHandler != null)
+		{
+			dataSelectionHandler.removeHandler();
+			dataSelectionHandler = null;
+		}
 	}
-		
+	
 	protected void render(boolean refresh, boolean clearRange, RenderCallback callback)
     {
 		if (refresh)
@@ -466,6 +503,25 @@ public abstract class AbstractPageable<T, P extends IsWidget> extends AbstractHa
 			callback.onRendered();
 		}
     }
+		
+	protected void setForEdition(int index, T object)
+	{
+		if (getDataProvider() != null)
+		{
+			allowRefreshAfterDataChange = false;
+			getDataProvider().set(index, object);
+			allowRefreshAfterDataChange = true;
+		}
+	}
+		
+	/**
+	 * @return a Page Panel instance. 
+	 */
+	private IsWidget doInitializePagePanel()
+	{
+		pagePanel = initializePagePanel();
+		return pagePanel;
+	}
 	
 	private int getRowsToBeRendered()
 	{
