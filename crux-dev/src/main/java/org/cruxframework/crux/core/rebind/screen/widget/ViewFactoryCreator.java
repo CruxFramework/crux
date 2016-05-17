@@ -1192,7 +1192,10 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		String viewHTML = getViewHTML();
 		printer.println("this."+viewPanelVariable+" = new " +
 				ViewPanel.class.getCanonicalName() + "("+viewHTML+");");
-		
+		if (!StringUtils.isEmpty(view.getStyleName()))
+		{
+			printer.println("this."+viewPanelVariable+".setStyleName("+EscapeUtils.quote(view.getStyleName())+");");
+		}
 		processViewEvents(printer);
 		processViewDimensions(printer);
 		

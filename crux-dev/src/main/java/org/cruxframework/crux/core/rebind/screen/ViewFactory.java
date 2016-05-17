@@ -416,6 +416,10 @@ public class ViewFactory
 				{
 					view.setWidth(elem.getString(attrName));
 				}
+	        	else if (attrName.equals("styleName"))
+				{
+					view.setStyleName(elem.getString(attrName));
+				}
 	        	else if(attrName.equals("height"))
 				{
 					view.setHeight(elem.getString(attrName));
