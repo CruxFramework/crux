@@ -15,7 +15,10 @@
  */
 package org.cruxframework.crux.core.client.select;
 
+import java.util.HashMap;
+
 import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.screen.Screen;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,41 +27,63 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 /**
  * SelectEventsHanler Implementation for touch devices that may have mouse support
  * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso
  *
  */
 public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTouchImpl implements ClickHandler
 {
-	private boolean handledByTouch = false;
+	//Map events to widgets 
+	public static HashMap<SelectableWidget, Boolean> eventProcessed = new HashMap<SelectableWidget, Boolean>();	
 	
 	@Override
 	public void handleWidget()
 	{
 		super.handleWidget();
-		selectableWidget.addClickHandler(this);
+		//iPad handles onTouchStart and onMouseMove as the same event
+		if(!Screen.isIPad())
+		{
+			selectableWidget.addClickHandler(this);
+		}
 	}
 
-
 	@Override
-    public void onClick(ClickEvent event)
+    public void onClick(final ClickEvent event)
     {
-		if (!handledByTouch && isEnabled())
+		if(!Screen.isIPad())
 		{
-			SelectEvent selectEvent = SelectEvent.fire(selectableWidget);
-			if (selectEvent.isCanceled())
+			Boolean boolEventProcessed = eventProcessed.get(selectableWidget);
+			if(
+				//if the event is already processed
+				boolEventProcessed != null && boolEventProcessed)
 			{
-				event.preventDefault();
-			}
-			if (selectEvent.isStopped())
-			{
-				event.stopPropagation();
+				eventProcessed.remove(selectableWidget);
+				return;
 			}
 		}
+		
+		handleClickEvent(event);
     }
-
+	
+	private void handleClickEvent(ClickEvent event)
+	{
+		SelectEvent selectEvent = SelectEvent.fire(selectableWidget);
+		if (selectEvent.isCanceled())
+		{
+			event.preventDefault();
+		}
+		if (selectEvent.isStopped())
+		{
+			event.stopPropagation();
+		}
+	}
+		
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
+		if(!Screen.isIPad())
+		{
+			eventProcessed.put(selectableWidget, true);
+		}
 		super.onTouchStart(event);
-		handledByTouch = true;
 	}
 }
