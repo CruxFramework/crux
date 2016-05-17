@@ -60,6 +60,7 @@ public class View
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
 	protected Set<String> widgetTypes = new HashSet<String>();
 	protected String width;
+	protected String styleName;
 
 	private final String html;
 	private long lastModified;
@@ -560,6 +561,16 @@ public class View
 		this.lastModified = lastModified;
     }
 	
+	public String getStyleName()
+	{
+		return styleName;
+	}
+
+	public void setStyleName(String styleName)
+	{
+		this.styleName = styleName;
+	}
+
 	/**
 	 * 
 	 * @param viewElement
