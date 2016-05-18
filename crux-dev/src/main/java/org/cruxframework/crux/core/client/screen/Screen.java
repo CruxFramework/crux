@@ -684,6 +684,16 @@ public class Screen
 	 * 
 	 * @return
 	 */
+	public static boolean isIPad()
+	{
+		String userAgent = Window.Navigator.getUserAgent().toLowerCase();
+		return (userAgent.indexOf("ipad") > 0);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public static boolean isAndroid()
 	{
 		String userAgent = Window.Navigator.getUserAgent().toLowerCase();
