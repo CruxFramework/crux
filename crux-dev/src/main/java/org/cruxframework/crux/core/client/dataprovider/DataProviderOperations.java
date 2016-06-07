@@ -25,6 +25,8 @@ import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider.FilterRegistration;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -327,7 +329,14 @@ class DataProviderOperations<T>
 	    {
 			dataProvider.concludeEdition(false);
 			dataProvider.replaceTransactionData(this.transactionOriginalData);
-			dataProvider.unselectAllRecords();
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				@Override
+				public void execute()
+				{
+					dataProvider.unselectAllRecords();
+				}
+			});
 			endTransaction();
 	    }
     }

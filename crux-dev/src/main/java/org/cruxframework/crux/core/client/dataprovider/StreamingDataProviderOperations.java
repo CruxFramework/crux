@@ -22,6 +22,9 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+
 /**
  * @author Thiago da Rosa de Bustamante
  */
@@ -209,7 +212,14 @@ class StreamingDataProviderOperations<T>
 	    {
 			dataProvider.fireTransactionEndEvent(false);
 			dataProvider.replaceTransactionData(this.transactionOriginalData);
-			dataProvider.unselectAllRecords();
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				@Override
+				public void execute()
+				{
+					dataProvider.unselectAllRecords();
+				}
+			});
 	    	endTransaction();
 	    }
     }
