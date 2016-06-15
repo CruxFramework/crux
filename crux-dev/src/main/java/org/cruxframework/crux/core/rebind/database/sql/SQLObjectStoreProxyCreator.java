@@ -188,6 +188,10 @@ public class SQLObjectStoreProxyCreator extends SQLAbstractKeyValueProxyCreator
 				String k = keyPath[i];
 				JType jType = JClassUtils.getTypeForProperty(k, targetObjectType);
 				String setterMethod = JClassUtils.getSetterMethod(k, targetObjectType, jType);
+				if (setterMethod == null || setterMethod.isEmpty())
+				{
+					throw new CruxGeneratorException("There is no setter method for property ["+k+"] on type ["+targetObjectType.getQualifiedSourceName()+"]");
+				}
 				srcWriter.println("object."+setterMethod+"((key==null?null:("+jType.getParameterizedQualifiedSourceName()+")key["+i+"]));");
 			}
 		}
@@ -196,6 +200,10 @@ public class SQLObjectStoreProxyCreator extends SQLAbstractKeyValueProxyCreator
 			String k = keyPath[0];
 			JType jType = JClassUtils.getTypeForProperty(k, targetObjectType);
 			String setterMethod = JClassUtils.getSetterMethod(k, targetObjectType, jType);
+			if (setterMethod == null || setterMethod.isEmpty())
+			{
+				throw new CruxGeneratorException("There is no setter method for property ["+k+"] on type ["+targetObjectType.getQualifiedSourceName()+"]");
+			}
 			srcWriter.println("object."+setterMethod+"(key);");
 		}
 		srcWriter.println("}");
