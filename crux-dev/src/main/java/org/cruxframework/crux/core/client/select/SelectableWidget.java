@@ -15,13 +15,23 @@
  */
 package org.cruxframework.crux.core.client.select;
 
+import org.cruxframework.crux.core.client.event.HasSelectEndHandlers;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
+import org.cruxframework.crux.core.client.event.HasSelectStartHandlers;
+import org.cruxframework.crux.core.client.event.SelectEndEvent;
+import org.cruxframework.crux.core.client.event.SelectEndHandler;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.event.SelectStartEvent;
+import org.cruxframework.crux.core.client.event.SelectStartHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
@@ -36,7 +46,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class SelectableWidget extends Composite implements HasSelectHandlers
+public abstract class SelectableWidget extends Composite implements HasSelectHandlers, 
+							HasSelectStartHandlers, HasSelectEndHandlers
 {
 	protected SelectEventsHandler selectEventsHandler;
 	
@@ -58,6 +69,18 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
 		return addHandler(handler, SelectEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addSelectStartHandler(SelectStartHandler handler)
+	{
+		return addHandler(handler, SelectStartEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addSelectEndHandler(SelectEndHandler handler)
+	{
+		return addHandler(handler, SelectEndEvent.getType());
 	}
 	
 	public void select()
@@ -103,5 +126,15 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 	protected HandlerRegistration addClickHandler(ClickHandler handler)
 	{
 		return addDomHandler(handler, ClickEvent.getType());
+	}
+	
+	protected HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
+	{
+		return addDomHandler(handler, MouseDownEvent.getType());
+	}
+	
+	protected HandlerRegistration addMouseUpHandler(MouseUpHandler handler)
+	{
+		return addDomHandler(handler, MouseUpEvent.getType());
 	}
 }

@@ -15,10 +15,16 @@
  */
 package org.cruxframework.crux.core.client.select;
 
+import org.cruxframework.crux.core.client.event.SelectEndEvent;
 import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectStartEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 
 
 /**
@@ -48,6 +54,24 @@ public class SelectEventsHandlerNoTouchImpl extends SelectEventsHandler
 						event.stopPropagation();
 					}
 				}
+			}
+		});
+	    
+	    selectableWidget.addMouseDownHandler(new MouseDownHandler()
+		{
+			@Override
+			public void onMouseDown(MouseDownEvent event)
+			{
+				SelectStartEvent.fire(selectableWidget);
+			}
+		});
+	    
+	    selectableWidget.addMouseUpHandler(new MouseUpHandler()
+		{
+			@Override
+			public void onMouseUp(MouseUpEvent event)
+			{
+				SelectEndEvent.fire(selectableWidget);
 			}
 		});
 	}
