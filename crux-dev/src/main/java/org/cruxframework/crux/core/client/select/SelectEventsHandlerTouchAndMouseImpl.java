@@ -17,11 +17,15 @@ package org.cruxframework.crux.core.client.select;
 
 import java.util.HashMap;
 
+import org.cruxframework.crux.core.client.event.SelectEndEvent;
 import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectStartEvent;
 import org.cruxframework.crux.core.client.screen.Screen;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 
 /**
@@ -30,7 +34,7 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
  * @author Samuel Almeida Cardoso
  *
  */
-public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTouchImpl implements ClickHandler
+public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTouchImpl implements ClickHandler, MouseDownHandler
 {
 	//Map events to widgets 
 	public static HashMap<SelectableWidget, Boolean> eventProcessed = new HashMap<SelectableWidget, Boolean>();	
@@ -43,9 +47,22 @@ public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTou
 		if(!Screen.isIPad())
 		{
 			selectableWidget.addClickHandler(this);
+			selectableWidget.addMouseDownHandler(this);
 		}
 	}
 
+	@Override
+	public void onMouseDown(MouseDownEvent event)
+	{
+		Boolean boolEventProcessed = eventProcessed.get(selectableWidget);
+		if(
+			//if the event was not processed
+			boolEventProcessed == null || !boolEventProcessed)
+		{
+			SelectStartEvent.fire(selectableWidget);
+		}
+	}
+	
 	@Override
     public void onClick(final ClickEvent event)
     {
@@ -66,6 +83,7 @@ public class SelectEventsHandlerTouchAndMouseImpl extends SelectEventsHandlerTou
 	
 	private void handleClickEvent(ClickEvent event)
 	{
+		SelectEndEvent.fire(selectableWidget);
 		SelectEvent selectEvent = SelectEvent.fire(selectableWidget);
 		if (selectEvent.isCanceled())
 		{

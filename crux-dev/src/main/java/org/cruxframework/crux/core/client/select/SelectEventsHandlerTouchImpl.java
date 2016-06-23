@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.select;
 
+import org.cruxframework.crux.core.client.event.SelectEndEvent;
+import org.cruxframework.crux.core.client.event.SelectStartEvent;
 import org.cruxframework.crux.core.client.event.TouchEventsHandler;
 
 import com.google.gwt.core.client.Scheduler;
@@ -99,6 +101,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 				@Override
 				public void execute() 
 				{
+					SelectEndEvent.fire(selectableWidget);
 					selectableWidget.select();
 				}
 			});
@@ -134,6 +137,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 		startY = touch.getClientY();
 		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
 		touchEndHandler = selectableWidget.addTouchEndHandler(this);
+		SelectStartEvent.fire(selectableWidget);
 	}
 
 	private void resetHandlers()
