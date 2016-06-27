@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 {
-	private static final int TAP_EVENT_THRESHOLD = 5;
+	private int tapEventThreshold = 5;
 	private int startX;
 	private int startY;
 	private HandlerRegistration touchMoveHandler;
@@ -113,8 +113,8 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	public void onTouchMove(TouchMoveEvent event)
 	{	
 		Touch touch = event.getTouches().get(0);
-		if (Math.abs(touch.getClientX() - this.startX) > TAP_EVENT_THRESHOLD || Math.abs
-				(touch.getClientY() - this.startY) > TAP_EVENT_THRESHOLD) 
+		if (Math.abs(touch.getClientX() - this.startX) > this.tapEventThreshold || Math.abs
+				(touch.getClientY() - this.startY) > this.tapEventThreshold) 
 		{
 			this.resetHandlers();
 		}
@@ -152,5 +152,11 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 			touchEndHandler.removeHandler();
 			touchEndHandler = null;
 		}
+	}
+
+	@Override
+	public void setTapEventThreshold(int tapEventThreshold)
+	{
+		this.tapEventThreshold = tapEventThreshold;
 	}
 }

@@ -38,6 +38,8 @@ public abstract class SelectEventsHandler implements HasEnabled
 	    return enabled;
 	}
 	
+	public abstract void setTapEventThreshold(int tapEventThreshold);
+	
 	public void setAllowPropagationToNonSelectableWidgets(boolean allowPropagationToNonSelectableWidgets) 
 	{
 		this.allowPropagationToNonSelectableWidgets = allowPropagationToNonSelectableWidgets;
