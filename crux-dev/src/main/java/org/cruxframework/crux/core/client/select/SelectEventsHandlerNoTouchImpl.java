@@ -75,4 +75,10 @@ public class SelectEventsHandlerNoTouchImpl extends SelectEventsHandler
 			}
 		});
 	}
+
+	@Override
+	public void setTapEventThreshold(int tapEventThreshold)
+	{
+		//Do nothing.
+	}
 }

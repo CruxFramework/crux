@@ -19,6 +19,8 @@ import org.cruxframework.crux.core.rebind.event.SelectEndEvtBind;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.event.SelectStartEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
@@ -31,7 +33,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 	@TagEvent(value=SelectEvtBind.class, description="Inform the handler for onSelect event. This event is fired when the user select the widget."),
 	@TagEvent(value=SelectStartEvtBind.class, description="Inform the handler for onSelectStart event. This event is fired when the user start to select the widget."),
 	@TagEvent(value=SelectEndEvtBind.class, description="Inform the handler for onSelectEnd event. This event is fired when the user stop to select the widget.")
-})	
+})
+@TagAttributes
+({
+	@TagAttribute(value="tapEventThreshold", type=Integer.class, defaultValue="5", 
+		description="Allow to set the tap event threshold.")
+})
 public interface HasAllSelectHandlersFactory<C extends WidgetCreatorContext>
 {
 }

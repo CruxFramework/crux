@@ -65,6 +65,15 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 		selectEventsHandler.handleWidget();
 	}
 
+	/**
+	 * Allows changing the tap event threshold property. 
+	 * @param tapEventThreshold
+	 */
+	public void setTapEventThreshold(int tapEventThreshold)
+	{
+		selectEventsHandler.setTapEventThreshold(tapEventThreshold);
+	}
+	
 	@Override
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
