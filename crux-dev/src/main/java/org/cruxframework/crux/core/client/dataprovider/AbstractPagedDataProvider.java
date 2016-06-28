@@ -350,7 +350,11 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	{
 		int start = getPageStartRecord();
 		int end = getPageEndRecord();
-		data.remove(start, end-start+1);
+		int count = end-start+1;
+		if (count > 0)
+		{
+			data.remove(start, count);
+		}
 		
 		for (int i=0; i<transactionRecords.size(); i++)
 		{
