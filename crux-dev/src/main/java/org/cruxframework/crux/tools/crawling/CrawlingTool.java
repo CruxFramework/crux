@@ -74,7 +74,7 @@ public class CrawlingTool
 		this.outputDir = outputDir;
 		this.applicationBaseURL = applicationBaseURL;
 		this.javascriptTime = javascriptTime;
-		webClient = new WebClient(BrowserVersion.FIREFOX_17);
+		webClient = new WebClient(BrowserVersion.FIREFOX_38);
 		webClient.getOptions().setCssEnabled(true);
 		webClient.getOptions().setThrowExceptionOnScriptError(false);
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());

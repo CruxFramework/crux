@@ -27,7 +27,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -77,13 +77,14 @@ public class JettyDevServer
 
 	public void start(boolean join) throws Exception 
 	{
-		SelectChannelConnector connector = new SelectChannelConnector();
+		Server server = new Server();
+
+		ServerConnector connector = new ServerConnector(server);
 		connector.setHost(bindAddress);
 		connector.setPort(port);
 		connector.setReuseAddress(false);
 		connector.setSoLingerTime(0);
 
-		Server server = new Server();
 		server.addConnector(connector);
 
 		WebAppContext webContext = new WebAppContext();
