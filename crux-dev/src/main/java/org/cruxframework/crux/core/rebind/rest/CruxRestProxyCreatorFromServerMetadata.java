@@ -75,7 +75,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 			{
 				basePath = basePath.substring(0, basePath.length()-1);
 			}
-
+			
 			srcWriter.println("__hostPath = \""+basePath+"\";");
 		}
 		else
@@ -130,7 +130,8 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 	    StateValidationModel validationModel = HttpMethodHelper.getStateValidationModel(implementationMethod);
 	    String httpMethod = HttpMethodHelper.getHttpMethod(implementationMethod.getAnnotations(), false);
 	    boolean isReadMethod = implementationMethod.getAnnotation(GET.class) != null;
-	    RestMethodInfo methodInfo = new RestMethodInfo(method, parameterAnnotations, methodURI, httpMethod, validationModel, isReadMethod);
+	    Integer timeoutMillis = getTimeoutMillis(method);
+	    RestMethodInfo methodInfo = new RestMethodInfo(method, parameterAnnotations, methodURI, httpMethod, validationModel, isReadMethod, timeoutMillis);
 	    return methodInfo;
     }
 

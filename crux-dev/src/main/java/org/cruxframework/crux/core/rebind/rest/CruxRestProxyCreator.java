@@ -46,6 +46,7 @@ import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
 import org.cruxframework.crux.core.shared.rest.annotation.Path;
 import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
+import org.cruxframework.crux.core.shared.rest.annotation.Timeout;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -281,6 +282,11 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		{
 			srcWriter.println("builder.setHeader("+EscapeUtils.quote(CruxRpcRequestBuilder.VIEW_INFO_HEADER)+", __view);");
 		}
+
+		if (methodInfo.timeoutMillis != null) 
+		{
+			srcWriter.println("builder.setTimeoutMillis("+methodInfo.timeoutMillis+");");
+		}
 		
 		srcWriter.println("builder.setCallback(new RequestCallback(){");
 
@@ -463,6 +469,23 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			return methodPath+"?"+queryString;
 		}
 		return methodPath;
+	}
+	
+	protected Integer getTimeoutMillis(JMethod method) 
+	{
+		// Check for specific method timeout
+		Timeout timeout = method.getAnnotation(Timeout.class);
+		if (timeout == null) 
+		{
+			// Check for all proxy methods timeout
+			timeout = baseIntf.getAnnotation(Timeout.class);
+		}
+		
+		if (timeout != null) 
+		{
+			return timeout.value();
+		}
+		return null;
 	}
 
 	protected String paths(String basePath, String... segments)
