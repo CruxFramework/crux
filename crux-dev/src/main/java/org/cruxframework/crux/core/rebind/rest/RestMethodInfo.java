@@ -33,9 +33,10 @@ public class RestMethodInfo
 	public String httpMethod;
 	protected StateValidationModel validationModel;
 	public boolean isReadMethod;
+	protected Integer timeoutMillis;
 	
 	public RestMethodInfo(JMethod method, Annotation[][] parameterAnnotations, String methodURI, String httpMethod,
-			StateValidationModel validationModel, boolean isReadMethod)
+			StateValidationModel validationModel, boolean isReadMethod, Integer timeoutMillis)
     {
 		this.method = method;
 		this.parameterAnnotations = parameterAnnotations;
@@ -43,5 +44,6 @@ public class RestMethodInfo
 		this.httpMethod = httpMethod;
 		this.validationModel = validationModel;
 		this.isReadMethod = isReadMethod;
+		this.timeoutMillis = timeoutMillis;
     }
 }

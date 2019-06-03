@@ -101,8 +101,9 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 	    {
 	    	updateMethods.add(methodURI);
 	    }
+	    Integer timeoutMillis = getTimeoutMillis(method);
 	    
-	    RestMethodInfo methodInfo = new RestMethodInfo(method, parameterAnnotations, methodURI, httpMethod, validationModel, isReadMethod);
+	    RestMethodInfo methodInfo = new RestMethodInfo(method, parameterAnnotations, methodURI, httpMethod, validationModel, isReadMethod, timeoutMillis);
 	    return methodInfo;
     }
 	
@@ -121,4 +122,5 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 
 	    return null;
     }
+
 }
