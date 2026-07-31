@@ -199,6 +199,7 @@ public class ViewProcessor
 	 */
 	private Document loadCruxPage(InputStream file, String filename, String device)
 	{
+		lock.lock();
 		try
 		{
 			Document document = documentBuilder.parse(file);
@@ -208,6 +209,10 @@ public class ViewProcessor
 		{
 			log.error("Error parsing file: ["+filename+"] for DeviceAdaptive interface ["+device+"]: " + e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
+		}
+		finally
+		{
+			lock.unlock();
 		}
 	}
 
@@ -242,10 +247,9 @@ public class ViewProcessor
 		if (documentBuilder == null)
 		{
 			lock.lock();
-
-			if (documentBuilder == null)
+			try
 			{
-				try
+				if (documentBuilder == null)
 				{
 					DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 					builderFactory.setNamespaceAware(true);
@@ -279,14 +283,14 @@ public class ViewProcessor
 						}
 					});
 				}
-				catch (Throwable e)
-				{
-					log.error("Error initializing cruxToHtmlTransformer.", e);
-				}
-				finally
-				{
-					lock.unlock();
-				}
+			}
+			catch (Throwable e)
+			{
+				log.error("Error initializing cruxToHtmlTransformer.", e);
+			}
+			finally
+			{
+				lock.unlock();
 			}
 		}
 	}
